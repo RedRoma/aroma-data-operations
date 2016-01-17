@@ -167,6 +167,31 @@ public class MessageRepositoryInMemoryTest
     @Test
     public void testGetByApplication() throws Exception
     {
+        messages.forEach(msg -> msg.setApplicationId(applicationId));
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByApplication(applicationId);
+        assertThat(result, is(messages));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetByApplicationWhenEmpty() throws Exception
+    {
+        List<Message> result = instance.getByApplication(applicationId);
+        assertThat(result, is(empty()));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetByApplicationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByApplication(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getByApplication(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
     @Test
