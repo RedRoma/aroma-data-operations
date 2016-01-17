@@ -45,6 +45,8 @@ public interface InboxRepository
             .filter(msg -> Objects.equals(msg.applicationId, applicationId))
             .collect(Collectors.toList());
     }
+    
+    boolean containsMessageInInbox(@Required String userId, @Required Message message) throws TException;
 
     void deleteMessageForUser(@Required String userId, @Required String messageId) throws TException;
     

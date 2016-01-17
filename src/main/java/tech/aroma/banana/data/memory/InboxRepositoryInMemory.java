@@ -116,5 +116,25 @@ final class InboxRepositoryInMemory implements InboxRepository
         return messagesForUser.getOrDefault(userId, Lists.emptyList()).size();
     }
 
+    @Override
+    public boolean containsMessageInInbox(String userId, Message message) throws TException
+    {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
+        
+        checkThat(message)
+            .throwing(InvalidArgumentException.class)
+            .is(validMessage());
+            
+        String messageId = message.messageId;
+        
+        return this.messagesForUser.getOrDefault(userId, Lists.emptyList())
+            .stream()
+            .map(Message::getMessageId)
+            .anyMatch(id -> Objects.equal(id, messageId));
+        
+    }
+
 
 }
