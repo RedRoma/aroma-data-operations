@@ -34,7 +34,7 @@ public interface UserRepository
     
     void deleteUser(@Required String userId) throws TException;
     
-    boolean userExists(@Required String userId) throws TException;
+    boolean containsUser(@Required String userId) throws TException;
     
     User getUserByEmail(@Required String emailAddress) throws TException;
     
