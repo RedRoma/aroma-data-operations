@@ -230,5 +230,13 @@ public class MessageRepositoryInMemoryTest
     public void testGetCountByApplication() throws Exception
     {
     }
+    
+    @DontRepeat
+    @Test
+    public void testGetCountByApplicationWhenEmpty() throws Exception
+    {
+        long result = instance.getCountByApplication(applicationId);
+        assertThat(result, is(0L));
+    }
 
 }
