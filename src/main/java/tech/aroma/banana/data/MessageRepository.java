@@ -17,6 +17,8 @@ package tech.aroma.banana.data;
  * limitations under the License.
  */
 
+import java.util.List;
+import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.Message;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
@@ -31,11 +33,20 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  * 
  * @author SirWellington
  */
-public interface MessageRepository 
+public interface MessageRepository
 {
-    String saveMessage(@Required Message message);
-    
-    Message getMessage(@Required String messageId);
-    
-    void deleteMessage(@Required String messageId);
+
+    void saveMessage(@Required Message message) throws TException;
+
+    Message getMessage(@Required String messageId) throws TException;
+
+    void deleteMessage(@Required String messageId) throws TException;
+
+    List<Message> getByHostname(@Required String hostname) throws TException;
+
+    List<Message> getByApplication(@Required String applicationId) throws TException;
+
+    List<Message> getByTitle(@Required String applicationId, @Required String title) throws TException;
+
+    long getCountByApplication(@Required String applicationId) throws TException;
 }
