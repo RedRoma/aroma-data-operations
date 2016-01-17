@@ -20,7 +20,6 @@ package tech.aroma.banana.data;
 import java.util.List;
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.Message;
-import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
@@ -51,7 +50,5 @@ public interface MessageRepository
 
     List<Message> getByTitle(@Required String applicationId, @Required String title) throws TException;
     
-    List<Message> getMessagesForUser(@Required String userId, @Optional String applicationId) throws TException;
-
     long getCountByApplication(@Required String applicationId) throws TException;
 }
