@@ -83,7 +83,6 @@ public class DataAssertionsTest
         assertThat(DataAssertions.isNullOrEmpty(string), is(false));
         assertThat(DataAssertions.isNullOrEmpty(""), is(true));
         assertThat(DataAssertions.isNullOrEmpty(null), is(true));
-        
     }
     
 
