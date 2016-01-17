@@ -17,6 +17,7 @@
 package tech.aroma.banana.data.memory;
 
 import java.util.List;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,8 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
@@ -68,6 +71,14 @@ public class InboxRepositoryInMemoryTest
         instance = new InboxRepositoryInMemory();
     }
 
+    private void saveMessages(List<Message> messages) throws TException
+    {
+        for(Message message : messages)
+        {
+            instance.saveMessageForUser(message, user);
+        }
+    }
+    
     @Test
     public void testSaveMessageForUser() throws Exception
     {
@@ -96,6 +107,17 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testGetMessagesForUser() throws Exception
     {
+        saveMessages(messages);
+        List<Message> result = instance.getMessagesForUser(userId);
+        assertThat(result, is(messages));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetMessagesForUserWhenEmpty() throws Exception
+    {
+        List<Message> result = instance.getMessagesForUser(userId);
+        assertThat(result, is(empty()));
     }
 
     @Test
