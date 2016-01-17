@@ -119,6 +119,17 @@ public class InboxRepositoryInMemoryTest
         List<Message> result = instance.getMessagesForUser(userId);
         assertThat(result, is(empty()));
     }
+    
+    @DontRepeat
+    @Test
+    public void testGetMessagesForUserWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getMessagesForUser(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getMessagesForUser(""))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
 
     @Test
     public void testDeleteMessageForUser() throws Exception
