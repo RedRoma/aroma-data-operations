@@ -17,9 +17,7 @@
 
 package tech.aroma.banana.data;
 
-import java.util.List;
 import org.apache.thrift.TException;
-import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
@@ -40,5 +38,4 @@ public interface UserRepository
     
     User findByGithubProfile(@Required String githubProfile) throws TException;
     
-    List<Application> getApplicationsFollowedBy(@Required String userId) throws TException;
 }
