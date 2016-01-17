@@ -48,14 +48,14 @@ public class FollowerRepositoryInMemoryTest
     private Application application;
     private String applicationId;
     
-    @GenerateList(value = Application.class, size = 5)
+    @GenerateList(Application.class)
     private List<Application> appsFollowed;
     
     @GeneratePojo
     private User user;
     private String userId;
     
-    @GenerateList(value = User.class, size = 5)
+    @GenerateList(User.class)
     private List<User> followers;
     
     private FollowerRepositoryInMemory instance;
