@@ -116,7 +116,7 @@ public class ApplicationRepositoryInMemoryTest
         
         instance.deleteApplication(applicationId);
         
-        assertThat(instance.contains(applicationId), is(false));
+        assertThat(instance.containsApplication(applicationId), is(false));
     }
     
     @DontRepeat
@@ -213,10 +213,10 @@ public class ApplicationRepositoryInMemoryTest
     {
         instance.saveApplication(applicationId, application);
         
-        assertThat(instance.contains(applicationId), is(true));
+        assertThat(instance.containsApplication(applicationId), is(true));
         
         String randomId = one(uuids);
-        assertThat(instance.contains(randomId), is(false));
+        assertThat(instance.containsApplication(randomId), is(false));
     }
     
 }

@@ -36,7 +36,7 @@ public interface ApplicationRepository
     
     Application getById(@NonEmpty String applicationId) throws TException;
     
-    boolean contains(@Required String applicationId) throws TException;
+    boolean containsApplication(@Required String applicationId) throws TException;
 
     List<Application> getApplicationsOwnedBy(@NonEmpty String userId) throws TException;
     
