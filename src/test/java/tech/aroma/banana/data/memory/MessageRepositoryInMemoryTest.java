@@ -212,6 +212,20 @@ public class MessageRepositoryInMemoryTest
         assertThat(result, is(empty()));
     }
     
+    @DontRepeat
+    @Test
+    public void testGetByTitleWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByTitle(applicationId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getByTitle("", title))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getByTitle(null, null))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+    
     @Test
     public void testGetCountByApplication() throws Exception
     {
