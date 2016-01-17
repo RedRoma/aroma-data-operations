@@ -17,12 +17,29 @@
 
 package tech.aroma.banana.data;
 
+import java.util.List;
+import org.apache.thrift.TException;
+import tech.aroma.banana.thrift.Organization;
+import tech.aroma.banana.thrift.User;
+import tech.sirwellington.alchemy.annotations.arguments.Required;
+
 
 /**
- *
+ * Answers questions about and performs actions to {@linkplain Organization Organizations}.
+ * 
  * @author SirWellington
  */
 public interface OrganizationRepository 
 {
-
+    void saveOrganization(@Required Organization organization) throws TException;
+                                                                                 
+    Organization getOrganization(@Required String organizationId) throws TException;
+    
+    void deleteOrganization(@Required String organizationId) throws TException;
+    
+    List<User> getOrganizationMemebers(@Required String organizationId) throws TException;
+    
+    List<Organization> searchByName(@Required String searchTerm) throws TException;
+    
+    List<User> getOrganizationOwners(@Required String organizationId) throws TException;
 }
