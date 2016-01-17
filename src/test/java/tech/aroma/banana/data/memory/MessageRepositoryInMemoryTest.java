@@ -16,6 +16,8 @@
 
 package tech.aroma.banana.data.memory;
 
+import java.util.List;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +26,12 @@ import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -58,12 +62,23 @@ public class MessageRepositoryInMemoryTest
     
     private MessageRepositoryInMemory instance;
     
+    @GenerateList(Message.class)
+    private List<Message> messages;
+    
     @Before
     public void setUp()
     {
         messageId = message.messageId;
         
         instance = new MessageRepositoryInMemory();
+    }
+    
+    private void saveMessages(List<Message> messages) throws TException
+    {
+        for(Message message : messages)
+        {
+            instance.saveMessage(message);
+        }
     }
 
     @Test
@@ -123,6 +138,19 @@ public class MessageRepositoryInMemoryTest
     @Test
     public void testGetByHostname() throws Exception
     {
+        messages.forEach(msg -> msg.setHostname(hostname));
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByHostname(hostname);
+        assertThat(result, is(messages));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetByHostnameWhenEmpty() throws Exception
+    {
+        List<Message> result = instance.getByHostname(hostname);
+        assertThat(result, is(empty()));
     }
 
     @Test
