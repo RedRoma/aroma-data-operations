@@ -138,6 +138,9 @@ public class InboxRepositoryInMemoryTest
     {
         instance.saveMessageForUser(message, user);
         
+        instance.deleteMessageForUser(userId, messageId);
+        
+        assertThat(instance.containsMessageInInbox(userId, message), is(false));
     }
 
     @DontRepeat
@@ -150,6 +153,7 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testDeleteAllMessagesForUser() throws Exception
     {
+        
     }
 
     @Test
