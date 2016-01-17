@@ -147,7 +147,25 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testDeleteMessageForUserWhenNoneExist() throws Exception
     {
-        instance.deleteMessageForUser(userId, message.messageId);
+        instance.deleteMessageForUser(userId, messageId);
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteMessageForUserWithBadArgs() throws Exception
+    {
+        
+        assertThrows(() -> instance.deleteMessageForUser("", messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessageForUser(userId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessageForUser(null, messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessageForUser(userId, null))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
