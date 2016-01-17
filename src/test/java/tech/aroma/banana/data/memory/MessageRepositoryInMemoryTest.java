@@ -197,6 +197,12 @@ public class MessageRepositoryInMemoryTest
     @Test
     public void testGetByTitle() throws Exception
     {
+        messages.forEach(msg -> msg.setTitle(title));
+        messages.forEach(msg -> msg.setApplicationId(applicationId));
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByTitle(applicationId, title);
+        assertThat(result, is(messages));
     }
 
     @Test
