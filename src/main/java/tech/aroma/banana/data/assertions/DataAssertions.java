@@ -52,7 +52,7 @@ public final class DataAssertions
             checkThat(app)
                 .is(notNull());
             
-            checkThat(app.id, app.name)
+            checkThat(app.applicationId, app.name)
                 .are(nonEmptyString());
         };
     }
