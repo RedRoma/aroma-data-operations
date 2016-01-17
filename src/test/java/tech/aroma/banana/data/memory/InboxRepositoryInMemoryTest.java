@@ -153,7 +153,11 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testDeleteAllMessagesForUser() throws Exception
     {
+        saveMessages(messages);
+        assertThat(instance.countInboxForUser(userId), is(messages.size()));
         
+        instance.deleteAllMessagesForUser(userId);
+        assertThat(instance.countInboxForUser(userId), is(0));
     }
 
     @DontRepeat
