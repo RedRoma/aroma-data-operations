@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
+import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 
 /**
@@ -40,6 +41,7 @@ public final class InMemoryDataProvidersModule extends AbstractModule
     {
         bind(ApplicationRepository.class).to(ApplicationRepositoryInMemory.class).in(Singleton.class);
         bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class).in(Singleton.class);
+        bind(InboxRepository.class).to(InboxRepositoryInMemory.class).in(Singleton.class);
         bind(MessageRepository.class).to(MessageRepositoryInMemory.class).in(Singleton.class);
     }
 

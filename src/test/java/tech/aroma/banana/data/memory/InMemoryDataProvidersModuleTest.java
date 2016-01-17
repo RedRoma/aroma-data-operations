@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
+import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
@@ -58,6 +59,9 @@ public class InMemoryDataProvidersModuleTest
         
         MessageRepository messageRepo = injector.getInstance(MessageRepository.class);
         assertThat(messageRepo, notNullValue());
+        
+        InboxRepository inboxRepo = injector.getInstance(InboxRepository.class);
+        assertThat(inboxRepo, notNullValue());
     }
 
 }
