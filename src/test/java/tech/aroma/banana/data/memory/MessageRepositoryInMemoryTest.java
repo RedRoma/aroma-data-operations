@@ -152,6 +152,17 @@ public class MessageRepositoryInMemoryTest
         List<Message> result = instance.getByHostname(hostname);
         assertThat(result, is(empty()));
     }
+    
+    @DontRepeat
+    @Test
+    public void testGetByHostnameWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByHostname(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getByHostname(""))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
 
     @Test
     public void testGetByApplication() throws Exception
