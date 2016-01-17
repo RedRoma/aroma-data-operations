@@ -55,6 +55,7 @@ public class InboxRepositoryInMemoryTest
     
     @GeneratePojo
     private Message message;
+    private String messageId;
     
     @GenerateList(Message.class)
     private List<Message> messages;
@@ -67,6 +68,7 @@ public class InboxRepositoryInMemoryTest
         user = new User()
             .setUserId(userId)
             .setName(nameOfUser);
+        messageId = message.messageId;
         
         instance = new InboxRepositoryInMemory();
     }
@@ -134,6 +136,15 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
+        instance.saveMessageForUser(message, user);
+        
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteMessageForUserWhenNoneExist() throws Exception
+    {
+        instance.deleteMessageForUser(userId, message.messageId);
     }
 
     @Test
@@ -144,6 +155,17 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testCountInboxForUser() throws Exception
     {
+    }
+
+    @Test
+    public void testContainsMessageInInbox() throws Exception
+    {
+        assertThat(instance.containsMessageInInbox(userId, message), is(false));
+        
+        instance.saveMessageForUser(message, user);
+        
+        assertThat(instance.containsMessageInInbox(userId, message), is(true));
+        
     }
 
 }
