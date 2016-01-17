@@ -41,4 +41,6 @@ public interface InboxRepository
     
     void deleteAllMessagesForUser(@Required String userId) throws TException;
     
+    int countInboxForUser(@Required String userId) throws TException;
+    
 }
