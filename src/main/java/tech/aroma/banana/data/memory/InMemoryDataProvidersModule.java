@@ -19,6 +19,7 @@ package tech.aroma.banana.data.memory;
 
 
 import com.google.inject.AbstractModule;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
@@ -29,15 +30,15 @@ import tech.aroma.banana.data.FollowerRepository;
  * 
  * @author SirWellington
  */
-public final class DataProvidersInMemory extends AbstractModule
+public final class InMemoryDataProvidersModule extends AbstractModule
 {
-    private final static Logger LOG = LoggerFactory.getLogger(DataProvidersInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(InMemoryDataProvidersModule.class);
 
     @Override
     protected void configure()
     {
-        bind(ApplicationRepository.class).to(ApplicationRepositoryInMemory.class);
-        bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class);
+        bind(ApplicationRepository.class).to(ApplicationRepositoryInMemory.class).in(Singleton.class);
+        bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class).in(Singleton.class);
     }
 
 }
