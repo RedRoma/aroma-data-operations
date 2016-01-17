@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
@@ -32,6 +33,8 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
 /**
@@ -45,6 +48,9 @@ public class DataAssertionsTest
     
     @GeneratePojo
     private Application application;
+    
+    @GeneratePojo
+    private Message message;
     
     @GeneratePojo
     private User user;
@@ -103,5 +109,34 @@ public class DataAssertionsTest
         assertThat(DataAssertions.isNullOrEmpty(""), is(true));
         assertThat(DataAssertions.isNullOrEmpty(null), is(true));
     }
+
+    @Test
+    public void testValidMessage()
+    {
+        AlchemyAssertion<Message> assertion = DataAssertions.validMessage();
+        assertThat(assertion, notNullValue());
+        
+        assertion.check(message);
+    }
     
+    @DontRepeat
+    @Test
+    public void testValidMessageWithBadMessages()
+    {
+        AlchemyAssertion<Message> assertion = DataAssertions.validMessage();
+
+        assertThrows(() -> assertion.check(null))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        Message emptyMessage  = new Message();
+        assertThrows(() -> assertion.check(emptyMessage))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        Message messageWithoutTitle = emptyMessage.setMessageId(one(uuids));
+        assertThrows(() -> assertion.check(messageWithoutTitle))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        
+    }
+
 }

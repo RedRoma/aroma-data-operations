@@ -21,6 +21,7 @@ package tech.aroma.banana.data.assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
@@ -55,6 +56,22 @@ public final class DataAssertions
             
             checkThat(app.applicationId, app.name)
                 .are(nonEmptyString());
+        };
+    }
+    
+    public static AlchemyAssertion<Message> validMessage()
+    {
+        return message ->
+        {
+            checkThat(message).is(notNull());
+            
+            checkThat(message.messageId)
+                .usingMessage("missing messageID")
+                .is(nonEmptyString());
+            
+            checkThat(message.title)
+                .usingMessage("message missing Title")
+                .is(nonEmptyString());
         };
     }
     
