@@ -213,6 +213,18 @@ public class InboxRepositoryInMemoryTest
         assertThat(result, is(0));
     }
 
+    @DontRepeat
+    @Test
+    public void testCountInboxForUserWithBadArgs() throws Exception
+    {
+        
+        assertThrows(() -> instance.countInboxForUser(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.countInboxForUser(null))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+
     @Test
     public void testContainsMessageInInbox() throws Exception
     {
