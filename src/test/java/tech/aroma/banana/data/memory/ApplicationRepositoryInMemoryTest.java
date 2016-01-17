@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
@@ -51,7 +52,7 @@ import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThr
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class AppplicationRepositoryInMemoryTest
+public class ApplicationRepositoryInMemoryTest
 {
     
     @GeneratePojo
@@ -62,7 +63,7 @@ public class AppplicationRepositoryInMemoryTest
     
     private String applicationId;
     
-    private AppplicationRepositoryInMemory instance;
+    private ApplicationRepositoryInMemory instance;
     
     @GenerateString
     private String orgId;
@@ -72,7 +73,7 @@ public class AppplicationRepositoryInMemoryTest
     {
         applicationId = application.applicationId;
         
-        instance = new AppplicationRepositoryInMemory();
+        instance = new ApplicationRepositoryInMemory();
     }
     
     private void saveApplications(List<Application> applications) throws TException
@@ -116,6 +117,14 @@ public class AppplicationRepositoryInMemoryTest
         instance.deleteApplication(applicationId);
         
         assertThat(instance.contains(applicationId), is(false));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testDeleteApplicationWhenIDDoesNotExists() throws Exception
+    {
+        assertThrows(() -> instance.deleteApplication(applicationId))
+            .isInstanceOf(ApplicationDoesNotExistException.class);
     }
     
     @Test
@@ -181,8 +190,6 @@ public class AppplicationRepositoryInMemoryTest
         int length = one(integers(100, 200));
         String name = one(alphabeticString(length));
         String term = name.substring(length / 2);
-        
-        instance.deleteApplication(applicationId);
         
         application.setName(name);
         instance.saveApplication(applicationId, application);

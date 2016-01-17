@@ -47,17 +47,23 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.n
  *
  * @author SirWellington
  */
-final class AppplicationRepositoryInMemory implements ApplicationRepository
+final class ApplicationRepositoryInMemory implements ApplicationRepository
 {
     
-    private final static Logger LOG = LoggerFactory.getLogger(AppplicationRepositoryInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ApplicationRepositoryInMemory.class);
     
     private final Map<String, Application> mainTable = Maps.create();
     private final Map<String, Set<Application>> applicationsByOrg = Maps.create();
-    private final Map<String, Application> recents = ExpiringMap.builder()
+    private final ExpiringMap<String, Application> recents = ExpiringMap.builder()
         .expiration(10, TimeUnit.MINUTES)
         .expirationPolicy(ExpirationPolicy.ACCESSED)
         .build();
+    
+    ApplicationRepositoryInMemory()
+    {
+        
+    }
+    
     
     @Override
     public void saveApplication(String applicationId, Application application) throws TException
@@ -98,9 +104,6 @@ final class AppplicationRepositoryInMemory implements ApplicationRepository
         recents.remove(applicationId);
     }
     
-    public AppplicationRepositoryInMemory()
-    {
-    }
     
     @Override
     public Application getById(String applicationId) throws TException
