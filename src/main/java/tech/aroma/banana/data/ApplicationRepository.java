@@ -17,6 +17,13 @@
 
 package tech.aroma.banana.data;
 
+import java.util.List;
+import org.apache.thrift.TException;
+import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.User;
+import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
+import tech.sirwellington.alchemy.annotations.arguments.Required;
+
 
 /**
  *
@@ -24,5 +31,20 @@ package tech.aroma.banana.data;
  */
 public interface ApplicationRepository 
 {
+    void saveApplication(@NonEmpty String applicationId, @Required Application application) throws TException;
+    
+    void deleteApplication(@NonEmpty String applicationId) throws TException;
+    
+    Application getById(@NonEmpty String applicationId) throws TException;
 
+    List<Application> getApplicationsOwnedBy(@NonEmpty String userId) throws TException;
+    
+    List<Application> getApplicationsByOrg(@NonEmpty String orgId) throws TException;
+    
+    List<Application> searchByName(@NonEmpty String searchTerm) throws TException;
+    
+    List<Application> getRecentlyCreated() throws TException;
+    
+    List<User> getFollowers() throws TException;
+    
 }
