@@ -22,7 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
@@ -30,6 +32,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
 
 /**
@@ -70,8 +73,24 @@ public class InboxRepositoryInMemoryTest
     {
         instance.saveMessageForUser(message, user);
         
-        List<Message> messages = instance.getMessagesForUser(userId);
-        assertThat(messages, contains(message));
+        List<Message> result = instance.getMessagesForUser(userId);
+        assertThat(result, contains(message));
+    }
+    
+    @DontRepeat
+    public void testSaveMessageForUserWithBadArguments() throws Exception
+    {
+        assertThrows(() -> instance.saveMessageForUser(message, null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.saveMessageForUser(null, user))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.saveMessageForUser(message, new User()))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.saveMessageForUser(new Message(), user))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
