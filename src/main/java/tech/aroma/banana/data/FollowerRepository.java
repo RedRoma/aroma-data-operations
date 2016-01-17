@@ -35,6 +35,8 @@ public interface FollowerRepository
     
     void deleteFollowing(@Required String userId, @Required String applicationId) throws TException;
     
+    boolean followingExists(@Required String userId, @Required String applicationId) throws TException;
+    
     List<Application> getApplicationsFollowedBy(@Required String userId) throws TException;
     
     List<User> getApplicationFollowers(@Required String applicationId) throws TException;

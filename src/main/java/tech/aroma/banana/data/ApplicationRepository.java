@@ -35,6 +35,8 @@ public interface ApplicationRepository
     void deleteApplication(@NonEmpty String applicationId) throws TException;
     
     Application getById(@NonEmpty String applicationId) throws TException;
+    
+    boolean contains(@Required String applicationId) throws TException;
 
     List<Application> getApplicationsOwnedBy(@NonEmpty String userId) throws TException;
     
