@@ -18,10 +18,11 @@
 package tech.aroma.banana.data;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
-import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
@@ -35,7 +36,15 @@ public interface InboxRepository
 {
     void saveMessageForUser(@Required Message message, @Required User user) throws TException;
 
-    List<Message> getMessagesForUser(@Required String userId, @Optional String applicationId) throws TException;
+    List<Message> getMessagesForUser(@Required String userId) throws TException;
+    
+    default List<Message> getMessagesForUser(@Required String userId, @Required String applicationId) throws TException
+    {
+        return getMessagesForUser(userId)
+            .stream()
+            .filter(msg -> Objects.equals(msg.applicationId, applicationId))
+            .collect(Collectors.toList());
+    }
 
     void deleteMessageForUser(@Required String userId, @Required String messageId) throws TException;
     
