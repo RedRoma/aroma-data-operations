@@ -193,10 +193,13 @@ final class MessageRepositoryInMemory implements MessageRepository
             .throwing(InvalidArgumentException.class)
             .are(nonEmptyString());
         
+        Predicate<Message> matchesApplicationId = msg -> Objects.equals(msg.applicationId, applicationId);
+        
         return messagesByTitle.getOrDefault(title, Lists.emptyList())
             .stream()
             .map(id -> messages.get(id))
             .filter(Objects::nonNull)
+            .filter(matchesApplicationId)
             .collect(Collectors.toList());
     }
 
