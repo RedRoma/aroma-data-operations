@@ -203,6 +203,26 @@ public class MessageRepositoryInMemoryTest
         List<Message> result = instance.getByTitle(applicationId, title);
         assertThat(result, is(messages));
     }
+    
+    @Test
+    public void testGetByTitleWhenApplicationIdDoesNotMatch() throws Exception
+    {
+        messages.forEach(msg -> msg.setTitle(title));
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByTitle(applicationId, title);
+        assertThat(result, is(empty()));
+    }
+    
+    @Test
+    public void testGetByTitleWhenTitleDoesNotMatch() throws Exception
+    {
+        messages.forEach(msg -> msg.setApplicationId(applicationId));
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByTitle(applicationId, title);
+        assertThat(result, is(empty()));
+    }
 
     @DontRepeat
     @Test
