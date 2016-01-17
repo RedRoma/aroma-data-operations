@@ -106,6 +106,15 @@
             <version>1.6-SNAPSHOT</version>
         </dependency>
 
+
+        <!--=======================-->
+        <!--GUICE-->
+        <!--=======================-->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
         <!--=======================-->
         <!--CASSANDRA-->
         <!--=======================-->
@@ -130,7 +139,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-  
+      
     </dependencies>
 
     <build>
