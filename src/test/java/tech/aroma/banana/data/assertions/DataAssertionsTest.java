@@ -25,8 +25,10 @@ import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -42,6 +44,9 @@ public class DataAssertionsTest
 
     @GeneratePojo
     private Application application;
+    
+    @GenerateString
+    private String string;
     
     @Before
     public void setUp()
@@ -70,6 +75,15 @@ public class DataAssertionsTest
         Application empty = new Application();
         assertThrows(() -> assertion.check(empty))
             .isInstanceOf(FailedAssertionException.class);
+    }
+
+    @Test
+    public void testIsNullOrEmpty()
+    {
+        assertThat(DataAssertions.isNullOrEmpty(string), is(false));
+        assertThat(DataAssertions.isNullOrEmpty(""), is(true));
+        assertThat(DataAssertions.isNullOrEmpty(null), is(true));
+        
     }
     
 

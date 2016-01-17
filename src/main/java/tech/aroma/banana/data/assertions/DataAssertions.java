@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import tech.aroma.banana.thrift.Application;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
+import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -56,4 +57,9 @@ public final class DataAssertions
         };
     }
 
+    public static boolean isNullOrEmpty(@Optional String string)
+    {
+        return string == null || string.isEmpty();
+    }
+    
 }
