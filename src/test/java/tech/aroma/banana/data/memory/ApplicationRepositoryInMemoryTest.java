@@ -58,7 +58,7 @@ public class ApplicationRepositoryInMemoryTest
     @GeneratePojo
     private Application application;
     
-    @GenerateList(value = Application.class, size = 5)
+    @GenerateList(Application.class)
     private List<Application> applications;
     
     private String applicationId;
