@@ -88,6 +88,11 @@
 
         <dependency>
             <groupId>tech.sirwellington.alchemy</groupId>
+            <artifactId>alchemy-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>tech.sirwellington.alchemy</groupId>
             <artifactId>alchemy-thrift</artifactId>
         </dependency>
 
@@ -108,6 +113,15 @@
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
         </dependency>
+        
+        <!--=======================-->
+        <!--EXPIRING MAP-->
+        <!--=======================-->
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>expiringmap</artifactId>
+            <version>0.5.1</version>
+        </dependency>
 
         <!--=======================-->
         <!--LOGGING-->
@@ -116,7 +130,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-      
+  
     </dependencies>
 
     <build>
