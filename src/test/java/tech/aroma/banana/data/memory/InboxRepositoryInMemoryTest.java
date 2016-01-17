@@ -155,6 +155,18 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testCountInboxForUser() throws Exception
     {
+        saveMessages(messages);
+        
+        int result = instance.countInboxForUser(userId);
+        assertThat(result, is(messages.size()));
+    }
+
+    @DontRepeat
+    @Test
+    public void testCountInboxForUserWhenEmpty() throws Exception
+    {
+        int result = instance.countInboxForUser(userId);
+        assertThat(result, is(0));
     }
 
     @Test
