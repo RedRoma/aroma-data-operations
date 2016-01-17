@@ -42,7 +42,7 @@ public interface MessageRepository
 
     void deleteMessage(@Required String messageId) throws TException;
     
-    boolean messageExists(@Required String messageId) throws TException;
+    boolean containsMessage(@Required String messageId) throws TException;
 
     List<Message> getByHostname(@Required String hostname) throws TException;
 
