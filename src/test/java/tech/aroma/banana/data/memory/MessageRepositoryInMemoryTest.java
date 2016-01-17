@@ -191,7 +191,6 @@ public class MessageRepositoryInMemoryTest
         
         assertThrows(() -> instance.getByApplication(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
     }
 
     @Test
@@ -205,6 +204,13 @@ public class MessageRepositoryInMemoryTest
         assertThat(result, is(messages));
     }
 
+    @DontRepeat
+    public void testGetByTitleWhenEmpty() throws Exception
+    {
+        List<Message> result = instance.getByTitle(applicationId, title);
+        assertThat(result, is(empty()));
+    }
+    
     @Test
     public void testGetCountByApplication() throws Exception
     {
