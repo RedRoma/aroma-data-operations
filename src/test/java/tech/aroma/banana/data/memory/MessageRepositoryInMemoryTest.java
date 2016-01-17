@@ -229,6 +229,11 @@ public class MessageRepositoryInMemoryTest
     @Test
     public void testGetCountByApplication() throws Exception
     {
+        messages.forEach(msg -> msg.setApplicationId(applicationId));
+        saveMessages(messages);
+        long result = instance.getCountByApplication(applicationId);
+        long expected = messages.size();
+        assertThat(result, is(expected));
     }
     
     @DontRepeat
