@@ -26,7 +26,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
 /**
- * The Inbox repository is reponsible for storage and retrieval of messags that are stored
+ * The Inbox repository is responsible for storage and retrieval of messages that are stored
  * for an Applications followers in their own provide "Inbox".
  * 
  * @author SirWellington
