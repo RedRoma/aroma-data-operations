@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
+import tech.aroma.banana.data.MessageRepository;
 
 /**
  * Provides Guice bindings for the Banana Data Repositories that are in-memory.
@@ -39,6 +40,7 @@ public final class InMemoryDataProvidersModule extends AbstractModule
     {
         bind(ApplicationRepository.class).to(ApplicationRepositoryInMemory.class).in(Singleton.class);
         bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class).in(Singleton.class);
+        bind(MessageRepository.class).to(MessageRepositoryInMemory.class).in(Singleton.class);
     }
 
 }
