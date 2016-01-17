@@ -205,6 +205,7 @@ public class MessageRepositoryInMemoryTest
     }
 
     @DontRepeat
+    @Test
     public void testGetByTitleWhenEmpty() throws Exception
     {
         List<Message> result = instance.getByTitle(applicationId, title);
