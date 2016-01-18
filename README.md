@@ -3,7 +3,7 @@ Banana Service Data Operations
 
 [<img src="https://raw.githubusercontent.com/AromaTech/banana/develop/Graphics/Logo.png" width="300">](https://github.com/AromaTech/banana)
 
-[![Build Status](http://jenkins.sirwellington.tech/view/Banana/job/Banana%20Java%20Client/badge/icon)](http://jenkins.sirwellington.tech/view/Banana/job/Banana%20Java%20Client/)
+[![Build Status](http://jenkins.sirwellington.tech/job/Banana%20Data%20Operations/badge/icon)](http://jenkins.sirwellington.tech/job/Banana%20Data%20Operations/)
 
 Defines the Data Interfaces and Operations used by the various Banana Services.
 
