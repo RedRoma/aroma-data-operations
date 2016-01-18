@@ -176,4 +176,24 @@ public class UserRepositoryInMemoryTest
     {
     }
 
+    @Test
+    public void testFindByGithubProfileWheNotExists() throws Exception
+    {
+        String profile = user.githubProfile;
+        
+        assertThrows(() -> instance.findByGithubProfile(profile))
+            .isInstanceOf(UserDoesNotExistException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testFindByGithubProfileWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.findByGithubProfile(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.findByGithubProfile(null))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+
 }
