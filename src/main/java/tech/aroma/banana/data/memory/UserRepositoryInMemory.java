@@ -56,6 +56,8 @@ final class UserRepositoryInMemory implements UserRepository
         String email = user.email;
         String githubProfile = user.githubProfile;
         
+        users.put(userId, user);
+        
         if (!isNullOrEmpty(email))
         {
             usersByEmail.put(email, userId);
@@ -85,9 +87,23 @@ final class UserRepositoryInMemory implements UserRepository
     {
         checkThat(userId)
             .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+            .is(nonEmptyString())
+            .throwing(UserDoesNotExistException.class)
+            .is(keyInMap(users));
         
-        users.remove(userId);
+        User removedUser = users.remove(userId);
+        
+        String email = removedUser.email;
+        if (!isNullOrEmpty(email))
+        {
+            this.usersByEmail.remove(email);
+        }
+        
+        String githubProfile = removedUser.githubProfile;
+        if(!isNullOrEmpty(githubProfile))
+        {
+            this.usersByGithubProfile.remove(githubProfile);
+        }
     }
 
     @Override

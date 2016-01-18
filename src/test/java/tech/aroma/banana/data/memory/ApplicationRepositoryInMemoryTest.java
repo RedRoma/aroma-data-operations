@@ -145,7 +145,7 @@ public class ApplicationRepositoryInMemoryTest
     {
         User user = one(pojos(User.class));
         
-        applications.forEach(app -> app.owners.add(user));
+        applications.forEach(app -> app.owners.add(user.userId));
         
         saveApplications(applications);        
         
