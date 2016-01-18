@@ -25,6 +25,7 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
+import tech.aroma.banana.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
 import static org.hamcrest.Matchers.*;
@@ -62,6 +63,9 @@ public class InMemoryDataProvidersModuleTest
         
         InboxRepository inboxRepo = injector.getInstance(InboxRepository.class);
         assertThat(inboxRepo, notNullValue());
-    }
+        
+        UserRepository userRepo = injector.getInstance(UserRepository.class);
+        assertThat(userRepo, notNullValue());
+     }
 
 }

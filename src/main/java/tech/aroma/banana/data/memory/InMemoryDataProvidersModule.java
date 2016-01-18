@@ -26,6 +26,7 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
+import tech.aroma.banana.data.UserRepository;
 
 /**
  * Provides Guice bindings for the Banana Data Repositories that are in-memory.
@@ -43,6 +44,7 @@ public final class InMemoryDataProvidersModule extends AbstractModule
         bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class).in(Singleton.class);
         bind(InboxRepository.class).to(InboxRepositoryInMemory.class).in(Singleton.class);
         bind(MessageRepository.class).to(MessageRepositoryInMemory.class).in(Singleton.class);
+        bind(UserRepository.class).to(UserRepositoryInMemory.class).in(Singleton.class);
     }
 
 }
