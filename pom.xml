@@ -114,6 +114,12 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
+        
+        <!--Decorater Pattern for Guice-->
+        <dependency>
+            <groupId>tech.sirwellington.decorice</groupId>
+            <artifactId>decorice</artifactId>
+        </dependency>
 
         <!--=======================-->
         <!--CASSANDRA-->
@@ -139,7 +145,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-      
+    
     </dependencies>
 
     <build>
