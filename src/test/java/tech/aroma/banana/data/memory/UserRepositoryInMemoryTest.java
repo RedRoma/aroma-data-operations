@@ -174,6 +174,11 @@ public class UserRepositoryInMemoryTest
     @Test
     public void testFindByGithubProfile() throws Exception
     {
+        instance.saveUser(user);
+        String profile = user.githubProfile;
+        
+        User result = instance.findByGithubProfile(profile);
+        assertThat(result, is(user));
     }
 
     @Test
