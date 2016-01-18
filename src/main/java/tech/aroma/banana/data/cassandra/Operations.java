@@ -47,7 +47,7 @@ final class Operations
      * @return The Time it took for the operation to complete, in ms.
      * @throws Exception 
      */
-    static long measureOperation(@Required Callable<Void> operation) throws Exception
+    static long measureOperation(@Required Callable<?> operation) throws Exception
     {
         checkThat(operation).is(notNull());
         
@@ -58,5 +58,22 @@ final class Operations
         long end = System.currentTimeMillis();
         
         return end - start;
+    }
+    
+    static <T> T logLatency(@Required Callable<T> operation, String operationName) throws Exception
+    {
+        checkThat(operation).is(notNull());
+        
+        long start = System.currentTimeMillis();
+        
+        try
+        {
+            return operation.call();
+        }
+        finally
+        {
+            long end = System.currentTimeMillis();
+            LOG.debug("{} Operation took {} ms", operationName, end - start);
+        }
     }
 }

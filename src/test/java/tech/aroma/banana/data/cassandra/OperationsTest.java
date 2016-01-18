@@ -22,10 +22,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateInteger;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.longs;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -39,6 +44,12 @@ import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThr
 public class OperationsTest 
 {
 
+    @GenerateInteger
+    private int value;
+    
+    @GenerateString
+    private String operationName;
+    
     @Before
     public void setUp()
     {
@@ -72,6 +83,16 @@ public class OperationsTest
         assertThrows(() -> Operations.measureOperation(operation))
             .isInstanceOf(TException.class);
         
+    }
+
+    @Test
+    public void testLogLatency() throws Exception
+    {
+        Callable<Integer> operation = mock(Callable.class);
+        when(operation.call()).thenReturn(value);
+        
+        Integer result = Operations.logLatency(operation, operationName);
+        assertThat(result, is(value));
     }
 
 }
