@@ -17,9 +17,12 @@
 package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,12 +40,20 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.UUID.fromString;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_DESCRIPTION;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.ORG_ID;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TIME_PROVISIONED;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
@@ -81,11 +92,14 @@ public class CassandraApplicationRepositoryTest
     @GenerateString(UUID)
     private String orgId;
     
+    private Row mockRow;
+    
     @Before
     public void setUp()
     {
         app.applicationId = appId;
         app.organizationId = orgId;
+        mockRow = mockRowFor(app);
         
         List<String> owners = listOf(uuids, 5);
         app.setOwners(toSet(owners));
@@ -143,6 +157,19 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testGetById() throws Exception
     {
+        ResultSet results = mock(ResultSet.class);
+        when(results.one()).thenReturn(mockRow);
+        when(session.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
+        Application result = instance.getById(appId);
+       
+        verify(session).execute(statementCaptor.capture());
+        
+        Statement statementMade = statementCaptor.getValue();
+        assertThat(statementMade, notNullValue());
+        
+        assertThat(result.applicationId, is(appId));
     }
 
     @Test
@@ -168,6 +195,28 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testGetRecentlyCreated() throws Exception
     {
+    }
+    
+    private Row mockRowFor(Application app)
+    {
+        Row row = mock(Row.class);
+        
+        when(row.getUUID(APP_ID))
+            .thenReturn(fromString(app.applicationId));
+        
+        when(row.getUUID(ORG_ID))
+            .thenReturn(fromString(app.organizationId));
+        
+        when(row.getString(APP_NAME))
+            .thenReturn(app.name);
+        
+        when(row.getString(APP_DESCRIPTION))
+            .thenReturn(app.applicationDescription);
+        
+        when(row.getTimestamp(TIME_PROVISIONED))
+            .thenReturn(new Date(app.timeOfProvisioning));
+        
+        return row;
     }
 
 }
