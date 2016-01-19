@@ -20,12 +20,16 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
+import java.util.Map;
+import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.maps.Maps;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -34,9 +38,12 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -56,12 +63,17 @@ public class CassandraApplicationRepositoryIT
 
     @GenerateList(Application.class)
     private List<Application> apps;
+    
+    private final Map<String,Application> appIdMap = Maps.createSynchronized();
 
     @GenerateString(UUID)
     private String appId;
     
     @GenerateString(UUID)
     private String orgId;
+    
+    @GenerateString(UUID)
+    private String ownerId;
     
     private List<String> owners;
     
@@ -77,7 +89,6 @@ public class CassandraApplicationRepositoryIT
         cluster = TestSessions.createTestCluster();
         queryBuilder = TestSessions.createQueryBuilder(cluster);
         session = TestSessions.createTestSession(cluster);
-        
     }
 
     @AfterClass
@@ -96,11 +107,23 @@ public class CassandraApplicationRepositoryIT
         
         app.setOwners(toSet((owners)));
         instance = new CassandraApplicationRepository(session, queryBuilder);
+        
+        
+        apps = apps.stream()
+            .map(app -> app.setOrganizationId(orgId))
+            .map(app -> app.setOwners(Sets.createFrom(ownerId)))
+            .map(app -> app.setApplicationId(one(uuids)))
+            .collect(toList());
+        
+        apps.forEach(app -> appIdMap.put(app.applicationId, app));
     }
     
     @After
-    public void cleanUp()
+    public void cleanUp() throws TException
     {
+        appIdMap.clear();
+        apps.clear();
+        
         try
         {
             instance.deleteApplication(appId);
@@ -109,7 +132,23 @@ public class CassandraApplicationRepositoryIT
         {
         }
     }
-
+    
+    private void saveApplication(List<Application> apps) throws TException
+    {
+        for (Application app : apps)
+        {
+            instance.saveApplication(app);
+        }
+    }
+    
+    private void deleteApps(List<Application> apps) throws TException
+    {
+        for (Application app : apps)
+        {
+            instance.deleteApplication(app.applicationId);
+        }
+    }
+    
     @Test
     public void testSaveApplication() throws Exception
     {
@@ -117,7 +156,7 @@ public class CassandraApplicationRepositoryIT
         
         Application result = instance.getById(appId);
         
-        assertResultMostlyMatches(result);
+        assertResultMostlyMatches(result, app);
     }
 
     @Test
@@ -145,7 +184,7 @@ public class CassandraApplicationRepositoryIT
         assertThat(instance.containsApplication(appId), is(true));
         Application result = instance.getById(appId);
         
-        assertResultMostlyMatches(result);
+        assertResultMostlyMatches(result, app);
     }
 
     @Test
@@ -174,6 +213,20 @@ public class CassandraApplicationRepositoryIT
     @Test
     public void testGetApplicationsOwnedBy() throws Exception
     {
+        saveApplication(apps);
+        
+        List<Application> results = instance.getApplicationsOwnedBy(ownerId);
+        
+        for(Application result : results)
+        {
+            String appId = result.applicationId;
+            assertThat(appId, isIn(appIdMap.keySet()));
+            
+            Application match = appIdMap.get(appId);
+            assertResultMostlyMatches(result, match);
+        }
+        
+        deleteApps(apps);
     }
 
     @Test
@@ -191,16 +244,16 @@ public class CassandraApplicationRepositoryIT
     {
     }
 
-    private void assertResultMostlyMatches(Application result)
+    private void assertResultMostlyMatches(Application result, Application expected)
     {
-        assertThat(result.applicationId, is(app.applicationId));
-        assertThat(result.name, is(app.name));
-        assertThat(result.organizationId, is(app.organizationId));
-        assertThat(result.applicationDescription, is(app.applicationDescription));
+        assertThat(result.applicationId, is(expected.applicationId));
+        assertThat(result.name, is(expected.name));
+        assertThat(result.organizationId, is(expected.organizationId));
+        assertThat(result.applicationDescription, is(expected.applicationDescription));
         
-        assertThat(result.owners, is(app.owners));
-        assertThat(result.timeOfProvisioning, is(app.timeOfProvisioning));
-        assertThat(result.tier, is(app.tier));
+        assertThat(result.owners, is(expected.owners));
+        assertThat(result.timeOfProvisioning, is(expected.timeOfProvisioning));
+        assertThat(result.tier, is(expected.tier));
     }
 
 }
