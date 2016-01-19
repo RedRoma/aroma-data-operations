@@ -35,7 +35,7 @@ class Tables
         static final String TABLE_NAME_RECENTLY_CREATED = "Banana.Applications_Recently_Created";
         
         static final String APP_ID = "app_id";
-        static final String NAME = "name";
+        static final String APP_NAME = "name";
         static final String ORG_ID = "organization_id";
         static final String ORG_NAME = "organization_name";
         static final String OWNERS = "owners";
