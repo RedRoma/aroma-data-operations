@@ -39,8 +39,10 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -230,8 +232,30 @@ public class CassandraApplicationRepositoryIT
     }
 
     @Test
+    public void testGetApplicationsOwnedByWheNone() throws Exception
+    {
+        List<Application> result = instance.getApplicationsOwnedBy(ownerId);
+        assertThat(result, notNullValue());
+        assertThat(result, is(empty()));
+    }
+
+    @Test
     public void testGetApplicationsByOrg() throws Exception
     {
+        saveApplication(apps);
+        
+         List<Application> results = instance.getApplicationsByOrg(orgId);
+        
+        for(Application result : results)
+        {
+            String appId = result.applicationId;
+            assertThat(appId, isIn(appIdMap.keySet()));
+            
+            Application match = appIdMap.get(appId);
+            assertResultMostlyMatches(result, match);
+        }
+        
+        deleteApps(apps);
     }
 
     @Test
