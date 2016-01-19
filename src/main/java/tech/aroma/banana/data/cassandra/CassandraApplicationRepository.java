@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -297,11 +298,15 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         BatchStatement batch = new BatchStatement();
         
+        UUID appId = UUID.fromString(app.applicationId);
+        UUID orgId = UUID.fromString(app.organizationId);
+        
+        
         Statement insertIntoMainTable = queryBuilder
             .insertInto(TABLE_NAME)
-            .value(APP_ID, app.applicationId)
+            .value(APP_ID, appId)
             .value(APP_NAME, app.name)
-            .value(ORG_ID, app.organizationId)
+            .value(ORG_ID, orgId)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIER, app.tier);
@@ -312,9 +317,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         Statement insertIntoRecentlyCreated = queryBuilder
             .insertInto(TABLE_NAME_RECENTLY_CREATED)
-            .value(APP_ID, app.applicationId)
+            .value(APP_ID, appId)
             .value(APP_NAME, app.name)
-            .value(ORG_ID, app.organizationId)
+            .value(ORG_ID, orgId)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIER, app.tier)
@@ -328,11 +333,13 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         BatchStatement batch = new BatchStatement();
         
+        UUID appId = UUID.fromString(app.applicationId);
+        
         Statement deleteFromMainTable = queryBuilder
             .delete()
             .all()
             .from(TABLE_NAME)
-            .where(eq(APP_ID, app.applicationId));
+            .where(eq(APP_ID, appId));
         
         batch.add(deleteFromMainTable);
         
@@ -340,7 +347,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .delete()
             .all()
             .from(TABLE_NAME_RECENTLY_CREATED)
-            .where(eq(APP_ID, app.applicationId));
+            .where(eq(APP_ID, appId));
         batch.add(deleteFromRecentsTable);
         
         return batch;
@@ -348,11 +355,13 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private Statement createQueryForAppWithId(String applicationId)
     {
+        UUID appId = UUID.fromString(applicationId);
+        
         return queryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
-            .where(eq(APP_ID, applicationId))
+            .where(eq(APP_ID, appId))
             .limit(2);
     }
     
@@ -401,11 +410,13 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private Statement createQueryToCheckIfAppIdExists(String applicationId)
     {
+        UUID appId = UUID.fromString(applicationId);
+        
         return queryBuilder
             .select()
             .countAll()
             .from(TABLE_NAME)
-            .where(eq(APP_ID, applicationId));
+            .where(eq(APP_ID, appId));
     }
     
     private void checkRowNotMissing(String applicationId, Row row) throws ApplicationDoesNotExistException
@@ -418,20 +429,24 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private Statement createQueryForAppsOwnedBy(String userId)
     {
+        UUID ownerId = UUID.fromString(userId);
+        
         return queryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
-            .where(contains(OWNERS, userId));
+            .where(contains(OWNERS, ownerId));
     }
     
     private Statement createQueryForAppsWithOrg(String orgId)
     {
+        UUID uuid = UUID.fromString(orgId);
+        
         return queryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
-            .where(eq(ORG_ID, orgId));
+            .where(eq(ORG_ID, uuid));
     }
     
     private void checkSearchTerm(String searchTerm) throws InvalidArgumentException
