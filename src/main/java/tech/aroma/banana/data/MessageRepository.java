@@ -44,7 +44,7 @@ public interface MessageRepository
         .setValue(1)
         .setUnit(TimeUnit.WEEKS);
         
-        this.saveMessage(message);
+        this.saveMessage(message, defaultTime);
     }
     
     void saveMessage(@Required Message message, @Required LengthOfTime lifetime) throws TException;
