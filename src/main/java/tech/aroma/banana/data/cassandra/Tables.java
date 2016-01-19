@@ -31,8 +31,8 @@ class Tables
     
     static class ApplicationsTable
     {
-        static final String TABLE_NAME = "Banana.Applications";
-        static final String TABLE_NAME_RECENTLY_CREATED = "Banana.Applications_Recently_Created";
+        static final String TABLE_NAME = "Applications";
+        static final String TABLE_NAME_RECENTLY_CREATED = "Applications_Recently_Created";
         
         static final String APP_ID = "app_id";
         static final String APP_NAME = "name";
@@ -46,7 +46,7 @@ class Tables
     
     static class MessagesTable
     {
-        static final String TABLE_NAME = "Banana.Messages";
+        static final String TABLE_NAME = "Messages";
         static final String MESSAGE_ID = "message_id";
         static final String APPLICATION_ID = "app_id";
         static final String TITLE = "title";
@@ -62,9 +62,9 @@ class Tables
 
     static class UsersTable
     {
-        static final String TABLE_NAME = "Banana.Users";
-        static final String TABLE_NAME_BY_EMAIL = "Banana.Users_By_Email";
-        static final String TABLE_NAME_BY_GITHUB_PROFILE = "Banana.Users_By_Github_Profile";
+        static final String TABLE_NAME = "Users";
+        static final String TABLE_NAME_BY_EMAIL = "Users_By_Email";
+        static final String TABLE_NAME_BY_GITHUB_PROFILE = "Users_By_Github_Profile";
         
         static final String USER_ID = "user_id";
         static final String FIRST_NAME = "first_name";
