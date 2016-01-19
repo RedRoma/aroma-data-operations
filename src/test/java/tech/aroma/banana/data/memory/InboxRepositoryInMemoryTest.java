@@ -31,11 +31,16 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
 /**
@@ -47,16 +52,23 @@ import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThr
 public class InboxRepositoryInMemoryTest 
 {
     
-    @GenerateString
+    @GenerateString(UUID)
     private String userId;
-    @GenerateString
+    
+    @GenerateString(ALPHABETIC)
     private String nameOfUser;
+    
     private User user;
     
     @GeneratePojo
     private Message message;
-    private String messageId;
     
+    @GenerateString(UUID)
+    private String appId;
+    
+    @GenerateString(UUID)
+    private String messageId;
+
     @GenerateList(Message.class)
     private List<Message> messages;
     
@@ -68,9 +80,15 @@ public class InboxRepositoryInMemoryTest
         user = new User()
             .setUserId(userId)
             .setName(nameOfUser);
-        messageId = message.messageId;
+        
+        message.messageId = messageId;
         
         instance = new InboxRepositoryInMemory();
+        
+        messages = messages.stream()
+            .map(m -> m.setApplicationId(appId))
+            .map(m -> m.setMessageId(one(uuids)))
+            .collect(toList());
     }
 
     private void saveMessages(List<Message> messages) throws TException
