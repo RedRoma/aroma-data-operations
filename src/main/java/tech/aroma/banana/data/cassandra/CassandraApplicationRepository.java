@@ -47,6 +47,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
+import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_DESCRIPTION;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.ORG_ID;
@@ -61,8 +62,6 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -310,14 +309,17 @@ final class CassandraApplicationRepository implements ApplicationRepository
         UUID appId = UUID.fromString(app.applicationId);
         UUID orgId = UUID.fromString(app.organizationId);
         Set<UUID> owners = Sets.nullToEmpty(app.owners)
-        .stream()
-        .m
+            .stream()
+            .map(UUID::fromString)
+            .collect(Collectors.toSet());
         
         Statement insertIntoMainTable = queryBuilder
             .insertInto(TABLE_NAME)
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
+            .value(APP_DESCRIPTION, app.applicationDescription)
             .value(ORG_ID, orgId)
+            .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIER, app.tier);
@@ -330,7 +332,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .insertInto(TABLE_NAME_RECENTLY_CREATED)
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
+            .value(APP_DESCRIPTION, app.applicationDescription)
             .value(ORG_ID, orgId)
+            .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIER, app.tier)
@@ -421,6 +425,8 @@ final class CassandraApplicationRepository implements ApplicationRepository
             app.setTier(Tier.valueOf(tier));
         }
         
+        app.setName(row.getString(APP_NAME))
+            .setApplicationDescription(row.getString(APP_DESCRIPTION));
         
         return app;
     }
