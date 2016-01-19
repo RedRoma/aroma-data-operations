@@ -20,12 +20,16 @@ package tech.aroma.banana.data.cassandra;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.sirwellington.alchemy.annotations.access.Internal;
+import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 /**
  *
  * @author SirWellington
  */
-class Tables 
+@Internal
+@NonInstantiable
+class Tables
 {
     private final static Logger LOG = LoggerFactory.getLogger(Tables.class);
     
