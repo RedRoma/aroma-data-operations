@@ -42,7 +42,6 @@ public final class CassandraDataModule extends AbstractModule
     protected void configure()
     {
         bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
-        
     }
 
     @Provides
