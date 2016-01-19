@@ -18,19 +18,35 @@ package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -49,6 +65,9 @@ public class CassandraApplicationRepositoryTest
     @Mock(answer = RETURNS_MOCKS)
     private Session session;
     
+    @Captor
+    private ArgumentCaptor<Statement> statementCaptor;
+    
     private QueryBuilder queryBuilder;
     
     private CassandraApplicationRepository instance;
@@ -59,10 +78,17 @@ public class CassandraApplicationRepositoryTest
     @GenerateString(UUID)
     private String appId;
     
+    @GenerateString(UUID)
+    private String orgId;
+    
     @Before
     public void setUp()
     {
         app.applicationId = appId;
+        app.organizationId = orgId;
+        
+        List<String> owners = listOf(uuids, 5);
+        app.setOwners(toSet(owners));
         
         queryBuilder = new QueryBuilder(cluster);
         
@@ -83,11 +109,35 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testSaveApplication() throws Exception
     {
+        instance.saveApplication(app);
+        verify(session).execute(statementCaptor.capture());
+        
+        Statement statementUsed = statementCaptor.getValue();
+        assertThat(statementUsed, notNullValue());
     }
-
+    
+    @Ignore
     @Test
     public void testDeleteApplication() throws Exception
     {
+        instance.saveApplication(app);
+        
+        when(session.execute(Mockito.any(Statement.class)));
+        
+        instance.deleteApplication(appId);
+    }
+    
+    @DontRepeat
+    @Test
+    public void testDeleteApplicationWithBadArgs() throws Exception
+    {
+        String empty = "";
+        assertThrows(() -> instance.deleteApplication(empty))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        String badId = one(alphabeticString());
+        assertThrows(() -> instance.deleteApplication(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
