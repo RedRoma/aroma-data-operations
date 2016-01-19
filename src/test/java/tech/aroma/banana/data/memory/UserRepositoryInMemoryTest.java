@@ -25,11 +25,13 @@ import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
 /**
@@ -44,6 +46,7 @@ public class UserRepositoryInMemoryTest
     @GeneratePojo
     private User user;
     
+    @GenerateString(UUID)
     private String userId;
 
     private UserRepositoryInMemory instance;
@@ -51,7 +54,7 @@ public class UserRepositoryInMemoryTest
     @Before
     public void setUp()
     {
-        userId = user.userId;
+        user.userId = userId;
         
         instance = new UserRepositoryInMemory();
     }
