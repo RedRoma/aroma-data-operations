@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
- 
 package tech.aroma.banana.data.cassandra;
-
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
@@ -27,22 +25,15 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 
 /**
  * Connection information to connect to a Cassandra Cluster for use in Integration testing.
- * 
+ *
  * @author SirWellington
  */
 @Internal
-class TestSessions 
+class TestSessions
 {
+
     private final static Logger LOG = LoggerFactory.getLogger(TestSessions.class);
 
-    
-    static Session createTestSession()
-    {
-        Cluster cluster = createTestCluster();
-        
-        return cluster.connect("Banana");
-    }
-    
     static Cluster createTestCluster()
     {
         return Cluster.builder()
@@ -51,10 +42,14 @@ class TestSessions
             .withCredentials("cassandra", "cassandra")
             .build();
     }
-    
-    static QueryBuilder returnTestQueryBuilder()
+
+    static Session createTestSession(Cluster cluster)
     {
-        Cluster cluster = createTestCluster();
+        return cluster.connect("Banana");
+    }
+
+    static QueryBuilder returnTestQueryBuilder(Cluster cluster)
+    {
         return new QueryBuilder(cluster);
     }
 }
