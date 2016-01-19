@@ -111,7 +111,7 @@ public class MessageRepositoryInMemoryTest
     {
         instance.saveMessage(message);
         
-        Message result = instance.getMessage(messageId);
+        Message result = instance.getMessage(applicationId, messageId);
         assertThat(result, is(message));
     }
     
@@ -119,8 +119,19 @@ public class MessageRepositoryInMemoryTest
     @Test
     public void testGetMessageWhenIdDoesNotExist() throws Exception
     {
-        assertThrows(() -> instance.getMessage(messageId))
+        assertThrows(() -> instance.getMessage(applicationId, messageId))
             .isInstanceOf(MessageDoesNotExistException.class);
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetMessageWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getMessage("", messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getMessage(applicationId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test

@@ -49,7 +49,7 @@ public interface MessageRepository
     
     void saveMessage(@Required Message message, @Required LengthOfTime lifetime) throws TException;
 
-    Message getMessage(@Required String messageId) throws TException;
+    Message getMessage(@Required String applicationId, @Required String messageId) throws TException;
 
     void deleteMessage(@Required String messageId) throws TException;
     

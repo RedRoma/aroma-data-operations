@@ -42,8 +42,6 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 
 /**
  *
@@ -101,10 +99,14 @@ final class MessageRepositoryInMemory implements MessageRepository
     }
 
     @Override
-    public Message getMessage(String messageId) throws TException
+    public Message getMessage(String applicationId, String messageId) throws TException
     {
-        checkMessageId(messageId);
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
         
+        checkMessageId(messageId);
+
         return messages.get(messageId);
     }
 
