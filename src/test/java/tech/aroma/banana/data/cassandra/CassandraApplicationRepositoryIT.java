@@ -32,7 +32,9 @@ import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
+import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
@@ -258,14 +260,19 @@ public class CassandraApplicationRepositoryIT
         deleteApps(apps);
     }
 
+    @DontRepeat
     @Test
     public void testSearchByName() throws Exception
     {
+        assertThrows(() -> instance.searchByName(app.name))
+            .isInstanceOf(OperationFailedException.class);
     }
 
     @Test
     public void testGetRecentlyCreated() throws Exception
     {
+        List<Application> result = instance.getRecentlyCreated();
+        assertThat(result, notNullValue());
     }
 
     private void assertResultMostlyMatches(Application result, Application expected)
