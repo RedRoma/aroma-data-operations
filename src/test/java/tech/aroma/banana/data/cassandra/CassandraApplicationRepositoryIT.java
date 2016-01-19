@@ -156,8 +156,19 @@ public class CassandraApplicationRepositoryIT
     }
 
     @Test
-    public void testContainsApplication() throws Exception
+    public void testContainsApplicationWhenExists() throws Exception
     {
+        instance.saveApplication(app);
+        
+        boolean result = instance.containsApplication(appId);
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void testContainsApplicationWhenNotExists() throws Exception
+    {
+        boolean result = instance.containsApplication(appId);
+        assertThat(result, is(false));
     }
 
     @Test
