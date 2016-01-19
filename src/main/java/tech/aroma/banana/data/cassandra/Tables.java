@@ -49,7 +49,8 @@ class Tables
     {
         static final String TABLE_NAME = "Messages";
         static final String MESSAGE_ID = "message_id";
-        static final String APPLICATION_ID = "app_id";
+        static final String APP_ID = "app_id";
+        static final String APP_NAME = "app_name";
         static final String TITLE = "title";
         static final String BODY = "body";
         static final String URGENCY = "urgency";
