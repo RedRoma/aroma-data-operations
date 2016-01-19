@@ -32,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -41,6 +42,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.UUID.fromString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -92,6 +94,9 @@ public class CassandraApplicationRepositoryTest
     
     @GenerateString(UUID)
     private String orgId;
+    
+    @GenerateString(UUID)
+    private String ownerId;
     
     private Row mockRow;
     
@@ -194,6 +199,19 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testGetApplicationsOwnedBy() throws Exception
     {
+        ResultSet results = mock(ResultSet.class);
+        List<Row> list = Lists.emptyList();
+        when(results.iterator())
+            .thenReturn(list.iterator());
+           
+        when(session.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
+        
+        List<Application> apps = instance.getApplicationsOwnedBy(ownerId);
+        assertThat(apps, notNullValue());
+        assertThat(apps, is(empty()));
+        
     }
 
     @Test
