@@ -70,58 +70,58 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class CassandraApplicationRepositoryTest 
+public class CassandraApplicationRepositoryTest
 {
 
-    @Mock(answer =RETURNS_MOCKS)
+    @Mock(answer = RETURNS_MOCKS)
     private Cluster cluster;
-    
+
     @Mock(answer = RETURNS_MOCKS)
     private Session session;
-    
+
     @Captor
     private ArgumentCaptor<Statement> statementCaptor;
-    
+
     private QueryBuilder queryBuilder;
-    
+
     private CassandraApplicationRepository instance;
-    
+
     @GeneratePojo
     private Application app;
-    
+
     @GenerateString(UUID)
     private String appId;
-    
+
     @GenerateString(UUID)
     private String orgId;
-    
+
     @GenerateString(UUID)
     private String ownerId;
-    
+
     private Row mockRow;
-    
+
     @Before
     public void setUp()
     {
         app.applicationId = appId;
         app.organizationId = orgId;
         mockRow = mockRowFor(app);
-        
+
         List<String> owners = listOf(uuids, 5);
         app.setOwners(toSet(owners));
-        
+
         queryBuilder = new QueryBuilder(cluster);
-        
+
         instance = new CassandraApplicationRepository(session, queryBuilder);
     }
-    
+
     @DontRepeat
     @Test
     public void testConstructor()
     {
         assertThrows(() -> new CassandraApplicationRepository(session, null))
             .isInstanceOf(IllegalArgumentException.class);
-        
+
         assertThrows(() -> new CassandraApplicationRepository(null, queryBuilder))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -131,22 +131,22 @@ public class CassandraApplicationRepositoryTest
     {
         instance.saveApplication(app);
         verify(session).execute(statementCaptor.capture());
-        
+
         Statement statementUsed = statementCaptor.getValue();
         assertThat(statementUsed, notNullValue());
     }
-    
+
     @Ignore
     @Test
     public void testDeleteApplication() throws Exception
     {
         instance.saveApplication(app);
-        
+
         when(session.execute(Mockito.any(Statement.class)));
-        
+
         instance.deleteApplication(appId);
     }
-    
+
     @DontRepeat
     @Test
     public void testDeleteApplicationWithBadArgs() throws Exception
@@ -154,7 +154,7 @@ public class CassandraApplicationRepositoryTest
         String empty = "";
         assertThrows(() -> instance.deleteApplication(empty))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         String badId = one(alphabeticString());
         assertThrows(() -> instance.deleteApplication(badId))
             .isInstanceOf(InvalidArgumentException.class);
@@ -167,14 +167,14 @@ public class CassandraApplicationRepositoryTest
         when(results.one()).thenReturn(mockRow);
         when(session.execute(Mockito.any(Statement.class)))
             .thenReturn(results);
-        
+
         Application result = instance.getById(appId);
-       
+
         verify(session).execute(statementCaptor.capture());
-        
+
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
-        
+
         assertThat(result.applicationId, is(appId));
     }
 
@@ -184,13 +184,13 @@ public class CassandraApplicationRepositoryTest
         ResultSet results = mock(ResultSet.class);
         when(session.execute(Mockito.any(Statement.class)))
             .thenReturn(results);
-       
+
         Row fakeRow = mock(Row.class);
         when(results.one()).thenReturn(fakeRow);
-        
+
         long count = one(longs(0, 2));
         when(fakeRow.getLong(0)).thenReturn(count);
-        
+
         boolean result = instance.containsApplication(appId);
         boolean expected = count > 0L;
         assertThat(result, is(expected));
@@ -199,56 +199,69 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testGetApplicationsOwnedBy() throws Exception
     {
-        ResultSet results = mock(ResultSet.class);
-        List<Row> list = Lists.emptyList();
-        when(results.iterator())
-            .thenReturn(list.iterator());
-           
-        when(session.execute(Mockito.any(Statement.class)))
-            .thenReturn(results);
-        
-        
+        setupWithEmptyResults();
+
         List<Application> apps = instance.getApplicationsOwnedBy(ownerId);
         assertThat(apps, notNullValue());
         assertThat(apps, is(empty()));
-        
+
     }
 
     @Test
     public void testGetApplicationsByOrg() throws Exception
     {
+        setupWithEmptyResults();
+
+        List<Application> apps = instance.getApplicationsByOrg(orgId);
+        assertThat(apps, notNullValue());
+        assertThat(apps, is(empty()));
     }
 
     @Test
     public void testSearchByName() throws Exception
     {
+        setupWithEmptyResults();
+
+        List<Application> apps = instance.getApplicationsByOrg(orgId);
+        assertThat(apps, notNullValue());
+        assertThat(apps, is(empty()));
     }
 
     @Test
     public void testGetRecentlyCreated() throws Exception
     {
     }
-    
+
     private Row mockRowFor(Application app)
     {
         Row row = mock(Row.class);
-        
+
         when(row.getUUID(APP_ID))
             .thenReturn(fromString(app.applicationId));
-        
+
         when(row.getUUID(ORG_ID))
             .thenReturn(fromString(app.organizationId));
-        
+
         when(row.getString(APP_NAME))
             .thenReturn(app.name);
-        
+
         when(row.getString(APP_DESCRIPTION))
             .thenReturn(app.applicationDescription);
-        
+
         when(row.getTimestamp(TIME_PROVISIONED))
             .thenReturn(new Date(app.timeOfProvisioning));
-        
+
         return row;
+    }
+
+    private void setupWithEmptyResults()
+    {
+        ResultSet results = mock(ResultSet.class);
+        List<Row> list = Lists.emptyList();
+        when(results.iterator()).thenReturn(list.iterator());
+
+        when(session.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
     }
 
 }
