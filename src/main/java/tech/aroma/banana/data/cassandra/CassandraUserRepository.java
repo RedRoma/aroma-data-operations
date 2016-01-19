@@ -44,6 +44,7 @@ import static tech.aroma.banana.data.cassandra.Tables.UsersTable.TABLE_NAME_BY_G
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
 /**
  * Stores user information in Cassandra.
@@ -101,9 +102,7 @@ final class CassandraUserRepository implements UserRepository
     @Override
     public User getUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         Select query = createQueryToGetUser(userId);
         ResultSet results = cassandra.execute(query);
@@ -121,9 +120,7 @@ final class CassandraUserRepository implements UserRepository
     @Override
     public void deleteUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         //Must first get related data to delete all secondary tables
         User user = this.getUser(userId);
@@ -145,9 +142,7 @@ final class CassandraUserRepository implements UserRepository
     @Override
     public boolean containsUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         Statement selectStatement = createQueryToCheckExistenceFor(userId);
         
@@ -356,6 +351,16 @@ final class CassandraUserRepository implements UserRepository
             .countAll()
             .from(UsersTable.TABLE_NAME)
             .where(eq(UsersTable.USER_ID, userId));
+    }
+
+    private void checkUserId(String userId) throws InvalidArgumentException
+    {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("missing userId")
+            .is(nonEmptyString())
+            .usingMessage("expecting UUID for userId")
+            .is(validUUID());
     }
     
     
