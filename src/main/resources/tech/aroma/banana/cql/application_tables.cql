@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS Banana.Applications
 (
 	app_id UUID,
 	name text,
+	app_description text,
 	organization_id UUID,
 	organization_name text,
 	owners set<UUID>,
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Banana.Applications_Recently_Created
 (
 	app_id UUID,
 	name text,
+	app_description text,
 	organization_id UUID,
 	organization_name text,
 	owners set<UUID>,
