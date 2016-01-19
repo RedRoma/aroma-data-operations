@@ -158,8 +158,8 @@ final class CassandraUserRepository implements UserRepository
             throw new OperationFailedException("Could not check for the existence of user: " + userId);
         }           
         
-        int result = results.one().getInt(0);
-        return result != 0;
+        long result = results.one().getLong(0);
+        return result > 0L;
         
     }
 
