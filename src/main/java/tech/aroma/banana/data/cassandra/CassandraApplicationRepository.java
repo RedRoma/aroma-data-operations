@@ -177,9 +177,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         Row row = results.one();
         checkRowNotMissing(applicationId, row);
-        int count = row.getInt(0);
         
-        return count > 0;
+        long count = row.getLong(0);
+        return count > 0L;
     }
     
     @Override
