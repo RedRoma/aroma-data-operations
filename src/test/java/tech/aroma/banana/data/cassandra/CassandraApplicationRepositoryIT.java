@@ -117,14 +117,7 @@ public class CassandraApplicationRepositoryIT
         
         Application result = instance.getById(appId);
         
-        assertThat(result.applicationId, is(app.applicationId));
-        assertThat(result.name, is(app.name));
-        assertThat(result.organizationId, is(app.organizationId));
-        assertThat(result.applicationDescription, is(app.applicationDescription));
-        
-        assertThat(result.owners, is(app.owners));
-        assertThat(result.timeOfProvisioning, is(app.timeOfProvisioning));
-        assertThat(result.tier, is(app.tier));
+        assertResultMostlyMatches(result);
     }
 
     @Test
@@ -147,6 +140,19 @@ public class CassandraApplicationRepositoryIT
     @Test
     public void testGetById() throws Exception
     {
+        instance.saveApplication(app);
+        
+        assertThat(instance.containsApplication(appId), is(true));
+        Application result = instance.getById(appId);
+        
+        assertResultMostlyMatches(result);
+    }
+
+    @Test
+    public void testGetByIdWhenNotExists() throws Exception
+    {
+        assertThrows(() -> instance.getById(appId))
+            .isInstanceOf(ApplicationDoesNotExistException.class);
     }
 
     @Test
@@ -172,6 +178,18 @@ public class CassandraApplicationRepositoryIT
     @Test
     public void testGetRecentlyCreated() throws Exception
     {
+    }
+
+    private void assertResultMostlyMatches(Application result)
+    {
+        assertThat(result.applicationId, is(app.applicationId));
+        assertThat(result.name, is(app.name));
+        assertThat(result.organizationId, is(app.organizationId));
+        assertThat(result.applicationDescription, is(app.applicationDescription));
+        
+        assertThat(result.owners, is(app.owners));
+        assertThat(result.timeOfProvisioning, is(app.timeOfProvisioning));
+        assertThat(result.tier, is(app.tier));
     }
 
 }
