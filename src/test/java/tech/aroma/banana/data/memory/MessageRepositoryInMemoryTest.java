@@ -31,10 +31,14 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
 
@@ -49,6 +53,8 @@ public class MessageRepositoryInMemoryTest
 
     @GeneratePojo
     private Message message;
+    
+    @GenerateString(UUID)
     private String messageId;
        
     @GenerateString
@@ -57,7 +63,7 @@ public class MessageRepositoryInMemoryTest
     @GenerateString
     private String hostname;
        
-    @GenerateString
+    @GenerateString(UUID)
     private String applicationId;
     
     private MessageRepositoryInMemory instance;
@@ -68,9 +74,14 @@ public class MessageRepositoryInMemoryTest
     @Before
     public void setUp()
     {
-        messageId = message.messageId;
+        message.messageId = messageId;
+        message.applicationId = applicationId;
         
         instance = new MessageRepositoryInMemory();
+        
+        messages = messages.stream()
+            .map(m -> m.setMessageId(one(uuids)))
+            .collect(toList());
     }
     
     private void saveMessages(List<Message> messages) throws TException
