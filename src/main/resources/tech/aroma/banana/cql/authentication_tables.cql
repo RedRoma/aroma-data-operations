@@ -2,7 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS Banana.Tokens_Applications
 (
-	token_id UUID,
+	token_id text,
 	app_id UUID,
 	features list<text>,
 	time_of_expiration timestamp,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Banana.Tokens_Applications
 CREATE TABLE IF NOT EXISTS Banana.Tokens_Users
 (
 	user_id UUID,
-	token_id UUID,
+	token_id text,
 	time_of_creation timestamp,
 	time_of_expiration timestamp,
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Banana.Tokens_Users
 CREATE TABLE IF NOT EXISTS Banana.Tokens_Users_By_User
 (
 	user_id UUID,
-	token_id UUID,
+	token_id text,
 	time_of_creation timestamp,
 	time_of_expiration timestamp,
 
