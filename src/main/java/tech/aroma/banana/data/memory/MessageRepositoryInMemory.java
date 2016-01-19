@@ -38,6 +38,7 @@ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.equalTo;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
@@ -101,21 +102,17 @@ final class MessageRepositoryInMemory implements MessageRepository
     @Override
     public Message getMessage(String applicationId, String messageId) throws TException
     {
-        checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
-        
-        checkMessageId(messageId);
+        checkApplicationId(applicationId);
+        checkMessageIdExists(messageId);
 
         return messages.get(messageId);
     }
 
     @Override
-    public void deleteMessage(String messageId) throws TException
+    public void deleteMessage(String applicationId, String messageId) throws TException
     {
-        checkThat(messageId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkApplicationId(applicationId);
+        checkMessageId(messageId);
         
         Message deletedMessage = messages.remove(messageId);
         
@@ -124,9 +121,14 @@ final class MessageRepositoryInMemory implements MessageRepository
             return;
         }
         
+        checkThat(deletedMessage.applicationId)
+            .is(nonEmptyString())
+            .usingMessage("Message App ID does not match: " + deletedMessage.applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(equalTo(applicationId));
+        
         Predicate<String> doesNotMatchMessage = id -> !Objects.equals(id, messageId);
         
-        String applicationId = deletedMessage.applicationId;
         String hostname = deletedMessage.hostname;
         String title = deletedMessage.title;
         
@@ -159,12 +161,10 @@ final class MessageRepositoryInMemory implements MessageRepository
     }
 
     @Override
-    public boolean containsMessage(String messageId) throws TException
+    public boolean containsMessage(String applicationId,String messageId) throws TException
     {
-        checkThat(messageId)
-            .usingMessage("messageId cannot be empty")
-            .is(nonEmptyString())
-            .is(nonEmptyString());
+        checkMessageId(messageId);
+        checkApplicationId(applicationId);
         
         return messages.containsKey(messageId);
     }
@@ -187,10 +187,7 @@ final class MessageRepositoryInMemory implements MessageRepository
     @Override
     public List<Message> getByApplication(String applicationId) throws TException
     {
-        checkThat(applicationId)
-            .usingMessage("applicationId cannot be empty")
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkApplicationId(applicationId);
         
         return messagesByApplication.getOrDefault(applicationId, Lists.emptyList())
             .stream()
@@ -205,6 +202,8 @@ final class MessageRepositoryInMemory implements MessageRepository
         checkThat(applicationId, title)
             .throwing(InvalidArgumentException.class)
             .are(nonEmptyString());
+        
+        checkApplicationId(applicationId);
         
         Predicate<Message> matchesApplicationId = msg -> Objects.equals(msg.applicationId, applicationId);
         
@@ -231,9 +230,7 @@ final class MessageRepositoryInMemory implements MessageRepository
         checkThat(messageId)
             .throwing(InvalidArgumentException.class)
             .usingMessage("missing messageId")
-            .is(nonEmptyString())
-            .throwing(MessageDoesNotExistException.class)
-            .is(keyInMap(messages));
+            .is(nonEmptyString());
     }
 
     private AlchemyAssertion<LengthOfTime> validMessageLifetime()
@@ -249,6 +246,23 @@ final class MessageRepositoryInMemory implements MessageRepository
                 .usingMessage("missing time unit")
                 .is(notNull());
         };
+    }
+
+    private void checkApplicationId(String applicationId) throws InvalidArgumentException
+    {
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
+    }
+
+    private void checkMessageIdExists(String messageId) throws MessageDoesNotExistException, InvalidArgumentException
+    {
+        checkThat(messageId)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("missing messageId")
+            .is(nonEmptyString())
+            .throwing(MessageDoesNotExistException.class)
+            .is(keyInMap(messages));
     }
 
 }

@@ -97,7 +97,7 @@ public class MessageRepositoryInMemoryTest
     {
         instance.saveMessage(message);
         
-        assertThat(instance.containsMessage(messageId), is(true));
+        assertThat(instance.containsMessage(applicationId, messageId), is(true));
         
         assertThrows(() -> instance.saveMessage(null))
             .isInstanceOf(InvalidArgumentException.class);
@@ -138,23 +138,23 @@ public class MessageRepositoryInMemoryTest
     public void testDeleteMessage() throws Exception
     {
         //Should be ok if message does not exist
-        instance.deleteMessage(messageId);
+        instance.deleteMessage(applicationId, messageId);
         
         instance.saveMessage(message);
-        assertThat(instance.containsMessage(messageId), is(true));
+        assertThat(instance.containsMessage(applicationId, messageId), is(true));
         
-        instance.deleteMessage(messageId);
-        assertThat(instance.containsMessage(messageId), is(false));
+        instance.deleteMessage(applicationId, messageId);
+        assertThat(instance.containsMessage(applicationId, messageId), is(false));
     }
 
     @Test
     public void testContainsMessage() throws Exception
     {
-        assertThat(instance.containsMessage(messageId), is(false));
+        assertThat(instance.containsMessage(applicationId, messageId), is(false));
         
         instance.saveMessage(message);
         
-        assertThat(instance.containsMessage(messageId), is(true));
+        assertThat(instance.containsMessage(applicationId, messageId), is(true));
     }
 
     @Test

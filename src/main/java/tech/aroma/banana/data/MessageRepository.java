@@ -51,9 +51,9 @@ public interface MessageRepository
 
     Message getMessage(@Required String applicationId, @Required String messageId) throws TException;
 
-    void deleteMessage(@Required String messageId) throws TException;
-    
-    boolean containsMessage(@Required String messageId) throws TException;
+    void deleteMessage(@Required String applicationId, @Required String messageId) throws TException;
+
+    boolean containsMessage(@Required String applicationId, @Required String messageId) throws TException;
 
     List<Message> getByHostname(@Required String hostname) throws TException;
 
