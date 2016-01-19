@@ -38,9 +38,9 @@ import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import static sir.wellington.alchemy.collections.lists.Lists.isEmpty;
 import static tech.aroma.banana.data.assertions.DataAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.DataAssertions.validApplication;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -65,16 +65,19 @@ final class ApplicationRepositoryInMemory implements ApplicationRepository
     
     
     @Override
-    public void saveApplication(String applicationId, Application application) throws TException
+    public void saveApplication(Application application) throws TException
     {
-        checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
-            .usingMessage("missing applicationId")
-            .is(nonEmptyString());
         
         checkThat(application)
             .throwing(InvalidArgumentException.class)
             .is(validApplication());
+        
+        String applicationId = application.applicationId;
+        
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("missing applicationId")
+            .is(nonEmptyString());
         
         mainTable.put(applicationId, application);
         recents.put(applicationId, application);

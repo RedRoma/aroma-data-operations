@@ -30,7 +30,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  */
 public interface ApplicationRepository 
 {
-    void saveApplication(@NonEmpty String applicationId, @Required Application application) throws TException;
+    void saveApplication(@Required Application application) throws TException;
     
     void deleteApplication(@NonEmpty String applicationId) throws TException;
     

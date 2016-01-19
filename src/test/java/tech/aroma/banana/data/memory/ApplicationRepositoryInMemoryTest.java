@@ -80,14 +80,14 @@ public class ApplicationRepositoryInMemoryTest
     {
         for(Application app : applications)
         {
-            instance.saveApplication(app.applicationId, app);
+            instance.saveApplication(app);
         }
     }
     
     @Test
     public void testSaveApplication() throws Exception
     {
-        instance.saveApplication(applicationId, application);
+        instance.saveApplication(application);
         
         Application result = instance.getById(applicationId);
         assertThat(result, is(application));
@@ -97,22 +97,19 @@ public class ApplicationRepositoryInMemoryTest
     @Test
     public void testSaveApplicationWithBadArguments() throws Exception
     {
-        assertThrows(() -> instance.saveApplication("", application))
-            .isInstanceOf(InvalidArgumentException.class);
-        
-        assertThrows(() -> instance.saveApplication(applicationId, null))
+        assertThrows(() -> instance.saveApplication(null))
             .isInstanceOf(InvalidArgumentException.class);
         
         Application emptyApplication = new Application();
         
-        assertThrows(() -> instance.saveApplication(applicationId, emptyApplication))
+        assertThrows(() -> instance.saveApplication(emptyApplication))
             .isInstanceOf(InvalidArgumentException.class);
     }
     
     @Test
     public void testDeleteApplication() throws Exception
     {
-        instance.saveApplication(applicationId, application);
+        instance.saveApplication(application);
         
         instance.deleteApplication(applicationId);
         
@@ -130,7 +127,7 @@ public class ApplicationRepositoryInMemoryTest
     @Test
     public void testGetById() throws Exception
     {
-        instance.saveApplication(applicationId, application);
+        instance.saveApplication(application);
         
         Application result = instance.getById(applicationId);
         assertThat(result, is(application));
@@ -192,7 +189,7 @@ public class ApplicationRepositoryInMemoryTest
         String term = name.substring(length / 2);
         
         application.setName(name);
-        instance.saveApplication(applicationId, application);
+        instance.saveApplication(application);
         
         List<Application> result = instance.searchByName(term);
         assertThat(result, contains(application));
@@ -211,7 +208,7 @@ public class ApplicationRepositoryInMemoryTest
     @Test
     public void testContains() throws Exception
     {
-        instance.saveApplication(applicationId, application);
+        instance.saveApplication(application);
         
         assertThat(instance.containsApplication(applicationId), is(true));
         

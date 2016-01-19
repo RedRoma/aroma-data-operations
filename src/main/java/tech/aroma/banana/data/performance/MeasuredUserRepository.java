@@ -29,6 +29,8 @@ import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern;
 
 import static tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern.Role.DECORATOR;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
  *
@@ -44,6 +46,8 @@ final class MeasuredUserRepository implements UserRepository
     @Inject
     MeasuredUserRepository(@DecoratedBy(MeasuredUserRepository.class) UserRepository delegate)
     {
+        checkThat(delegate).is(notNull());
+        
         this.delegate = delegate;
     }
 

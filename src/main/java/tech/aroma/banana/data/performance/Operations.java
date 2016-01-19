@@ -18,7 +18,8 @@
 package tech.aroma.banana.data.performance;
 
 
-import java.util.concurrent.Callable;
+import com.google.common.base.Strings;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.sirwellington.alchemy.annotations.access.Internal;
@@ -47,7 +48,7 @@ final class Operations
      * @return The Time it took for the operation to complete, in ms.
      * @throws Exception 
      */
-    public static long measureOperation(@Required Callable<?> operation) throws Exception
+    public static long measureOperation(@Required Operation<?> operation) throws TException
     {
         checkThat(operation).is(notNull());
         
@@ -60,9 +61,11 @@ final class Operations
         return end - start;
     }
     
-    public static <T> T logLatency(@Required Callable<T> operation, String operationName) throws Exception
+    public static <T> T logLatency(@Required Operation<T> operation, String operationName) throws TException
     {
         checkThat(operation).is(notNull());
+        
+        operationName = Strings.nullToEmpty(operationName);
         
         long start = System.currentTimeMillis();
         

@@ -16,11 +16,11 @@
 
 package tech.aroma.banana.data.performance;
 
-import java.util.concurrent.Callable;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import tech.aroma.banana.data.performance.Operation.VoidOperation;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateInteger;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
@@ -29,6 +29,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -60,12 +61,18 @@ public class OperationsTest
     {
         long sleepTimeMillis = one(longs(5, 50));
         
-        Callable operation = () -> 
+        VoidOperation operation = () -> 
         {
-           Thread.sleep(sleepTimeMillis);
+            try
+            {
+                Thread.sleep(sleepTimeMillis);
+            }
+            catch (InterruptedException ex)
+            {
+                fail("Interrupted:" + ex);
+            }
            
             System.out.println("Operation complete");
-            return null;
         };
         
         long result = Operations.measureOperation(operation);
@@ -75,7 +82,7 @@ public class OperationsTest
     @Test
     public void testMeasureOperationWhenOperationThrows() throws Exception
     {
-        Callable operation = () ->
+        VoidOperation operation = () ->
         {
            throw new TException();
         };
@@ -88,7 +95,7 @@ public class OperationsTest
     @Test
     public void testLogLatency() throws Exception
     {
-        Callable<Integer> operation = mock(Callable.class);
+        Operation<Integer> operation = mock(Operation.class);
         when(operation.call()).thenReturn(value);
         
         Integer result = Operations.logLatency(operation, operationName);

@@ -53,13 +53,13 @@ final class MeasuredApplicationRepository implements ApplicationRepository
     }
 
     @Override
-    public void saveApplication(String applicationId, Application application) throws TException
+    public void saveApplication(Application application) throws TException
     {
         long start = System.currentTimeMillis();
 
         try
         {
-            delegate.saveApplication(applicationId, application);
+            delegate.saveApplication(application);
         }
         finally
         {
