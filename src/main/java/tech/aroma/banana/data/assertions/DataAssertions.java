@@ -31,6 +31,7 @@ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
 /**
  *
@@ -56,6 +57,10 @@ public final class DataAssertions
             
             checkThat(app.applicationId, app.name)
                 .are(nonEmptyString());
+            
+            checkThat(app.applicationId)
+                .usingMessage("expected UUID type for appId")
+                .is(validUUID());
         };
     }
     
@@ -67,7 +72,9 @@ public final class DataAssertions
             
             checkThat(message.messageId)
                 .usingMessage("missing messageID")
-                .is(nonEmptyString());
+                .is(nonEmptyString())
+                .usingMessage("messageID must be a UUID type")
+                .is(validUUID());
             
             checkThat(message.title)
                 .usingMessage("message missing Title")
@@ -83,7 +90,9 @@ public final class DataAssertions
                 .is(notNull());
             
             checkThat(user.userId)
-                .is(nonEmptyString());
+                .is(nonEmptyString())
+                .usingMessage("expected UUID for userId")
+                .is(validUUID());
             
             checkThat(user.name)
                 .is(nonEmptyString());

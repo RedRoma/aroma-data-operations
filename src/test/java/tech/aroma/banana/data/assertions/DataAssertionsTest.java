@@ -36,6 +36,8 @@ import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
@@ -45,6 +47,12 @@ import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThr
 @RunWith(AlchemyTestRunner.class)
 public class DataAssertionsTest
 {
+    
+    @GenerateString(UUID)
+    private String validId;
+    
+    @GenerateString(ALPHABETIC)
+    private String invalidId;
     
     @GeneratePojo
     private Application application;
@@ -61,6 +69,9 @@ public class DataAssertionsTest
     @Before
     public void setUp()
     {
+        application.applicationId = validId;
+        message.messageId = validId;
+        user.userId = validId;
     }
     
     @DontRepeat
@@ -85,6 +96,12 @@ public class DataAssertionsTest
         Application empty = new Application();
         assertThrows(() -> assertion.check(empty))
             .isInstanceOf(FailedAssertionException.class);
+        
+        Application appWithInvalidId = new Application(application)
+            .setApplicationId(this.invalidId);
+
+        assertThrows(() -> assertion.check(appWithInvalidId))
+            .isInstanceOf(FailedAssertionException.class);
     }
     
     @Test
@@ -99,6 +116,12 @@ public class DataAssertionsTest
             .isInstanceOf(FailedAssertionException.class);
         
         assertThrows(() -> assertion.check(new User()))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        User userWithInvalidId = new User(user)
+            .setUserId(invalidId);
+        
+        assertThrows(() -> assertion.check(userWithInvalidId))
             .isInstanceOf(FailedAssertionException.class);
     }
     
@@ -131,12 +154,16 @@ public class DataAssertionsTest
         Message emptyMessage  = new Message();
         assertThrows(() -> assertion.check(emptyMessage))
             .isInstanceOf(FailedAssertionException.class);
-        
+
         Message messageWithoutTitle = emptyMessage.setMessageId(one(uuids));
         assertThrows(() -> assertion.check(messageWithoutTitle))
             .isInstanceOf(FailedAssertionException.class);
-        
-        
+
+        Message messageWithInvalidId = new Message(message)
+            .setMessageId(invalidId);
+        assertThrows(() -> assertion.check(messageWithInvalidId))
+            .isInstanceOf(FailedAssertionException.class);
+
     }
 
 }
