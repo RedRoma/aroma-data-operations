@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -128,6 +130,18 @@ public class CassandraApplicationRepositoryIT
     @Test
     public void testDeleteApplication() throws Exception
     {
+        instance.saveApplication(app);
+        
+        instance.deleteApplication(appId);
+        
+        assertThat(instance.containsApplication(appId), is(false));
+    }
+
+    @Test
+    public void testDeleteApplicationWhenNotExists() throws Exception
+    {
+        assertThrows(() -> instance.deleteApplication(appId))
+            .isInstanceOf(ApplicationDoesNotExistException.class);
     }
 
     @Test
