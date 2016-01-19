@@ -56,6 +56,7 @@ import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.ORG_ID;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TIME_PROVISIONED;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.longs;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -175,6 +176,18 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testContainsApplication() throws Exception
     {
+        ResultSet results = mock(ResultSet.class);
+        when(session.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+       
+        Row fakeRow = mock(Row.class);
+        when(results.one()).thenReturn(fakeRow);
+        
+        long count = one(longs(0, 2));
+        when(fakeRow.getLong(0)).thenReturn(count);
+        
+        boolean result = instance.containsApplication(appId);
+        assertThat(result, is(count > 0L));
     }
 
     @Test
