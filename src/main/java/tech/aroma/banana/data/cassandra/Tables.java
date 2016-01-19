@@ -52,6 +52,9 @@ class Tables
     static class MessagesTable
     {
         static final String TABLE_NAME = "Messages";
+        static final String TABLE_NAME_TOTALS_BY_APP = "Messages_Totals_By_App";
+        static final String TABLE_NAME_TOTALS_BY_TITLE = "Messages_Totals_By_Title";
+        
         static final String MESSAGE_ID = "message_id";
         static final String APP_ID = "app_id";
         static final String APP_NAME = "app_name";
@@ -63,6 +66,7 @@ class Tables
         static final String MAC_ADDRESS = "mac_address";
         static final String TIME_CREATED = "time_created";
         static final String TIME_RECEIVED = "time_received";
+        static final String TOTAL_MESSAGES = "total_messages";
         
     }
 
