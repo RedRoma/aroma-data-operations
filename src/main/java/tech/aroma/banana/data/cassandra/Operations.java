@@ -34,7 +34,7 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  */
 @Internal
 @NonInstantiable
-final class Operations 
+public final class Operations 
 {
     private final static Logger LOG = LoggerFactory.getLogger(Operations.class);
 
@@ -47,7 +47,7 @@ final class Operations
      * @return The Time it took for the operation to complete, in ms.
      * @throws Exception 
      */
-    static long measureOperation(@Required Callable<?> operation) throws Exception
+    public static long measureOperation(@Required Callable<?> operation) throws Exception
     {
         checkThat(operation).is(notNull());
         
@@ -60,7 +60,7 @@ final class Operations
         return end - start;
     }
     
-    static <T> T logLatency(@Required Callable<T> operation, String operationName) throws Exception
+    public static <T> T logLatency(@Required Callable<T> operation, String operationName) throws Exception
     {
         checkThat(operation).is(notNull());
         
