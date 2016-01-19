@@ -45,7 +45,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(50)
 @RunWith(AlchemyTestRunner.class)
-public class DataAssertionsTest
+public class RequestAssertionsTest
 {
     
     @GenerateString(UUID)
@@ -78,14 +78,14 @@ public class DataAssertionsTest
     @Test
     public void testConstuctor()
     {
-        assertThrows(() -> new DataAssertions())
+        assertThrows(() -> new RequestAssertions())
             .isInstanceOf(IllegalAccessException.class);
     }
     
     @Test
     public void testValidApplication()
     {
-        AlchemyAssertion<Application> assertion = DataAssertions.validApplication();
+        AlchemyAssertion<Application> assertion = RequestAssertions.validApplication();
         assertThat(assertion, notNullValue());
         
         assertion.check(application);
@@ -107,7 +107,7 @@ public class DataAssertionsTest
     @Test
     public void testValidUser()
     {
-        AlchemyAssertion<User> assertion = DataAssertions.validUser();
+        AlchemyAssertion<User> assertion = RequestAssertions.validUser();
         assertThat(assertion, notNullValue());
         
         assertion.check(user);
@@ -128,15 +128,15 @@ public class DataAssertionsTest
     @Test
     public void testIsNullOrEmpty()
     {
-        assertThat(DataAssertions.isNullOrEmpty(string), is(false));
-        assertThat(DataAssertions.isNullOrEmpty(""), is(true));
-        assertThat(DataAssertions.isNullOrEmpty(null), is(true));
+        assertThat(RequestAssertions.isNullOrEmpty(string), is(false));
+        assertThat(RequestAssertions.isNullOrEmpty(""), is(true));
+        assertThat(RequestAssertions.isNullOrEmpty(null), is(true));
     }
 
     @Test
     public void testValidMessage()
     {
-        AlchemyAssertion<Message> assertion = DataAssertions.validMessage();
+        AlchemyAssertion<Message> assertion = RequestAssertions.validMessage();
         assertThat(assertion, notNullValue());
         
         assertion.check(message);
@@ -146,7 +146,7 @@ public class DataAssertionsTest
     @Test
     public void testValidMessageWithBadMessages()
     {
-        AlchemyAssertion<Message> assertion = DataAssertions.validMessage();
+        AlchemyAssertion<Message> assertion = RequestAssertions.validMessage();
 
         assertThrows(() -> assertion.check(null))
             .isInstanceOf(FailedAssertionException.class);

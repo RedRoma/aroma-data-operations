@@ -30,10 +30,11 @@ import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 
-import static tech.aroma.banana.data.assertions.DataAssertions.validApplication;
-import static tech.aroma.banana.data.assertions.DataAssertions.validUser;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *

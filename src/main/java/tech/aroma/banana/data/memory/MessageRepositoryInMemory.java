@@ -35,13 +35,15 @@ import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 
-import static tech.aroma.banana.data.assertions.DataAssertions.isNullOrEmpty;
-import static tech.aroma.banana.data.assertions.DataAssertions.validMessage;
+import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 
 /**
  *

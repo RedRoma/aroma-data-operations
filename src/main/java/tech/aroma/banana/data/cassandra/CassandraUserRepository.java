@@ -39,12 +39,13 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static tech.aroma.banana.data.assertions.DataAssertions.validUser;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.cassandra.Tables.UsersTable.TABLE_NAME_BY_GITHUB_PROFILE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Stores user information in Cassandra.

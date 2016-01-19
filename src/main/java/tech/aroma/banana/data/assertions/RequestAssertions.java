@@ -32,6 +32,7 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -39,11 +40,11 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.v
  */
 @NonInstantiable
 @Internal
-public final class DataAssertions 
+public final class RequestAssertions 
 {
-    private final static Logger LOG = LoggerFactory.getLogger(DataAssertions.class);
+    private final static Logger LOG = LoggerFactory.getLogger(RequestAssertions.class);
 
-    DataAssertions() throws IllegalAccessException
+    RequestAssertions() throws IllegalAccessException
     {
         throw new IllegalAccessException("cannot instantiate");
     }

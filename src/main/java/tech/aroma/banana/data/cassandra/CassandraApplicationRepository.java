@@ -27,11 +27,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
@@ -43,8 +45,8 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.aroma.banana.data.assertions.DataAssertions.isNullOrEmpty;
-import static tech.aroma.banana.data.assertions.DataAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.ORG_ID;
@@ -59,6 +61,8 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -305,7 +309,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         UUID appId = UUID.fromString(app.applicationId);
         UUID orgId = UUID.fromString(app.organizationId);
-        
+        Set<UUID> owners = Sets.nullToEmpty(app.owners)
+        .stream()
+        .m
         
         Statement insertIntoMainTable = queryBuilder
             .insertInto(TABLE_NAME)
@@ -370,12 +376,17 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .limit(2);
     }
     
-    private Application createApplicationFromRow(Row row)
+    private Application createApplicationFromRow(Row row) throws OperationFailedException
     {
         Application app = new Application();
         
-        app.setApplicationId(row.getString(APP_ID))
-            .setName(row.getString(APP_NAME));
+        UUID appId = row.getUUID(APP_ID);
+        checkThat(appId)
+            .throwing(OperationFailedException.class)
+            .usingMessage("missing appId")
+            .is(notNull());
+        
+        app.setApplicationId(appId.toString());
         
         String programmingLanguage = row.getString(PROGRAMMING_LANGUAGE);
         if (!isNullOrEmpty(programmingLanguage))
@@ -390,10 +401,19 @@ final class CassandraApplicationRepository implements ApplicationRepository
             app.setTimeOfProvisioning(timeOfProvisioning.getTime());
         }
         
-        Set<String> owners = row.getSet(OWNERS, String.class);
+        //Transform the UUIDs to Strings
+        Set<String> owners = row.getSet(OWNERS, UUID.class)
+            .stream()
+            .map(UUID::toString)
+            .collect(Collectors.toSet());
+        
         app.setOwners(owners);
         
-        app.setOrganizationId(row.getString(ORG_ID));
+        UUID orgId = row.getUUID(ORG_ID);
+        if (orgId != null)
+        {
+            app.setOrganizationId(orgId.toString());
+        }
         
         String tier = row.getString(TIER);
         if (!isNullOrEmpty(tier))

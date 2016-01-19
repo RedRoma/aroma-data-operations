@@ -33,10 +33,11 @@ import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 
-import static tech.aroma.banana.data.assertions.DataAssertions.validMessage;
-import static tech.aroma.banana.data.assertions.DataAssertions.validUser;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *

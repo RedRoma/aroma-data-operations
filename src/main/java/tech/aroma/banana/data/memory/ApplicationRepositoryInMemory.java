@@ -36,11 +36,12 @@ import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 
 import static sir.wellington.alchemy.collections.lists.Lists.isEmpty;
-import static tech.aroma.banana.data.assertions.DataAssertions.isNullOrEmpty;
-import static tech.aroma.banana.data.assertions.DataAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
