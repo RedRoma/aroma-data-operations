@@ -29,14 +29,18 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.MessageRepository;
+import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
+import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 
 import static tech.aroma.banana.data.assertions.DataAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.DataAssertions.validMessage;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
 /**
@@ -54,11 +58,16 @@ final class MessageRepositoryInMemory implements MessageRepository
     
 
     @Override
-    public void saveMessage(Message message) throws TException
+    public void saveMessage(Message message, LengthOfTime lifetime) throws TException
     {
         checkThat(message)
             .throwing(InvalidArgumentException.class)
             .is(validMessage());
+        
+        checkThat(lifetime)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("Invalid lifetime")
+            .is(validMessageLifetime());
         
         String messageId = message.messageId;
         messages.put(messageId, message);
@@ -221,6 +230,21 @@ final class MessageRepositoryInMemory implements MessageRepository
             .is(nonEmptyString())
             .throwing(MessageDoesNotExistException.class)
             .is(keyInMap(messages));
+    }
+
+    private AlchemyAssertion<LengthOfTime> validMessageLifetime()
+    {
+        return time ->
+        {
+            checkThat(time).is(notNull());
+            checkThat(time.value)
+                .usingMessage("time value must be > 0")
+                .is(greaterThan(0L));
+            
+            checkThat(time.unit)
+                .usingMessage("missing time unit")
+                .is(notNull());
+        };
     }
 
 }

@@ -19,7 +19,9 @@ package tech.aroma.banana.data;
 
 import java.util.List;
 import org.apache.thrift.TException;
+import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.TimeUnit;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
@@ -36,7 +38,16 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 public interface MessageRepository
 {
 
-    void saveMessage(@Required Message message) throws TException;
+    default void saveMessage(@Required Message message) throws TException
+    {
+        LengthOfTime defaultTime = new LengthOfTime()
+        .setValue(1)
+        .setUnit(TimeUnit.WEEKS);
+        
+        this.saveMessage(message);
+    }
+    
+    void saveMessage(@Required Message message, @Required LengthOfTime lifetime) throws TException;
 
     Message getMessage(@Required String messageId) throws TException;
 
