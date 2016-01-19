@@ -58,6 +58,7 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
 /**
  *
@@ -184,7 +185,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         checkThat(userId)
             .throwing(InvalidArgumentException.class)
             .usingMessage("missing userId")
-            .is(nonEmptyString());
+            .is(nonEmptyString())
+            .usingMessage("invalid UUID Type")
+            .is(validUUID());
         
         Statement query = createQueryForAppsOwnedBy(userId);
         
@@ -224,7 +227,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         checkThat(orgId)
             .throwing(InvalidArgumentException.class)
             .usingMessage("missing orgId")
-            .is(nonEmptyString());
+            .is(nonEmptyString())
+            .usingMessage("invalid UUID type for org")
+            .is(validUUID());
         
         Statement query = createQueryForAppsWithOrg(orgId);
         
@@ -405,7 +410,9 @@ final class CassandraApplicationRepository implements ApplicationRepository
         checkThat(applicationId)
             .throwing(InvalidArgumentException.class)
             .usingMessage("missing applicationId")
-            .is(nonEmptyString());
+            .is(nonEmptyString())
+            .usingMessage("invalid UUID type")
+            .is(validUUID());
     }
     
     private Statement createQueryToCheckIfAppIdExists(String applicationId)
