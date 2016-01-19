@@ -48,7 +48,7 @@ class TestSessions
         return cluster.connect("Banana");
     }
 
-    static QueryBuilder returnTestQueryBuilder(Cluster cluster)
+    static QueryBuilder createQueryBuilder(Cluster cluster)
     {
         return new QueryBuilder(cluster);
     }
