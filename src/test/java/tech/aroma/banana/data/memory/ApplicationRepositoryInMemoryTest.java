@@ -45,6 +45,7 @@ import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
@@ -61,19 +62,21 @@ public class ApplicationRepositoryInMemoryTest
     @GenerateList(Application.class)
     private List<Application> applications;
     
+    @GenerateString(UUID)
     private String applicationId;
     
     private ApplicationRepositoryInMemory instance;
     
-    @GenerateString
+    @GenerateString(UUID)
     private String orgId;
     
     @Before
     public void setUp()
     {
-        applicationId = application.applicationId;
+        application.applicationId = applicationId;
         
         instance = new ApplicationRepositoryInMemory();
+        applications.forEach((Application app) -> app.setApplicationId(one(uuids)));
     }
     
     private void saveApplications(List<Application> applications) throws TException
