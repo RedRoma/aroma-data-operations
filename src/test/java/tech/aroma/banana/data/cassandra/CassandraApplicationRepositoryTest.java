@@ -230,6 +230,11 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testGetRecentlyCreated() throws Exception
     {
+        setupWithEmptyResults();
+        
+        List<Application> apps = instance.getRecentlyCreated();
+        assertThat(apps, notNullValue());
+        assertThat(apps, is(empty()));
     }
 
     private Row mockRowFor(Application app)
