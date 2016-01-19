@@ -29,6 +29,21 @@ class Tables
 {
     private final static Logger LOG = LoggerFactory.getLogger(Tables.class);
     
+    static class ApplicationsTable
+    {
+        static final String TABLE_NAME = "Banana.Applications";
+        static final String TABLE_NAME_RECENTLY_CREATED = "Banana.Applications_Recently_Created";
+        
+        static final String APP_ID = "app_id";
+        static final String NAME = "name";
+        static final String ORG_ID = "organization_id";
+        static final String ORG_NAME = "organization_name";
+        static final String OWNERS = "owners";
+        static final String PROGRAMMING_LANGUAGE = "programming_language";
+        static final String TIME_PROVISIONED = "time_provisioned";
+        static final String TIER = "tier";
+    }
+    
     static class MessagesTable
     {
         static final String TABLE_NAME = "Banana.Messages";
