@@ -23,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+
 /**
  * Connection information to connect to a Cassandra Cluster for use in Integration testing.
  *
@@ -45,11 +48,15 @@ class TestSessions
 
     static Session createTestSession(Cluster cluster)
     {
+        checkThat(cluster).is(notNull());
+
         return cluster.connect("Banana");
     }
 
     static QueryBuilder createQueryBuilder(Cluster cluster)
     {
+        checkThat(cluster).is(notNull());
+
         return new QueryBuilder(cluster);
     }
 }
