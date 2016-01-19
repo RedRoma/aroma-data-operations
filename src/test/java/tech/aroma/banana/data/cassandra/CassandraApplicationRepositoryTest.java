@@ -187,7 +187,8 @@ public class CassandraApplicationRepositoryTest
         when(fakeRow.getLong(0)).thenReturn(count);
         
         boolean result = instance.containsApplication(appId);
-        assertThat(result, is(count > 0L));
+        boolean expected = count > 0L;
+        assertThat(result, is(expected));
     }
 
     @Test
