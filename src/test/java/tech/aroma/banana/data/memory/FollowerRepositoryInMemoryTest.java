@@ -27,12 +27,16 @@ import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
 /**
@@ -46,6 +50,8 @@ public class FollowerRepositoryInMemoryTest
 
     @GeneratePojo
     private Application application;
+    
+    @GenerateString(UUID)
     private String applicationId;
     
     @GenerateList(Application.class)
@@ -53,6 +59,8 @@ public class FollowerRepositoryInMemoryTest
     
     @GeneratePojo
     private User user;
+    
+    @GenerateString(UUID)
     private String userId;
     
     @GenerateList(User.class)
@@ -63,8 +71,11 @@ public class FollowerRepositoryInMemoryTest
     @Before
     public void setUp()
     {
-        applicationId = application.applicationId;
-        userId = user.userId;
+        application.applicationId = applicationId;
+        user.userId = userId;
+        
+        appsFollowed.forEach((Application app) -> app.setApplicationId(one(uuids)));
+        followers.forEach((User user) -> user.setUserId(one(uuids)));
         
         instance = new FollowerRepositoryInMemory();
     }
