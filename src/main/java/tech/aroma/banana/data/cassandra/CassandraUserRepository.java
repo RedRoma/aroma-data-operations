@@ -272,11 +272,13 @@ final class CassandraUserRepository implements UserRepository
 
     private Select createQueryToGetUser(String userId)
     {
+        UUID userUuid = UUID.fromString(userId);
+
         return queryBuilder
             .select()
             .all()
             .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, userId))
+            .where(eq(UsersTable.USER_ID, userUuid))
             .limit(2);
     }
 
