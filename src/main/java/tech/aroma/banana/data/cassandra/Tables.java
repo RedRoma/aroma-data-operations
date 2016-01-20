@@ -60,6 +60,26 @@ class Tables
         static final String USER_FIRST_NAME = "first_name";
         static final String TIME_OF_FOLLOW = "time_of_follow";
     }
+    
+    static class Inbox
+    {
+        static final String TABLE_NAME = "Inbox";
+      
+        static final String USER_ID = Users.USER_ID;
+        static final String MESSAGE_ID = Messages.MESSAGE_ID;
+        static final String APP_ID = Messages.MESSAGE_ID;
+        static final String APP_NAME = Messages.MESSAGE_ID;
+        static final String TITLE = Messages.TITLE;
+        //Body not included in the Inbox
+//        static final String BODY = Messages.BODY;
+        static final String URGENCY = Messages.URGENCY;
+        static final String HOSTNAME = Messages.HOSTNAME;
+        static final String IP_ADDRESS = Messages.IP_ADDRESS;
+        static final String MAC_ADDRESS = Messages.MAC_ADDRESS;
+        static final String TIME_CREATED = Messages.TIME_CREATED;
+        static final String TIME_RECEIVED = Messages.TIME_RECEIVED;
+        static final String TOTAL_MESSAGES = Messages.TOTAL_MESSAGES;
+    }
         
     
     static class Messages
