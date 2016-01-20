@@ -150,12 +150,24 @@ final class Mappers
     {
         return row ->
         {
+            String email = null;
+            
+            if (!row.isNull(Tables.UsersTable.EMAIL))
+            {
+                email = row.getString(Tables.UsersTable.EMAIL);
+            }
+            else if (!row.isNull(Tables.UsersTable.EMAILS))
+            {
+                Set<String> emails = row.getSet(Tables.UsersTable.EMAILS, String.class);
+                email = emails.stream().findFirst().orElse(null);
+            }
+            
             return new User()
                 .setUserId(row.getUUID(Tables.UsersTable.USER_ID).toString())
-                .setEmail(row.getString(Tables.UsersTable.EMAILS))
                 .setFirstName(row.getString(Tables.UsersTable.FIRST_NAME))
                 .setMiddleName(row.getString(Tables.UsersTable.MIDDLE_NAME))
                 .setLastName(row.getString(Tables.UsersTable.LAST_NAME))
+                .setEmail(email)
                 .setGithubProfile(row.getString(Tables.UsersTable.GITHUB_PROFILE))
                 .setRoles(row.getSet(Tables.UsersTable.ROLES, Role.class));
         };
