@@ -103,7 +103,7 @@ final class InboxRepositoryInMemory implements InboxRepository
     }
 
     @Override
-    public int countInboxForUser(String userId) throws TException
+    public long countInboxForUser(String userId) throws TException
     {
         checkUserId(userId);
 
