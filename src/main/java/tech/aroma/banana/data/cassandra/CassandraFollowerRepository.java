@@ -39,17 +39,16 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.now;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.APP_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.TIME_OF_FOLLOW;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_FIRST_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_ID;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
@@ -67,7 +66,7 @@ final class CassandraFollowerRepository implements FollowerRepository
     private final Function<Row, Application> applicationMapper;
 
     @Inject
-    CassandraFollowerRepository(Session cassandra, 
+    CassandraFollowerRepository(Session cassandra,
                                 QueryBuilder queryBuilder,
                                 Function<Row, User> userMapper,
                                 Function<Row, Application> applicationMapper)
@@ -243,27 +242,6 @@ final class CassandraFollowerRepository implements FollowerRepository
         return batch;
     }
 
-    private void checkUserId(String userId) throws InvalidArgumentException
-    {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .usingMessage("missing userId")
-            .is(nonEmptyString())
-            .usingMessage("userId must be a UUID")
-            .is(validUUID());
-    }
-
-    private void checkAppId(String applicationId) throws InvalidArgumentException
-    {
-        checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
-            .usingMessage("missing userId")
-            .is(nonEmptyString())
-            .usingMessage("appId must be a UUID")
-            .is(validUUID());
-
-    }
-
     private Statement createDeleteStatementFor(String userId, String applicationId)
     {
         UUID appUuid = UUID.fromString(applicationId);
@@ -342,6 +320,21 @@ final class CassandraFollowerRepository implements FollowerRepository
     private User createUserFromRow(Row row)
     {
         return userMapper.apply(row);
+    }
+
+    private void checkUserId(String userId) throws InvalidArgumentException
+    {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .is(validUserId());
+    }
+
+    private void checkAppId(String applicationId) throws InvalidArgumentException
+    {
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(validAppId());
+
     }
 
 }
