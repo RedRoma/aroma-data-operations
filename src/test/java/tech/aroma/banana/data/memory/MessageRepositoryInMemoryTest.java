@@ -46,7 +46,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  *
  * @author SirWellington
  */
-@Repeat(50)
+@Repeat(100)
 @RunWith(AlchemyTestRunner.class)
 public class MessageRepositoryInMemoryTest 
 {
