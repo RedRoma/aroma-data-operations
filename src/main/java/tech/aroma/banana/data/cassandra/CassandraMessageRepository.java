@@ -56,9 +56,6 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
-import static java.lang.String.format;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -349,7 +346,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .update(Messages.TABLE_NAME_TOTALS_BY_APP)
             .where(eq(APP_ID, appId))
-            .with(incr(TOTAL_MESSAGES));
+            .with(incr(TOTAL_MESSAGES, 1));
     }
 
     private Statement createUpdateForMessageCounterByTitle(Message message)
@@ -360,7 +357,7 @@ final class CassandraMessageRepository implements MessageRepository
             .update(Messages.TABLE_NAME_TOTALS_BY_TITLE)
             .where(eq(APP_ID, appId))
             .and(eq(TITLE, message.title))
-            .with(incr(TOTAL_MESSAGES));
+            .with(incr(TOTAL_MESSAGES, 1));
     }
 
     private void checkMessageId(String messageId) throws InvalidArgumentException
