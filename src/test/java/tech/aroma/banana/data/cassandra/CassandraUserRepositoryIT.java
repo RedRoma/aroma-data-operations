@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -184,6 +185,10 @@ public class CassandraUserRepositoryIT
     @Test
     public void testGetUserByEmail() throws Exception
     {
+        instance.saveUser(user);
+        
+        User result = instance.getUserByEmail(user.email);
+        assertMostlyMatch(result, user);
     }
 
     @Test
@@ -199,6 +204,12 @@ public class CassandraUserRepositoryIT
         assertThat(result.firstName, is(user.firstName));
         assertThat(result.middleName, is(user.middleName));
         assertThat(result.lastName, is(user.lastName));
+        
+        if(!Sets.isEmpty(result.roles))
+        {
+            assertThat(result.roles, is(user.roles));
+        }
+        
     }
 
 }
