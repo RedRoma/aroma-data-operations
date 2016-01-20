@@ -33,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -45,6 +46,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -148,6 +151,30 @@ public class CassandraFollowerRepositoryTest
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
     }
+
+    @Test
+    public void testSaveFollowingWithBadArgs() throws Exception
+    {
+
+        User emptyUser = new User();
+        Application emptyApp = new Application();
+
+        assertThrows(() -> instance.saveFollowing(emptyUser, application))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.saveFollowing(user, emptyApp))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        User userWithBadId = user.setUserId(one(alphabeticString()));
+        Application appWithBadId = application.setApplicationId(one(alphabeticString()));
+
+        assertThrows(() -> instance.saveFollowing(userWithBadId, application))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.saveFollowing(user, appWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+    
 
     @Test
     public void testDeleteFollowing() throws Exception
