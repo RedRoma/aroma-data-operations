@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
- 
 package tech.aroma.banana.data.cassandra;
-
 
 import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.ResultSet;
@@ -26,6 +24,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
@@ -48,13 +47,14 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.v
 
 /**
  * Stores user information in Cassandra.
- * 
+ *
  * @author SirWellington
  */
 final class CassandraUserRepository implements UserRepository
 {
+
     private final static Logger LOG = LoggerFactory.getLogger(CassandraUserRepository.class);
-    
+
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
     private final Function<Row, User> userMapper;
@@ -66,30 +66,29 @@ final class CassandraUserRepository implements UserRepository
     {
         checkThat(cassandra, queryBuilder, userMapper)
             .are(notNull());
-        
+
         this.cassandra = cassandra;
         this.queryBuilder = queryBuilder;
         this.userMapper = userMapper;
     }
-    
+
     @Override
     public void saveUser(User user) throws TException
     {
         checkThat(user)
             .throwing(InvalidArgumentException.class)
             .is(validUser());
-        
-        
+
         BatchStatement batchStatement = new BatchStatement(BatchStatement.Type.LOGGED);
-        
+
         Insert insertIntoUsersTable = createInsertIntoUserTable(user);
         Insert insertIntoUsersByEmailTable = createInsertIntoUsersByEmailTable(user);
         Insert insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
-        
+
         batchStatement.add(insertIntoUsersTable)
             .add(insertIntoUsersByEmailTable)
             .add(insertIntoUsersByGithubTable);
-        
+
         LOG.debug("Executing Batch Statement: {}", batchStatement);
         try
         {
@@ -100,23 +99,23 @@ final class CassandraUserRepository implements UserRepository
             LOG.error("Failed to save user in Cassandra: {}", user, ex);
             throw new OperationFailedException("Could not save user");
         }
-        
+
     }
 
     @Override
     public User getUser(String userId) throws TException
     {
         checkUserId(userId);
-        
+
         Select query = createQueryToGetUser(userId);
         ResultSet results = cassandra.execute(query);
-        
+
         Row row = results.one();
         checkThat(row)
             .throwing(UserDoesNotExistException.class)
             .usingMessage("Could not find user with ID: " + userId)
             .is(notNull());
-        
+
         User user = createUserFromRow(row);
         return user;
     }
@@ -125,12 +124,12 @@ final class CassandraUserRepository implements UserRepository
     public void deleteUser(String userId) throws TException
     {
         checkUserId(userId);
-        
+
         //Must first get related data to delete all secondary tables
         User user = this.getUser(userId);
-        
+
         Statement deleteUserStatement = createQueryToDeleteUser(user);
-        
+
         LOG.debug("Executing Statement to delete user with ID {}", userId);
         try
         {
@@ -147,11 +146,11 @@ final class CassandraUserRepository implements UserRepository
     public boolean containsUser(String userId) throws TException
     {
         checkUserId(userId);
-        
+
         Statement selectStatement = createQueryToCheckExistenceFor(userId);
-        
+
         ResultSet results;
-        
+
         try
         {
             results = cassandra.execute(selectStatement);
@@ -160,11 +159,11 @@ final class CassandraUserRepository implements UserRepository
         {
             LOG.error("Failed to run Select Statement on Cassandra: {}", selectStatement, ex);
             throw new OperationFailedException("Could not check for the existence of user: " + userId);
-        }           
-        
+        }
+
         long result = results.one().getLong(0);
         return result > 0L;
-        
+
     }
 
     @Override
@@ -174,30 +173,30 @@ final class CassandraUserRepository implements UserRepository
             .throwing(InvalidArgumentException.class)
             .usingMessage("email cannot be empty")
             .is(nonEmptyString());
-        
+
         Statement query = createQueryToGetUserByEmail(emailAddress);
-        
+
         ResultSet results;
-        
+
         try
         {
             results = cassandra.execute(query);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to execute query for user by email {}", emailAddress, ex);
             throw new OperationFailedException("Could not find user with email: " + emailAddress);
         }
-        
+
         Row row = results.one();
-        
+
         checkThat(row)
             .throwing(UserDoesNotExistException.class)
             .usingMessage("Could not find user with email: " + emailAddress)
             .is(notNull());
-        
+
         User user = createUserFromRow(row);
-        
+
         return user;
     }
 
@@ -208,30 +207,30 @@ final class CassandraUserRepository implements UserRepository
             .throwing(InvalidArgumentException.class)
             .usingMessage("github profile cannot be empty")
             .is(nonEmptyString());
-            
+
         Statement query = createQueryToGetUsersByGithubProfile(githubProfile);
-        
+
         ResultSet results;
-        
+
         try
         {
             results = cassandra.execute(query);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to query Cassandra Table {} for profile {}", TABLE_NAME_BY_GITHUB_PROFILE, githubProfile, ex);
             throw new OperationFailedException("Could not query for profile: " + ex.getMessage());
         }
-        
+
         Row row = results.one();
-        
+
         checkThat(row)
             .throwing(UserDoesNotExistException.class)
             .usingMessage("Could not find user with Github Profile: " + githubProfile)
             .is(notNull());
-        
+
         User user = createUserFromRow(row);
-        
+
         return user;
     }
 
@@ -244,9 +243,8 @@ final class CassandraUserRepository implements UserRepository
             .value(UsersTable.LAST_NAME, user.lastName)
             .value(UsersTable.EMAILS, user.email)
             .value(UsersTable.ROLES, user.roles)
-            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink)
-            ;
-        
+            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink);
+
     }
 
     private Insert createInsertIntoUsersByEmailTable(User user)
@@ -258,8 +256,7 @@ final class CassandraUserRepository implements UserRepository
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
             .value(UsersTable.GITHUB_PROFILE, user.githubProfile)
-            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink)
-            ;
+            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink);
     }
 
     private Insert createInsertIntoUsersByGithubTable(User user)
@@ -270,8 +267,7 @@ final class CassandraUserRepository implements UserRepository
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.EMAILS, user.email)
-            ;
+            .value(UsersTable.EMAILS, user.email);
     }
 
     private Select createQueryToGetUser(String userId)
@@ -283,7 +279,7 @@ final class CassandraUserRepository implements UserRepository
             .where(eq(UsersTable.USER_ID, userId))
             .limit(2);
     }
-    
+
     private Statement createQueryToGetUserByEmail(String email)
     {
         return queryBuilder
@@ -292,7 +288,7 @@ final class CassandraUserRepository implements UserRepository
             .from(UsersTable.TABLE_NAME_BY_EMAIL)
             .where(eq(UsersTable.EMAIL, email));
     }
-    
+
     private Statement createQueryToGetUsersByGithubProfile(String githubProfile)
     {
         return queryBuilder
@@ -310,42 +306,44 @@ final class CassandraUserRepository implements UserRepository
     private Statement createQueryToDeleteUser(User user)
     {
         BatchStatement batch = new BatchStatement();
-        
+
         Statement deleteFromUsersTable = queryBuilder
             .delete()
             .all()
             .from(UsersTable.TABLE_NAME)
             .where(eq(UsersTable.USER_ID, user.userId));
-        
+
         batch.add(deleteFromUsersTable);
-        
+
         Statement deleteFromUserEmailsTable = queryBuilder
-        .delete()
-        .all()
-        .from(UsersTable.TABLE_NAME_BY_EMAIL)
-        .where(eq(UsersTable.EMAIL, user.email));
-        
+            .delete()
+            .all()
+            .from(UsersTable.TABLE_NAME_BY_EMAIL)
+            .where(eq(UsersTable.EMAIL, user.email));
+
         batch.add(deleteFromUserEmailsTable);
-        
+
         Statement deleteFromGithubTable = queryBuilder
-        .delete()
-        .all()
-        .from(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
-        .where(eq(UsersTable.GITHUB_PROFILE, user.githubProfile));
-        
+            .delete()
+            .all()
+            .from(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
+            .where(eq(UsersTable.GITHUB_PROFILE, user.githubProfile));
+
         batch.add(deleteFromGithubTable);
-        
+
         return batch;
-        
+
     }
 
     private Statement createQueryToCheckExistenceFor(String userId)
     {
+        UUID userUuid = UUID.fromString(userId);
+
         return queryBuilder
             .select()
             .countAll()
             .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, userId));
+            .where(eq(UsersTable.USER_ID, userUuid));
     }
 
     private void checkUserId(String userId) throws InvalidArgumentException
@@ -357,7 +355,5 @@ final class CassandraUserRepository implements UserRepository
             .usingMessage("expecting UUID for userId")
             .is(validUUID());
     }
-    
-    
 
 }
