@@ -29,7 +29,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
@@ -38,8 +37,10 @@ import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.TimeUnit;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
+import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
@@ -256,12 +257,14 @@ public class CassandraMessageRepositoryIT
         assertThat(containTheSameElements(result, expected), is(true));
     }
 
-    @Ignore
+    @TimeSensitive
+    @DontRepeat
     @Test
     public void testGetCountByApplication() throws Exception
     {
         saveMessages(messages);
         
+        Thread.sleep(5);
         long count = instance.getCountByApplication(appId);
         assertThat(count, greaterThanOrEqualTo((long) messages.size()));
     }
