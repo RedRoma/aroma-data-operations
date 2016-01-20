@@ -66,6 +66,25 @@ public class CassandraMessageRepositoryIT
 {
     
     private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 2);
+
+    private static Cluster cluster;
+    private static Session session;
+    private static QueryBuilder queryBuilder;
+
+    @BeforeClass
+    public static void begin()
+    {
+        cluster = TestSessions.createTestCluster();
+        session = TestSessions.createTestSession(cluster);
+        queryBuilder = TestSessions.createQueryBuilder(cluster);
+    }
+
+    @AfterClass
+    public static void end()
+    {
+        session.close();
+        cluster.close();
+    }
     
     @GeneratePojo
     private Message message;
@@ -79,26 +98,9 @@ public class CassandraMessageRepositoryIT
     @GenerateList(Message.class)
     private List<Message> messages;
     
-    private static Cluster cluster;
-    private static Session session;
-    private static QueryBuilder queryBuilder;
-    
+
     private CassandraMessageRepository instance;
-    
-    @BeforeClass
-    public static void begin()
-    {
-        cluster = TestSessions.createTestCluster();
-        session = TestSessions.createTestSession(cluster);
-        queryBuilder = TestSessions.createQueryBuilder(cluster);
-    }
-    
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-        cluster.close();
-    }
+
 
     @Before
     public void setUp()
