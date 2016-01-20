@@ -49,6 +49,19 @@ class Tables
         static final String TIER = "tier";
     }
     
+    static class FollowTables
+    {
+        static final String TABLE_NAME_APP_FOLLOWERS = "Follow_Application_Followers";
+        static final String TABLE_NAME_USER_FOLLOWING = "Follow_User_Followings";
+        
+        static final String APP_ID = "app_id";
+        static final String USER_ID = "user_id";
+        static final String APP_NAME = "app_name";
+        static final String USER_FIRST_NAME = "first_name";
+        static final String TIME_OF_FOLLOW = "time_of_follow";
+    }
+        
+    
     static class MessagesTable
     {
         static final String TABLE_NAME = "Messages";
