@@ -236,8 +236,10 @@ final class CassandraUserRepository implements UserRepository
 
     private Insert createInsertIntoUserTable(User user)
     {
+        UUID userUuid = UUID.fromString(user.userId);
+
         return queryBuilder.insertInto(UsersTable.TABLE_NAME)
-            .value(UsersTable.USER_ID, user.userId)
+            .value(UsersTable.USER_ID, userUuid)
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
@@ -249,8 +251,10 @@ final class CassandraUserRepository implements UserRepository
 
     private Insert createInsertIntoUsersByEmailTable(User user)
     {
+        UUID userUuid = UUID.fromString(user.userId);
+
         return queryBuilder.insertInto(UsersTable.TABLE_NAME_BY_EMAIL)
-            .value(UsersTable.USER_ID, user.userId)
+            .value(UsersTable.USER_ID, userUuid)
             .value(UsersTable.EMAIL, user.email)
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
