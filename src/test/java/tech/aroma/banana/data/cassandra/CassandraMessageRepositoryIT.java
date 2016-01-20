@@ -269,19 +269,19 @@ public class CassandraMessageRepositoryIT
         assertThat(count, greaterThanOrEqualTo((long) messages.size()));
     }
 
-    private void assertMessagesMostlyMatch(Message result, Message message)
+    private void assertMessagesMostlyMatch(Message result, Message expected)
     {
         assertThat(result, notNullValue());
-        assertThat(result.applicationId, is(message.applicationId));
-        assertThat(result.applicationName, is(message.applicationName));
-        assertThat(result.body, is(message.body));
-        assertThat(result.hostname, is(message.hostname));
-        assertThat(result.macAddress, is(message.macAddress));
-        assertThat(result.messageId, is(message.messageId));
-        assertThat(result.title, is(message.title));
-        assertThat(result.timeMessageReceived, is(message.timeMessageReceived));
-        assertThat(result.timeOfCreation, is(message.timeOfCreation));
-        assertThat(result.urgency, is(message.urgency));
+        assertThat(result.applicationId, is(expected.applicationId));
+        assertThat(result.applicationName, is(expected.applicationName));
+        assertThat(result.body, is(expected.body));
+        assertThat(result.hostname, is(expected.hostname));
+        assertThat(result.macAddress, is(expected.macAddress));
+        assertThat(result.messageId, is(expected.messageId));
+        assertThat(result.title, is(expected.title));
+        assertThat(result.timeMessageReceived, is(expected.timeMessageReceived));
+        assertThat(result.timeOfCreation, is(expected.timeOfCreation));
+        assertThat(result.urgency, is(expected.urgency));
     }
 
 }
