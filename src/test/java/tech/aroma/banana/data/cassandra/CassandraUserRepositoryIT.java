@@ -155,6 +155,18 @@ public class CassandraUserRepositoryIT
     @Test
     public void testDeleteUser() throws Exception
     {
+        instance.saveUser(user);
+        
+        instance.deleteUser(userId);
+        
+        assertThat(instance.containsUser(userId), is(false));
+    }
+    
+    @Test
+    public void testDeleteUserWhenNotExists() throws Exception
+    {
+        assertThrows(() -> instance.deleteUser(userId))
+            .isInstanceOf(UserDoesNotExistException.class);
     }
 
     @Test
