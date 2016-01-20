@@ -235,6 +235,7 @@ final class CassandraInboxRepository implements InboxRepository
             .insertInto(Inbox.TABLE_NAME)
             .value(Inbox.USER_ID, userUuid)
             .value(Inbox.MESSAGE_ID, msgUuid)
+            //Purposely not including body in Inbox for now.
             .value(Inbox.APP_ID, appUuid)
             .value(Inbox.URGENCY, message.urgency)
             .value(Inbox.TITLE, message.title)
