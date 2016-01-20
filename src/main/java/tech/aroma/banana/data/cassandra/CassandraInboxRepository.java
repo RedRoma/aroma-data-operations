@@ -30,12 +30,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.InboxRepository;
+import tech.aroma.banana.data.cassandra.Tables.Inbox;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validMessageId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -196,7 +199,7 @@ final class CassandraInboxRepository implements InboxRepository
     @Override
     public long countInboxForUser(String userId) throws TException
     {
-         checkUserId(userId);
+        checkUserId(userId);
 
         Statement query = createQueryToCountMessagesFor(userId);
 
@@ -226,43 +229,95 @@ final class CassandraInboxRepository implements InboxRepository
     {
         UUID msgUuid = UUID.fromString(message.messageId);
         UUID userUuid = UUID.fromString(user.userId);
-        
-        return null;
+        UUID appUuid = UUID.fromString(message.applicationId);
+
+        return queryBuilder
+            .insertInto(Inbox.TABLE_NAME)
+            .value(Inbox.USER_ID, userUuid)
+            .value(Inbox.MESSAGE_ID, msgUuid)
+            .value(Inbox.APP_ID, appUuid)
+            .value(Inbox.URGENCY, message.urgency)
+            .value(Inbox.TITLE, message.title)
+            .value(Inbox.TIME_CREATED, message.timeOfCreation)
+            .value(Inbox.TIME_RECEIVED, message.timeMessageReceived)
+            .value(Inbox.HOSTNAME, message.hostname)
+            .value(Inbox.MAC_ADDRESS, message.macAddress)
+            .value(Inbox.APP_NAME, message.applicationName);
+
     }
 
     private Statement createQueryToGetMessagesFor(String userId)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        UUID userUuid = UUID.fromString(userId);
 
-    private void checkUserId(String userId)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return queryBuilder
+            .select()
+            .all()
+            .from(Inbox.TABLE_NAME)
+            .where(eq(Inbox.USER_ID, userUuid));
     }
 
     private Statement createQueryToCheckIfInInboxOf(String userId, Message message)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        UUID userUuid = UUID.fromString(userId);
+        UUID msgUuid = UUID.fromString(message.messageId);
 
-    private void checkMessageId(String messageId)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return queryBuilder
+            .select()
+            .countAll()
+            .from(Inbox.TABLE_NAME)
+            .where(eq(Inbox.USER_ID, userUuid))
+            .and(eq(Inbox.MESSAGE_ID, msgUuid));
+
     }
 
     private Statement createDeleteStatementFor(String userId, String messageId)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UUID userUuid = UUID.fromString(userId);
+        UUID msgUuid = UUID.fromString(messageId);
+        
+        return queryBuilder
+            .delete()
+            .all()
+            .from(Inbox.TABLE_NAME)
+            .where(eq(Inbox.USER_ID, userUuid))
+            .and(eq(Inbox.MESSAGE_ID, msgUuid));
     }
 
     private Statement createDeleteAllStatementFor(String userId)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UUID userUuid = UUID.fromString(userId);
+        
+        return queryBuilder
+            .delete()
+            .all()
+            .from(Inbox.TABLE_NAME)
+            .where(eq(Inbox.USER_ID, userUuid));
     }
 
     private Statement createQueryToCountMessagesFor(String userId)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UUID userUuid = UUID.fromString(userId);
+        
+        return queryBuilder
+            .select()
+            .countAll()
+            .from(Inbox.TABLE_NAME)
+            .where(eq(Inbox.USER_ID, userUuid));
+    }
+
+    private void checkMessageId(String messageId) throws InvalidArgumentException
+    {
+        checkThat(messageId)
+            .throwing(InvalidArgumentException.class)
+            .is(validMessageId());
+    }
+
+    private void checkUserId(String userId) throws InvalidArgumentException
+    {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .is(validUserId());
     }
 
 }
