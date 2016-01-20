@@ -24,8 +24,8 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -68,7 +68,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  *
  * @author SirWellington
  */
-@Repeat(10)
+@Repeat(100)
 @RunWith(AlchemyTestRunner.class)
 public class CassandraApplicationRepositoryTest
 {
@@ -99,6 +99,9 @@ public class CassandraApplicationRepositoryTest
     private String ownerId;
 
     private Row mockRow;
+    
+    @Mock
+    private Function<Row, Application> appMapper;
 
     @Before
     public void setUp()
@@ -112,17 +115,23 @@ public class CassandraApplicationRepositoryTest
 
         queryBuilder = new QueryBuilder(cluster);
 
-        instance = new CassandraApplicationRepository(session, queryBuilder);
+        instance = new CassandraApplicationRepository(session, queryBuilder, appMapper);
+        
+        when(appMapper.apply(mockRow))
+            .thenReturn(app);
     }
 
     @DontRepeat
     @Test
     public void testConstructor()
     {
-        assertThrows(() -> new CassandraApplicationRepository(session, null))
+        assertThrows(() -> new CassandraApplicationRepository(session, null, null))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraApplicationRepository(null, queryBuilder))
+        assertThrows(() -> new CassandraApplicationRepository(null, queryBuilder, null))
+            .isInstanceOf(IllegalArgumentException.class);
+
+        assertThrows(() -> new CassandraApplicationRepository(null, null, appMapper))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -136,14 +145,20 @@ public class CassandraApplicationRepositoryTest
         assertThat(statementUsed, notNullValue());
     }
 
-    @Ignore
     @Test
     public void testDeleteApplication() throws Exception
     {
-        instance.saveApplication(app);
-
-        when(session.execute(Mockito.any(Statement.class)));
-
+        ResultSet results = mock(ResultSet.class);
+        
+        when(results.one())
+            .thenReturn(mockRow);
+        
+        when(appMapper.apply(mockRow))
+            .thenReturn(app);
+        
+        when(session.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
         instance.deleteApplication(appId);
     }
 
