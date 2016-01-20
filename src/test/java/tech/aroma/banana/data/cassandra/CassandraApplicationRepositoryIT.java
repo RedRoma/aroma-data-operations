@@ -62,6 +62,25 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraApplicationRepositoryIT
 {
 
+    private static Session session;
+    private static QueryBuilder queryBuilder;
+    private static Cluster cluster;
+
+    @BeforeClass
+    public static void begin()
+    {
+        cluster = TestSessions.createTestCluster();
+        queryBuilder = TestSessions.createQueryBuilder(cluster);
+        session = TestSessions.createTestSession(cluster);
+    }
+
+    @AfterClass
+    public static void end()
+    {
+        session.close();
+        cluster.close();
+    }
+    
     @GeneratePojo
     private Application app;
 
@@ -83,24 +102,7 @@ public class CassandraApplicationRepositoryIT
     
     private CassandraApplicationRepository instance;
 
-    private static Session session;
-    private static QueryBuilder queryBuilder;
-    private static Cluster cluster;
 
-    @BeforeClass
-    public static void begin()
-    {
-        cluster = TestSessions.createTestCluster();
-        queryBuilder = TestSessions.createQueryBuilder(cluster);
-        session = TestSessions.createTestSession(cluster);
-    }
-
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-        cluster.close();
-    }
 
     @Before
     public void setUp()
