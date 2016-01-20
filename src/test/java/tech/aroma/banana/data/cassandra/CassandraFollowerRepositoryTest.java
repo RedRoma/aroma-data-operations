@@ -24,6 +24,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,6 +151,16 @@ public class CassandraFollowerRepositoryTest
         verify(cassandra).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
+    }
+
+    @Test
+    public void testSaveFollowingWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+
+        assertThrows(() -> instance.saveFollowing(user, application))
+            .isInstanceOf(TException.class);
     }
 
     @Test
