@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Banana.Messages
 	hostname text,
 	mac_address text,
 	ip_address text,
-	app_id UUID,
+	app_id uuid,
 	app_name text,
 
 	PRIMARY KEY ((app_id), message_id)
@@ -23,7 +23,7 @@ CREATE INDEX IF NOT EXISTS Messages_By_Hostname  ON Banana.Messages (hostname);
 
 CREATE TABLE IF NOT EXISTS Banana.Messages_Rate_Limit
 (
-	app_id UUID,
+	app_id uuid,
 	request_time timeuuid,
 
 	PRIMARY KEY ((app_id), request_time)
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Banana.Messages_Rate_Limit
 
 CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_App
 (
-	app_id UUID,
+	app_id uuid,
 	total_messages counter,
 
 	PRIMARY KEY (app_id)
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_App
 
 CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_Title
 (
-	app_id UUID,
+	app_id uuid,
 	title text,
 	total_messages counter,
 

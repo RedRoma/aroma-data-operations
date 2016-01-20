@@ -2,16 +2,16 @@
 
 CREATE TABLE IF NOT EXISTS Banana.Users
 (
-	user_id UUID,
+	user_id uuid,
 	first_name text,
 	middle_name text,
 	last_name text,
 	emails set<text>,
-	organizations set<UUID>,
+	organizations set<uuid>,
 	roles set<text>,
 	gender text,
 	birthdate timestamp,
-	profile_image_id UUID,
+	profile_image_id uuid,
 	github_profile text,
 
 	PRIMARY KEY (user_id)
@@ -24,7 +24,7 @@ CREATE INDEX IF NOT EXISTS Banana.Users_By_Roles_Index ON Banana.Users (roles);
 CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
 (
 	github_profile text,
-	user_id UUID,
+	user_id uuid,
 	first_name text,
 	middle_name text,
 	last_name text,
@@ -36,12 +36,12 @@ CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
 CREATE TABLE IF NOT EXISTS Banana.Users_By_Email
 (
 	email_address text,
-	user_id UUID,
+	user_id uuid,
 	first_name text,
 	middle_name text,
 	last_name text,
 	github_profile text,
-	profile_image_id UUID,
+	profile_image_id uuid,
 
 	PRIMARY KEY (email_address)
 );
