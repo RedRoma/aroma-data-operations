@@ -41,7 +41,6 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicati
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -74,11 +73,6 @@ final class ApplicationRepositoryInMemory implements ApplicationRepository
             .is(validApplication());
         
         String applicationId = application.applicationId;
-        
-        checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
-            .usingMessage("missing applicationId")
-            .is(nonEmptyString());
         
         mainTable.put(applicationId, application);
         recents.put(applicationId, application);
