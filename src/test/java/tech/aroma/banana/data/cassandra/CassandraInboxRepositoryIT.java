@@ -22,6 +22,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
@@ -30,6 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.TimeUnit;
@@ -44,6 +46,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -96,6 +99,8 @@ public class CassandraInboxRepositoryIT
 
     @GenerateList(Message.class)
     private List<Message> messages;
+    
+    private Map<String, Message> messageMapping;
 
     private final Function<Row, Message> messageMapper = Mappers.messageMapper();
 
@@ -124,6 +129,9 @@ public class CassandraInboxRepositoryIT
         message.unsetIsTruncated();
         
         user.userId = userId;
+        
+        messageMapping = Maps.create();
+        messages.forEach(m -> messageMapping.put(m.messageId, m));
     }
 
     @After
@@ -145,11 +153,12 @@ public class CassandraInboxRepositoryIT
         catch (Exception ex)
         {
             System.out.println("Failed to delete messages: " + ex);
-
         }
+        
+        messageMapping.clear();
     }
 
-    private void saveMessages(List<Message> messages) throws TException
+    private void saveMessagesInInbox(List<Message> messages) throws TException
     {
         for (Message msg : messages)
         {
@@ -175,6 +184,17 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testGetMessagesForUser() throws Exception
     {
+        saveMessagesInInbox(messages);
+        
+        List<Message> result = instance.getMessagesForUser(userId);
+        assertThat(result.size(), is(messages.size()));
+        
+        for (Message m : result)
+        {
+            assertThat(messageMapping.containsKey(m.messageId), is(true));
+            Message expected = messageMapping.get(m.messageId);
+            assertMostlySame(m, expected);
+        }
     }
 
     @Test
@@ -195,6 +215,20 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testCountInboxForUser() throws Exception
     {
+    }
+
+    private void assertMostlySame(Message result, Message expected)
+    {
+        assertThat(result, notNullValue());
+        assertThat(result.applicationId, is(expected.applicationId));
+        assertThat(result.applicationName, is(expected.applicationName));
+        assertThat(result.hostname, is(expected.hostname));
+        assertThat(result.macAddress, is(expected.macAddress));
+        assertThat(result.messageId, is(expected.messageId));
+        assertThat(result.title, is(expected.title));
+        assertThat(result.timeMessageReceived, is(expected.timeMessageReceived));
+        assertThat(result.timeOfCreation, is(expected.timeOfCreation));
+        assertThat(result.urgency, is(expected.urgency));
     }
 
 }
