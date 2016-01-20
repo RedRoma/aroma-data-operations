@@ -158,7 +158,7 @@ public class CassandraMessageRepositoryIT
         }
     }
 
-    private void deleteMessages(List<Message> messaages) throws TException
+    private void deleteMessages(List<Message> messages) throws TException
     {
         for (Message msg : messages)
         {
