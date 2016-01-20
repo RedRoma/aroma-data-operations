@@ -59,8 +59,7 @@ public final class RequestAssertions
                 .are(nonEmptyString());
             
             checkThat(app.applicationId)
-                .usingMessage("expected UUID type for appId")
-                .is(validUUID());
+                .is(validAppId());
         };
     }
     
@@ -71,10 +70,7 @@ public final class RequestAssertions
             checkThat(message).is(notNull());
             
             checkThat(message.messageId)
-                .usingMessage("missing messageID")
-                .is(nonEmptyString())
-                .usingMessage("messageID must be a UUID type")
-                .is(validUUID());
+                .is(validMessageId());
             
             checkThat(message.title)
                 .usingMessage("message missing Title")
@@ -90,12 +86,46 @@ public final class RequestAssertions
                 .is(notNull());
             
             checkThat(user.userId)
-                .is(nonEmptyString())
-                .usingMessage("expected UUID for userId")
-                .is(validUUID());
+                .is(validUserId());
             
             checkThat(user.name)
                 .is(nonEmptyString());
+        };
+    }
+    
+    public static AlchemyAssertion<String> validAppId()
+    {
+        return appId ->
+        {
+            checkThat(appId)
+                .usingMessage("missing appId")
+                .is(nonEmptyString())
+                .usingMessage("appId must be a UUID")
+                .is(validUUID());
+        };
+    }
+    
+    public static AlchemyAssertion<String> validMessageId()
+    {
+        return msgId ->
+        {
+            checkThat(msgId)
+                .usingMessage("missing messageID")
+                .is(nonEmptyString())
+                .usingMessage("messageID must be a UUID type")
+                .is(validUUID());
+        };
+    }
+    
+    public static AlchemyAssertion<String> validUserId()
+    {
+        return userId ->
+        {
+            checkThat(userId)
+                .usingMessage("missing userId")
+                .is(nonEmptyString())
+                .usingMessage("userId must be a UUID")
+                .is(validUUID());
         };
     }
 
