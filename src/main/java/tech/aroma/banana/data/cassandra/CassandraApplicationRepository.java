@@ -43,7 +43,9 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_DESCRIPTION;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_NAME;
@@ -59,8 +61,6 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -190,10 +190,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         checkThat(userId)
             .throwing(InvalidArgumentException.class)
-            .usingMessage("missing userId")
-            .is(nonEmptyString())
-            .usingMessage("invalid UUID Type")
-            .is(validUUID());
+            .is(validUserId());
         
         Statement query = createQueryForAppsOwnedBy(userId);
         
@@ -392,10 +389,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         checkThat(applicationId)
             .throwing(InvalidArgumentException.class)
-            .usingMessage("missing applicationId")
-            .is(nonEmptyString())
-            .usingMessage("invalid UUID type")
-            .is(validUUID());
+            .is(validAppId());
     }
     
     private Statement createQueryToCheckIfAppIdExists(String applicationId)
