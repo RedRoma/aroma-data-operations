@@ -37,14 +37,14 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  * @author SirWellington
  */
 @DecoratorPattern(role = DECORATOR)
-final class MeasuredUserRepository implements UserRepository
+public final class MeasuredUserRepository implements UserRepository
 {
     private final static Logger LOG = LoggerFactory.getLogger(MeasuredUserRepository.class);
 
     private final UserRepository delegate;
 
     @Inject
-    MeasuredUserRepository(@DecoratedBy(MeasuredUserRepository.class) UserRepository delegate)
+    public MeasuredUserRepository(@DecoratedBy(MeasuredUserRepository.class) UserRepository delegate)
     {
         checkThat(delegate).is(notNull());
         
