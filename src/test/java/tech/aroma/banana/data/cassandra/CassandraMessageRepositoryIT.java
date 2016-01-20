@@ -27,6 +27,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
@@ -128,6 +129,16 @@ public class CassandraMessageRepositoryIT
         catch(Exception ex)
         {
             System.out.println("Failed to delete message: " + ex);
+        }
+        
+        try
+        {
+            deleteMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Failed to delete messages: " + ex);
+
         }
     }
 
@@ -238,6 +249,7 @@ public class CassandraMessageRepositoryIT
         assertThat(containTheSameElements(result, expected), is(true));
     }
 
+    @Ignore
     @Test
     public void testGetCountByApplication() throws Exception
     {
