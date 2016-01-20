@@ -17,11 +17,13 @@
 package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -98,6 +100,7 @@ public class CassandraMessageRepositoryIT
     @GenerateList(Message.class)
     private List<Message> messages;
     
+    private final Function<Row, Message> messageMapper = Mappers.messageMapper();
 
     private CassandraMessageRepository instance;
 
@@ -105,7 +108,7 @@ public class CassandraMessageRepositoryIT
     @Before
     public void setUp()
     {
-        instance = new CassandraMessageRepository(session, queryBuilder);
+        instance = new CassandraMessageRepository(session, queryBuilder, messageMapper);
         
         AlchemyGenerator<String> timeUids = () -> UUIDs.timeBased().toString();
         

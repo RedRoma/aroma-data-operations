@@ -21,9 +21,9 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -33,7 +33,6 @@ import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.cassandra.Tables.MessagesTable;
 import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.Urgency;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
@@ -41,7 +40,6 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
 import static java.lang.String.format;
-import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.BODY;
@@ -70,15 +68,19 @@ final class CassandraMessageRepository implements MessageRepository
 
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
+    private final Function<Row, Message> messageMapper;
 
     @Inject
-    CassandraMessageRepository(Session cassandra, QueryBuilder queryBuilder)
+    CassandraMessageRepository(Session cassandra, 
+                               QueryBuilder queryBuilder,
+                               Function<Row, Message> messageMapper)
     {
-        checkThat(cassandra, queryBuilder)
+        checkThat(cassandra, queryBuilder, messageMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
         this.queryBuilder = queryBuilder;
+        this.messageMapper = messageMapper;
     }
 
     @Override
@@ -392,50 +394,7 @@ final class CassandraMessageRepository implements MessageRepository
 
     private Message createMessageFromRow(Row row) throws OperationFailedException
     {
-        Message message = new Message();
-        
-        UUID msgId = row.getUUID(MESSAGE_ID);
-        UUID appId = row.getUUID(APP_ID);
-        
-        checkThat(msgId)
-            .usingMessage("missing message id")
-            .throwing(OperationFailedException.class)
-            .is(notNull());
-        
-        checkThat(appId)
-            .usingMessage("missing app id")
-            .throwing(OperationFailedException.class)
-            .is(notNull());
-        
-        message.setMessageId(msgId.toString())
-            .setApplicationId(appId.toString())
-            .setTitle(row.getString(TITLE))
-            .setHostname(row.getString(HOSTNAME))
-            .setMacAddress(row.getString(MAC_ADDRESS))
-            .setBody(row.getString(BODY))
-            .setApplicationName(row.getString(APP_NAME));
-        
-        Date timeCreated = row.getTimestamp(TIME_CREATED);
-        Date timeReceived = row.getTimestamp(TIME_RECEIVED);
-        
-        if (timeCreated != null)
-        {
-            message.setTimeOfCreation(timeCreated.getTime());
-        }
-        
-        if (timeReceived != null)
-        {
-            message.setTimeMessageReceived(timeReceived.getTime());
-        }
-        
-        String urgency = row.getString(URGENCY);
-        if (!isNullOrEmpty(urgency))
-        {
-            message.setUrgency(Urgency.valueOf(urgency));
-        }
-        
-        
-        return message;
+        return messageMapper.apply(row);
     }
 
     private Statement createDeleteStatementFor(Message message)
