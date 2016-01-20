@@ -261,9 +261,11 @@ final class CassandraUserRepository implements UserRepository
 
     private Insert createInsertIntoUsersByGithubTable(User user)
     {
+        UUID userUuid = UUID.fromString(user.userId);
+
         return queryBuilder.insertInto(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
             .value(UsersTable.GITHUB_PROFILE, user.githubProfile)
-            .value(UsersTable.USER_ID, user.userId)
+            .value(UsersTable.USER_ID, userUuid)
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
