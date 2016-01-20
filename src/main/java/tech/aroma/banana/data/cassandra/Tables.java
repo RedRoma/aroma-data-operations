@@ -100,6 +100,7 @@ class Tables
         static final String GENDER = "gender";
         static final String BIRTH_DATE = "birthdate";
         static final String GITHUB_PROFILE = "github_profile";
+        static final String PROFILE_IMAGE_ID = "profile_image_id";
         
     }
     
