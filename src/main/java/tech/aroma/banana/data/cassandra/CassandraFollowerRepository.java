@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.FollowerRepository;
-import tech.aroma.banana.data.cassandra.Tables.FollowTables;
+import tech.aroma.banana.data.cassandra.Tables.Follow;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -41,15 +41,16 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.now;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
-import static tech.aroma.banana.data.cassandra.Tables.FollowTables.APP_ID;
-import static tech.aroma.banana.data.cassandra.Tables.FollowTables.APP_NAME;
-import static tech.aroma.banana.data.cassandra.Tables.FollowTables.TIME_OF_FOLLOW;
-import static tech.aroma.banana.data.cassandra.Tables.FollowTables.USER_FIRST_NAME;
-import static tech.aroma.banana.data.cassandra.Tables.FollowTables.USER_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Follow.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Follow.APP_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Follow.TIME_OF_FOLLOW;
+import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_FIRST_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_ID;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -220,7 +221,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         BatchStatement batch = new BatchStatement();
 
         Statement insertIntoAppFollowersTable = queryBuilder
-            .insertInto(FollowTables.TABLE_NAME_APP_FOLLOWERS)
+            .insertInto(Follow.TABLE_NAME_APP_FOLLOWERS)
             .value(APP_ID, appId)
             .value(USER_ID, userId)
             .value(APP_NAME, app.name)
@@ -230,7 +231,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         batch.add(insertIntoAppFollowersTable);
 
         Statement insertIntoUserFollowingsTable = queryBuilder
-            .insertInto(FollowTables.TABLE_NAME_USER_FOLLOWING)
+            .insertInto(Follow.TABLE_NAME_USER_FOLLOWING)
             .value(APP_ID, appId)
             .value(USER_ID, userId)
             .value(APP_NAME, app.name)
@@ -273,7 +274,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         Statement deleteFromAppFollowersTable = queryBuilder
             .delete()
             .all()
-            .from(FollowTables.TABLE_NAME_APP_FOLLOWERS)
+            .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(APP_ID, appUuid))
             .and(eq(USER_ID, userUuid));
 
@@ -282,7 +283,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         Statement deleteFromUserFollowingsTable = queryBuilder
             .delete()
             .all()
-            .from(FollowTables.TABLE_NAME_USER_FOLLOWING)
+            .from(Follow.TABLE_NAME_USER_FOLLOWING)
             .where(eq(APP_ID, appUuid))
             .and(eq(USER_ID, userUuid));
 
@@ -298,7 +299,7 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         return queryBuilder.select()
             .countAll()
-            .from(FollowTables.TABLE_NAME_APP_FOLLOWERS)
+            .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(USER_ID, userUuid))
             .and(eq(APP_ID, appUuid));
     }
@@ -318,7 +319,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         return queryBuilder
             .select()
             .all()
-            .from(FollowTables.TABLE_NAME_USER_FOLLOWING)
+            .from(Follow.TABLE_NAME_USER_FOLLOWING)
             .where(eq(USER_ID, userUuid));
     }
 
@@ -329,7 +330,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         return queryBuilder
             .select()
             .all()
-            .from(FollowTables.TABLE_NAME_APP_FOLLOWERS)
+            .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(APP_ID, appUuid));
     }
 

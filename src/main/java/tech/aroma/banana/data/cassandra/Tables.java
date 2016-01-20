@@ -49,7 +49,7 @@ class Tables
         static final String TIER = "tier";
     }
     
-    static class FollowTables
+    static class Follow
     {
         static final String TABLE_NAME_APP_FOLLOWERS = "Follow_Application_Followers";
         static final String TABLE_NAME_USER_FOLLOWING = "Follow_User_Followings";
