@@ -30,6 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -37,7 +38,9 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -135,6 +138,18 @@ public class CassandraUserRepositoryIT
     @Test
     public void testGetUser() throws Exception
     {
+        instance.saveUser(user);
+        
+        User result = instance.getUser(userId);
+        
+        assertMostlyMatch(result, user);
+    }
+    
+    @Test
+    public void testGetUserWhenNotExist() throws Exception
+    {
+        assertThrows(() -> instance.getUser(userId))
+            .isInstanceOf(UserDoesNotExistException.class);
     }
 
     @Test
@@ -155,6 +170,16 @@ public class CassandraUserRepositoryIT
     @Test
     public void testFindByGithubProfile() throws Exception
     {
+    }
+
+    private void assertMostlyMatch(User result, User user)
+    {
+        assertThat(result, notNullValue());
+        assertThat(result.userId, is(user.userId));
+        assertThat(result.email, is(user.email));
+        assertThat(result.firstName, is(user.firstName));
+        assertThat(result.middleName, is(user.middleName));
+        assertThat(result.lastName, is(user.lastName));
     }
 
 }
