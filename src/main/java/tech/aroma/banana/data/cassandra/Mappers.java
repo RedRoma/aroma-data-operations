@@ -152,26 +152,26 @@ final class Mappers
         {
             String email = null;
             
-            if (doesRowContainColumn(row, Tables.UsersTable.EMAIL))
+            if (doesRowContainColumn(row, Tables.Users.EMAIL))
             {
-                email = row.getString(Tables.UsersTable.EMAIL);
+                email = row.getString(Tables.Users.EMAIL);
             }
-            else if (doesRowContainColumn(row, Tables.UsersTable.EMAILS))
+            else if (doesRowContainColumn(row, Tables.Users.EMAILS))
             {
-                Set<String> emails = row.getSet(Tables.UsersTable.EMAILS, String.class);
+                Set<String> emails = row.getSet(Tables.Users.EMAILS, String.class);
                 email = emails.stream().findFirst().orElse(null);
             }
             
-            Date birthDate = row.getTimestamp(Tables.UsersTable.BIRTH_DATE);
+            Date birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
             
             return new User()
-                .setUserId(row.getUUID(Tables.UsersTable.USER_ID).toString())
-                .setFirstName(row.getString(Tables.UsersTable.FIRST_NAME))
-                .setMiddleName(row.getString(Tables.UsersTable.MIDDLE_NAME))
-                .setLastName(row.getString(Tables.UsersTable.LAST_NAME))
+                .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
+                .setFirstName(row.getString(Tables.Users.FIRST_NAME))
+                .setMiddleName(row.getString(Tables.Users.MIDDLE_NAME))
+                .setLastName(row.getString(Tables.Users.LAST_NAME))
                 .setEmail(email)
-                .setGithubProfile(row.getString(Tables.UsersTable.GITHUB_PROFILE))
-                .setRoles(row.getSet(Tables.UsersTable.ROLES, Role.class));
+                .setGithubProfile(row.getString(Tables.Users.GITHUB_PROFILE))
+                .setRoles(row.getSet(Tables.Users.ROLES, Role.class));
         };
     }
     

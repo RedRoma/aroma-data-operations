@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.UserRepository;
-import tech.aroma.banana.data.cassandra.Tables.UsersTable;
+import tech.aroma.banana.data.cassandra.Tables.Users;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
@@ -41,11 +41,12 @@ import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
-import static tech.aroma.banana.data.cassandra.Tables.UsersTable.TABLE_NAME_BY_GITHUB_PROFILE;
+import static tech.aroma.banana.data.cassandra.Tables.Users.TABLE_NAME_BY_GITHUB_PROFILE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Stores user information in Cassandra.
@@ -242,14 +243,14 @@ final class CassandraUserRepository implements UserRepository
 
         Set<String> emails = Sets.createFrom(user.email);
         
-        return queryBuilder.insertInto(UsersTable.TABLE_NAME)
-            .value(UsersTable.USER_ID, userUuid)
-            .value(UsersTable.FIRST_NAME, user.firstName)
-            .value(UsersTable.MIDDLE_NAME, user.middleName)
-            .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.EMAILS, emails)
-            .value(UsersTable.ROLES, user.roles)
-            .value(UsersTable.GITHUB_PROFILE, user.githubProfile);
+        return queryBuilder.insertInto(Users.TABLE_NAME)
+            .value(Users.USER_ID, userUuid)
+            .value(Users.FIRST_NAME, user.firstName)
+            .value(Users.MIDDLE_NAME, user.middleName)
+            .value(Users.LAST_NAME, user.lastName)
+            .value(Users.EMAILS, emails)
+            .value(Users.ROLES, user.roles)
+            .value(Users.GITHUB_PROFILE, user.githubProfile);
 
     }
 
@@ -258,26 +259,26 @@ final class CassandraUserRepository implements UserRepository
         UUID userUuid = UUID.fromString(user.userId);
 
 
-        return queryBuilder.insertInto(UsersTable.TABLE_NAME_BY_EMAIL)
-            .value(UsersTable.USER_ID, userUuid)
-            .value(UsersTable.EMAIL, user.email)
-            .value(UsersTable.FIRST_NAME, user.firstName)
-            .value(UsersTable.MIDDLE_NAME, user.middleName)
-            .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.GITHUB_PROFILE, user.githubProfile);
+        return queryBuilder.insertInto(Users.TABLE_NAME_BY_EMAIL)
+            .value(Users.USER_ID, userUuid)
+            .value(Users.EMAIL, user.email)
+            .value(Users.FIRST_NAME, user.firstName)
+            .value(Users.MIDDLE_NAME, user.middleName)
+            .value(Users.LAST_NAME, user.lastName)
+            .value(Users.GITHUB_PROFILE, user.githubProfile);
     }
 
     private Insert createInsertIntoUsersByGithubTable(User user)
     {
         UUID userUuid = UUID.fromString(user.userId);
 
-        return queryBuilder.insertInto(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
-            .value(UsersTable.GITHUB_PROFILE, user.githubProfile)
-            .value(UsersTable.USER_ID, userUuid)
-            .value(UsersTable.FIRST_NAME, user.firstName)
-            .value(UsersTable.MIDDLE_NAME, user.middleName)
-            .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.EMAIL, user.email);
+        return queryBuilder.insertInto(Users.TABLE_NAME_BY_GITHUB_PROFILE)
+            .value(Users.GITHUB_PROFILE, user.githubProfile)
+            .value(Users.USER_ID, userUuid)
+            .value(Users.FIRST_NAME, user.firstName)
+            .value(Users.MIDDLE_NAME, user.middleName)
+            .value(Users.LAST_NAME, user.lastName)
+            .value(Users.EMAIL, user.email);
     }
 
     private Select createQueryToGetUser(String userId)
@@ -287,8 +288,8 @@ final class CassandraUserRepository implements UserRepository
         return queryBuilder
             .select()
             .all()
-            .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, userUuid))
+            .from(Users.TABLE_NAME)
+            .where(eq(Users.USER_ID, userUuid))
             .limit(2);
     }
 
@@ -297,8 +298,8 @@ final class CassandraUserRepository implements UserRepository
         return queryBuilder
             .select()
             .all()
-            .from(UsersTable.TABLE_NAME_BY_EMAIL)
-            .where(eq(UsersTable.EMAIL, email));
+            .from(Users.TABLE_NAME_BY_EMAIL)
+            .where(eq(Users.EMAIL, email));
     }
 
     private Statement createQueryToGetUsersByGithubProfile(String githubProfile)
@@ -306,8 +307,8 @@ final class CassandraUserRepository implements UserRepository
         return queryBuilder
             .select()
             .all()
-            .from(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
-            .where(eq(UsersTable.GITHUB_PROFILE, githubProfile));
+            .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
+            .where(eq(Users.GITHUB_PROFILE, githubProfile));
     }
 
     private User createUserFromRow(Row row)
@@ -324,24 +325,24 @@ final class CassandraUserRepository implements UserRepository
         Statement deleteFromUsersTable = queryBuilder
             .delete()
             .all()
-            .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, userUuuid));
+            .from(Users.TABLE_NAME)
+            .where(eq(Users.USER_ID, userUuuid));
 
         batch.add(deleteFromUsersTable);
 
         Statement deleteFromUserEmailsTable = queryBuilder
             .delete()
             .all()
-            .from(UsersTable.TABLE_NAME_BY_EMAIL)
-            .where(eq(UsersTable.EMAIL, user.email));
+            .from(Users.TABLE_NAME_BY_EMAIL)
+            .where(eq(Users.EMAIL, user.email));
 
         batch.add(deleteFromUserEmailsTable);
 
         Statement deleteFromGithubTable = queryBuilder
             .delete()
             .all()
-            .from(UsersTable.TABLE_NAME_BY_GITHUB_PROFILE)
-            .where(eq(UsersTable.GITHUB_PROFILE, user.githubProfile));
+            .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
+            .where(eq(Users.GITHUB_PROFILE, user.githubProfile));
 
         batch.add(deleteFromGithubTable);
 
@@ -356,8 +357,8 @@ final class CassandraUserRepository implements UserRepository
         return queryBuilder
             .select()
             .countAll()
-            .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, userUuid));
+            .from(Users.TABLE_NAME)
+            .where(eq(Users.USER_ID, userUuid));
     }
 
     private void checkUserId(String userId) throws InvalidArgumentException

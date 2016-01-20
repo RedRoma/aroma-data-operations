@@ -83,7 +83,7 @@ class Tables
         
     }
 
-    static class UsersTable
+    static class Users
     {
         static final String TABLE_NAME = "Users";
         static final String TABLE_NAME_BY_EMAIL = "Users_By_Email";
