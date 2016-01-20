@@ -26,7 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.aroma.banana.data.cassandra.Tables.ApplicationsTable;
+import tech.aroma.banana.data.cassandra.Tables.Applications;
 import tech.aroma.banana.data.cassandra.Tables.MessagesTable;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
@@ -39,7 +39,7 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MESSAGE_ID;
 
 /**
@@ -65,41 +65,41 @@ final class Mappers
                 app.setApplicationId(appId.toString());
             }
             
-            String programmingLanguage = row.getString(ApplicationsTable.PROGRAMMING_LANGUAGE);
+            String programmingLanguage = row.getString(Applications.PROGRAMMING_LANGUAGE);
             if (!isNullOrEmpty(programmingLanguage))
             {
                 ProgrammingLanguage language = ProgrammingLanguage.valueOf(programmingLanguage);
                 app.setProgrammingLanguage(language);
             }
             
-            Date timeOfProvisioning = row.getTimestamp(ApplicationsTable.TIME_PROVISIONED);
+            Date timeOfProvisioning = row.getTimestamp(Applications.TIME_PROVISIONED);
             if (timeOfProvisioning != null)
             {
                 app.setTimeOfProvisioning(timeOfProvisioning.getTime());
             }
             
             //Transform the UUIDs to Strings
-            Set<String> owners = row.getSet(ApplicationsTable.OWNERS, UUID.class)
+            Set<String> owners = row.getSet(Applications.OWNERS, UUID.class)
                 .stream()
                 .map(UUID::toString)
                 .collect(Collectors.toSet());
             
             app.setOwners(owners);
             
-            UUID orgId = row.getUUID(ApplicationsTable.ORG_ID);
+            UUID orgId = row.getUUID(Applications.ORG_ID);
             if (orgId != null)
             {
                 app.setOrganizationId(orgId.toString());
             }
             
-            String tier = row.getString(ApplicationsTable.TIER);
+            String tier = row.getString(Applications.TIER);
             if (!isNullOrEmpty(tier))
             {
                 app.setTier(Tier.valueOf(tier));
             }
             
-            app.setName(row.getString(ApplicationsTable.APP_NAME))
-                .setApplicationDescription(row.getString(ApplicationsTable.APP_DESCRIPTION));
+            app.setName(row.getString(Applications.APP_NAME))
+                .setApplicationDescription(row.getString(Applications.APP_DESCRIPTION));
             
             return app;
         };

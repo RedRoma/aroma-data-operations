@@ -44,21 +44,23 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_DESCRIPTION;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_NAME;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.ORG_ID;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.OWNERS;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.PROGRAMMING_LANGUAGE;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TABLE_NAME;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TABLE_NAME_RECENTLY_CREATED;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TIER;
-import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.TIME_PROVISIONED;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_DESCRIPTION;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.ORG_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.OWNERS;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.PROGRAMMING_LANGUAGE;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.TABLE_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.TABLE_NAME_RECENTLY_CREATED;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.TIER;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.TIME_PROVISIONED;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *

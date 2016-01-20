@@ -33,7 +33,7 @@ class Tables
 {
     private final static Logger LOG = LoggerFactory.getLogger(Tables.class);
     
-    static class ApplicationsTable
+    static class Applications
     {
         static final String TABLE_NAME = "Applications";
         static final String TABLE_NAME_RECENTLY_CREATED = "Applications_Recently_Created";
