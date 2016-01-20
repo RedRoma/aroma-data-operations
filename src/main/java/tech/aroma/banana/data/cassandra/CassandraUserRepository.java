@@ -24,12 +24,14 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.data.cassandra.Tables.UsersTable;
 import tech.aroma.banana.thrift.User;
@@ -137,7 +139,7 @@ final class CassandraUserRepository implements UserRepository
         }
         catch (Exception ex)
         {
-            LOG.error("Failed to delete User with ID {}", userId);
+            LOG.error("Failed to delete User with ID {}", userId, ex);
             throw new OperationFailedException("Could not delete user: " + userId);
         }
     }
@@ -238,14 +240,16 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
 
+        Set<String> emails = Sets.createFrom(user.email);
+        
         return queryBuilder.insertInto(UsersTable.TABLE_NAME)
             .value(UsersTable.USER_ID, userUuid)
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.EMAILS, user.email)
+            .value(UsersTable.EMAILS, emails)
             .value(UsersTable.ROLES, user.roles)
-            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink);
+            .value(UsersTable.GITHUB_PROFILE, user.githubProfile);
 
     }
 
@@ -253,14 +257,14 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
 
+
         return queryBuilder.insertInto(UsersTable.TABLE_NAME_BY_EMAIL)
             .value(UsersTable.USER_ID, userUuid)
             .value(UsersTable.EMAIL, user.email)
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.GITHUB_PROFILE, user.githubProfile)
-            .value(UsersTable.GITHUB_PROFILE, user.profileImageLink);
+            .value(UsersTable.GITHUB_PROFILE, user.githubProfile);
     }
 
     private Insert createInsertIntoUsersByGithubTable(User user)
@@ -273,7 +277,7 @@ final class CassandraUserRepository implements UserRepository
             .value(UsersTable.FIRST_NAME, user.firstName)
             .value(UsersTable.MIDDLE_NAME, user.middleName)
             .value(UsersTable.LAST_NAME, user.lastName)
-            .value(UsersTable.EMAILS, user.email);
+            .value(UsersTable.EMAIL, user.email);
     }
 
     private Select createQueryToGetUser(String userId)
@@ -313,13 +317,15 @@ final class CassandraUserRepository implements UserRepository
 
     private Statement createQueryToDeleteUser(User user)
     {
+        UUID userUuuid = UUID.fromString(user.userId);
+        
         BatchStatement batch = new BatchStatement();
 
         Statement deleteFromUsersTable = queryBuilder
             .delete()
             .all()
             .from(UsersTable.TABLE_NAME)
-            .where(eq(UsersTable.USER_ID, user.userId));
+            .where(eq(UsersTable.USER_ID, userUuuid));
 
         batch.add(deleteFromUsersTable);
 
