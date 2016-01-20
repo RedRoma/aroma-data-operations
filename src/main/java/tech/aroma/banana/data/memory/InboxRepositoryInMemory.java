@@ -32,6 +32,7 @@ import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
@@ -47,10 +48,9 @@ final class InboxRepositoryInMemory implements InboxRepository
     private final static Logger LOG = LoggerFactory.getLogger(InboxRepositoryInMemory.class);
     
     private final Map<String, List<Message>> messagesForUser = Maps.createSynchronized();
-    
 
     @Override
-    public void saveMessageForUser(Message message, User user) throws TException
+    public void saveMessageForUser(@Required User user, @Required Message message) throws TException
     {
         checkThat(message)
             .throwing(InvalidArgumentException.class)

@@ -162,7 +162,7 @@ public class CassandraInboxRepositoryIT
     {
         for (Message msg : messages)
         {
-            instance.saveMessageForUser(msg, user);
+            instance.saveMessageForUser(user, msg);
         }
     }
 
@@ -177,7 +177,7 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testSaveMessageForUser() throws Exception
     {
-        instance.saveMessageForUser(message, user);
+        instance.saveMessageForUser(user, message);
         assertThat(instance.containsMessageInInbox(userId, message), is(true));
     }
 
@@ -203,7 +203,7 @@ public class CassandraInboxRepositoryIT
         boolean result = instance.containsMessageInInbox(userId, message);
         assertThat(result, is(false));
         
-        instance.saveMessageForUser(message, user);
+        instance.saveMessageForUser(user, message);
         
         result = instance.containsMessageInInbox(userId, message);
         assertThat(result, is(true));
@@ -212,8 +212,8 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
-        instance.saveMessageForUser(message, user);
-        
+        instance.saveMessageForUser(user, message);
+
         instance.deleteMessageForUser(userId, msgId);
         
         assertThat(instance.containsMessageInInbox(userId, message), is(false));

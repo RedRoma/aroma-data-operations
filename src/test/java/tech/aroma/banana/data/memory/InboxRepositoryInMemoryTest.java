@@ -93,16 +93,16 @@ public class InboxRepositoryInMemoryTest
 
     private void saveMessages(List<Message> messages) throws TException
     {
-        for(Message message : messages)
+        for (Message message : messages)
         {
-            instance.saveMessageForUser(message, user);
+            instance.saveMessageForUser(user, message);
         }
     }
     
     @Test
     public void testSaveMessageForUser() throws Exception
     {
-        instance.saveMessageForUser(message, user);
+            instance.saveMessageForUser(user, message);
         
         List<Message> result = instance.getMessagesForUser(userId);
         assertThat(result, contains(message));
@@ -111,16 +111,16 @@ public class InboxRepositoryInMemoryTest
     @DontRepeat
     public void testSaveMessageForUserWithBadArguments() throws Exception
     {
-        assertThrows(() -> instance.saveMessageForUser(message, null))
+        assertThrows(() -> instance.saveMessageForUser(null, message))
             .isInstanceOf(InvalidArgumentException.class);
         
-        assertThrows(() -> instance.saveMessageForUser(null, user))
+        assertThrows(() -> instance.saveMessageForUser(user, null))
             .isInstanceOf(InvalidArgumentException.class);
         
-        assertThrows(() -> instance.saveMessageForUser(message, new User()))
+        assertThrows(() -> instance.saveMessageForUser(new User(), message))
             .isInstanceOf(InvalidArgumentException.class);
-        
-        assertThrows(() -> instance.saveMessageForUser(new Message(), user))
+
+        assertThrows(() -> instance.saveMessageForUser(user, new Message()))
             .isInstanceOf(InvalidArgumentException.class);
     }
 
@@ -154,7 +154,7 @@ public class InboxRepositoryInMemoryTest
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
-        instance.saveMessageForUser(message, user);
+        instance.saveMessageForUser(user, message);
         
         instance.deleteMessageForUser(userId, messageId);
         
@@ -248,7 +248,7 @@ public class InboxRepositoryInMemoryTest
     {
         assertThat(instance.containsMessageInInbox(userId, message), is(false));
         
-        instance.saveMessageForUser(message, user);
+        instance.saveMessageForUser(user, message);
         
         assertThat(instance.containsMessageInInbox(userId, message), is(true));
         

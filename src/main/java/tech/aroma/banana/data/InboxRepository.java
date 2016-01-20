@@ -34,7 +34,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  */
 public interface InboxRepository 
 {
-    void saveMessageForUser(@Required Message message, @Required User user) throws TException;
+    void saveMessageForUser(@Required User user, @Required Message message) throws TException;
 
     List<Message> getMessagesForUser(@Required String userId) throws TException;
     
