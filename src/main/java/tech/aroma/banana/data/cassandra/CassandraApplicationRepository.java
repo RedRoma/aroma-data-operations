@@ -23,10 +23,10 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.time.Duration;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
@@ -36,8 +36,6 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.thrift.Application;
-import tech.aroma.banana.thrift.ProgrammingLanguage;
-import tech.aroma.banana.thrift.Tier;
 import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
@@ -45,7 +43,6 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_DESCRIPTION;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
@@ -75,15 +72,19 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
+    private final Function<Row, Application> applicationMapper;
     
     @Inject
-    CassandraApplicationRepository(Session cassandra, QueryBuilder queryBuilder)
+    CassandraApplicationRepository(Session cassandra, 
+                                   QueryBuilder queryBuilder,
+                                   Function<Row, Application> applicationMapper)
     {
-        checkThat(queryBuilder, cassandra)
+        checkThat(queryBuilder, cassandra, applicationMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
         this.queryBuilder = queryBuilder;
+        this.applicationMapper = applicationMapper;
     }
     
     @Override
@@ -382,53 +383,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private Application createApplicationFromRow(Row row) throws OperationFailedException
     {
-        Application app = new Application();
-        
-        UUID appId = row.getUUID(APP_ID);
-        checkThat(appId)
-            .throwing(OperationFailedException.class)
-            .usingMessage("missing appId")
-            .is(notNull());
-        
-        app.setApplicationId(appId.toString());
-        
-        String programmingLanguage = row.getString(PROGRAMMING_LANGUAGE);
-        if (!isNullOrEmpty(programmingLanguage))
-        {
-            ProgrammingLanguage language = ProgrammingLanguage.valueOf(programmingLanguage);
-            app.setProgrammingLanguage(language);
-        }
-        
-        Date timeOfProvisioning = row.getTimestamp(TIME_PROVISIONED);
-        if (timeOfProvisioning != null)
-        {
-            app.setTimeOfProvisioning(timeOfProvisioning.getTime());
-        }
-        
-        //Transform the UUIDs to Strings
-        Set<String> owners = row.getSet(OWNERS, UUID.class)
-            .stream()
-            .map(UUID::toString)
-            .collect(Collectors.toSet());
-        
-        app.setOwners(owners);
-        
-        UUID orgId = row.getUUID(ORG_ID);
-        if (orgId != null)
-        {
-            app.setOrganizationId(orgId.toString());
-        }
-        
-        String tier = row.getString(TIER);
-        if (!isNullOrEmpty(tier))
-        {
-            app.setTier(Tier.valueOf(tier));
-        }
-        
-        app.setName(row.getString(APP_NAME))
-            .setApplicationDescription(row.getString(APP_DESCRIPTION));
-        
-        return app;
+      return applicationMapper.apply(row);
     }
     
     private void checkApplicationId(String applicationId) throws InvalidArgumentException

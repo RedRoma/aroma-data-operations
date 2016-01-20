@@ -17,10 +17,12 @@
 package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -102,6 +104,7 @@ public class CassandraApplicationRepositoryIT
     
     private CassandraApplicationRepository instance;
 
+    private final Function<Row, Application> appMapper = Mappers.appMapper();
 
 
     @Before
@@ -112,7 +115,7 @@ public class CassandraApplicationRepositoryIT
         owners = listOf(uuids, 5);
         
         app.setOwners(toSet((owners)));
-        instance = new CassandraApplicationRepository(session, queryBuilder);
+        instance = new CassandraApplicationRepository(session, queryBuilder, appMapper);
         
         
         apps = apps.stream()
