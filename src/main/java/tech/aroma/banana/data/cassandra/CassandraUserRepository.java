@@ -26,13 +26,13 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.data.cassandra.Tables.UsersTable;
-import tech.aroma.banana.thrift.Role;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
@@ -57,15 +57,19 @@ final class CassandraUserRepository implements UserRepository
     
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
+    private final Function<Row, User> userMapper;
 
     @Inject
-    CassandraUserRepository(Session cassandra, QueryBuilder queryBuilder)
+    CassandraUserRepository(Session cassandra,
+                            QueryBuilder queryBuilder,
+                            Function<Row, User> userMapper)
     {
-        checkThat(cassandra, queryBuilder)
+        checkThat(cassandra, queryBuilder, userMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
         this.queryBuilder = queryBuilder;
+        this.userMapper = userMapper;
     }
     
     @Override
@@ -300,16 +304,7 @@ final class CassandraUserRepository implements UserRepository
 
     private User createUserFromRow(Row row)
     {
-        
-        return new User()
-            .setUserId(row.getUUID(UsersTable.USER_ID).toString())
-            .setEmail(row.getString(UsersTable.EMAILS))
-            .setFirstName(row.getString(UsersTable.FIRST_NAME))
-            .setMiddleName(row.getString(UsersTable.MIDDLE_NAME))
-            .setLastName(row.getString(UsersTable.LAST_NAME))
-            .setGithubProfile(row.getString(UsersTable.GITHUB_PROFILE))
-            .setRoles(row.getSet(UsersTable.ROLES, Role.class))
-            ;
+        return userMapper.apply(row);
     }
 
     private Statement createQueryToDeleteUser(User user)
