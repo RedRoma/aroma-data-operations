@@ -110,6 +110,8 @@ public class CassandraUserRepositoryIT
         {
             System.out.println("Could not delete User: " + userId);
         }
+        
+        deleteUsers(users);
     }
     
     private void saveUsers(List<User> users) throws TException
