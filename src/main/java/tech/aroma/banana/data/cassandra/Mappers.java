@@ -27,16 +27,20 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.cassandra.Tables.ApplicationsTable;
+import tech.aroma.banana.data.cassandra.Tables.MessagesTable;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
 import tech.aroma.banana.thrift.Role;
 import tech.aroma.banana.thrift.Tier;
+import tech.aroma.banana.thrift.Urgency;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.ApplicationsTable.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MESSAGE_ID;
 
 /**
  *
@@ -98,6 +102,47 @@ final class Mappers
                .setApplicationDescription(row.getString(ApplicationsTable.APP_DESCRIPTION));
 
             return app;
+        };
+    }
+    
+    static Function<Row, Message> messageMapper()
+    {
+        return row ->
+        {
+             Message message = new Message();
+        
+        UUID msgId = row.getUUID(MESSAGE_ID);
+        UUID appId = row.getUUID(APP_ID);
+        
+        message.setMessageId(msgId.toString())
+            .setApplicationId(appId.toString())
+            .setTitle(row.getString(MessagesTable.TITLE))
+            .setHostname(row.getString(MessagesTable.HOSTNAME))
+            .setMacAddress(row.getString(MessagesTable.MAC_ADDRESS))
+            .setBody(row.getString(MessagesTable.BODY))
+            .setApplicationName(row.getString(MessagesTable.APP_NAME));
+        
+        Date timeCreated = row.getTimestamp(MessagesTable.TIME_CREATED);
+        Date timeReceived = row.getTimestamp(MessagesTable.TIME_RECEIVED);
+        
+        if (timeCreated != null)
+        {
+            message.setTimeOfCreation(timeCreated.getTime());
+        }
+        
+        if (timeReceived != null)
+        {
+            message.setTimeMessageReceived(timeReceived.getTime());
+        }
+        
+        String urgency = row.getString(MessagesTable.URGENCY);
+        if (!isNullOrEmpty(urgency))
+        {
+            message.setUrgency(Urgency.valueOf(urgency));
+        }
+        
+        
+        return message;  
         };
     }
     
