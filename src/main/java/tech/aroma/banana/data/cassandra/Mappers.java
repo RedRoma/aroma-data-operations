@@ -152,11 +152,11 @@ final class Mappers
         {
             String email = null;
             
-            if (!row.isNull(Tables.UsersTable.EMAIL))
+            if (doesRowContainColumn(row, Tables.UsersTable.EMAIL))
             {
                 email = row.getString(Tables.UsersTable.EMAIL);
             }
-            else if (!row.isNull(Tables.UsersTable.EMAILS))
+            else if (doesRowContainColumn(row, Tables.UsersTable.EMAILS))
             {
                 Set<String> emails = row.getSet(Tables.UsersTable.EMAILS, String.class);
                 email = emails.stream().findFirst().orElse(null);
@@ -173,4 +173,18 @@ final class Mappers
         };
     }
 
+    private static boolean doesRowContainColumn(Row row, String column)
+    {
+        try
+        {
+            row.isNull(column);
+            //No exception means it's there
+            return true;
+        }
+        catch(Exception ex)
+        {
+            //Exception means it is not definied.
+            return false;
+        }
+    }
 }
