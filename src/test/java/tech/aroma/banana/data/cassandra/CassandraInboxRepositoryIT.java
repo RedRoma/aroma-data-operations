@@ -212,6 +212,11 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
+        instance.saveMessageForUser(message, user);
+        
+        instance.deleteMessageForUser(userId, msgId);
+        
+        assertThat(instance.containsMessageInInbox(userId, message), is(false));
     }
 
     @Test
