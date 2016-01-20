@@ -190,10 +190,10 @@ public class InboxRepositoryInMemoryTest
     public void testDeleteAllMessagesForUser() throws Exception
     {
         saveMessages(messages);
-        assertThat(instance.countInboxForUser(userId), is(messages.size()));
+        assertThat(instance.countInboxForUser(userId), is((long) messages.size()));
         
         instance.deleteAllMessagesForUser(userId);
-        assertThat(instance.countInboxForUser(userId), is(0));
+        assertThat(instance.countInboxForUser(userId), is(0L));
     }
 
     @DontRepeat
@@ -219,16 +219,16 @@ public class InboxRepositoryInMemoryTest
     {
         saveMessages(messages);
         
-        int result = instance.countInboxForUser(userId);
-        assertThat(result, is(messages.size()));
+        long result = instance.countInboxForUser(userId);
+        assertThat(result, is((long) messages.size()));
     }
 
     @DontRepeat
     @Test
     public void testCountInboxForUserWhenEmpty() throws Exception
     {
-        int result = instance.countInboxForUser(userId);
-        assertThat(result, is(0));
+        long result = instance.countInboxForUser(userId);
+        assertThat(result, is(0L));
     }
 
     @DontRepeat
