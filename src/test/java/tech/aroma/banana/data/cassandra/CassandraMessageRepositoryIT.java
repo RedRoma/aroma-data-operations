@@ -21,6 +21,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
+import java.util.Set;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,7 +29,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.sets.Sets;
+import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.TimeUnit;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -56,7 +60,9 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 @RunWith(AlchemyTestRunner.class)
 public class CassandraMessageRepositoryIT 
 {
-
+    
+    private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 5);
+    
     @GeneratePojo
     private Message message;
     
@@ -100,6 +106,7 @@ public class CassandraMessageRepositoryIT
         messages = messages.stream()
             .map(m -> m.setApplicationId(appId))
             .map(m -> m.setMessageId(one(timeUids)))
+            .map(m -> { m.unsetIsTruncated(); return m;})
             .collect(toList());
         
         msgId = UUIDs.timeBased().toString();
@@ -121,10 +128,26 @@ public class CassandraMessageRepositoryIT
         }
     }
 
+    private void saveMessages(List<Message> messages) throws TException
+    {
+        for (Message msg : messages)
+        {
+            instance.saveMessage(msg, MESSAGE_LIFETIME);
+        }
+    }
+
+    private void deleteMessages(List<Message> messaages) throws TException
+    {
+        for (Message msg : messages)
+        {
+            instance.deleteMessage(msg.applicationId, msg.messageId);
+        }
+    }
+
     @Test
     public void testSaveMessage() throws Exception
     {
-        instance.saveMessage(message);
+        instance.saveMessage(message, MESSAGE_LIFETIME);
         
         assertThat(instance.containsMessage(appId, msgId), is(true));
     }
@@ -132,7 +155,7 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetMessage() throws Exception
     {
-        instance.saveMessage(message);
+        instance.saveMessage(message, MESSAGE_LIFETIME);
         
         Message result = instance.getMessage(appId, msgId);
         
@@ -142,7 +165,7 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testDeleteMessage() throws Exception
     {
-        instance.saveMessage(message);
+        instance.saveMessage(message, MESSAGE_LIFETIME);
         
         instance.deleteMessage(appId, msgId);
         
@@ -180,6 +203,18 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetByApplication() throws Exception
     {
+        saveMessages(messages);
+        
+        List<Message> result = instance.getByApplication(appId);
+        assertThat(result, notNullValue());
+        assertThat(result, not(empty()));
+        assertThat(result.size(), is(messages.size()));
+        
+        Set<Message> expected = Sets.copyOf(messages);
+        Set<Message> actual = Sets.copyOf(result);
+        assertThat(actual, is(expected));
+        
+        deleteMessages(messages);
     }
 
     @Test
