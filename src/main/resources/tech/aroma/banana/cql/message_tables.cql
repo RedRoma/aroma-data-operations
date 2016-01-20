@@ -32,12 +32,12 @@ CREATE TABLE IF NOT EXISTS Banana.Messages_Rate_Limit
 CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_App
 (
 	app_id UUID,
-	total_message counter,
+	total_messages counter,
 
 	PRIMARY KEY (app_id)
 );
 
-CREATE TABLE IF NOT EXISTS Banana.Messages_Total_By_Title
+CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_Title
 (
 	app_id UUID,
 	title text,
