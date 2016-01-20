@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
 	first_name text,
 	middle_name text,
 	last_name text,
-	emails set<text>,
+	email text,
 
 	PRIMARY KEY (github_profile)
 );
