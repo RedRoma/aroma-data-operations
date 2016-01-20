@@ -1,32 +1,19 @@
 //Assumes the existence of a 'Banana' Keyspace
 
-CREATE TABLE IF NOT EXISTS Banana.Tokens_Applications
+CREATE TABLE IF NOT EXISTS Banana.Inbox
 (
-	token_id text,
+	user_id uuid,
+	message_id timeuuid,
+	title text,
+	body text,
+	urgency text,
+	time_created timestamp,
+	time_received timestamp,
+	hostname text,
+	mac_address text,
+	ip_address text,
 	app_id uuid,
-	features list<text>,
-	time_of_expiration timestamp,
-	organization_id uuid,
+	app_name text,
 
-	PRIMARY KEY (token_id)
-);
-
-CREATE TABLE IF NOT EXISTS Banana.Tokens_Users
-(
-	user_id uuid,
-	token_id text,
-	time_of_creation timestamp,
-	time_of_expiration timestamp,
-
-	PRIMARY KEY (token_id)
-);
-
-CREATE TABLE IF NOT EXISTS Banana.Tokens_Users_By_User
-(
-	user_id uuid,
-	token_id text,
-	time_of_creation timestamp,
-	time_of_expiration timestamp,
-
-	PRIMARY KEY ((user_id), token_id)
+	PRIMARY KEY ((user_id), message_id)
 );
