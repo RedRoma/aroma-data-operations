@@ -35,10 +35,12 @@ import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Urgency;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
+import static java.lang.String.format;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_NAME;
@@ -126,8 +128,11 @@ final class CassandraMessageRepository implements MessageRepository
         }
 
         Row row = results.one();
-        checkRowIsPresent(row);
-
+        checkThat(row)
+            .throwing(MessageDoesNotExistException.class)
+            .usingMessage(format("No Message with App ID [%s] and Msg ID [%s]", applicationId, messageId))
+            .is(notNull());
+        
         Message message = createMessageFromRow(row);
 
         return message;
