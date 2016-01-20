@@ -25,6 +25,9 @@ import com.google.inject.Provides;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.aroma.banana.data.ApplicationRepository;
+import tech.aroma.banana.data.FollowerRepository;
+import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.UserRepository;
 
@@ -42,6 +45,9 @@ public final class CassandraDataModule extends AbstractModule
     @Override
     protected void configure()
     {
+        bind(ApplicationRepository.class).to(CassandraApplicationRepository.class).in(Singleton.class);
+        bind(FollowerRepository.class).to(CassandraFollowerRepository.class).in(Singleton.class);
+        bind(InboxRepository.class).to(CassandraInboxRepository.class).in(Singleton.class);
         bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
         bind(MessageRepository.class).to(CassandraMessageRepository.class).in(Singleton.class);
     }
