@@ -200,6 +200,13 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testContainsMessageInInbox() throws Exception
     {
+        boolean result = instance.containsMessageInInbox(userId, message);
+        assertThat(result, is(false));
+        
+        instance.saveMessageForUser(message, user);
+        
+        result = instance.containsMessageInInbox(userId, message);
+        assertThat(result, is(true));
     }
 
     @Test
