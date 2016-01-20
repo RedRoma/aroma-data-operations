@@ -70,8 +70,7 @@ class Tables
         static final String APP_ID = Messages.APP_ID;
         static final String APP_NAME = Messages.APP_NAME;
         static final String TITLE = Messages.TITLE;
-        //Body not included in the Inbox
-//        static final String BODY = Messages.BODY;
+        static final String BODY = Messages.BODY;
         static final String URGENCY = Messages.URGENCY;
         static final String HOSTNAME = Messages.HOSTNAME;
         static final String IP_ADDRESS = Messages.IP_ADDRESS;
