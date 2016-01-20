@@ -45,6 +45,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -222,11 +223,22 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testDeleteAllMessagesForUser() throws Exception
     {
+        saveMessagesInInbox(messages);
+        
+        instance.deleteAllMessagesForUser(userId);
+        
+        assertThat(instance.countInboxForUser(userId), is(0L));
     }
 
     @Test
     public void testCountInboxForUser() throws Exception
     {
+        long count = instance.countInboxForUser(userId);
+        assertThat(count, is(0L));
+        
+        saveMessagesInInbox(messages);
+        count = instance.countInboxForUser(userId);
+        assertThat(count, greaterThanOrEqualTo((long) messages.size()));
     }
 
     private void assertMostlySame(Message result, Message expected)
