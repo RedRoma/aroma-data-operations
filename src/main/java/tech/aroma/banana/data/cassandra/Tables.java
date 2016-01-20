@@ -67,8 +67,8 @@ class Tables
       
         static final String USER_ID = Users.USER_ID;
         static final String MESSAGE_ID = Messages.MESSAGE_ID;
-        static final String APP_ID = Messages.MESSAGE_ID;
-        static final String APP_NAME = Messages.MESSAGE_ID;
+        static final String APP_ID = Messages.APP_ID;
+        static final String APP_NAME = Messages.APP_NAME;
         static final String TITLE = Messages.TITLE;
         //Body not included in the Inbox
 //        static final String BODY = Messages.BODY;
