@@ -44,6 +44,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -63,7 +64,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraMessageRepositoryIT 
 {
     
-    private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 5);
+    private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 2);
     
     @GeneratePojo
     private Message message;
@@ -240,6 +241,10 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetCountByApplication() throws Exception
     {
+        saveMessages(messages);
+        
+        long count = instance.getCountByApplication(appId);
+        assertThat(count, greaterThanOrEqualTo((long) messages.size()));
     }
 
     private void assertMessagesMostlyMatch(Message result, Message message)
