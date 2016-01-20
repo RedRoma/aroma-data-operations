@@ -166,4 +166,40 @@ public class RequestAssertionsTest
 
     }
 
+    @Test
+    public void testValidAppId()
+    {
+        AlchemyAssertion<String> assertion = RequestAssertions.validAppId();
+        assertThat(assertion, notNullValue());
+
+        assertion.check(validId);
+
+        assertThrows(() -> assertion.check(invalidId))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
+    @Test
+    public void testValidMessageId()
+    {
+        AlchemyAssertion<String> assertion = RequestAssertions.validMessageId();
+        assertThat(assertion, notNullValue());
+
+        assertion.check(validId);
+
+        assertThrows(() -> assertion.check(invalidId))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
+    @Test
+    public void testValidUserId()
+    {
+        AlchemyAssertion<String> assertion = RequestAssertions.validUserId();
+        assertThat(assertion, notNullValue());
+
+        assertion.check(validId);
+
+        assertThrows(() -> assertion.check(invalidId))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
 }
