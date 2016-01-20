@@ -38,7 +38,10 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -102,6 +105,7 @@ public class CassandraMessageRepositoryIT
         msgId = UUIDs.timeBased().toString();
         message.messageId = msgId;
         message.applicationId = appId;
+        message.unsetIsTruncated();
     }
     
     @After
@@ -155,11 +159,22 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testContainsMessage() throws Exception
     {
+        boolean result = instance.containsMessage(appId, msgId);
+        assertThat(result, is(false));
+        
+        instance.saveMessage(message);
+        result = instance.containsMessage(appId, msgId);
+        assertThat(result, is(true));
     }
 
     @Test
     public void testGetByHostname() throws Exception
     {
+        instance.saveMessage(message);
+        List<Message> result = instance.getByHostname(message.hostname);
+        assertThat(result, notNullValue());
+        assertThat(result, not(empty()));
+        assertThat(result, contains(message));
     }
 
     @Test
