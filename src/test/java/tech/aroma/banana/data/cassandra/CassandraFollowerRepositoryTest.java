@@ -20,13 +20,17 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -36,7 +40,11 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -54,6 +62,9 @@ public class CassandraFollowerRepositoryTest
 
     @Mock
     private Session cassandra;
+    
+    @Captor
+    private ArgumentCaptor<Statement> statementCaptor;
     
     private QueryBuilder queryBuilder;
     
@@ -93,7 +104,21 @@ public class CassandraFollowerRepositoryTest
     {
         queryBuilder = new QueryBuilder(cluster);
         
+        createStubs();
+        
         instance = new CassandraFollowerRepository(cassandra, queryBuilder, userMapper, applicationMapper);
+        
+        application.applicationId = appId;
+        user.userId = userId;
+    }
+    
+    private void createStubs()
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
+        when(results.one())
+            .thenReturn(row);
     }
     
     @DontRepeat
@@ -117,6 +142,11 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testSaveFollowing() throws Exception
     {
+        instance.saveFollowing(user, application);
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        Statement statementMade = statementCaptor.getValue();
+        assertThat(statementMade, notNullValue());
     }
 
     @Test
