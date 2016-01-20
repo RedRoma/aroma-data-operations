@@ -1,20 +1,20 @@
-/*
- * Copyright 2016 Aroma Tech.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ /*
+  * Copyright 2016 Aroma Tech.
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *      http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
 
- 
+
 package tech.aroma.banana.data.cassandra;
 
 
@@ -48,7 +48,7 @@ import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MESSAGE_ID;
  */
 @Internal
 @NonInstantiable
-final class Mappers 
+final class Mappers
 {
     private final static Logger LOG = LoggerFactory.getLogger(Mappers.class);
     
@@ -99,8 +99,8 @@ final class Mappers
             }
             
             app.setName(row.getString(ApplicationsTable.APP_NAME))
-               .setApplicationDescription(row.getString(ApplicationsTable.APP_DESCRIPTION));
-
+                .setApplicationDescription(row.getString(ApplicationsTable.APP_DESCRIPTION));
+            
             return app;
         };
     }
@@ -109,40 +109,40 @@ final class Mappers
     {
         return row ->
         {
-             Message message = new Message();
-        
-        UUID msgId = row.getUUID(MESSAGE_ID);
-        UUID appId = row.getUUID(APP_ID);
-        
-        message.setMessageId(msgId.toString())
-            .setApplicationId(appId.toString())
-            .setTitle(row.getString(MessagesTable.TITLE))
-            .setHostname(row.getString(MessagesTable.HOSTNAME))
-            .setMacAddress(row.getString(MessagesTable.MAC_ADDRESS))
-            .setBody(row.getString(MessagesTable.BODY))
-            .setApplicationName(row.getString(MessagesTable.APP_NAME));
-        
-        Date timeCreated = row.getTimestamp(MessagesTable.TIME_CREATED);
-        Date timeReceived = row.getTimestamp(MessagesTable.TIME_RECEIVED);
-        
-        if (timeCreated != null)
-        {
-            message.setTimeOfCreation(timeCreated.getTime());
-        }
-        
-        if (timeReceived != null)
-        {
-            message.setTimeMessageReceived(timeReceived.getTime());
-        }
-        
-        String urgency = row.getString(MessagesTable.URGENCY);
-        if (!isNullOrEmpty(urgency))
-        {
-            message.setUrgency(Urgency.valueOf(urgency));
-        }
-        
-        
-        return message;  
+            Message message = new Message();
+            
+            UUID msgId = row.getUUID(MESSAGE_ID);
+            UUID appId = row.getUUID(APP_ID);
+            
+            message.setMessageId(msgId.toString())
+                .setApplicationId(appId.toString())
+                .setTitle(row.getString(MessagesTable.TITLE))
+                .setHostname(row.getString(MessagesTable.HOSTNAME))
+                .setMacAddress(row.getString(MessagesTable.MAC_ADDRESS))
+                .setBody(row.getString(MessagesTable.BODY))
+                .setApplicationName(row.getString(MessagesTable.APP_NAME));
+            
+            Date timeCreated = row.getTimestamp(MessagesTable.TIME_CREATED);
+            Date timeReceived = row.getTimestamp(MessagesTable.TIME_RECEIVED);
+            
+            if (timeCreated != null)
+            {
+                message.setTimeOfCreation(timeCreated.getTime());
+            }
+            
+            if (timeReceived != null)
+            {
+                message.setTimeMessageReceived(timeReceived.getTime());
+            }
+            
+            String urgency = row.getString(MessagesTable.URGENCY);
+            if (!isNullOrEmpty(urgency))
+            {
+                message.setUrgency(Urgency.valueOf(urgency));
+            }
+            
+            
+            return message;
         };
     }
     
@@ -162,6 +162,8 @@ final class Mappers
                 email = emails.stream().findFirst().orElse(null);
             }
             
+            Date birthDate = row.getTimestamp(Tables.UsersTable.BIRTH_DATE);
+            
             return new User()
                 .setUserId(row.getUUID(Tables.UsersTable.USER_ID).toString())
                 .setFirstName(row.getString(Tables.UsersTable.FIRST_NAME))
@@ -172,7 +174,7 @@ final class Mappers
                 .setRoles(row.getSet(Tables.UsersTable.ROLES, Role.class));
         };
     }
-
+    
     private static boolean doesRowContainColumn(Row row, String column)
     {
         try
