@@ -26,8 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.aroma.banana.data.cassandra.Tables.Applications;
-import tech.aroma.banana.data.cassandra.Tables.Messages;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
@@ -58,48 +56,48 @@ final class Mappers
         {
             Application app = new Application();
             
-            UUID appId = row.getUUID(APP_ID);
+            UUID appId = row.getUUID(Tables.Applications.APP_ID);
             
             if (appId != null)
             {
                 app.setApplicationId(appId.toString());
             }
             
-            String programmingLanguage = row.getString(Applications.PROGRAMMING_LANGUAGE);
+            String programmingLanguage = row.getString(Tables.Applications.PROGRAMMING_LANGUAGE);
             if (!isNullOrEmpty(programmingLanguage))
             {
                 ProgrammingLanguage language = ProgrammingLanguage.valueOf(programmingLanguage);
                 app.setProgrammingLanguage(language);
             }
             
-            Date timeOfProvisioning = row.getTimestamp(Applications.TIME_PROVISIONED);
+            Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
             if (timeOfProvisioning != null)
             {
                 app.setTimeOfProvisioning(timeOfProvisioning.getTime());
             }
             
             //Transform the UUIDs to Strings
-            Set<String> owners = row.getSet(Applications.OWNERS, UUID.class)
+            Set<String> owners = row.getSet(Tables.Applications.OWNERS, UUID.class)
                 .stream()
                 .map(UUID::toString)
                 .collect(Collectors.toSet());
             
             app.setOwners(owners);
             
-            UUID orgId = row.getUUID(Applications.ORG_ID);
+            UUID orgId = row.getUUID(Tables.Applications.ORG_ID);
             if (orgId != null)
             {
                 app.setOrganizationId(orgId.toString());
             }
             
-            String tier = row.getString(Applications.TIER);
+            String tier = row.getString(Tables.Applications.TIER);
             if (!isNullOrEmpty(tier))
             {
                 app.setTier(Tier.valueOf(tier));
             }
             
-            app.setName(row.getString(Applications.APP_NAME))
-                .setApplicationDescription(row.getString(Applications.APP_DESCRIPTION));
+            app.setName(row.getString(Tables.Applications.APP_NAME))
+                .setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
             
             return app;
         };
@@ -116,14 +114,14 @@ final class Mappers
             
             message.setMessageId(msgId.toString())
                 .setApplicationId(appId.toString())
-                .setTitle(row.getString(Messages.TITLE))
-                .setHostname(row.getString(Messages.HOSTNAME))
-                .setMacAddress(row.getString(Messages.MAC_ADDRESS))
-                .setBody(row.getString(Messages.BODY))
-                .setApplicationName(row.getString(Messages.APP_NAME));
+                .setTitle(row.getString(Tables.Messages.TITLE))
+                .setHostname(row.getString(Tables.Messages.HOSTNAME))
+                .setMacAddress(row.getString(Tables.Messages.MAC_ADDRESS))
+                .setBody(row.getString(Tables.Messages.BODY))
+                .setApplicationName(row.getString(Tables.Messages.APP_NAME));
             
-            Date timeCreated = row.getTimestamp(Messages.TIME_CREATED);
-            Date timeReceived = row.getTimestamp(Messages.TIME_RECEIVED);
+            Date timeCreated = row.getTimestamp(Tables.Messages.TIME_CREATED);
+            Date timeReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED);
             
             if (timeCreated != null)
             {
@@ -135,7 +133,7 @@ final class Mappers
                 message.setTimeMessageReceived(timeReceived.getTime());
             }
             
-            String urgency = row.getString(Messages.URGENCY);
+            String urgency = row.getString(Tables.Messages.URGENCY);
             if (!isNullOrEmpty(urgency))
             {
                 message.setUrgency(Urgency.valueOf(urgency));
