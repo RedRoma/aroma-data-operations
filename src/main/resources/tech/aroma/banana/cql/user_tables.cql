@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS Banana.Users
 	PRIMARY KEY (user_id)
 );
 
-CREATE INDEX IF NOT EXISTS Banana.Users_By_Last_Name_Index ON Banana.Users (last_name);
-CREATE INDEX IF NOT EXISTS Banana.Users_By_First_Name_Index ON Banana.Users (first_name);
-CREATE INDEX IF NOT EXISTS Banana.Users_By_Roles_Index ON Banana.Users (roles);
+CREATE INDEX IF NOT EXISTS ON Banana.Users_By_Last_Name_Index ON Banana.Users (last_name);
+CREATE INDEX IF NOT EXISTS ON Banana.Users_By_First_Name_Index ON Banana.Users (first_name);
+CREATE INDEX IF NOT EXISTS ON Banana.Users_By_Roles_Index ON Banana.Users (roles);
 
 CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
 (
