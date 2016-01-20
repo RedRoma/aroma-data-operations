@@ -87,11 +87,16 @@ final class CassandraMessageRepository implements MessageRepository
             .is(notNull());
 
         Statement insertStatement = createInsertForMessage(message, lifetime);
-
+        Statement updateTotalMessagesByApp = createUpdateForMessageByApp(message);
+        Statement updateTotalMessageByTitle = createUpdateForMessageCounterByTitle(message);
+        
         try
         {
             cassandra.execute(insertStatement);
             LOG.debug("Successfully saved message in Cassandra with a lifetime of {}: {}", lifetime, message);
+            cassandra.executeAsync(updateTotalMessageByTitle);
+            cassandra.executeAsync(updateTotalMessagesByApp);
+            LOG.debug("Successfully Updated Total Message Counters for App {} and title {}", message.applicationId, message.title);
         }
         catch (Exception ex)
         {
@@ -314,15 +319,16 @@ final class CassandraMessageRepository implements MessageRepository
 
         return queryBuilder
             .insertInto(MessagesTable.TABLE_NAME)
-            .value(MessagesTable.MESSAGE_ID, msgId)
-            .value(MessagesTable.APP_ID, appId)
-            .value(MessagesTable.APP_NAME, message.applicationName)
-            .value(MessagesTable.HOSTNAME, message.hostname)
-            .value(MessagesTable.MAC_ADDRESS, message.macAddress)
-            .value(MessagesTable.TITLE, message.title)
-            .value(MessagesTable.URGENCY, message.urgency)
-            .value(MessagesTable.TIME_CREATED, message.timeOfCreation)
-            .value(MessagesTable.TIME_RECEIVED, message.timeMessageReceived)
+            .value(MESSAGE_ID, msgId)
+            .value(APP_ID, appId)
+            .value(APP_NAME, message.applicationName)
+            .value(BODY, message.body)
+            .value(HOSTNAME, message.hostname)
+            .value(MAC_ADDRESS, message.macAddress)
+            .value(TITLE, message.title)
+            .value(URGENCY, message.urgency)
+            .value(TIME_CREATED, message.timeOfCreation)
+            .value(TIME_RECEIVED, message.timeMessageReceived)
             .using(QueryBuilder.ttl(timeToLive.intValue()));
     }
 
@@ -332,8 +338,8 @@ final class CassandraMessageRepository implements MessageRepository
 
         return queryBuilder
             .update(MessagesTable.TABLE_NAME_TOTALS_BY_APP)
-            .where(eq(MessagesTable.APP_ID, appId))
-            .with(incr(MessagesTable.TOTAL_MESSAGES));
+            .where(eq(APP_ID, appId))
+            .with(incr(TOTAL_MESSAGES));
     }
 
     private Statement createUpdateForMessageCounterByTitle(Message message)
@@ -342,9 +348,9 @@ final class CassandraMessageRepository implements MessageRepository
 
         return queryBuilder
             .update(MessagesTable.TABLE_NAME_TOTALS_BY_TITLE)
-            .where(eq(MessagesTable.APP_ID, appId))
-            .and(eq(MessagesTable.TITLE, message.title))
-            .with(incr(MessagesTable.TOTAL_MESSAGES));
+            .where(eq(APP_ID, appId))
+            .and(eq(TITLE, message.title))
+            .with(incr(TOTAL_MESSAGES));
     }
 
     private void checkMessageId(String messageId) throws InvalidArgumentException
@@ -366,8 +372,8 @@ final class CassandraMessageRepository implements MessageRepository
             .select()
             .all()
             .from(MessagesTable.TABLE_NAME)
-            .where(eq(MessagesTable.MESSAGE_ID, msgId))
-            .and(eq(MessagesTable.APP_ID, appId))
+            .where(eq(MESSAGE_ID, msgId))
+            .and(eq(APP_ID, appId))
             .limit(2);
     }
 
@@ -383,8 +389,8 @@ final class CassandraMessageRepository implements MessageRepository
     {
         Message message = new Message();
         
-        UUID msgId = row.getUUID(MessagesTable.MESSAGE_ID);
-        UUID appId = row.getUUID(MessagesTable.APP_ID);
+        UUID msgId = row.getUUID(MESSAGE_ID);
+        UUID appId = row.getUUID(APP_ID);
         
         checkThat(msgId)
             .usingMessage("missing message id")
@@ -398,7 +404,8 @@ final class CassandraMessageRepository implements MessageRepository
         
         message.setMessageId(msgId.toString())
             .setApplicationId(appId.toString())
-            .setHostname(row.getString(MessagesTable.HOSTNAME))
+            .setTitle(row.getString(TITLE))
+            .setHostname(row.getString(HOSTNAME))
             .setMacAddress(row.getString(MAC_ADDRESS))
             .setBody(row.getString(BODY))
             .setApplicationName(row.getString(APP_NAME));
