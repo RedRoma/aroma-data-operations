@@ -37,7 +37,6 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -71,9 +70,7 @@ final class InboxRepositoryInMemory implements InboxRepository
     @Override
     public List<Message> getMessagesForUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         return messagesForUser.getOrDefault(userId, Lists.emptyList());
     }
@@ -100,9 +97,7 @@ final class InboxRepositoryInMemory implements InboxRepository
     @Override
     public void deleteAllMessagesForUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         messagesForUser.remove(userId);
     }
@@ -110,9 +105,7 @@ final class InboxRepositoryInMemory implements InboxRepository
     @Override
     public int countInboxForUser(String userId) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
 
         return messagesForUser.getOrDefault(userId, Lists.emptyList()).size();
     }
@@ -120,9 +113,7 @@ final class InboxRepositoryInMemory implements InboxRepository
     @Override
     public boolean containsMessageInInbox(String userId, Message message) throws TException
     {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString());
+        checkUserId(userId);
         
         checkThat(message)
             .throwing(InvalidArgumentException.class)
@@ -135,6 +126,14 @@ final class InboxRepositoryInMemory implements InboxRepository
             .map(Message::getMessageId)
             .anyMatch(id -> Objects.equal(id, messageId));
         
+    }
+
+    private void checkUserId(String userId) throws InvalidArgumentException
+    {
+        checkThat(userId)
+            .usingMessage("missing userId")
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
     }
 
 
