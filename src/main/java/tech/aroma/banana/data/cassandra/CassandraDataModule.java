@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
- 
 package tech.aroma.banana.data.cassandra;
-
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
@@ -33,6 +31,7 @@ import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -44,6 +43,7 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  */
 public final class CassandraDataModule extends AbstractModule
 {
+
     private final static Logger LOG = LoggerFactory.getLogger(CassandraDataModule.class);
 
     @Override
@@ -60,20 +60,26 @@ public final class CassandraDataModule extends AbstractModule
     QueryBuilder provideQueryBuilder(Cluster cluster)
     {
         checkThat(cluster).is(notNull());
-        
+
         return new QueryBuilder(cluster);
     }
-    
+
     @Provides
-    Function<Row,Application> provideApplicationMapper()
+    Function<Row, Application> provideApplicationMapper()
     {
         return Mappers.appMapper();
     }
-    
+
+    @Provides
+    Function<Row, Message> provideMessageMapper()
+    {
+        return Mappers.messageMapper();
+    }
+
     @Provides
     Function<Row, User> provideUserMapper()
     {
         return Mappers.userMapper();
     }
-    
+
 }
