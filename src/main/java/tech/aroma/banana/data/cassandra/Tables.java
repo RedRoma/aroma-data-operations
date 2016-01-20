@@ -62,7 +62,7 @@ class Tables
     }
         
     
-    static class MessagesTable
+    static class Messages
     {
         static final String TABLE_NAME = "Messages";
         static final String TABLE_NAME_TOTALS_BY_APP = "Messages_Totals_By_App";

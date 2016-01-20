@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.cassandra.Tables.Applications;
-import tech.aroma.banana.data.cassandra.Tables.MessagesTable;
+import tech.aroma.banana.data.cassandra.Tables.Messages;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
@@ -40,7 +40,7 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MESSAGE_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
 
 /**
  *
@@ -116,14 +116,14 @@ final class Mappers
             
             message.setMessageId(msgId.toString())
                 .setApplicationId(appId.toString())
-                .setTitle(row.getString(MessagesTable.TITLE))
-                .setHostname(row.getString(MessagesTable.HOSTNAME))
-                .setMacAddress(row.getString(MessagesTable.MAC_ADDRESS))
-                .setBody(row.getString(MessagesTable.BODY))
-                .setApplicationName(row.getString(MessagesTable.APP_NAME));
+                .setTitle(row.getString(Messages.TITLE))
+                .setHostname(row.getString(Messages.HOSTNAME))
+                .setMacAddress(row.getString(Messages.MAC_ADDRESS))
+                .setBody(row.getString(Messages.BODY))
+                .setApplicationName(row.getString(Messages.APP_NAME));
             
-            Date timeCreated = row.getTimestamp(MessagesTable.TIME_CREATED);
-            Date timeReceived = row.getTimestamp(MessagesTable.TIME_RECEIVED);
+            Date timeCreated = row.getTimestamp(Messages.TIME_CREATED);
+            Date timeReceived = row.getTimestamp(Messages.TIME_RECEIVED);
             
             if (timeCreated != null)
             {
@@ -135,7 +135,7 @@ final class Mappers
                 message.setTimeMessageReceived(timeReceived.getTime());
             }
             
-            String urgency = row.getString(MessagesTable.URGENCY);
+            String urgency = row.getString(Messages.URGENCY);
             if (!isNullOrEmpty(urgency))
             {
                 message.setUrgency(Urgency.valueOf(urgency));

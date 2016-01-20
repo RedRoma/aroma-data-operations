@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.MessageRepository;
-import tech.aroma.banana.data.cassandra.Tables.MessagesTable;
+import tech.aroma.banana.data.cassandra.Tables.Messages;
 import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -40,22 +40,25 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
 import static java.lang.String.format;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_ID;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.APP_NAME;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.BODY;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.HOSTNAME;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MAC_ADDRESS;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.MESSAGE_ID;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.TIME_CREATED;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.TIME_RECEIVED;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.TITLE;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.TOTAL_MESSAGES;
-import static tech.aroma.banana.data.cassandra.Tables.MessagesTable.URGENCY;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.APP_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.APP_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.BODY;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.HOSTNAME;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.MAC_ADDRESS;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.TIME_CREATED;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.TIME_RECEIVED;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.TITLE;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.TOTAL_MESSAGES;
+import static tech.aroma.banana.data.cassandra.Tables.Messages.URGENCY;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
+import static java.lang.String.format;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -325,7 +328,7 @@ final class CassandraMessageRepository implements MessageRepository
         Long timeToLive = Times.toSeconds(lifetime);
 
         return queryBuilder
-            .insertInto(MessagesTable.TABLE_NAME)
+            .insertInto(Messages.TABLE_NAME)
             .value(MESSAGE_ID, msgId)
             .value(APP_ID, appId)
             .value(APP_NAME, message.applicationName)
@@ -344,7 +347,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID appId = UUID.fromString(message.applicationId);
 
         return queryBuilder
-            .update(MessagesTable.TABLE_NAME_TOTALS_BY_APP)
+            .update(Messages.TABLE_NAME_TOTALS_BY_APP)
             .where(eq(APP_ID, appId))
             .with(incr(TOTAL_MESSAGES));
     }
@@ -354,7 +357,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID appId = UUID.fromString(message.applicationId);
 
         return queryBuilder
-            .update(MessagesTable.TABLE_NAME_TOTALS_BY_TITLE)
+            .update(Messages.TABLE_NAME_TOTALS_BY_TITLE)
             .where(eq(APP_ID, appId))
             .and(eq(TITLE, message.title))
             .with(incr(TOTAL_MESSAGES));
@@ -378,7 +381,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .all()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(MESSAGE_ID, msgId))
             .and(eq(APP_ID, appId))
             .limit(2);
@@ -405,7 +408,7 @@ final class CassandraMessageRepository implements MessageRepository
         Statement deleteFromMainTable = queryBuilder
             .delete()
             .all()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(APP_ID, appId))
             .and(eq(MESSAGE_ID, msgId));
         
@@ -420,7 +423,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .countAll()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(APP_ID, appId))
             .and(eq(MESSAGE_ID, msgId));
     }
@@ -430,7 +433,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .all()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(HOSTNAME, hostname));
     }
 
@@ -449,7 +452,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .all()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(APP_ID, appId))
             .limit(2000);
     }
@@ -461,7 +464,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .column(TOTAL_MESSAGES)
-            .from(MessagesTable.TABLE_NAME_TOTALS_BY_APP)
+            .from(Messages.TABLE_NAME_TOTALS_BY_APP)
             .where(eq(APP_ID, appId));
     }
 
@@ -470,7 +473,7 @@ final class CassandraMessageRepository implements MessageRepository
         return queryBuilder
             .select()
             .all()
-            .from(MessagesTable.TABLE_NAME)
+            .from(Messages.TABLE_NAME)
             .where(eq(TITLE, title));
     }
 
