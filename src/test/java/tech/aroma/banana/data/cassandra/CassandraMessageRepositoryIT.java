@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -41,6 +42,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -136,6 +138,18 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testDeleteMessage() throws Exception
     {
+        instance.saveMessage(message);
+        
+        instance.deleteMessage(appId, msgId);
+        
+        assertThat(instance.containsMessage(appId, msgId), is(false));
+    }
+    
+    @Test
+    public void testDeleteWhenNotPresent() throws Exception
+    {
+        assertThrows(() -> instance.deleteMessage(appId, msgId))
+            .isInstanceOf(MessageDoesNotExistException.class);
     }
 
     @Test
