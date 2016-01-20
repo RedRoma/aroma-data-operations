@@ -19,9 +19,11 @@ package tech.aroma.banana.data.cassandra;
 
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import java.util.function.Function;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,8 @@ import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.UserRepository;
+import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.User;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
@@ -58,6 +62,18 @@ public final class CassandraDataModule extends AbstractModule
         checkThat(cluster).is(notNull());
         
         return new QueryBuilder(cluster);
+    }
+    
+    @Provides
+    Function<Row,Application> provideApplicationMapper()
+    {
+        return Mappers.appMapper();
+    }
+    
+    @Provides
+    Function<Row, User> provideUserMapper()
+    {
+        return Mappers.userMapper();
     }
     
 }
