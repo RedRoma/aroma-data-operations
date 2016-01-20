@@ -48,7 +48,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -185,7 +187,7 @@ public class CassandraMessageRepositoryIT
         boolean result = instance.containsMessage(appId, msgId);
         assertThat(result, is(false));
         
-        instance.saveMessage(message);
+        instance.saveMessage(message, MESSAGE_LIFETIME);
         result = instance.containsMessage(appId, msgId);
         assertThat(result, is(true));
     }
@@ -193,7 +195,8 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetByHostname() throws Exception
     {
-        instance.saveMessage(message);
+        instance.saveMessage(message, MESSAGE_LIFETIME);
+        
         List<Message> result = instance.getByHostname(message.hostname);
         assertThat(result, notNullValue());
         assertThat(result, not(empty()));
@@ -220,6 +223,18 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetByTitle() throws Exception
     {
+        String title = one(alphabeticString());
+        
+        List<Message> expected = messages.stream()
+            .map(m -> m.setTitle(title))
+            .collect(toList());
+        
+        saveMessages(expected);
+        
+        List<Message> result = instance.getByTitle(appId, title);
+        assertThat(result, notNullValue());
+        assertThat(result, not(empty()));
+        assertThat(containTheSameElements(result, expected), is(true));
     }
 
     @Test
