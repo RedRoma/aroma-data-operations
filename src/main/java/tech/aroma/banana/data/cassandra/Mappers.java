@@ -160,8 +160,13 @@ final class Mappers
                 email = emails.stream().findFirst().orElse(null);
             }
             
-            Date birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
-            
+            Date birthDate = null;
+
+            if (doesRowContainColumn(row, Tables.Users.BIRTH_DATE))
+            {
+                birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
+            }
+
             return new User()
                 .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
                 .setFirstName(row.getString(Tables.Users.FIRST_NAME))
