@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
@@ -86,6 +87,9 @@ public class CassandraDataModuleTest
     {
         Injector injector = Guice.createInjector(binder, instance);
         assertThat(injector, notNullValue());
+        
+        MessageRepository messageRepo = injector.getInstance(MessageRepository.class);
+        assertThat(messageRepo, notNullValue());
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());
