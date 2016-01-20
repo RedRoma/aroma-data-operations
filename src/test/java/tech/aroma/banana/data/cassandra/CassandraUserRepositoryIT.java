@@ -172,6 +172,13 @@ public class CassandraUserRepositoryIT
     @Test
     public void testContainsUser() throws Exception
     {
+        boolean result = instance.containsUser(userId);
+        assertThat(result, is(false));
+        
+        instance.saveUser(user);
+        
+        result = instance.containsUser(userId);
+        assertThat(result, is(true));
     }
 
     @Test
