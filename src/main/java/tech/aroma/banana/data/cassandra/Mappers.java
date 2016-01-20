@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
@@ -166,7 +167,14 @@ final class Mappers
             {
                 birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
             }
+            
+            Set<Role> roles = Sets.create();
 
+            if(doesRowContainColumn(row, Tables.Users.ROLES))
+            {
+                roles = row.getSet(Tables.Users.ROLES, Role.class);
+            }
+            
             return new User()
                 .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
                 .setFirstName(row.getString(Tables.Users.FIRST_NAME))
@@ -174,7 +182,7 @@ final class Mappers
                 .setLastName(row.getString(Tables.Users.LAST_NAME))
                 .setEmail(email)
                 .setGithubProfile(row.getString(Tables.Users.GITHUB_PROFILE))
-                .setRoles(row.getSet(Tables.Users.ROLES, Role.class));
+                .setRoles(roles);
         };
     }
     
