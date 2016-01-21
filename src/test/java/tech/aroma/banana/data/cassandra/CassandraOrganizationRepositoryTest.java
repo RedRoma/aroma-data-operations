@@ -53,6 +53,7 @@ import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -103,6 +104,9 @@ public class CassandraOrganizationRepositoryTest
 
     @GenerateList(User.class)
     private List<User> members;
+    
+    @GenerateString(ALPHABETIC)
+    private String badId;
 
     @Before
     public void setUp()
@@ -199,6 +203,11 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testGetOrganizationWithBadArgs() throws Exception
     {
+        assertThrows(() -> instance.getOrganization(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getOrganization(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
