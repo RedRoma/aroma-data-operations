@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Banana.Users
 	roles set<text>,
 	gender text,
 	birthdate timestamp,
-	profile_image_id uuid,
+	profile_image_id text,
 	github_profile text,
 
 	PRIMARY KEY (user_id)
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Banana.Users_By_Email
 	middle_name text,
 	last_name text,
 	github_profile text,
-	profile_image_id uuid,
+	profile_image_id text,
 
 	PRIMARY KEY (email)
 );
