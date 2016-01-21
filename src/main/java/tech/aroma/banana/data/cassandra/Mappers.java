@@ -149,6 +149,8 @@ final class Mappers
     {
         return row ->
         {
+            User user = new User();
+            
             String email = null;
             
             if (doesRowContainColumn(row, Tables.Users.EMAIL))
@@ -161,11 +163,13 @@ final class Mappers
                 email = emails.stream().findFirst().orElse(null);
             }
             
-            Date birthDate = null;
-
             if (doesRowContainColumn(row, Tables.Users.BIRTH_DATE))
             {
-                birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
+                Date birthDate = row.getTimestamp(Tables.Users.BIRTH_DATE);
+                if (birthDate != null)
+                {
+                    user.setBirthdate(birthDate.getTime());
+                }
             }
             
             Set<Role> roles = Sets.create();
@@ -174,14 +178,22 @@ final class Mappers
             {
                 roles = row.getSet(Tables.Users.ROLES, Role.class);
             }
+    
+            String profileImageLink;
             
-            return new User()
+            if(doesRowContainColumn(row, Tables.Users.PROFILE_IMAGE_ID))
+            {
+                profileImageLink = row.getString(Tables.Users.PROFILE_IMAGE_ID);
+            }
+            
+            return user
                 .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
                 .setFirstName(row.getString(Tables.Users.FIRST_NAME))
                 .setMiddleName(row.getString(Tables.Users.MIDDLE_NAME))
                 .setLastName(row.getString(Tables.Users.LAST_NAME))
                 .setEmail(email)
                 .setGithubProfile(row.getString(Tables.Users.GITHUB_PROFILE))
+                .setProfileImageLink(profileImageLink)
                 .setRoles(roles);
         };
     }
