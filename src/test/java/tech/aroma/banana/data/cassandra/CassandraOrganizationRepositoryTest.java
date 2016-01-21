@@ -104,7 +104,7 @@ public class CassandraOrganizationRepositoryTest
 
     @GenerateList(User.class)
     private List<User> members;
-    
+
     @GenerateString(ALPHABETIC)
     private String badId;
 
@@ -122,7 +122,7 @@ public class CassandraOrganizationRepositoryTest
 
         queryBuilder = new QueryBuilder(cluster);
         instance = new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, userMapper);
-        
+
         setupBasicStubbing();
     }
 
@@ -154,6 +154,7 @@ public class CassandraOrganizationRepositoryTest
         assertThat(statementMade, notNullValue());
     }
 
+    @DontRepeat
     @Test
     public void testSaveOrganizationWhenFails() throws Exception
     {
@@ -163,7 +164,6 @@ public class CassandraOrganizationRepositoryTest
             .isInstanceOf(TException.class);
     }
 
-    @DontRepeat
     @Test
     public void testSaveOrganizationWithBadArgs() throws Exception
     {
@@ -187,15 +187,16 @@ public class CassandraOrganizationRepositoryTest
     public void testGetOrganization() throws Exception
     {
         Organization result = instance.getOrganization(orgId);
-        
+
         assertThat(result, is(org));
     }
 
+    @DontRepeat
     @Test
     public void testGetOrganizationWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.getOrganization(orgId))
             .isInstanceOf(TException.class);
     }
@@ -205,7 +206,7 @@ public class CassandraOrganizationRepositoryTest
     {
         assertThrows(() -> instance.getOrganization(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         assertThrows(() -> instance.getOrganization(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
@@ -275,13 +276,13 @@ public class CassandraOrganizationRepositoryTest
     {
         when(cassandra.execute(Mockito.any(Statement.class)))
             .thenReturn(results);
-        
+
         when(results.one())
             .thenReturn(row);
-        
+
         when(organizationMapper.apply(row))
             .thenReturn(org);
-        
+
         when(userMapper.apply(row))
             .thenReturn(user);
     }
