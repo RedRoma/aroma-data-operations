@@ -38,10 +38,17 @@ public interface OrganizationRepository
     void deleteOrganization(@Required String organizationId) throws TException;
     
     boolean organizationExists(@Required String organizationId) throws TException;
-    
-    List<User> getOrganizationMemebers(@Required String organizationId) throws TException;
-    
+
     List<Organization> searchByName(@Required String searchTerm) throws TException;
     
     List<User> getOrganizationOwners(@Required String organizationId) throws TException;
+        
+    void saveMemberInOrganization(@Required String organizationId, @Required User user) throws TException;
+
+    List<User> getOrganizationMemebers(@Required String organizationId) throws TException;
+
+    void deleteMember(@Required String organizationId, @Required String userId) throws TException;
+
+    void deleteAllMembers(@Required String organizationId) throws TException;
+
 }
