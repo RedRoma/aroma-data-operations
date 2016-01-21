@@ -42,12 +42,14 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -229,6 +231,16 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testFollowingExists() throws Exception
     {
+        when(row.getLong(0))
+            .thenReturn(0L);
+        
+        boolean result = instance.followingExists(userId, appId);
+        assertThat(result, is(false));
+        
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        result = instance.followingExists(userId, appId);
+        assertThat(result, is(true));
     }
 
     @Test
