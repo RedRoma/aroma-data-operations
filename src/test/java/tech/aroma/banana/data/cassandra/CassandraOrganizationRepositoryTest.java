@@ -207,20 +207,20 @@ public class CassandraOrganizationRepositoryTest
         Organization result = instance.getOrganization(orgId);
 
         assertThat(result, is(org));
-        
+
         verify(cassandra).execute(statementCaptor.capture());
-        
+
         Statement statement = statementCaptor.getValue();
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(Select.Where.class));
     }
-    
+
     @DontRepeat
     @Test
     public void testGetOrganizationWhenNotExists() throws Exception
     {
         when(results.one()).thenReturn(null);
-        
+
         assertThrows(() -> instance.getOrganization(orgId))
             .isInstanceOf(OrganizationDoesNotExistException.class);
     }
@@ -249,7 +249,7 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteOrganization() throws Exception
     {
         instance.deleteOrganization(orgId);
-        
+
         verify(cassandra, atLeastOnce()).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
@@ -260,7 +260,7 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteOrganizationWhenNotExists() throws Exception
     {
         when(results.one()).thenReturn(null);
-        
+
         instance.deleteOrganization(orgId);
     }
 
@@ -268,7 +268,7 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteOrganizationWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.deleteOrganization(orgId))
             .isInstanceOf(TException.class);
     }
@@ -287,15 +287,15 @@ public class CassandraOrganizationRepositoryTest
     public void testOrganizationExists() throws Exception
     {
         when(row.getLong(0)).thenReturn(0L);
-        
+
         boolean result = instance.organizationExists(orgId);
         assertThat(result, is(false));
-        
+
         long count = one(positiveLongs());
         when(row.getLong(0)).thenReturn(count);
-        
+
         result = instance.organizationExists(orgId);
-        
+
         assertThat(result, is(true));
     }
 
@@ -304,17 +304,17 @@ public class CassandraOrganizationRepositoryTest
     public void testOrganizationExistsWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.organizationExists(orgId))
             .isInstanceOf(TException.class);
     }
-    
+
     @Test
     public void testOrganizationExistsWithBadArgs() throws Exception
     {
         assertThrows(() -> instance.organizationExists(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         assertThrows(() -> instance.organizationExists(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
@@ -323,22 +323,22 @@ public class CassandraOrganizationRepositoryTest
     public void testGetOrganizationMembers() throws Exception
     {
         Map<String, Row> rows = Maps.create();
-        
-        for(User member : members)
+
+        for (User member : members)
         {
             Row mockRow = mock(Row.class);
-            
+
             when(userMapper.apply(mockRow))
                 .thenReturn(member);
-            
+
             rows.put(member.userId, mockRow);
         }
-        
+
         when(results.iterator())
             .thenReturn(rows.values().iterator());
-        
+
         List<User> response = instance.getOrganizationMembers(orgId);
-        
+
         assertThat(Sets.toSet(response), is(Sets.toSet(members)));
     }
 
@@ -347,7 +347,7 @@ public class CassandraOrganizationRepositoryTest
     {
         when(results.iterator())
             .thenReturn(Lists.<Row>emptyList().iterator());
-            
+
         List<User> response = instance.getOrganizationMembers(orgId);
         assertThat(response, notNullValue());
         assertThat(response, is(empty()));
@@ -358,7 +358,7 @@ public class CassandraOrganizationRepositoryTest
     public void testGetOrganizationMembersWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.getOrganizationMembers(orgId))
             .isInstanceOf(TException.class);
     }
@@ -368,7 +368,7 @@ public class CassandraOrganizationRepositoryTest
     {
         assertThrows(() -> instance.getOrganizationMembers(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         assertThrows(() -> instance.getOrganizationMembers(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
@@ -384,20 +384,20 @@ public class CassandraOrganizationRepositoryTest
     public void testSaveMemberInOrganization() throws Exception
     {
         instance.saveMemberInOrganization(orgId, user);
-        
+
         verify(cassandra).execute(statementCaptor.capture());
-        
+
         Statement statement = statementCaptor.getValue();
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(Insert.class));
     }
-    
+
     @DontRepeat
     @Test
     public void testSaveMemberInOrganizationWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.saveMemberInOrganization(orgId, user))
             .isInstanceOf(TException.class);
     }
@@ -406,12 +406,12 @@ public class CassandraOrganizationRepositoryTest
     public void testGetOrganizationOwners() throws Exception
     {
         List<User> response = instance.getOrganizationOwners(orgId);
-        
+
         Set<User> expected = org.owners
             .stream()
             .map(id -> new User().setUserId(id))
             .collect(toSet());
-        
+
         assertThat(Sets.toSet(response), is(expected));
     }
 
@@ -420,7 +420,7 @@ public class CassandraOrganizationRepositoryTest
     {
         when(results.one())
             .thenReturn(null);
-        
+
         assertThrows(() -> instance.getOrganizationOwners(orgId))
             .isInstanceOf(OrganizationDoesNotExistException.class);
     }
@@ -440,7 +440,7 @@ public class CassandraOrganizationRepositoryTest
     {
         assertThrows(() -> instance.getOrganizationOwners(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         assertThrows(() -> instance.getOrganizationOwners(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
@@ -449,9 +449,9 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteMember() throws Exception
     {
         instance.deleteMember(orgId, userId);
-        
+
         verify(cassandra).execute(statementCaptor.capture());
-        
+
         Statement statement = statementCaptor.getValue();
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(Delete.Where.class));
@@ -462,7 +462,7 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteMemberWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.deleteMember(orgId, userId))
             .isInstanceOf(TException.class);
     }
@@ -487,14 +487,17 @@ public class CassandraOrganizationRepositoryTest
     public void testDeleteAllMembers() throws Exception
     {
         instance.deleteAllMembers(orgId);
-        
+
     }
+
     @Test
     public void testDeleteAllMembersWhenFails() throws Exception
     {
-        
+        setupForFailure();
+        assertThrows(() -> instance.deleteAllMembers(orgId))
+            .isInstanceOf(TException.class);
     }
-    
+
     @Test
     public void testDeleteAllMembersWithBadArgs() throws Exception
     {
