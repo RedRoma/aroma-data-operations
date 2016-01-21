@@ -381,6 +381,13 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testSaveMemberInOrganization() throws Exception
     {
+        instance.saveMemberInOrganization(orgId, user);
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        
+        Statement statement = statementCaptor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Insert.class));
     }
 
     @Test
