@@ -216,6 +216,21 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
+    public void testDeleteOrganizationWhenFails() throws Exception
+    {
+    }
+
+    @Test
+    public void testDeleteOrganizationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteOrganization(""))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteOrganization(badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @Test
     public void testOrganizationExists() throws Exception
     {
     }
