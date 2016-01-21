@@ -235,6 +235,18 @@ public class CassandraOrganizationRepositoryIT
     }
     
     @Test
+    public void testIsMemberInOrganization() throws Exception
+    {
+        boolean result = instance.isMemberInOrganization(orgId, userId);
+        assertThat(result, is(false));
+        
+        instance.saveMemberInOrganization(orgId, user);
+        
+        result = instance.isMemberInOrganization(orgId, userId);
+        assertThat(result, is(true));
+    }
+    
+    @Test
     public void testGetOrganizationOwners() throws Exception
     {
         instance.saveOrganization(org);
@@ -253,6 +265,11 @@ public class CassandraOrganizationRepositoryIT
     @Test
     public void testDeleteMember() throws Exception
     {
+        instance.saveMemberInOrganization(orgId, user);
+        assertThat(instance.isMemberInOrganization(orgId, userId), is(true));
+
+        instance.deleteMember(orgId, userId);
+        assertThat(instance.isMemberInOrganization(orgId, userId), is(false));
     }
     
     @Test
@@ -312,5 +329,6 @@ public class CassandraOrganizationRepositoryIT
         assertThat(Sets.toSet(result.roles), is(Sets.toSet(expected.roles)));
 
     }
+
     
 }
