@@ -275,6 +275,14 @@ public class CassandraOrganizationRepositoryIT
     @Test
     public void testDeleteAllMembers() throws Exception
     {
+        saveMembers(members);
+        
+        instance.deleteAllMembers(orgId);
+        
+        for(User member : members)
+        {
+            assertThat(instance.isMemberInOrganization(orgId, member.userId), is(false));
+        }
     }
     
     private void saveMembers(List<User> members) throws TException
