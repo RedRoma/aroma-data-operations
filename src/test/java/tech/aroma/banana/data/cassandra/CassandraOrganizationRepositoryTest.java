@@ -296,6 +296,7 @@ public class CassandraOrganizationRepositoryTest
         assertThat(result, is(true));
     }
 
+    @DontRepeat
     @Test
     public void testOrganizationExistsWhenFails() throws Exception
     {
@@ -349,16 +350,24 @@ public class CassandraOrganizationRepositoryTest
         assertThat(response, is(empty()));
     }
 
+    @DontRepeat
     @Test
     public void testGetOrganizationMembersWhenFails() throws Exception
     {
+        setupForFailure();
         
+        assertThrows(() -> instance.getOrganizationMembers(orgId))
+            .isInstanceOf(TException.class);
     }
 
     @Test
     public void testGetOrganizationMembersWithBadArgs() throws Exception
     {
+        assertThrows(() -> instance.getOrganizationMembers(""))
+            .isInstanceOf(InvalidArgumentException.class);
         
+        assertThrows(() -> instance.getOrganizationMembers(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
