@@ -121,6 +121,7 @@ class Tables
         
         static final String USER_ID = "user_id";
         static final String USER_FIRST_NAME = "user_first_name";
+        static final String USER_MIDDLE_NAME = "user_middle_name";
         static final String USER_LAST_NAME = "user_last_name";
         static final String USER_ROLES = "user_roles";
         static final String USER_EMAIL = "user_email";
