@@ -101,6 +101,30 @@ class Tables
         static final String TOTAL_MESSAGES = "total_messages";
         
     }
+    
+    static class Organizations
+    {
+        static final String TABLE_NAME = "Organizations";
+        static final String TABLE_NAME_MEMBERS = "Organizations_Members";
+        
+        static final String ORG_ID = "org_id";
+        static final String ORG_NAME = "org_name";
+        static final String OWNERS = "org_name";
+        static final String ICON_LINK = "icon_link";
+        static final String INDUSTRY = "industry";
+        static final String EMAIL = "contact_email";
+        static final String GITHUB_PROFILE = "github_profile";
+        static final String STOCK_NAME = "stock_name";
+        static final String TIER = "tier";
+        static final String DESCRIPTION = "description";
+        static final String WEBSITE = "website";
+        
+        static final String USER_ID = "user_id";
+        static final String USER_FIRST_NAME = "user_first_name";
+        static final String USER_LAST_NAME = "user_last_name";
+        static final String USER_ROLE = "user_role";
+        static final String USER_EMAIL = "user_email";
+    }
 
     static class Users
     {
