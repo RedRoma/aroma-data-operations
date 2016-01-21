@@ -448,6 +448,28 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testDeleteMember() throws Exception
     {
+        instance.deleteMember(orgId, userId);
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        
+        Statement statement = statementCaptor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Delete.Where.class));
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteMemberWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.deleteMember(orgId, userId))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testDeleteMemberWithBadArgs() throws Exception
+    {
     }
 
     @Test
