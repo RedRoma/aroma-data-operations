@@ -38,6 +38,7 @@ import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static java.util.stream.Collectors.toList;
@@ -329,11 +330,11 @@ final class CassandraOrganizationRepository implements OrganizationRepository
             .where(eq(ORG_ID, orgUuid));
     }
     
-    private void checkRowIsPresent(Row row) throws OperationFailedException
+    private void checkRowIsPresent(Row row) throws OperationFailedException, OrganizationDoesNotExistException
     {
         checkThat(row)
-            .throwing(OperationFailedException.class)
-            .usingMessage("Query Failed")
+            .throwing(OrganizationDoesNotExistException.class)
+            .usingMessage("Org Does not exist")
             .is(notNull());
     }
     

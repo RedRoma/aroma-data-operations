@@ -40,6 +40,7 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -204,6 +205,16 @@ public class CassandraOrganizationRepositoryTest
         Statement statement = statementCaptor.getValue();
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(Select.Where.class));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetOrganizationWhenNotExists() throws Exception
+    {
+        when(results.one()).thenReturn(null);
+        
+        assertThrows(() -> instance.getOrganization(orgId))
+            .isInstanceOf(OrganizationDoesNotExistException.class);
     }
 
     @DontRepeat
