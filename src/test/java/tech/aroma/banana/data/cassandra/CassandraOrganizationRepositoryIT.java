@@ -144,6 +144,14 @@ public class CassandraOrganizationRepositoryIT
     @Test
     public void testDeleteOrganization() throws Exception
     {
+        //Should be ok
+        instance.deleteOrganization(orgId);
+
+        instance.saveOrganization(org);
+        assertThat(instance.organizationExists(orgId), is(true));
+
+        instance.deleteOrganization(orgId);
+        assertThat(instance.organizationExists(orgId), is(false));
     }
     
     @Test
