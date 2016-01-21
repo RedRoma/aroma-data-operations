@@ -438,6 +438,11 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testGetOrganizationOwnersWithBadArgs() throws Exception
     {
+        assertThrows(() -> instance.getOrganizationOwners(""))
+            .isInstanceOf(TException.class);
+        
+        assertThrows(() -> instance.getOrganizationOwners(badId))
+            .isInstanceOf(TException.class);
     }
 
     @Test
