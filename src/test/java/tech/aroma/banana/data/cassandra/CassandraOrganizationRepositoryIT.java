@@ -21,6 +21,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
@@ -29,6 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
@@ -39,9 +41,11 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -97,6 +101,11 @@ public class CassandraOrganizationRepositoryIT
     @GenerateList(User.class)
     private List<User> members;
     
+    //This flag saves some time on the Integration Test.
+    private boolean deleteMembersAtEnd = false;
+    
+    private Map<String,User> mapOfMembers;
+    
     @Before
     public void setUp()
     {
@@ -106,6 +115,16 @@ public class CassandraOrganizationRepositoryIT
         org.owners = listOf(uuids, 5);
         
         instance = new CassandraOrganizationRepository(session, queryBuilder, organizationMapper, userMapper);
+        
+        mapOfMembers = Maps.create();
+        members = members
+            .stream()
+            .map(m -> m.setUserId(one(uuids)))
+            .collect(toList());
+        
+        members.forEach(m -> mapOfMembers.put(m.userId, m));
+        
+        deleteMembersAtEnd = false;
     }
     
     @After
@@ -118,6 +137,11 @@ public class CassandraOrganizationRepositoryIT
         catch (TException ex)
         {
             System.out.println("Failed to delete Organization: " + orgId);
+        }
+        
+        if (deleteMembersAtEnd)
+        {
+            deleteMembers(members);
         }
     }
     
@@ -168,6 +192,17 @@ public class CassandraOrganizationRepositoryIT
     @Test
     public void testGetOrganizationMembers() throws Exception
     {
+        saveMembers(members);
+        deleteMembersAtEnd = true;
+        
+        List<User> response = instance.getOrganizationMembers(orgId);
+        
+        for(User member : response)
+        {
+            User expected = mapOfMembers.get(member.userId);
+            assertThat(expected, notNullValue());
+            assertUserMostlyMatch(member, expected);
+        }
     }
     
     @Test
@@ -234,6 +269,18 @@ public class CassandraOrganizationRepositoryIT
         assertThat(result.tier, is(expected.tier));
         assertThat(Sets.toSet(result.owners), is(Sets.toSet(expected.owners)));
         assertThat(result.industry, is(expected.industry));
+    }
+
+    private void assertUserMostlyMatch(User result, User expected)
+    {
+        assertThat(result, notNullValue());
+        
+        assertThat(result.userId, is(expected.userId));
+        assertThat(result.firstName, is(expected.firstName));
+        assertThat(result.lastName, is(expected.lastName));
+        assertThat(result.email, is(expected.email));
+        assertThat(Sets.toSet(result.roles), is(Sets.toSet(expected.roles)));
+
     }
     
 }
