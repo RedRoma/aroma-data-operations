@@ -29,9 +29,11 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
+import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -52,8 +54,10 @@ public final class CassandraDataModule extends AbstractModule
         bind(ApplicationRepository.class).to(CassandraApplicationRepository.class).in(Singleton.class);
         bind(FollowerRepository.class).to(CassandraFollowerRepository.class).in(Singleton.class);
         bind(InboxRepository.class).to(CassandraInboxRepository.class).in(Singleton.class);
-        bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
         bind(MessageRepository.class).to(CassandraMessageRepository.class).in(Singleton.class);
+        bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).in(Singleton.class);
+        bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
+
     }
 
     @Provides
@@ -74,6 +78,12 @@ public final class CassandraDataModule extends AbstractModule
     Function<Row, Message> provideMessageMapper()
     {
         return Mappers.messageMapper();
+    }
+
+    @Provides
+    Function<Row, Organization> provideOrganizationMapper()
+    {
+        return Mappers.orgMapper();
     }
 
     @Provides
