@@ -20,12 +20,15 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
@@ -37,8 +40,12 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.verify;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -72,6 +79,9 @@ public class CassandraOrganizationRepositoryTest
     
     @Mock
     private ResultSet results;
+    
+    @Captor
+    private ArgumentCaptor<Statement> statementCaptor;
 
     private CassandraOrganizationRepository instance;
     
@@ -101,6 +111,8 @@ public class CassandraOrganizationRepositoryTest
             .map(u -> u.setUserId(one(uuids)))
             .collect(toList());
         
+        org.owners = listOf(uuids, 3);
+        
         queryBuilder = new QueryBuilder(cluster);
         instance = new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, userMapper);
     }
@@ -126,6 +138,11 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testSaveOrganization() throws Exception
     {
+        instance.saveOrganization(org);
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        Statement statementMade = statementCaptor.getValue();
+        assertThat(statementMade, notNullValue());
     }
 
     @Test
