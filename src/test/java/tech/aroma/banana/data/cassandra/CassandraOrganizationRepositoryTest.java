@@ -416,6 +416,31 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
+    public void testGetOrganizationOwnersWhenOrgNotExists() throws Exception
+    {
+        when(results.one())
+            .thenReturn(null);
+        
+        assertThrows(() -> instance.getOrganizationOwners(orgId))
+            .isInstanceOf(OrganizationDoesNotExistException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetOrganizationOwnersWhenFails() throws Exception
+    {
+        setupForFailure();
+
+        assertThrows(() -> instance.getOrganizationOwners(orgId))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testGetOrganizationOwnersWithBadArgs() throws Exception
+    {
+    }
+
+    @Test
     public void testDeleteMember() throws Exception
     {
     }
