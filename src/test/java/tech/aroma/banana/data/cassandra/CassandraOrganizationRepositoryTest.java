@@ -54,7 +54,6 @@ import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
-
 /**
  *
  * @author SirWellington
@@ -66,84 +65,89 @@ public class CassandraOrganizationRepositoryTest
 
     @Mock(answer = RETURNS_MOCKS)
     private Cluster cluster;
-    
+
     @Mock
     private Session cassandra;
-    
+
     private QueryBuilder queryBuilder;
-    
+
     @Mock
     private Function<Row, Organization> organizationMapper;
-    
+
     @Mock
     private Function<Row, User> userMapper;
-    
+
     @Mock
     private Row row;
-    
+
     @Mock
     private ResultSet results;
-    
+
     @Captor
     private ArgumentCaptor<Statement> statementCaptor;
 
     private CassandraOrganizationRepository instance;
-    
+
     @GeneratePojo
     private Organization org;
-    
+
     @GenerateString(UUID)
     private String orgId;
-    
+
     @GenerateString(UUID)
     private String userId;
-    
+
     @GeneratePojo
     private User user;
-    
+
     @GenerateList(User.class)
     private List<User> members;
 
-    
     @Before
     public void setUp()
     {
         org.organizationId = orgId;
         user.userId = userId;
-        
+
         members = members.stream()
             .map(u -> u.setUserId(one(uuids)))
             .collect(toList());
-        
+
         org.owners = listOf(uuids, 3);
-        
+
         queryBuilder = new QueryBuilder(cluster);
         instance = new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, userMapper);
     }
-    
+
+    private void setupForFailure()
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+    }
+
     @DontRepeat
     @Test
     public void testConstructor() throws Exception
     {
         assertThrows(() -> new CassandraOrganizationRepository(null, queryBuilder, organizationMapper, userMapper))
             .isInstanceOf(IllegalArgumentException.class);
-        
+
         assertThrows(() -> new CassandraOrganizationRepository(cassandra, null, organizationMapper, userMapper))
             .isInstanceOf(IllegalArgumentException.class);
-        
+
         assertThrows(() -> new CassandraOrganizationRepository(cassandra, queryBuilder, null, userMapper))
             .isInstanceOf(IllegalArgumentException.class);
-        
+
         assertThrows(() -> new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, null))
             .isInstanceOf(IllegalArgumentException.class);
-        
+
     }
 
     @Test
     public void testSaveOrganization() throws Exception
     {
         instance.saveOrganization(org);
-        
+
         verify(cassandra).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
@@ -152,13 +156,12 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testSaveOrganizationWhenFails() throws Exception
     {
-        when(cassandra.execute(Mockito.any(Statement.class)))
-            .thenThrow(new IllegalArgumentException());
-        
+        setupForFailure();
+
         assertThrows(() -> instance.saveOrganization(org))
             .isInstanceOf(TException.class);
     }
-    
+
     @DontRepeat
     @Test
     public void testSaveOrganizationWithBadArgs() throws Exception
@@ -173,7 +176,7 @@ public class CassandraOrganizationRepositoryTest
 
         Organization orgWithoutName = new Organization(org);
         orgWithoutName.unsetOrganizationName();
-        
+
         assertThrows(() -> instance.saveOrganization(orgWithoutName))
             .isInstanceOf(InvalidArgumentException.class);
 
@@ -181,6 +184,20 @@ public class CassandraOrganizationRepositoryTest
 
     @Test
     public void testGetOrganization() throws Exception
+    {
+    }
+
+    @Test
+    public void testGetOrganizationWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.getOrganization(orgId))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testGetOrganizationWithBadArgs() throws Exception
     {
     }
 
