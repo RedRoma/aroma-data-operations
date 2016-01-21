@@ -47,7 +47,9 @@ import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
 
 /**
- *
+ * This class contains a lot of data-marshalling logic to transform
+ * Cassandra Rows into the appropriate Banana Thrift Objects.
+ * 
  * @author SirWellington
  */
 @Internal
@@ -55,6 +57,12 @@ import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
 final class Mappers
 {
     private final static Logger LOG = LoggerFactory.getLogger(Mappers.class);
+
+    Mappers() throws IllegalAccessException
+    {
+        throw new IllegalAccessException("cannot instantiate");
+    }
+    
     
     static Function<Row, Application> appMapper()
     {
