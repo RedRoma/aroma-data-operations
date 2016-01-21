@@ -43,6 +43,7 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
@@ -373,6 +374,8 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testSearchByName() throws Exception
     {
+        assertThrows(() -> instance.searchByName(org.organizationName))
+            .isInstanceOf(OperationFailedException.class);
     }
 
     @Test
