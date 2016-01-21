@@ -58,6 +58,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
@@ -258,6 +259,17 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testOrganizationExists() throws Exception
     {
+        when(row.getLong(0)).thenReturn(0L);
+        
+        boolean result = instance.organizationExists(orgId);
+        assertThat(result, is(false));
+        
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        
+        result = instance.organizationExists(orgId);
+        
+        assertThat(result, is(true));
     }
 
     @Test
