@@ -52,6 +52,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -332,15 +333,20 @@ public class CassandraOrganizationRepositoryTest
         when(results.iterator())
             .thenReturn(rows.values().iterator());
         
-        List<User> results = instance.getOrganizationMembers(orgId);
+        List<User> response = instance.getOrganizationMembers(orgId);
         
-        assertThat(Sets.toSet(results), is(Sets.toSet(members)));
+        assertThat(Sets.toSet(response), is(Sets.toSet(members)));
     }
 
     @Test
     public void testGetOrganizationMembersWhenOrgNotExists() throws Exception
     {
-        
+        when(results.iterator())
+            .thenReturn(Lists.<Row>emptyList().iterator());
+            
+        List<User> response = instance.getOrganizationMembers(orgId);
+        assertThat(response, notNullValue());
+        assertThat(response, is(empty()));
     }
 
     @Test
