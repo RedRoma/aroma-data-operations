@@ -19,6 +19,7 @@ package tech.aroma.banana.data.assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Organization;
@@ -35,6 +36,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
@@ -77,6 +80,8 @@ public class RequestAssertionsTest
         message.messageId = validId;
         user.userId = validId;
         organization.organizationId = validId;
+        
+        organization.owners = Lists.createFrom(validId);
     }
     
     @DontRepeat
@@ -219,14 +224,20 @@ public class RequestAssertionsTest
         assertThrows(() -> assertion.check(emptyOrg))
             .isInstanceOf(FailedAssertionException.class);
 
-        Organization messageWithoutName = emptyOrg.setOrganizationId(validId);
-        assertThrows(() -> assertion.check(messageWithoutName))
+        Organization orgWithoutName = emptyOrg.setOrganizationId(validId);
+        assertThrows(() -> assertion.check(orgWithoutName))
             .isInstanceOf(FailedAssertionException.class);
 
-        Organization messageWithInvalidId = new Organization(organization)
+        Organization orgWithInvalidId = new Organization(organization)
             .setOrganizationId(invalidId);
-        assertThrows(() -> assertion.check(messageWithInvalidId))
+        assertThrows(() -> assertion.check(orgWithInvalidId))
             .isInstanceOf(FailedAssertionException.class);
+        
+        Organization orgWithBadOwners = new Organization(organization)
+            .setOwners(listOf(alphabeticString(2)));
+        assertThrows(() -> assertion.check(orgWithBadOwners))
+            .isInstanceOf(FailedAssertionException.class);
+        
     }
 
     @Test
