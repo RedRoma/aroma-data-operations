@@ -249,6 +249,14 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
+    public void testDeleteOrganizationWhenNotExists() throws Exception
+    {
+        when(results.one()).thenReturn(null);
+        
+        instance.deleteOrganization(orgId);
+    }
+
+    @Test
     public void testDeleteOrganizationWhenFails() throws Exception
     {
         setupForFailure();
