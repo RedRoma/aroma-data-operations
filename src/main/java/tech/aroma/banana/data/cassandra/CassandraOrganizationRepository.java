@@ -98,6 +98,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     public void saveOrganization(Organization organization) throws TException
     {
         checkThat(organization)
+            .throwing(InvalidArgumentException.class)
             .is(validOrganization());
         
         Statement insertStatement = createStatementToInsert(organization);
