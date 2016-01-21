@@ -313,6 +313,18 @@ public class CassandraFollowerRepositoryTest
             .isInstanceOf(TException.class);
         
     }
+    
+    @Test
+    public void testGetApplicationsFollowedByWithBadArgs() throws Exception
+    {
+        String badId = one(alphabeticString());
+        
+        assertThrows(() -> instance.getApplicationsFollowedBy(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getApplicationsFollowedBy(badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
 
     @Test
     public void testGetApplicationFollowers() throws Exception
