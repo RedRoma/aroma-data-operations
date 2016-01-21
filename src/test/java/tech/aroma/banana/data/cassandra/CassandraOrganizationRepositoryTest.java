@@ -470,6 +470,18 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testDeleteMemberWithBadArgs() throws Exception
     {
+
+        assertThrows(() -> instance.deleteMember("", userId))
+            .isInstanceOf(TException.class);
+
+        assertThrows(() -> instance.deleteMember(orgId, ""))
+            .isInstanceOf(TException.class);
+
+        assertThrows(() -> instance.deleteMember(badId, userId))
+            .isInstanceOf(TException.class);
+
+        assertThrows(() -> instance.deleteMember(orgId, badId))
+            .isInstanceOf(TException.class);
     }
 
     @Test
