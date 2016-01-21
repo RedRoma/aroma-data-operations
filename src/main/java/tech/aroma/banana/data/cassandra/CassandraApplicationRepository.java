@@ -45,6 +45,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validOrgId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_DESCRIPTION;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
@@ -60,7 +61,6 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
 /**
  *
@@ -229,10 +229,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         checkThat(orgId)
             .throwing(InvalidArgumentException.class)
-            .usingMessage("missing orgId")
-            .is(nonEmptyString())
-            .usingMessage("invalid UUID type for org")
-            .is(validUUID());
+            .is(validOrgId());
         
         Statement query = createQueryForAppsWithOrg(orgId);
         
