@@ -23,6 +23,8 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -32,6 +34,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -46,8 +49,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
@@ -275,6 +280,26 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testGetApplicationsFollowedBy() throws Exception
     {
+        Map<String, Row> rows = Maps.create();
+        
+        for (Application app : apps)
+        {
+            Row mockRow = mock(Row.class);
+            
+            when(applicationMapper.apply(mockRow))
+                .thenReturn(app);
+            
+            rows.put(app.applicationId, mockRow);
+        }
+        
+        when(results.iterator())
+            .thenReturn(rows.values().iterator());
+        
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
+        Set<Application> result = toSet(instance.getApplicationsFollowedBy(userId));
+        assertThat(result, is(toSet(apps)));
     }
 
     @Test
