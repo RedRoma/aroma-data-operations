@@ -63,7 +63,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  *
  * @author SirWellington
  */
-@Repeat(10)
+@Repeat(100)
 @RunWith(AlchemyTestRunner.class)
 public class CassandraFollowerRepositoryTest
 {
@@ -344,6 +344,28 @@ public class CassandraFollowerRepositoryTest
         Set<User> result = toSet(instance.getApplicationFollowers(appId));
         assertThat(result, is(toSet(followers)));
 
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetApplicationFollowersWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+        
+        assertThrows(() -> instance.getApplicationFollowers(appId))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testGetApplicationFollowersWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getApplicationFollowers(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        String badId = one(alphabeticString());
+        assertThrows(() -> instance.getApplicationFollowers(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
 }
