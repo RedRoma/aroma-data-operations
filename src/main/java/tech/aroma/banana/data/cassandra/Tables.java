@@ -109,7 +109,7 @@ class Tables
         
         static final String ORG_ID = "org_id";
         static final String ORG_NAME = "org_name";
-        static final String OWNERS = "org_name";
+        static final String OWNERS = "owners";
         static final String ICON_LINK = "icon_link";
         static final String INDUSTRY = "industry";
         static final String EMAIL = "contact_email";
