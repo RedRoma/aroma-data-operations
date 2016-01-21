@@ -43,6 +43,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
@@ -117,12 +118,8 @@ public class CassandraOrganizationRepositoryTest
 
         queryBuilder = new QueryBuilder(cluster);
         instance = new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, userMapper);
-    }
-
-    private void setupForFailure()
-    {
-        when(cassandra.execute(Mockito.any(Statement.class)))
-            .thenThrow(new IllegalArgumentException());
+        
+        setupBasicStubbing();
     }
 
     @DontRepeat
@@ -185,6 +182,9 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testGetOrganization() throws Exception
     {
+        Organization result = instance.getOrganization(orgId);
+        
+        assertThat(result, is(org));
     }
 
     @Test
@@ -241,4 +241,24 @@ public class CassandraOrganizationRepositoryTest
     {
     }
 
+    private void setupForFailure()
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+    }
+
+    private void setupBasicStubbing()
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenReturn(results);
+        
+        when(results.one())
+            .thenReturn(row);
+        
+        when(organizationMapper.apply(row))
+            .thenReturn(org);
+        
+        when(userMapper.apply(row))
+            .thenReturn(user);
+    }
 }
