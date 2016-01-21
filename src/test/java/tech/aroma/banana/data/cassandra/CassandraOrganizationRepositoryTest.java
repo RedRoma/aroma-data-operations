@@ -21,7 +21,10 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
+import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.thrift.TException;
@@ -43,10 +46,12 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -152,6 +157,7 @@ public class CassandraOrganizationRepositoryTest
         verify(cassandra).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
+        assertThat(statementMade, instanceOf(Insert.class));
     }
 
     @DontRepeat
@@ -189,6 +195,12 @@ public class CassandraOrganizationRepositoryTest
         Organization result = instance.getOrganization(orgId);
 
         assertThat(result, is(org));
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        
+        Statement statement = statementCaptor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Select.Where.class));
     }
 
     @DontRepeat
@@ -214,6 +226,12 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testDeleteOrganization() throws Exception
     {
+        instance.deleteOrganization(orgId);
+        
+        verify(cassandra, atLeastOnce()).execute(statementCaptor.capture());
+        Statement statementMade = statementCaptor.getValue();
+        assertThat(statementMade, notNullValue());
+        assertThat(statementMade, instanceOf(Delete.Where.class));
     }
 
     @Test
