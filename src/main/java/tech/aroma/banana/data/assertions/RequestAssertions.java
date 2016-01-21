@@ -39,6 +39,7 @@ public final class RequestAssertions
         return app ->
         {
             checkThat(app)
+                .usingMessage("app is missing")
                 .is(notNull());
             
             checkThat(app.applicationId, app.name)
@@ -53,7 +54,9 @@ public final class RequestAssertions
     {
         return message ->
         {
-            checkThat(message).is(notNull());
+            checkThat(message)
+                .usingMessage("message is missing")
+                .is(notNull());
             
             checkThat(message.messageId)
                 .is(validMessageId());
@@ -69,6 +72,7 @@ public final class RequestAssertions
         return org ->
         {
             checkThat(org)
+                .usingMessage("org is missing")
                 .is(notNull());
             
             checkThat(org.organizationId)
@@ -92,6 +96,7 @@ public final class RequestAssertions
         return user ->
         {
             checkThat(user)
+                .usingMessage("user is missing")
                 .is(notNull());
             
             checkThat(user.userId)
