@@ -213,11 +213,16 @@ final class Mappers
                 roles = row.getSet(Tables.Users.ROLES, Role.class);
             }
     
-            String profileImageLink = null;
-            
             if(doesRowContainColumn(row, Tables.Users.PROFILE_IMAGE_ID))
             {
-                profileImageLink = row.getString(Tables.Users.PROFILE_IMAGE_ID);
+                String profileImageLink = row.getString(Tables.Users.PROFILE_IMAGE_ID);
+                user.setProfileImageLink(profileImageLink);
+            }
+            
+            if (doesRowContainColumn(row, Tables.Users.GITHUB_PROFILE))
+            {
+                String githubProfile = row.getString(Tables.Users.GITHUB_PROFILE);
+                user.setGithubProfile(githubProfile);
             }
             
             return user
@@ -226,8 +231,6 @@ final class Mappers
                 .setMiddleName(row.getString(Tables.Users.MIDDLE_NAME))
                 .setLastName(row.getString(Tables.Users.LAST_NAME))
                 .setEmail(email)
-                .setGithubProfile(row.getString(Tables.Users.GITHUB_PROFILE))
-                .setProfileImageLink(profileImageLink)
                 .setRoles(roles);
         };
     }
