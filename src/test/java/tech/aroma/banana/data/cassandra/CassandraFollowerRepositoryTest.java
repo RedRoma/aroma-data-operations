@@ -302,6 +302,18 @@ public class CassandraFollowerRepositoryTest
         assertThat(result, is(toSet(apps)));
     }
 
+    @DontRepeat
+    @Test
+    public void testGetApplicationsFollowedByWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new RuntimeException());
+            
+        assertThrows(() -> instance.getApplicationsFollowedBy(userId))
+            .isInstanceOf(TException.class);
+        
+    }
+
     @Test
     public void testGetApplicationFollowers() throws Exception
     {
