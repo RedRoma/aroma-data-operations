@@ -24,12 +24,14 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -44,6 +46,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
@@ -143,6 +146,16 @@ public class CassandraOrganizationRepositoryTest
         verify(cassandra).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
         assertThat(statementMade, notNullValue());
+    }
+
+    @Test
+    public void testSaveOrganizationWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+        
+        assertThrows(() -> instance.saveOrganization(org))
+            .isInstanceOf(TException.class);
     }
 
     @Test
