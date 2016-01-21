@@ -27,6 +27,7 @@ import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -37,6 +38,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import sir.wellington.alchemy.collections.lists.Lists;
+import sir.wellington.alchemy.collections.maps.Maps;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -55,6 +58,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -311,8 +315,44 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
-    public void testGetOrganizationMemebers() throws Exception
+    public void testGetOrganizationMembers() throws Exception
     {
+        Map<String, Row> rows = Maps.create();
+        
+        for(User member : members)
+        {
+            Row mockRow = mock(Row.class);
+            
+            when(userMapper.apply(mockRow))
+                .thenReturn(member);
+            
+            rows.put(member.userId, mockRow);
+        }
+        
+        when(results.iterator())
+            .thenReturn(rows.values().iterator());
+        
+        List<User> results = instance.getOrganizationMembers(orgId);
+        
+        assertThat(Sets.toSet(results), is(Sets.toSet(members)));
+    }
+
+    @Test
+    public void testGetOrganizationMembersWhenOrgNotExists() throws Exception
+    {
+        
+    }
+
+    @Test
+    public void testGetOrganizationMembersWhenFails() throws Exception
+    {
+        
+    }
+
+    @Test
+    public void testGetOrganizationMembersWithBadArgs() throws Exception
+    {
+        
     }
 
     @Test
