@@ -72,13 +72,6 @@ import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 
 /**
  *
@@ -544,5 +537,20 @@ public class CassandraOrganizationRepositoryTest
 
         when(userMapper.apply(row))
             .thenReturn(user);
+    }
+
+    @Test
+    public void testIsMemberInOrganization() throws Exception
+    {
+        when(row.getLong(0)).thenReturn(0L);
+        
+        boolean result = instance.isMemberInOrganization(orgId, userId);
+        assertThat(result, is(false));
+        
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        
+        result = instance.isMemberInOrganization(orgId, userId);
+        assertThat(result, is(true));
     }
 }

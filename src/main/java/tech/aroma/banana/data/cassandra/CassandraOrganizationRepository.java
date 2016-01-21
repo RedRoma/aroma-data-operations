@@ -64,8 +64,8 @@ import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_LAST_NA
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_MIDDLE_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_ROLES;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.WEBSITE;
-import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
  *
@@ -248,6 +248,34 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     }
     
     @Override
+    public boolean isMemberInOrganization(String organizationId, String userId) throws TException
+    {
+        checkOrganizationId(organizationId);
+        checkUserId(userId);
+
+        Statement query = createQueryToSeeIfMemberOfOrg(organizationId, userId);
+
+        ResultSet results;
+
+        try
+        {
+            results = cassandra.execute(query);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to query for existence of Member [{]] in Organization [{}]", userId, organizationId, ex);
+            throw new OperationFailedException("Could not query for membership in Organization: " + ex.getMessage());
+        }
+
+        Row row = results.one();
+        checkRowIsPresent(row);
+
+        long count = row.getLong(0);
+        return count > 0L;
+
+    }
+    
+    @Override
     public List<User> getOrganizationOwners(String organizationId) throws TException
     {
         Organization org = this.getOrganization(organizationId);
@@ -392,6 +420,19 @@ final class CassandraOrganizationRepository implements OrganizationRepository
             .value(USER_EMAIL, user.email);
     }
     
+    private Statement createQueryToSeeIfMemberOfOrg(String organizationId, String userId)
+    {
+        UUID orgUuid = UUID.fromString(organizationId);
+        UUID userUuid = UUID.fromString(userId);
+        
+        return queryBuilder
+            .select()
+            .countAll()
+            .from(Organizations.TABLE_NAME_MEMBERS)
+            .where(eq(ORG_ID, orgUuid))
+            .and(eq(USER_ID, userUuid));
+    }
+    
     private Statement createStatmentToDeleteMember(String organizationId, String userId)
     {
         UUID orgUuid = UUID.fromString(organizationId);
@@ -429,5 +470,6 @@ final class CassandraOrganizationRepository implements OrganizationRepository
             .throwing(InvalidArgumentException.class)
             .is(validUserId());
     }
+
     
 }
