@@ -190,8 +190,42 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testDeleteFollowing() throws Exception
     {
+        instance.deleteFollowing(userId, appId);
+        
+        verify(cassandra).execute(statementCaptor.capture());
+        
+        Statement statementMade = statementCaptor.getValue();
+        assertThat(statementMade, notNullValue());
+    }
+    
+    @Test
+    public void testDeleteFollowingWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
+        
+        assertThrows(() -> instance.deleteFollowing(userId, appId))
+            .isInstanceOf(TException.class);
     }
 
+    @Test
+    public void testDeleteFollowingWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteFollowing("", appId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteFollowing(userId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        String badId = one(alphabeticString());
+        
+        assertThrows(() -> instance.deleteFollowing(badId, appId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteFollowing(userId, badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+    
     @Test
     public void testFollowingExists() throws Exception
     {
