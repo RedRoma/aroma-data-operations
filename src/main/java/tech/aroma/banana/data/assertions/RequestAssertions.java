@@ -96,9 +96,6 @@ public final class RequestAssertions
             
             checkThat(user.userId)
                 .is(validUserId());
-            
-            checkThat(user.name)
-                .is(nonEmptyString());
         };
     }
     
