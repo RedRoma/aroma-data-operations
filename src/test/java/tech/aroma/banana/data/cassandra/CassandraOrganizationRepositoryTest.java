@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -156,6 +157,26 @@ public class CassandraOrganizationRepositoryTest
         
         assertThrows(() -> instance.saveOrganization(org))
             .isInstanceOf(TException.class);
+    }
+    
+    @DontRepeat
+    @Test
+    public void testSaveOrganizationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.saveOrganization(null))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        Organization emptyOrg = new Organization();
+
+        assertThrows(() -> instance.saveOrganization(emptyOrg))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        Organization orgWithoutName = new Organization(org);
+        orgWithoutName.unsetOrganizationName();
+        
+        assertThrows(() -> instance.saveOrganization(orgWithoutName))
+            .isInstanceOf(InvalidArgumentException.class);
+
     }
 
     @Test
