@@ -23,6 +23,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
@@ -45,6 +46,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -235,6 +237,17 @@ public class CassandraOrganizationRepositoryIT
     @Test
     public void testGetOrganizationOwners() throws Exception
     {
+        instance.saveOrganization(org);
+        
+        List<User> owners = instance.getOrganizationOwners(orgId);
+        
+        Set<String> ownerIds = owners.stream()
+            .map(User::getUserId)
+            .collect(toSet());
+        
+        Set<String> expected = Sets.toSet(org.owners);
+        
+        assertThat(ownerIds, is(expected));
     }
     
     @Test
