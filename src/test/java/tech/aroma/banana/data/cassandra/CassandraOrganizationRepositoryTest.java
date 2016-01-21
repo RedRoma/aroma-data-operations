@@ -389,6 +389,16 @@ public class CassandraOrganizationRepositoryTest
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(Insert.class));
     }
+    
+    @DontRepeat
+    @Test
+    public void testSaveMemberInOrganizationWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.saveMemberInOrganization(orgId, user))
+            .isInstanceOf(TException.class);
+    }
 
     @Test
     public void testGetOrganizationOwners() throws Exception
