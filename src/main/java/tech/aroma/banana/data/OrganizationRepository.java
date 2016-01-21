@@ -45,7 +45,7 @@ public interface OrganizationRepository
         
     void saveMemberInOrganization(@Required String organizationId, @Required User user) throws TException;
 
-    List<User> getOrganizationMemebers(@Required String organizationId) throws TException;
+    List<User> getOrganizationMembers(@Required String organizationId) throws TException;
 
     void deleteMember(@Required String organizationId, @Required String userId) throws TException;
 

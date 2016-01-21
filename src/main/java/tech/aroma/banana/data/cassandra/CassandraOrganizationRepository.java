@@ -65,6 +65,7 @@ import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_ROLES;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.WEBSITE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -186,7 +187,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     }
     
     @Override
-    public List<User> getOrganizationMemebers(String organizationId) throws TException
+    public List<User> getOrganizationMembers(String organizationId) throws TException
     {
         checkOrganizationId(organizationId);
         
