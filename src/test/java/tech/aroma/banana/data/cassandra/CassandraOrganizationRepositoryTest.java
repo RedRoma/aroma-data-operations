@@ -439,10 +439,10 @@ public class CassandraOrganizationRepositoryTest
     public void testGetOrganizationOwnersWithBadArgs() throws Exception
     {
         assertThrows(() -> instance.getOrganizationOwners(""))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
         
         assertThrows(() -> instance.getOrganizationOwners(badId))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
@@ -470,23 +470,39 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testDeleteMemberWithBadArgs() throws Exception
     {
-
         assertThrows(() -> instance.deleteMember("", userId))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.deleteMember(orgId, ""))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.deleteMember(badId, userId))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.deleteMember(orgId, badId))
-            .isInstanceOf(TException.class);
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
     public void testDeleteAllMembers() throws Exception
     {
+        instance.deleteAllMembers(orgId);
+        
+    }
+    @Test
+    public void testDeleteAllMembersWhenFails() throws Exception
+    {
+        
+    }
+    
+    @Test
+    public void testDeleteAllMembersWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteAllMembers(""))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteAllMembers(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     private void setupForFailure()
