@@ -261,6 +261,25 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
+    public void testOrganizationExistsWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.organizationExists(orgId))
+            .isInstanceOf(TException.class);
+    }
+    
+    @Test
+    public void testOrganizationExistsWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.organizationExists(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.organizationExists(badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @Test
     public void testGetOrganizationMemebers() throws Exception
     {
     }
