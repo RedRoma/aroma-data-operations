@@ -61,9 +61,9 @@ import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_EMAIL;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_FIRST_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_LAST_NAME;
+import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_MIDDLE_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_ROLES;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.WEBSITE;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
@@ -369,6 +369,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
             .select()
             .column(USER_ID).as(Users.USER_ID)
             .column(USER_FIRST_NAME).as(Users.FIRST_NAME)
+            .column(USER_MIDDLE_NAME).as(Users.MIDDLE_NAME)
             .column(USER_LAST_NAME).as(Users.LAST_NAME)
             .column(USER_ROLES).as(Users.ROLES)
             .column(USER_EMAIL).as(Users.EMAIL)
