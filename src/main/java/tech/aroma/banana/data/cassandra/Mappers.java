@@ -179,7 +179,7 @@ final class Mappers
                 roles = row.getSet(Tables.Users.ROLES, Role.class);
             }
     
-            String profileImageLink;
+            String profileImageLink = null;
             
             if(doesRowContainColumn(row, Tables.Users.PROFILE_IMAGE_ID))
             {
