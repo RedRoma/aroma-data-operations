@@ -65,7 +65,6 @@ import static tech.aroma.banana.data.cassandra.Tables.Organizations.USER_ROLES;
 import static tech.aroma.banana.data.cassandra.Tables.Organizations.WEBSITE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
