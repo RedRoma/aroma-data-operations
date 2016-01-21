@@ -95,15 +95,10 @@ final class Mappers
             {
                 app.setOrganizationId(orgId.toString());
             }
-            
-            String tier = row.getString(Tables.Applications.TIER);
-            if (!isNullOrEmpty(tier))
-            {
-                app.setTier(Tier.valueOf(tier));
-            }
-            
+         
             app.setName(row.getString(Tables.Applications.APP_NAME))
-                .setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
+                .setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION))
+                .setTier(row.get(Tables.Applications.TIER, Tier.class));
             
             return app;
         };
