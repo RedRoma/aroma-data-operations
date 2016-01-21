@@ -20,15 +20,19 @@ package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Industry;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.ProgrammingLanguage;
 import tech.aroma.banana.thrift.Role;
 import tech.aroma.banana.thrift.Tier;
@@ -37,6 +41,7 @@ import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
+import static java.util.stream.Collectors.toList;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
@@ -142,6 +147,40 @@ final class Mappers
             
             
             return message;
+        };
+    }
+    
+    static Function<Row, Organization> orgMapper()
+    {
+        return row ->
+        {
+            Organization org = new Organization();
+            
+            UUID orgUuid = row.getUUID(Tables.Organizations.ORG_ID);
+            
+            List<String> owners = Lists.create();
+            
+            if (doesRowContainColumn(row, Tables.Organizations.OWNERS))
+            {
+                Set<UUID> ownerIds = row.getSet(Tables.Organizations.OWNERS, UUID.class);
+                owners = ownerIds.stream()
+                    .map(UUID::toString)
+                    .collect(toList());
+            }
+            
+            org.setOrganizationId(orgUuid.toString())
+                .setOrganizationName(row.getString(Tables.Organizations.ORG_NAME))
+                .setLogoLink(row.getString(Tables.Organizations.ICON_LINK))
+                .setOrganizationDescription(row.getString(Tables.Organizations.DESCRIPTION))
+                .setIndustry(row.get(Tables.Organizations.INDUSTRY, Industry.class))
+                .setGithubProfile(row.getString(Tables.Organizations.GITHUB_PROFILE))
+                .setOrganizationEmail(row.getString(Tables.Organizations.EMAIL))
+                .setStockMarketSymbol(row.getString(Tables.Organizations.STOCK_NAME))
+                .setTier(row.get(Tables.Organizations.TIER, Tier.class))
+                .setWebsite(row.getString(Tables.Organizations.WEBSITE))
+                .setOwners(owners);
+            
+            return org;
         };
     }
     
