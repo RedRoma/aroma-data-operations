@@ -21,6 +21,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -35,6 +36,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -237,6 +239,10 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testDeleteOrganizationWhenFails() throws Exception
     {
+        setupForFailure();
+        
+        assertThrows(() -> instance.deleteOrganization(orgId))
+            .isInstanceOf(TException.class);
     }
 
     @Test
@@ -286,8 +292,12 @@ public class CassandraOrganizationRepositoryTest
 
     private void setupForFailure()
     {
+        List<Class<? extends RuntimeException>> possibleExceptions = Lists.createFrom(IllegalArgumentException.class,
+                                                                                      RuntimeException.class,
+                                                                                      NoHostAvailableException.class);
+
         when(cassandra.execute(Mockito.any(Statement.class)))
-            .thenThrow(new IllegalArgumentException());
+            .thenThrow(Lists.oneOf(possibleExceptions));
     }
 
     private void setupBasicStubbing()
