@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS Banana.Organizations_Members
 	user_id uuid,
 	org_name text,
 	user_first_name text,
+	user_middle_name text,
 	user_last_name text,
 	user_roles set<text>,
 	user_email text,
@@ -38,6 +39,6 @@ CREATE TABLE IF NOT EXISTS Banana.Organizations_Members
 
 CREATE INDEX IF NOT EXISTS Organizations_Members_By_Email ON Banana.Organizations_Members (user_email);
 
-CREATE INDEX IF NOT EXISTS Organizations_Members_By_Role ON Banana.Organizations_Members (user_role);
+CREATE INDEX IF NOT EXISTS Organizations_Members_By_Role ON Banana.Organizations_Members (user_roles);
 
 CREATE INDEX IF NOT EXISTS Organizations_Members_By_User ON Banana.Organizations_Members (user_id);
