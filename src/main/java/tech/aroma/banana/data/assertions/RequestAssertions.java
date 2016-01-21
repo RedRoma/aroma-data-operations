@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
@@ -78,6 +79,22 @@ public final class RequestAssertions
         };
     }
     
+    public static AlchemyAssertion<Organization> validOrganization()
+    {
+        return org ->
+        {
+            checkThat(org)
+                .is(notNull());
+            
+            checkThat(org.organizationId)
+                .is(validOrgId());
+            
+            checkThat(org.organizationName)
+                .usingMessage("missing organization name")
+                .is(nonEmptyString());
+        };
+    }
+    
     public static AlchemyAssertion<User> validUser()
     {
         return user ->
@@ -117,6 +134,18 @@ public final class RequestAssertions
         };
     }
     
+    public static AlchemyAssertion<String> validOrgId()
+    {
+        return orgId ->
+        {
+            checkThat(orgId)
+                .usingMessage("missing orgId")
+                .is(nonEmptyString())
+                .usingMessage("orgId must be a UUID")
+                .is(validUUID());
+        };
+    }
+    
     public static AlchemyAssertion<String> validUserId()
     {
         return userId ->
@@ -133,5 +162,6 @@ public final class RequestAssertions
     {
         return string == null || string.isEmpty();
     }
+    
     
 }

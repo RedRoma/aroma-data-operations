@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
+import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
@@ -61,6 +62,9 @@ public class RequestAssertionsTest
     private Message message;
     
     @GeneratePojo
+    private Organization organization;
+    
+    @GeneratePojo
     private User user;
     
     @GenerateString
@@ -72,6 +76,7 @@ public class RequestAssertionsTest
         application.applicationId = validId;
         message.messageId = validId;
         user.userId = validId;
+        organization.organizationId = validId;
     }
     
     @DontRepeat
@@ -194,6 +199,40 @@ public class RequestAssertionsTest
     public void testValidUserId()
     {
         AlchemyAssertion<String> assertion = RequestAssertions.validUserId();
+        assertThat(assertion, notNullValue());
+
+        assertion.check(validId);
+
+        assertThrows(() -> assertion.check(invalidId))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
+    @Test
+    public void testValidOrganization()
+    {
+        AlchemyAssertion<Organization> assertion = RequestAssertions.validOrganization();
+
+        assertThrows(() -> assertion.check(null))
+            .isInstanceOf(FailedAssertionException.class);
+
+        Organization emptyOrg = new Organization();
+        assertThrows(() -> assertion.check(emptyOrg))
+            .isInstanceOf(FailedAssertionException.class);
+
+        Organization messageWithoutName = emptyOrg.setOrganizationId(validId);
+        assertThrows(() -> assertion.check(messageWithoutName))
+            .isInstanceOf(FailedAssertionException.class);
+
+        Organization messageWithInvalidId = new Organization(organization)
+            .setOrganizationId(invalidId);
+        assertThrows(() -> assertion.check(messageWithInvalidId))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
+    @Test
+    public void testValidOrgId()
+    {
+        AlchemyAssertion<String> assertion = RequestAssertions.validOrgId();
         assertThat(assertion, notNullValue());
 
         assertion.check(validId);
