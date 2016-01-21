@@ -242,6 +242,35 @@ public class CassandraFollowerRepositoryTest
         result = instance.followingExists(userId, appId);
         assertThat(result, is(true));
     }
+    
+    @DontRepeat
+    @Test
+    public void testFollowingExistsWhenFails() throws Exception
+    {
+        when(cassandra.execute(Mockito.any(Statement.class)))
+            .thenThrow(new RuntimeException());
+        
+        assertThrows(() -> instance.followingExists(userId, appId))
+            .isInstanceOf(TException.class);
+    }
+    
+    @Test
+    public void testFollowingExistsWithBadArgs() throws Exception
+    {
+        String badId = one(alphabeticString());
+
+        assertThrows(() -> instance.followingExists("", appId))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.followingExists(userId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.followingExists(badId, appId))
+            .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.followingExists(userId, badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
 
     @Test
     public void testGetApplicationsFollowedBy() throws Exception
