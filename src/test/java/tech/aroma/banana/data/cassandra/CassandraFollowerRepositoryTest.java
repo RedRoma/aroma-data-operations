@@ -326,6 +326,24 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testGetApplicationFollowers() throws Exception
     {
+        Map<String, Row> rows = Maps.create();
+
+        for (User follower : followers)
+        {
+            Row mockRow = mock(Row.class);
+
+            when(userMapper.apply(mockRow))
+                .thenReturn(follower);
+
+            rows.put(follower.userId, mockRow);
+        }
+
+        when(results.iterator())
+            .thenReturn(rows.values().iterator());
+
+        Set<User> result = toSet(instance.getApplicationFollowers(appId));
+        assertThat(result, is(toSet(followers)));
+
     }
 
 }
