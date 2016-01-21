@@ -72,6 +72,13 @@ import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 
 /**
  *
@@ -284,17 +291,17 @@ public class CassandraOrganizationRepositoryTest
     }
 
     @Test
-    public void testOrganizationExists() throws Exception
+    public void testContainsOrganization() throws Exception
     {
         when(row.getLong(0)).thenReturn(0L);
 
-        boolean result = instance.organizationExists(orgId);
+        boolean result = instance.containsOrganization(orgId);
         assertThat(result, is(false));
 
         long count = one(positiveLongs());
         when(row.getLong(0)).thenReturn(count);
 
-        result = instance.organizationExists(orgId);
+        result = instance.containsOrganization(orgId);
 
         assertThat(result, is(true));
     }
@@ -305,17 +312,17 @@ public class CassandraOrganizationRepositoryTest
     {
         setupForFailure();
 
-        assertThrows(() -> instance.organizationExists(orgId))
+        assertThrows(() -> instance.containsOrganization(orgId))
             .isInstanceOf(TException.class);
     }
 
     @Test
     public void testOrganizationExistsWithBadArgs() throws Exception
     {
-        assertThrows(() -> instance.organizationExists(""))
+        assertThrows(() -> instance.containsOrganization(""))
             .isInstanceOf(InvalidArgumentException.class);
 
-        assertThrows(() -> instance.organizationExists(badId))
+        assertThrows(() -> instance.containsOrganization(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
 

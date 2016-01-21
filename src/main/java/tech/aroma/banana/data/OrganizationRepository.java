@@ -37,7 +37,7 @@ public interface OrganizationRepository
     
     void deleteOrganization(@Required String organizationId) throws TException;
     
-    boolean organizationExists(@Required String organizationId) throws TException;
+    boolean containsOrganization(@Required String organizationId) throws TException;
 
     List<Organization> searchByName(@Required String searchTerm) throws TException;
     

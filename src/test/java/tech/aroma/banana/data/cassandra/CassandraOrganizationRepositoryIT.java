@@ -46,6 +46,11 @@ import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 
 /**
  *
@@ -126,7 +131,7 @@ public class CassandraOrganizationRepositoryIT
     {
         instance.saveOrganization(org);
         
-        assertThat(instance.organizationExists(orgId), is(true));
+        assertThat(instance.containsOrganization(orgId), is(true));
     }
     
     @Test
@@ -148,14 +153,14 @@ public class CassandraOrganizationRepositoryIT
         instance.deleteOrganization(orgId);
 
         instance.saveOrganization(org);
-        assertThat(instance.organizationExists(orgId), is(true));
+        assertThat(instance.containsOrganization(orgId), is(true));
 
         instance.deleteOrganization(orgId);
-        assertThat(instance.organizationExists(orgId), is(false));
+        assertThat(instance.containsOrganization(orgId), is(false));
     }
     
     @Test
-    public void testOrganizationExists() throws Exception
+    public void testContainsOrganization() throws Exception
     {
     }
     
