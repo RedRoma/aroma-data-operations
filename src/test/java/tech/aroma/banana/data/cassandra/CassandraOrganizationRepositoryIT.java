@@ -20,6 +20,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,8 +35,10 @@ import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
@@ -205,14 +208,28 @@ public class CassandraOrganizationRepositoryIT
         }
     }
     
+    @DontRepeat
     @Test
     public void testSearchByName() throws Exception
     {
+        assertThrows(() -> instance.searchByName(userId))
+            .isInstanceOf(OperationFailedException.class);
     }
     
     @Test
     public void testSaveMemberInOrganization() throws Exception
     {
+        instance.saveMemberInOrganization(orgId, user);
+        
+        List<User> members = instance.getOrganizationMembers(orgId);
+        
+        User match = members
+            .stream()
+            .filter(u -> Objects.equal(u.userId, user.userId))
+            .findFirst()
+            .get();
+        
+        assertUserMostlyMatch(match, user);
     }
     
     @Test
