@@ -46,7 +46,6 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Stores user information in Cassandra.
@@ -250,7 +249,8 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.LAST_NAME, user.lastName)
             .value(Users.EMAILS, emails)
             .value(Users.ROLES, user.roles)
-            .value(Users.GITHUB_PROFILE, user.githubProfile);
+            .value(Users.GITHUB_PROFILE, user.githubProfile)
+            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink);
 
     }
 
@@ -265,7 +265,8 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.FIRST_NAME, user.firstName)
             .value(Users.MIDDLE_NAME, user.middleName)
             .value(Users.LAST_NAME, user.lastName)
-            .value(Users.GITHUB_PROFILE, user.githubProfile);
+            .value(Users.GITHUB_PROFILE, user.githubProfile)
+            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink);
     }
 
     private Insert createInsertIntoUsersByGithubTable(User user)
