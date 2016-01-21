@@ -295,9 +295,6 @@ public class CassandraFollowerRepositoryTest
         when(results.iterator())
             .thenReturn(rows.values().iterator());
         
-        when(cassandra.execute(Mockito.any(Statement.class)))
-            .thenReturn(results);
-        
         Set<Application> result = toSet(instance.getApplicationsFollowedBy(userId));
         assertThat(result, is(toSet(apps)));
     }
