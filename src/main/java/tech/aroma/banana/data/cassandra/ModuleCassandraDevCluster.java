@@ -51,6 +51,7 @@ public final class ModuleCassandraDevCluster extends AbstractModule
     {
         return Cluster.builder()
             .addContactPoint("cassandra-01.aroma.tech")
+            .withPort(9042)
             .withCredentials("cassandra", "cassandra")
             .build();
     }
