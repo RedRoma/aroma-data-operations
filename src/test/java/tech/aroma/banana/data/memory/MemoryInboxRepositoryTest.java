@@ -49,7 +49,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(100)
 @RunWith(AlchemyTestRunner.class)
-public class InboxRepositoryInMemoryTest 
+public class MemoryInboxRepositoryTest 
 {
     
     @GenerateString(UUID)
@@ -72,7 +72,7 @@ public class InboxRepositoryInMemoryTest
     @GenerateList(Message.class)
     private List<Message> messages;
     
-    private InboxRepositoryInMemory instance;
+    private MemoryInboxRepository instance;
 
     @Before
     public void setUp()
@@ -83,7 +83,7 @@ public class InboxRepositoryInMemoryTest
         
         message.messageId = messageId;
         
-        instance = new InboxRepositoryInMemory();
+        instance = new MemoryInboxRepository();
         
         messages = messages.stream()
             .map(m -> m.setApplicationId(appId))

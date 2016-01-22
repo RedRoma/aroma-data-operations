@@ -38,14 +38,15 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
  * @author SirWellington
  */
-final class InboxRepositoryInMemory implements InboxRepository
+final class MemoryInboxRepository implements InboxRepository
 {
-    private final static Logger LOG = LoggerFactory.getLogger(InboxRepositoryInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryInboxRepository.class);
     
     private final Map<String, List<Message>> messagesForUser = Maps.createSynchronized();
 
