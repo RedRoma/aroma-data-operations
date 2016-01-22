@@ -9,10 +9,13 @@ import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.banana.thrift.functions.TokenFunctions;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
+import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
@@ -149,6 +152,26 @@ public final class RequestAssertions
                 .is(nonEmptyString())
                 .usingMessage("userId must be a UUID")
                 .is(validUUID());
+        };
+    }
+    
+    public static AlchemyAssertion<AuthenticationToken> containsOwnerId()
+    {
+        return token ->
+        {
+            checkThat(token)
+                .usingMessage("token is null")
+                .is(notNull());
+            
+            String ownerId;
+            try
+            {
+                ownerId = TokenFunctions.extractOwnerId(token);
+            }
+            catch(IllegalArgumentException ex)
+            {
+                throw new FailedAssertionException("Token missing ownerID: " + ex.getMessage());
+            }
         };
     }
 
