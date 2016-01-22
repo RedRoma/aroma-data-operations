@@ -264,9 +264,9 @@ public class RequestAssertionsTest
     }
 
     @Test
-    public void testContainsOwnerId()
+    public void testTokenContainingOwnerId()
     {
-        AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.containsOwnerId();
+        AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.tokenContainingOwnerId();
         assertThat(assertion, notNullValue());
         
         AuthenticationToken authToken = new AuthenticationToken();
@@ -286,9 +286,9 @@ public class RequestAssertionsTest
     }
 
     @Test
-    public void testContainsOwnerIdWithBadArgs()
+    public void testTokenContainingOwnerIdWithBadArgs()
     {
-        AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.containsOwnerId();
+        AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.tokenContainingOwnerId();
         assertThat(assertion, notNullValue());
 
         AuthenticationToken emptyToken = new AuthenticationToken();
