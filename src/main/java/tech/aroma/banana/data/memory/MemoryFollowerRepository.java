@@ -39,10 +39,10 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.n
  *
  * @author SirWellington
  */
-final class FollowerRepositoryInMemory implements FollowerRepository
+final class MemoryFollowerRepository implements FollowerRepository
 {
 
-    private final static Logger LOG = LoggerFactory.getLogger(FollowerRepositoryInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryFollowerRepository.class);
 
     private final Map<String, List<Application>> userFollowings = Maps.createSynchronized();
     private final Map<String, List<User>> applicationFollowers = Maps.createSynchronized();

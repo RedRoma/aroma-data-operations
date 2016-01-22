@@ -45,7 +45,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(100)
 @RunWith(AlchemyTestRunner.class)
-public class FollowerRepositoryInMemoryTest 
+public class MemoryFollowerRepositoryTest 
 {
 
     @GeneratePojo
@@ -66,7 +66,7 @@ public class FollowerRepositoryInMemoryTest
     @GenerateList(User.class)
     private List<User> followers;
     
-    private FollowerRepositoryInMemory instance;
+    private MemoryFollowerRepository instance;
     
     @Before
     public void setUp()
@@ -77,7 +77,7 @@ public class FollowerRepositoryInMemoryTest
         appsFollowed.forEach((Application app) -> app.setApplicationId(one(uuids)));
         followers.forEach((User user) -> user.setUserId(one(uuids)));
         
-        instance = new FollowerRepositoryInMemory();
+        instance = new MemoryFollowerRepository();
     }
 
     @Test
