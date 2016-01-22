@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
+import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -38,20 +39,20 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
-import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
  * @author SirWellington
  */
-//@IntegrationTest
+@IntegrationTest
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
 public class CassandraUserRepositoryIT
