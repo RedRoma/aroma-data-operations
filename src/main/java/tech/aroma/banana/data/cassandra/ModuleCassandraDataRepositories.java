@@ -39,6 +39,7 @@ import tech.aroma.banana.thrift.User;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Provides the Banana Repositories backed by a Cassandra Cluster.
@@ -47,10 +48,10 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  * 
  * @author SirWellington
  */
-public final class CassandraDataModule extends AbstractModule
+public final class ModuleCassandraDataRepositories extends AbstractModule
 {
 
-    private final static Logger LOG = LoggerFactory.getLogger(CassandraDataModule.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ModuleCassandraDataRepositories.class);
 
     @Override
     protected void configure()

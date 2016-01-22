@@ -39,6 +39,8 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 
 /**
@@ -47,7 +49,7 @@ import static org.mockito.Answers.RETURNS_MOCKS;
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class CassandraDataModuleTest 
+public class ModuleCassandraDataRepositoriesTest 
 {
     
     @Mock(answer = RETURNS_MOCKS)
@@ -77,12 +79,12 @@ public class CassandraDataModuleTest
         
     };
     
-    private CassandraDataModule instance;
+    private ModuleCassandraDataRepositories instance;
 
     @Before
     public void setUp()
     {
-        instance = new CassandraDataModule();
+        instance = new ModuleCassandraDataRepositories();
         
     }
 
