@@ -31,15 +31,16 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
  * @author SirWellington
  */
-final class UserRepositoryInMemory implements UserRepository
+final class MemoryUserRepository implements UserRepository
 {
 
-    private final static Logger LOG = LoggerFactory.getLogger(UserRepositoryInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryUserRepository.class);
 
     private final Map<String, User> users = Maps.createSynchronized();
     private final Map<String, String> usersByEmail = Maps.createSynchronized();

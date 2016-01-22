@@ -44,7 +44,7 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
         bind(FollowerRepository.class).to(MemoryFollowerRepository.class).in(Singleton.class);
         bind(InboxRepository.class).to(MemoryInboxRepository.class).in(Singleton.class);
         bind(MessageRepository.class).to(MessageRepositoryInMemory.class).in(Singleton.class);
-        bind(UserRepository.class).to(UserRepositoryInMemory.class).in(Singleton.class);
+        bind(UserRepository.class).to(MemoryUserRepository.class).in(Singleton.class);
     }
 
 }

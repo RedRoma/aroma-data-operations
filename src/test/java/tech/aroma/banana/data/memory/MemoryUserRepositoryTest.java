@@ -40,7 +40,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(100)
 @RunWith(AlchemyTestRunner.class)
-public class UserRepositoryInMemoryTest 
+public class MemoryUserRepositoryTest 
 {
     
     @GeneratePojo
@@ -49,14 +49,14 @@ public class UserRepositoryInMemoryTest
     @GenerateString(UUID)
     private String userId;
 
-    private UserRepositoryInMemory instance;
+    private MemoryUserRepository instance;
     
     @Before
     public void setUp()
     {
         user.userId = userId;
         
-        instance = new UserRepositoryInMemory();
+        instance = new MemoryUserRepository();
     }
 
     @Test
