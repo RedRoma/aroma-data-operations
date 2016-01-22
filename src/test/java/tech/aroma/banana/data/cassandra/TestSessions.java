@@ -19,12 +19,12 @@ package tech.aroma.banana.data.cassandra;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
  * Connection information to connect to a Cassandra Cluster for use in Integration testing.
@@ -32,31 +32,25 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  * @author SirWellington
  */
 @Internal
-class TestSessions
+final class TestSessions
 {
 
     private final static Logger LOG = LoggerFactory.getLogger(TestSessions.class);
 
+    private static final Injector INJECTOR = Guice.createInjector(new ModuleCassandraDevCluster());
+
     static Cluster createTestCluster()
     {
-        return Cluster.builder()
-            .addContactPoint("cassandra-01.aroma.tech")
-            .withPort(9042)
-            .withCredentials("cassandra", "cassandra")
-            .build();
+        return INJECTOR.getInstance(Cluster.class);
     }
 
-    static Session createTestSession(Cluster cluster)
+    static Session createTestSession()
     {
-        checkThat(cluster).is(notNull());
-
-        return cluster.connect("Banana");
+        return INJECTOR.getInstance(Session.class);
     }
 
-    static QueryBuilder createQueryBuilder(Cluster cluster)
+    static QueryBuilder createQueryBuilder()
     {
-        checkThat(cluster).is(notNull());
-
-        return new QueryBuilder(cluster);
+        return INJECTOR.getInstance(QueryBuilder.class);
     }
 }
