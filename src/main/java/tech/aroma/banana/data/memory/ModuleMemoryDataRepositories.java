@@ -33,9 +33,9 @@ import tech.aroma.banana.data.UserRepository;
  * 
  * @author SirWellington
  */
-public final class InMemoryDataProvidersModule extends AbstractModule
+public final class ModuleMemoryDataRepositories extends AbstractModule
 {
-    private final static Logger LOG = LoggerFactory.getLogger(InMemoryDataProvidersModule.class);
+    private final static Logger LOG = LoggerFactory.getLogger(ModuleMemoryDataRepositories.class);
 
     @Override
     protected void configure()

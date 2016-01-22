@@ -36,15 +36,15 @@ import static org.junit.Assert.*;
  * @author SirWellington
  */
 @RunWith(AlchemyTestRunner.class)
-public class InMemoryDataProvidersModuleTest 
+public class ModuleMemoryDataRepositoriesTest 
 {
 
-    private InMemoryDataProvidersModule instance;
+    private ModuleMemoryDataRepositories instance;
     
     @Before
     public void setUp()
     {
-        instance = new InMemoryDataProvidersModule();
+        instance = new ModuleMemoryDataRepositories();
     }
 
     @Test
