@@ -16,7 +16,6 @@
 
 package tech.aroma.banana.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -68,21 +67,18 @@ public class CassandraApplicationRepositoryIT
 
     private static Session session;
     private static QueryBuilder queryBuilder;
-    private static Cluster cluster;
 
     @BeforeClass
     public static void begin()
     {
-        cluster = TestSessions.createTestCluster();
-        queryBuilder = TestSessions.createQueryBuilder(cluster);
-        session = TestSessions.createTestSession(cluster);
+        queryBuilder = TestSessions.createQueryBuilder();
+        session = TestSessions.createTestSession();
     }
 
     @AfterClass
     public static void end()
     {
         session.close();
-        cluster.close();
     }
     
     @GeneratePojo
