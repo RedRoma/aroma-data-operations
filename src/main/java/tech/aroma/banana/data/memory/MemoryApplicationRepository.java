@@ -41,15 +41,16 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicati
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
  * @author SirWellington
  */
-final class ApplicationRepositoryInMemory implements ApplicationRepository
+final class MemoryApplicationRepository implements ApplicationRepository
 {
     
-    private final static Logger LOG = LoggerFactory.getLogger(ApplicationRepositoryInMemory.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryApplicationRepository.class);
     
     private final Map<String, Application> mainTable = Maps.create();
     private final Map<String, Set<Application>> applicationsByOrg = Maps.create();
@@ -58,7 +59,7 @@ final class ApplicationRepositoryInMemory implements ApplicationRepository
         .expirationPolicy(ExpirationPolicy.ACCESSED)
         .build();
     
-    ApplicationRepositoryInMemory()
+    MemoryApplicationRepository()
     {
         
     }

@@ -40,7 +40,7 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
-        bind(ApplicationRepository.class).to(ApplicationRepositoryInMemory.class).in(Singleton.class);
+        bind(ApplicationRepository.class).to(MemoryApplicationRepository.class).in(Singleton.class);
         bind(FollowerRepository.class).to(FollowerRepositoryInMemory.class).in(Singleton.class);
         bind(InboxRepository.class).to(InboxRepositoryInMemory.class).in(Singleton.class);
         bind(MessageRepository.class).to(MessageRepositoryInMemory.class).in(Singleton.class);

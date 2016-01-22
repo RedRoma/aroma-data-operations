@@ -53,7 +53,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(100)
 @RunWith(AlchemyTestRunner.class)
-public class ApplicationRepositoryInMemoryTest
+public class MemoryApplicationRepositoryTest
 {
     
     @GeneratePojo
@@ -65,7 +65,7 @@ public class ApplicationRepositoryInMemoryTest
     @GenerateString(UUID)
     private String applicationId;
     
-    private ApplicationRepositoryInMemory instance;
+    private MemoryApplicationRepository instance;
     
     @GenerateString(UUID)
     private String orgId;
@@ -75,7 +75,7 @@ public class ApplicationRepositoryInMemoryTest
     {
         application.applicationId = applicationId;
         
-        instance = new ApplicationRepositoryInMemory();
+        instance = new MemoryApplicationRepository();
         applications.forEach((Application app) -> app.setApplicationId(one(uuids)));
     }
     
