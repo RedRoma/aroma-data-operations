@@ -39,8 +39,6 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 
 /**
@@ -77,6 +75,12 @@ public class ModuleCassandraDataRepositoriesTest
             return cluster;
         }
         
+        @Provides
+        QueryBuilder provideQueryBuilder()
+        {
+            return new QueryBuilder(cluster);
+        }
+        
     };
     
     private ModuleCassandraDataRepositories instance;
@@ -111,13 +115,6 @@ public class ModuleCassandraDataRepositoriesTest
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());
-    }
-
-    @Test
-    public void testProvideQueryBuilder()
-    {
-        QueryBuilder result = instance.provideQueryBuilder(cluster);
-        assertThat(result, notNullValue());
     }
 
 }
