@@ -39,7 +39,6 @@ import tech.aroma.banana.thrift.User;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Provides the Banana Repositories backed by a Cassandra Cluster.
