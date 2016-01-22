@@ -23,6 +23,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
@@ -38,6 +39,7 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessageId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
@@ -231,6 +233,7 @@ final class CassandraInboxRepository implements InboxRepository
         UUID msgUuid = UUID.fromString(message.messageId);
         UUID userUuid = UUID.fromString(user.userId);
         UUID appUuid = UUID.fromString(message.applicationId);
+        long timeToLive = TimeUnit.DAYS.toSeconds(5);
 
         return queryBuilder
             .insertInto(Inbox.TABLE_NAME)
@@ -244,7 +247,8 @@ final class CassandraInboxRepository implements InboxRepository
             .value(Inbox.TIME_RECEIVED, message.timeMessageReceived)
             .value(Inbox.HOSTNAME, message.hostname)
             .value(Inbox.MAC_ADDRESS, message.macAddress)
-            .value(Inbox.APP_NAME, message.applicationName);
+            .value(Inbox.APP_NAME, message.applicationName)
+            .using(ttl((int) timeToLive));
 
     }
 
