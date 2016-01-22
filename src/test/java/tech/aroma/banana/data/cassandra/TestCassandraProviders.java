@@ -44,12 +44,12 @@ final class TestCassandraProviders
         return INJECTOR.getInstance(Cluster.class);
     }
 
-    static Session createTestSession()
+    static Session getTestSession()
     {
         return INJECTOR.getInstance(Session.class);
     }
 
-    static QueryBuilder createQueryBuilder()
+    static QueryBuilder getQueryBuilder()
     {
         return INJECTOR.getInstance(QueryBuilder.class);
     }

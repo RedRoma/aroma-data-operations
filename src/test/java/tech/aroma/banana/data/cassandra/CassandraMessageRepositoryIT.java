@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,7 +34,6 @@ import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.TimeUnit;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
-import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -46,24 +44,24 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
  * @author SirWellington
  */
-@IntegrationTest
+//@IntegrationTest
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
 public class CassandraMessageRepositoryIT 
@@ -77,15 +75,10 @@ public class CassandraMessageRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        session = TestCassandraProviders.createTestSession();
-        queryBuilder = TestCassandraProviders.createQueryBuilder();
+        session = TestCassandraProviders.getTestSession();
+        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-    }
     
     @GeneratePojo
     private Message message;

@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,16 +43,16 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.empty;
+import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static sir.wellington.alchemy.collections.sets.Sets.toSet;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
@@ -71,15 +70,10 @@ public class CassandraApplicationRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        queryBuilder = TestCassandraProviders.createQueryBuilder();
-        session = TestCassandraProviders.createTestSession();
+        queryBuilder = TestCassandraProviders.getQueryBuilder();
+        session = TestCassandraProviders.getTestSession();
     }
 
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-    }
     
     @GeneratePojo
     private Application app;

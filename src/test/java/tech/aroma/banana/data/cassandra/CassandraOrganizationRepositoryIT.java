@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,12 +45,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
-import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 import static org.hamcrest.Matchers.is;
@@ -75,15 +69,10 @@ public class CassandraOrganizationRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        session = TestCassandraProviders.createTestSession();
-        queryBuilder = TestCassandraProviders.createQueryBuilder();
+        session = TestCassandraProviders.getTestSession();
+        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
     
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-    }
     
     private final Function<Row, Organization> organizationMapper = Mappers.orgMapper();
     

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,16 +68,11 @@ public class CassandraInboxRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        session = TestCassandraProviders.createTestSession();
-        queryBuilder = TestCassandraProviders.createQueryBuilder();
+        session = TestCassandraProviders.getTestSession();
+        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
-    @AfterClass
-    public static void end()
-    {
-        session.close();
-    }
-
+    
     @GeneratePojo
     private Message message;
 
