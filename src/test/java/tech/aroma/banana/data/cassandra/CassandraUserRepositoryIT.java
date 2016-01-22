@@ -48,6 +48,10 @@ import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 
 /**
  *
@@ -65,8 +69,8 @@ public class CassandraUserRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        session = TestSessions.createTestSession();
-        queryBuilder = TestSessions.createQueryBuilder();
+        session = TestCassandraProviders.createTestSession();
+        queryBuilder = TestCassandraProviders.createQueryBuilder();
     }
     
     @AfterClass

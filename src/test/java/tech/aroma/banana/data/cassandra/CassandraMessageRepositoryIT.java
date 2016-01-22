@@ -58,6 +58,12 @@ import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 
 /**
  *
@@ -77,8 +83,8 @@ public class CassandraMessageRepositoryIT
     @BeforeClass
     public static void begin()
     {
-        session = TestSessions.createTestSession();
-        queryBuilder = TestSessions.createQueryBuilder();
+        session = TestCassandraProviders.createTestSession();
+        queryBuilder = TestCassandraProviders.createQueryBuilder();
     }
 
     @AfterClass

@@ -32,10 +32,10 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
  * @author SirWellington
  */
 @Internal
-final class TestSessions
+final class TestCassandraProviders
 {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TestSessions.class);
+    private final static Logger LOG = LoggerFactory.getLogger(TestCassandraProviders.class);
 
     private static final Injector INJECTOR = Guice.createInjector(new ModuleCassandraDevCluster());
 
