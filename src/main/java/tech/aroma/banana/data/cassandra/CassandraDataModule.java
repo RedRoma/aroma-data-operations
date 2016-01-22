@@ -18,6 +18,7 @@ package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -40,7 +41,10 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
- *
+ * Provides the Banana Repositories backed by a Cassandra Cluster.
+ * 
+ * This Module does not supply an actual Cassandra {@link Cluster} or {@link Session}.
+ * 
  * @author SirWellington
  */
 public final class CassandraDataModule extends AbstractModule
@@ -57,7 +61,6 @@ public final class CassandraDataModule extends AbstractModule
         bind(MessageRepository.class).to(CassandraMessageRepository.class).in(Singleton.class);
         bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).in(Singleton.class);
         bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
-
     }
 
     @Provides
