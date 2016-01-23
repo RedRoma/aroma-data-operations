@@ -40,6 +40,7 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.thrift.assertions.BananaAssertions.legalToken;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.CONCRETE_BEHAVIOR;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
@@ -91,10 +92,22 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
     public void saveToken(AuthenticationToken token) throws TException
     {
         checkThat(token)
+            .usingMessage("attempting to save null token")
+            .throwing(InvalidArgumentException.class)
             .is(legalToken());
 
+        checkThat(token.ownerId)
+            .usingMessage("token missing ownerId")
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
+        
+        checkThat(token.tokenType)
+            .usingMessage("tokenType is required")
+            .throwing(InvalidArgumentException.class)
+            .is(notNull());
+        
         Instant expirationTime = Instant.ofEpochMilli(token.timeOfExpiration);
-      
+
         checkThat(expirationTime)
             .throwing(InvalidArgumentException.class)
             .usingMessage("Token expiration time must be in the future: " + expirationTime)
@@ -106,12 +119,7 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
 
         this.tokens.put(token.tokenId, token, timeToLiveSeconds, TimeUnit.SECONDS);
 
-        if (!isNullOrEmpty(token.ownerId))
-        {
-            List<AuthenticationToken> tokens = this.tokensByOwner.getOrDefault(token.ownerId, Lists.create());
-            tokens.add(token);
-            this.tokensByOwner.put(token.ownerId, tokens);
-        }
+        addTokenForOwner(token);
     }
 
     @Override
@@ -121,7 +129,7 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             .throwing(InvalidArgumentException.class)
             .usingMessage("ownerId missing")
             .is(nonEmptyString());
-        
+
         return tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
     }
 
@@ -132,23 +140,15 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             .usingMessage("missing tokenId")
             .throwing(InvalidArgumentException.class)
             .is(nonEmptyString());
-        
+
         AuthenticationToken token = tokens.remove(tokenId);
-        
-        if(token == null)
+
+        if (token == null)
         {
             return;
         }
-        
-        String ownerId = token.ownerId;
-        
-        List<AuthenticationToken> ownerTokens = tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
-        
-        ownerTokens = ownerTokens.stream()
-            .filter(t -> !Objects.equals(t.tokenId, token.tokenId))
-            .collect(toList());
-        
-        this.tokensByOwner.put(ownerId, ownerTokens);
+
+        deleteTokenFromOwner(token);
     }
 
     @Override
@@ -161,23 +161,33 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             return;
         }
 
-        String tokenId = key;
-        List<AuthenticationToken> ownerTokens = tokensByOwner.getOrDefault(tokenId, Lists.create());
+        this.deleteTokenFromOwner(value);
 
-        ownerTokens = ownerTokens.stream()
-            .filter(token -> !Objects.equals(token.tokenId, tokenId))
-            .collect(toList());
-
+        List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(value.ownerId, Lists.emptyList());
+        
         if (Lists.isEmpty(ownerTokens))
         {
             tokensByOwner.remove(ownerId);
         }
-        else
-        {
-            tokensByOwner.put(ownerId, ownerTokens);
+    }
 
-        }
+    private void addTokenForOwner(AuthenticationToken token)
+    {
+        List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(token.ownerId, Lists.create());
+        ownerTokens.add(token);
+        this.tokensByOwner.put(token.ownerId, ownerTokens);
+    }
 
+    private void deleteTokenFromOwner(AuthenticationToken token)
+    {
+        String ownerId = token.ownerId;
+        List<AuthenticationToken> ownerTokens = tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
+
+        ownerTokens = ownerTokens.stream()
+            .filter(t -> !Objects.equals(t.tokenId, token.tokenId))
+            .collect(toList());
+
+        this.tokensByOwner.put(ownerId, ownerTokens);
     }
 
 }

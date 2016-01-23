@@ -19,6 +19,7 @@ package tech.aroma.banana.data;
 import java.util.List;
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
@@ -52,12 +53,14 @@ public interface TokenRepository
     default boolean doesTokenBelongTo(@NonEmpty String tokenId, @NonEmpty String ownerId) throws InvalidTokenException, TException
     {
         checkThat(tokenId, ownerId)
+            .throwing(InvalidArgumentException.class)
             .usingMessage("tokenId and ownerId are required")
             .are(nonEmptyString());
 
         AuthenticationToken token = this.getToken(tokenId);
 
         checkThat(token)
+            .throwing(InvalidTokenException.class)
             .is(tokenContainingOwnerId());
 
         return ownerId.equals(token.ownerId);
@@ -65,7 +68,9 @@ public interface TokenRepository
 
     default void deleteTokens(@Required List<String> tokenIds) throws TException
     {
-        checkThat(tokenIds).is(notNull());
+        checkThat(tokenIds)
+            .throwing(InvalidArgumentException.class)
+            .is(notNull());
 
         for (String token : tokenIds)
         {
