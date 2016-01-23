@@ -217,6 +217,8 @@ final class CassandraTokenRepository implements TokenRepository
             .usingMessage("unexpected null result from cassandra")
             .throwing(OperationFailedException.class)
             .is(notNull());
+        
+        return results;
     }
 
     private AuthenticationToken tryToConvertRowToToken(Row row) throws OperationFailedException, InvalidTokenException
