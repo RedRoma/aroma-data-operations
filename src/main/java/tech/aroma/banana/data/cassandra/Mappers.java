@@ -38,6 +38,8 @@ import tech.aroma.banana.thrift.Role;
 import tech.aroma.banana.thrift.Tier;
 import tech.aroma.banana.thrift.Urgency;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.banana.thrift.authentication.TokenType;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
@@ -184,6 +186,36 @@ final class Mappers
                 .setOwners(owners);
             
             return org;
+        };
+    }
+    
+    static Function<Row, AuthenticationToken> tokenMapper()
+    {
+        return row ->
+        {
+            AuthenticationToken token = new AuthenticationToken();
+            
+            Date timeOfCreation = row.getTimestamp(Tables.Tokens.TIME_OF_CREATION);
+            Date timeOfExpiration = row.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION);
+            
+            if (timeOfCreation != null)
+            {
+                token.setTimeOfCreation(timeOfCreation.getTime());
+            }
+            
+            if (timeOfExpiration != null)
+            {
+                token.setTimeOfExpiration(timeOfExpiration.getTime());
+            }
+            
+            token
+                .setTokenId(row.getUUID(Tables.Tokens.TOKEN_ID).toString())
+                .setOwnerId(row.getUUID(Tables.Tokens.OWNER_ID).toString())
+                .setOrganizationId(row.getUUID(Tables.Tokens.ORG_ID).toString())
+                .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME))
+                .setTokenType(row.get(Tables.Tokens.TOKEN_TYPE, TokenType.class));
+            
+            return token;
         };
     }
     
