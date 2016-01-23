@@ -248,7 +248,7 @@ final class CassandraTokenRepository implements TokenRepository
         return token;
     }
 
-    private Statement createStatementToInsert(AuthenticationToken token)
+    private Statement createStatementToInsert(AuthenticationToken token) throws InvalidArgumentException
     {
         UUID tokenId = UUID.fromString(token.tokenId);
         UUID ownerId = UUID.fromString(token.ownerId);
@@ -258,6 +258,11 @@ final class CassandraTokenRepository implements TokenRepository
 
         if (!isNullOrEmpty(token.organizationId))
         {
+            checkThat(token.organizationId)
+                .usingMessage("token organizationId must be a UUID type")
+                .throwing(InvalidArgumentException.class)
+                .is(validUUID());
+            
             orgId = UUID.fromString(token.organizationId);
         }
 
