@@ -68,14 +68,14 @@ final class CassandraTokenRepository implements TokenRepository
     @Inject
     CassandraTokenRepository(Session cassandra,
                              QueryBuilder queryBuilder,
-                             Function<Row, AuthenticationToken> authenticaionMapper)
+                             Function<Row, AuthenticationToken> tokenMapper)
     {
-        checkThat(cassandra, queryBuilder, authenticaionMapper)
+        checkThat(cassandra, queryBuilder, tokenMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
         this.queryBuilder = queryBuilder;
-        this.tokenMapper = authenticaionMapper;
+        this.tokenMapper = tokenMapper;
     }
 
     @Override
@@ -202,15 +202,21 @@ final class CassandraTokenRepository implements TokenRepository
 
     private ResultSet tryToGetResultSetFrom(Statement statment) throws OperationFailedException
     {
+        ResultSet results;
         try
         {
-            return cassandra.execute(statment);
+            results = cassandra.execute(statment);
         }
         catch (Exception ex)
         {
             LOG.error("Failed to execute Cassandra statement: {}", statment, ex);
             throw new OperationFailedException("Could not query for Token:" + ex.getMessage());
         }
+        
+        checkThat(results)
+            .usingMessage("unexpected null result from cassandra")
+            .throwing(OperationFailedException.class)
+            .is(notNull());
     }
 
     private AuthenticationToken tryToConvertRowToToken(Row row) throws OperationFailedException, InvalidTokenException
