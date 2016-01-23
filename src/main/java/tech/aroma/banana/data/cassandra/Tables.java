@@ -138,7 +138,7 @@ class Tables
         static final String FEATURES = "features";
         static final String TIME_OF_EXPIRATION = "time_of_expiration";
         static final String TIME_OF_CREATION = "time_of_creation";
-        static final String ORGANIZATION_ID = "organization_id";
+        static final String ORG_ID = "organization_id";
         static final String TOKEN_TYPE = "token_type";
     }
     
