@@ -54,6 +54,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -285,12 +286,23 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testDeleteToken() throws Exception
     {
+        instance.deleteToken(tokenId);
+        
+        verify(cassandra, atLeastOnce()).execute(captor.capture());
+        
+        Statement statement = captor.getAllValues().get(1);
+        
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(BatchStatement.class)));
     }
 
     @Test
     public void testDeleteTokenWhenTokenNotExists() throws Exception
     {
         when(results.one()).thenReturn(null);
+        
+        assertThrows(() -> instance.deleteToken(tokenId))
+            .isInstanceOf(InvalidTokenException.class);
     }
 
     @DontRepeat
