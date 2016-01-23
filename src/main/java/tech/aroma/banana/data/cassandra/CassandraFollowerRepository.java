@@ -50,6 +50,7 @@ import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_FIRST_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_ID;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
