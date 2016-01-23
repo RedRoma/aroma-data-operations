@@ -16,6 +16,7 @@
 
 package tech.aroma.banana.data.cassandra;
 
+import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -39,10 +40,13 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
@@ -163,6 +167,14 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testSaveToken() throws Exception
     {
+        instance.saveToken(token);
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(BatchStatement.class));
     }
 
     @Test
