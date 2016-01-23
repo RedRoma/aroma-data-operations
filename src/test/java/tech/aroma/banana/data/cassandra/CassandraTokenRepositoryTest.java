@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -80,6 +82,9 @@ public class CassandraTokenRepositoryTest
     @GenerateString(UUID)
     private String tokenId;
 
+    @GenerateString(ALPHABETIC)
+    private String badId;
+    
     @Mock
     private ResultSet results;
 
@@ -143,8 +148,11 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testGetTokenWithBadArgs() throws Exception
     {
-        AuthenticationToken result = instance.getToken(tokenId);
-        assertThat(result, is(token));
+        assertThrows(() -> instance.getToken(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getToken(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
