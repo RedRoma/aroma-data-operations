@@ -98,6 +98,7 @@ public class CassandraTokenRepositoryTest
         
         when(cassandra.execute(Mockito.any(Statement.class))).thenReturn(results);
         when(results.one()).thenReturn(row);
+        when(tokenMapper.apply(row)).thenReturn(token);
     }
     
     @DontRepeat
@@ -125,6 +126,8 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testGetToken() throws Exception
     {
+        AuthenticationToken result = instance.getToken(tokenId);
+        assertThat(result, is(token));
     }
 
     @Test
