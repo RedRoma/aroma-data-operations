@@ -23,6 +23,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.function.Function;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
@@ -50,57 +52,56 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class CassandraTokenRepositoryTest 
+public class CassandraTokenRepositoryTest
 {
 
     @Mock
     private Session cassandra;
-    
+
     @Mock(answer = RETURNS_MOCKS)
     private Cluster cluster;
-    
+
     private QueryBuilder queryBuilder;
-    
+
     @Mock
     private Function<Row, AuthenticationToken> tokenMapper;
-    
+
     private CassandraTokenRepository instance;
-    
+
     @GeneratePojo
     private AuthenticationToken token;
-    
+
     @GenerateString(UUID)
     private String ownerId;
-    
+
     @GenerateString(UUID)
     private String orgId;
-    
+
     @GenerateString(UUID)
     private String tokenId;
-    
+
     @Mock
     private ResultSet results;
-    
+
     @Mock
     private Row row;
-    
-    
+
     @Before
     public void setUp()
     {
         queryBuilder = new QueryBuilder(cluster);
-        
+
         instance = new CassandraTokenRepository(cassandra, queryBuilder, tokenMapper);
-        
+
         token.tokenId = tokenId;
         token.ownerId = ownerId;
         token.organizationId = orgId;
-        
+
         when(cassandra.execute(Mockito.any(Statement.class))).thenReturn(results);
         when(results.one()).thenReturn(row);
         when(tokenMapper.apply(row)).thenReturn(token);
     }
-    
+
     @DontRepeat
     @Test
     public void testConstructor()
@@ -114,17 +115,33 @@ public class CassandraTokenRepositoryTest
     public void testContainsToken() throws Exception
     {
         when(row.getLong(0)).thenReturn(0L);
-        
+
         assertThat(instance.containsToken(tokenId), is(false));
-        
+
         long count = one(positiveLongs());
         when(row.getLong(0)).thenReturn(count);
-        
+
         assertThat(instance.containsToken(tokenId), is(true));
     }
 
     @Test
     public void testGetToken() throws Exception
+    {
+        AuthenticationToken result = instance.getToken(tokenId);
+        assertThat(result, is(token));
+    }
+
+    @Test
+    public void testGetTokenWhenFails() throws Exception
+    {
+        setupForFailure();
+
+        assertThrows(() -> instance.getToken(tokenId))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testGetTokenWithBadArgs() throws Exception
     {
         AuthenticationToken result = instance.getToken(tokenId);
         assertThat(result, is(token));
@@ -143,6 +160,13 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testDeleteToken() throws Exception
     {
+    }
+
+    private void setupForFailure()
+    {
+
+        when(cassandra.execute(any(Statement.class)))
+            .thenThrow(new IllegalArgumentException());
     }
 
 }
