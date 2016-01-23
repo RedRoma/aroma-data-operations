@@ -38,6 +38,7 @@ import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -154,6 +155,16 @@ public class CassandraTokenRepositoryTest
     {
         AuthenticationToken result = instance.getToken(tokenId);
         assertThat(result, is(token));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetTokenWhenNotExists() throws Exception
+    {
+        when(results.one()).thenReturn(null);
+        
+        assertThrows(() -> instance.getToken(tokenId))
+            .isInstanceOf(InvalidTokenException.class);
     }
 
     @DontRepeat
@@ -274,6 +285,32 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testDeleteToken() throws Exception
     {
+    }
+
+    @Test
+    public void testDeleteTokenWhenTokenNotExists() throws Exception
+    {
+        when(results.one()).thenReturn(null);
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteTokenWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.deleteToken(tokenId))
+            .isInstanceOf(OperationFailedException.class);
+    }
+
+    @Test
+    public void testDeleteTokenWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteToken(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteToken(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     private void setupForFailure()
