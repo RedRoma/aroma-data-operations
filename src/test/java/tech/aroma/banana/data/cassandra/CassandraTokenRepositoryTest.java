@@ -27,6 +27,8 @@ import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
@@ -90,6 +92,9 @@ public class CassandraTokenRepositoryTest
 
     @Mock
     private Row row;
+    
+    @Captor
+    private ArgumentCaptor<Statement> captor;
 
     @Before
     public void setUp()
@@ -158,6 +163,40 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testSaveToken() throws Exception
     {
+    }
+
+    @Test
+    public void testSaveTokenWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.saveToken(token))
+            .isInstanceOf(TException.class);
+    }
+
+    @Test
+    public void testSaveTokenWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.saveToken(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        AuthenticationToken missingTokenId = new AuthenticationToken(token);
+        missingTokenId.unsetTokenId();
+
+        assertThrows(() -> instance.saveToken(missingTokenId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        AuthenticationToken missingOwnerId = new AuthenticationToken(token);
+        missingOwnerId.unsetOwnerId();
+        
+        assertThrows(() -> instance.saveToken(missingOwnerId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        AuthenticationToken missingTokenType = new AuthenticationToken(token);
+        missingTokenType.unsetTokenType();
+
+        assertThrows(() -> instance.saveToken(missingTokenType))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
