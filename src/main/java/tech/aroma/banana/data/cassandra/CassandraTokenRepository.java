@@ -32,12 +32,15 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.cassandra.Tables.Tokens;
+import tech.aroma.banana.thrift.LengthOfTime;
+import tech.aroma.banana.thrift.TimeUnit;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.AuthenticationAssertions.completeToken;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.cassandra.Tables.Tokens.ORG_ID;
@@ -60,6 +63,7 @@ final class CassandraTokenRepository implements TokenRepository
 {
 
     private final static Logger LOG = LoggerFactory.getLogger(CassandraTokenRepository.class);
+    private static final LengthOfTime DEFAULT_TOKEN_LIFETIME = new LengthOfTime(TimeUnit.DAYS, 60);
 
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
@@ -249,6 +253,8 @@ final class CassandraTokenRepository implements TokenRepository
         UUID tokenId = UUID.fromString(token.tokenId);
         UUID ownerId = UUID.fromString(token.ownerId);
         UUID orgId = null;
+        
+        long timeToLive = Times.toSeconds(DEFAULT_TOKEN_LIFETIME);
 
         if (!isNullOrEmpty(token.organizationId))
         {
@@ -265,7 +271,8 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, token.tokenType);
+            .value(TOKEN_TYPE, token.tokenType)
+            .using(ttl((int) timeToLive));
 
         batch.add(insertIntoMainTable);
 
@@ -277,7 +284,8 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, token.tokenType);
+            .value(TOKEN_TYPE, token.tokenType)
+            .using(ttl((int) timeToLive));
 
         batch.add(insertIntoOwnersTable);
 
