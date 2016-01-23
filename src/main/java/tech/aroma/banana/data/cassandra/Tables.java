@@ -127,6 +127,21 @@ class Tables
         static final String USER_EMAIL = "user_email";
     }
 
+    static class Tokens
+    {
+        static final String TABLE_NAME = "Tokens";
+        static final String TABLE_NAME_BY_OWNER = "Tokens_By_Owner";
+        
+        static final String TOKEN_ID = "token_id";
+        static final String OWNER_ID = "owner_id";
+        static final String OWNER_NAME = "owner_name";
+        static final String FEATURES = "features";
+        static final String TIME_OF_EXPIRATION = "time_of_expiration";
+        static final String TIME_OF_CREATION = "time_of_creation";
+        static final String ORGANIZATION_ID = "organization_id";
+        static final String TOKEN_TYPE = "token_type";
+    }
+    
     static class Users
     {
         static final String TABLE_NAME = "Users";
