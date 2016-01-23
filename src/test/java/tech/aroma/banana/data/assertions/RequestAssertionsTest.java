@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
-import static tech.sirwellington.alchemy.generator.BooleanGenerators.booleans;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
@@ -69,6 +68,9 @@ public class RequestAssertionsTest
     @GeneratePojo
     private UserToken userToken;
 
+    @GeneratePojo
+    private AuthenticationToken authToken;
+    
     @GeneratePojo
     private Application application;
 
@@ -268,20 +270,7 @@ public class RequestAssertionsTest
     {
         AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.tokenContainingOwnerId();
         assertThat(assertion, notNullValue());
-        
-        AuthenticationToken authToken = new AuthenticationToken();
-        
-        boolean heads = one(booleans());
-        
-        if(heads)
-        {
-            authToken.setApplicationToken(appToken);
-        }
-        else
-        {
-            authToken.setUserToken(userToken);
-        }
-        
+    
         assertion.check(authToken);
     }
 
@@ -291,27 +280,13 @@ public class RequestAssertionsTest
         AlchemyAssertion<AuthenticationToken> assertion = RequestAssertions.tokenContainingOwnerId();
         assertThat(assertion, notNullValue());
 
+        assertThrows(() -> assertion.check(null))
+            .isInstanceOf(FailedAssertionException.class);
+
         AuthenticationToken emptyToken = new AuthenticationToken();
         assertThrows(() -> assertion.check(emptyToken))
             .isInstanceOf(FailedAssertionException.class);
 
-        userToken.unsetUserId();
-        appToken.unsetApplicationId();
-
-        AuthenticationToken authToken = new AuthenticationToken();
-
-        boolean heads = one(booleans());
-        if (heads)
-        {
-            authToken.setUserToken(userToken);
-        }
-        else
-        {
-            authToken.setApplicationToken(appToken);
-        }
-
-        assertThrows(() -> assertion.check(authToken))
-            .isInstanceOf(FailedAssertionException.class);
     }
 
 }
