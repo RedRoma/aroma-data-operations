@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS Banana.Tokens
 	PRIMARY KEY (token_id)
 );
 
+CREATE INDEX IF NOT EXISTS Tokens_By_Type ON Banana.Tokens (token_type);
+
 CREATE TABLE IF NOT EXISTS Banana.Tokens_By_Owner
 (
 	owner_id uuid,
@@ -25,6 +27,7 @@ CREATE TABLE IF NOT EXISTS Banana.Tokens_By_Owner
 	owner_name text,
 	time_of_creation timestamp,
 	time_of_expiration timestamp,
+	organization_id uuid,
 	token_type text,
 
 	PRIMARY KEY ((owner_id), token_id)
