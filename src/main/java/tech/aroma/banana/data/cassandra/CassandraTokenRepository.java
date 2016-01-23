@@ -124,7 +124,9 @@ final class CassandraTokenRepository implements TokenRepository
         checkThat(ownerId)
             .throwing(InvalidArgumentException.class)
             .usingMessage("ownerId missing")
-            .is(nonEmptyString());
+            .is(nonEmptyString())
+            .usingMessage("ownerId must be a UUID type")
+            .is(validUUID());
 
         Statement query = createQueryToGetTokensOwnedBy(ownerId);
 

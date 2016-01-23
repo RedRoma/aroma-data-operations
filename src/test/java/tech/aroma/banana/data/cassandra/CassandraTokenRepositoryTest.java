@@ -23,6 +23,8 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.Before;
@@ -32,24 +34,33 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import sir.wellington.alchemy.collections.maps.Maps;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
+import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
+import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -90,13 +101,13 @@ public class CassandraTokenRepositoryTest
 
     @GenerateString(ALPHABETIC)
     private String badId;
-    
+
     @Mock
     private ResultSet results;
 
     @Mock
     private Row row;
-    
+
     @Captor
     private ArgumentCaptor<Statement> captor;
 
@@ -145,6 +156,7 @@ public class CassandraTokenRepositoryTest
         assertThat(result, is(token));
     }
 
+    @DontRepeat
     @Test
     public void testGetTokenWhenFails() throws Exception
     {
@@ -159,7 +171,7 @@ public class CassandraTokenRepositoryTest
     {
         assertThrows(() -> instance.getToken(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         assertThrows(() -> instance.getToken(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }
@@ -168,20 +180,21 @@ public class CassandraTokenRepositoryTest
     public void testSaveToken() throws Exception
     {
         instance.saveToken(token);
-        
+
         verify(cassandra).execute(captor.capture());
-        
+
         Statement statement = captor.getValue();
-        
+
         assertThat(statement, notNullValue());
         assertThat(statement, instanceOf(BatchStatement.class));
     }
 
+    @DontRepeat
     @Test
     public void testSaveTokenWhenFails() throws Exception
     {
         setupForFailure();
-        
+
         assertThrows(() -> instance.saveToken(token))
             .isInstanceOf(TException.class);
     }
@@ -191,19 +204,19 @@ public class CassandraTokenRepositoryTest
     {
         assertThrows(() -> instance.saveToken(null))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         AuthenticationToken missingTokenId = new AuthenticationToken(token);
         missingTokenId.unsetTokenId();
 
         assertThrows(() -> instance.saveToken(missingTokenId))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         AuthenticationToken missingOwnerId = new AuthenticationToken(token);
         missingOwnerId.unsetOwnerId();
-        
+
         assertThrows(() -> instance.saveToken(missingOwnerId))
             .isInstanceOf(InvalidArgumentException.class);
-        
+
         AuthenticationToken missingTokenType = new AuthenticationToken(token);
         missingTokenType.unsetTokenType();
 
@@ -214,6 +227,48 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testGetTokensBelongingTo() throws Exception
     {
+        AlchemyGenerator<AuthenticationToken> generator = pojos(AuthenticationToken.class);
+        Set<AuthenticationToken> expected = listOf(generator)
+            .stream()
+            .map(t -> t.setOwnerId(ownerId))
+            .map(t -> t.setTokenId(one(uuids)))
+            .map(t -> t.setOrganizationId(one(uuids)))
+            .collect(toSet());
+        
+        Map<AuthenticationToken, Row> rows = Maps.create();
+        
+        for(AuthenticationToken t : expected)
+        {
+            Row mockRow = mock(Row.class);
+            when(tokenMapper.apply(mockRow)).thenReturn(t);
+            rows.put(t, mockRow);
+        }
+        
+        when(results.iterator()).thenReturn(rows.values().iterator());
+        
+        Set<AuthenticationToken> result = Sets.toSet(instance.getTokensBelongingTo(ownerId));
+
+        assertThat(result, is(expected));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetTokensBelongingToWhenFails() throws Exception
+    {
+        setupForFailure();
+        
+        assertThrows(() -> instance.getTokensBelongingTo(ownerId))
+            .isInstanceOf(OperationFailedException.class);
+    }
+
+    @Test
+    public void testGetTokensBelongingToWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getTokensBelongingTo(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getTokensBelongingTo(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
