@@ -76,4 +76,32 @@ public class AuthenticationAssertionsTest
 
     }
 
+    @Test
+    public void testCompleteToken()
+    {
+        AlchemyAssertion<AuthenticationToken> instance = AuthenticationAssertions.completeToken();
+        assertThat(instance, notNullValue());
+        
+        instance.check(token);
+        
+        
+        AuthenticationToken tokenWithoutTokenId = new AuthenticationToken(token);
+        tokenWithoutTokenId.unsetTokenId();
+        
+        assertThrows(() -> instance.check(tokenWithoutTokenId))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        AuthenticationToken tokenWithoutOwnerId = new AuthenticationToken(token);
+        tokenWithoutOwnerId.unsetOwnerId();
+        
+        assertThrows(() -> instance.check(tokenWithoutOwnerId))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        AuthenticationToken tokenWithoutTokenType = new AuthenticationToken(token);
+        tokenWithoutTokenType.unsetTokenType();
+        
+        assertThrows(() -> instance.check(tokenWithoutTokenType))
+            .isInstanceOf(FailedAssertionException.class);
+    }
+
 }

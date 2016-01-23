@@ -19,6 +19,7 @@ package tech.aroma.banana.data.assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.TokenRepository;
+import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
@@ -26,6 +27,7 @@ import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
 /**
  *
@@ -64,6 +66,24 @@ public final class AuthenticationAssertions
             {
                 throw new FailedAssertionException("Token does not exist: " + token);
             }
+        };
+    }
+    
+    public static AlchemyAssertion<AuthenticationToken> completeToken()
+    {
+        return token ->
+        {
+            checkThat(token)
+                .usingMessage("token is null")
+                .is(notNull());
+            
+            checkThat(token.tokenId, token.ownerId)
+                .usingMessage("tokenId and ownerId are required")
+                .are(nonEmptyString());
+            
+            checkThat(token.tokenType)
+                .usingMessage("Token Type is required in token")
+                .is(notNull());
         };
     }
     
