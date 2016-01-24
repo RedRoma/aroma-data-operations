@@ -32,6 +32,7 @@ import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.OrganizationRepository;
+import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
@@ -112,6 +113,9 @@ public class ModuleCassandraDataRepositoriesTest
         
         OrganizationRepository orgRepo = injector.getInstance(OrganizationRepository.class);
         assertThat(orgRepo, notNullValue());
+        
+        TokenRepository tokenRepo = injector.getInstance(TokenRepository.class);
+        assertThat(tokenRepo, notNullValue());
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());

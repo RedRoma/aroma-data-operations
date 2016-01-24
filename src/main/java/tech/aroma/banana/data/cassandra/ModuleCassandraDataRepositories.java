@@ -30,11 +30,13 @@ import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.OrganizationRepository;
+import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.thrift.Application;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
+import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 
 
 /**
@@ -57,6 +59,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(InboxRepository.class).to(CassandraInboxRepository.class).in(Singleton.class);
         bind(MessageRepository.class).to(CassandraMessageRepository.class).in(Singleton.class);
         bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).in(Singleton.class);
+        bind(TokenRepository.class).to(CassandraTokenRepository.class).in(Singleton.class);
         bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
     }
 
@@ -78,6 +81,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         return Mappers.orgMapper();
     }
 
+    @Provides
+    Function<Row, AuthenticationToken> provideTokenMapper()
+    {
+        return Mappers.tokenMapper();
+    }
+    
     @Provides
     Function<Row, User> provideUserMapper()
     {
