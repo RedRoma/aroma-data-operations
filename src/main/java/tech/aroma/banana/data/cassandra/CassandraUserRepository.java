@@ -104,7 +104,7 @@ final class CassandraUserRepository implements UserRepository
         catch (Exception ex)
         {
             LOG.error("Failed to save user in Cassandra: {}", user, ex);
-            throw new OperationFailedException("Could not save user");
+            throw new OperationFailedException("Could not save user: " + ex.getMessage());
         }
 
     }
@@ -145,7 +145,7 @@ final class CassandraUserRepository implements UserRepository
         catch (Exception ex)
         {
             LOG.error("Failed to delete User with ID {}", userId, ex);
-            throw new OperationFailedException("Could not delete user: " + userId);
+            throw new OperationFailedException("Could not delete user. " + ex.getMessage());
         }
     }
 
@@ -165,7 +165,7 @@ final class CassandraUserRepository implements UserRepository
         catch (Exception ex)
         {
             LOG.error("Failed to run Select Statement on Cassandra: {}", selectStatement, ex);
-            throw new OperationFailedException("Could not check for the existence of user: " + userId);
+            throw new OperationFailedException("Could not check for the existence of user." + ex.getMessage());
         }
 
         long result = results.one().getLong(0);
@@ -192,7 +192,7 @@ final class CassandraUserRepository implements UserRepository
         catch (Exception ex)
         {
             LOG.error("Failed to execute query for user by email {}", emailAddress, ex);
-            throw new OperationFailedException("Could not find user with email: " + emailAddress);
+            throw new OperationFailedException("Could not find user with email." + ex.getMessage());
         }
 
         Row row = results.one();
