@@ -40,13 +40,13 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.cassandra.Tables.Users.TABLE_NAME_BY_GITHUB_PROFILE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Stores user information in Cassandra.
@@ -85,12 +85,16 @@ final class CassandraUserRepository implements UserRepository
         BatchStatement batchStatement = new BatchStatement(BatchStatement.Type.LOGGED);
 
         Insert insertIntoUsersTable = createInsertIntoUserTable(user);
-        Insert insertIntoUsersByEmailTable = createInsertIntoUsersByEmailTable(user);
-        Insert insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
+        batchStatement.add(insertIntoUsersTable);
 
-        batchStatement.add(insertIntoUsersTable)
-            .add(insertIntoUsersByEmailTable)
-            .add(insertIntoUsersByGithubTable);
+        Insert insertIntoUsersByEmailTable = createInsertIntoUsersByEmailTable(user);
+        batchStatement.add(insertIntoUsersByEmailTable);
+
+        if (!isNullOrEmpty(user.githubProfile))
+        {
+            Insert insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
+            batchStatement.add(insertIntoUsersByGithubTable);
+        }
 
         LOG.debug("Executing Batch Statement: {}", batchStatement);
         try
@@ -242,7 +246,7 @@ final class CassandraUserRepository implements UserRepository
         UUID userUuid = UUID.fromString(user.userId);
 
         Set<String> emails = Sets.createFrom(user.email);
-        
+
         return queryBuilder.insertInto(Users.TABLE_NAME)
             .value(Users.USER_ID, userUuid)
             .value(Users.FIRST_NAME, user.firstName)
@@ -258,7 +262,6 @@ final class CassandraUserRepository implements UserRepository
     private Insert createInsertIntoUsersByEmailTable(User user)
     {
         UUID userUuid = UUID.fromString(user.userId);
-
 
         return queryBuilder.insertInto(Users.TABLE_NAME_BY_EMAIL)
             .value(Users.USER_ID, userUuid)
@@ -321,7 +324,7 @@ final class CassandraUserRepository implements UserRepository
     private Statement createQueryToDeleteUser(User user)
     {
         UUID userUuuid = UUID.fromString(user.userId);
-        
+
         BatchStatement batch = new BatchStatement();
 
         Statement deleteFromUsersTable = queryBuilder
@@ -340,14 +343,16 @@ final class CassandraUserRepository implements UserRepository
 
         batch.add(deleteFromUserEmailsTable);
 
-        Statement deleteFromGithubTable = queryBuilder
-            .delete()
-            .all()
-            .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
-            .where(eq(Users.GITHUB_PROFILE, user.githubProfile));
+        if (!isNullOrEmpty(user.githubProfile))
+        {
+            Statement deleteFromGithubTable = queryBuilder
+                .delete()
+                .all()
+                .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
+                .where(eq(Users.GITHUB_PROFILE, user.githubProfile));
 
-        batch.add(deleteFromGithubTable);
-
+            batch.add(deleteFromGithubTable);
+        }
         return batch;
 
     }

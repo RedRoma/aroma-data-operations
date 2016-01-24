@@ -136,6 +136,15 @@ public class CassandraUserRepositoryIT
     }
     
     @Test
+    public void testSaveUserWithoutGithub() throws Exception
+    {
+        user.unsetGithubProfile();
+        instance.saveUser(user);
+        
+        assertThat(instance.containsUser(userId), is(true));
+    }
+    
+    @Test
     public void testGetUser() throws Exception
     {
         instance.saveUser(user);
