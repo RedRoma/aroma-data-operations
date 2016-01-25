@@ -118,7 +118,19 @@ public class CassandraTokenRepositoryIT
         AuthenticationToken result = instance.getToken(tokenId);
         assertThat(result, is(token));
     }
-
+    
+    @Test
+    public void testGetTokenWithoutOrgId() throws Exception
+    {
+        token.unsetOrganizationId();
+        token.unsetOrganizationName();
+        
+        instance.saveToken(token);
+        
+        AuthenticationToken result = instance.getToken(tokenId);
+        assertThat(result, is(token));
+    }
+ 
     @DontRepeat
     @Test
     public void testGetTokenWhenNotExists() throws Exception
