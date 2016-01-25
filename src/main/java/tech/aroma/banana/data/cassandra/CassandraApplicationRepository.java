@@ -61,8 +61,6 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -285,15 +283,13 @@ final class CassandraApplicationRepository implements ApplicationRepository
         catch (Exception ex)
         {
             LOG.error("Failed to query for recently created apps", ex);
+            throw new OperationFailedException("Could not get recently created apps: " + ex.getMessage());
         }
-        
-        if (results != null)
+
+        for (Row row : results)
         {
-            for (Row row : results)
-            {
-                Application app = createApplicationFromRow(row);
-                apps.add(app);
-            }
+            Application app = createApplicationFromRow(row);
+            apps.add(app);
         }
         
         LOG.debug("Found {} recently created apps", apps.size());
@@ -306,7 +302,14 @@ final class CassandraApplicationRepository implements ApplicationRepository
         BatchStatement batch = new BatchStatement();
         
         UUID appId = UUID.fromString(app.applicationId);
-        UUID orgId = UUID.fromString(app.organizationId);
+        
+        UUID orgId = null;
+        
+        if (app.isSetOrganizationId())
+        {
+            orgId = UUID.fromString(app.organizationId);
+        }
+        
         Set<UUID> owners = Sets.nullToEmpty(app.owners)
             .stream()
             .map(UUID::fromString)
