@@ -43,16 +43,16 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.empty;
-import static sir.wellington.alchemy.collections.sets.Sets.toSet;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
@@ -158,6 +158,17 @@ public class CassandraApplicationRepositoryIT
         Application result = instance.getById(appId);
         
         assertResultMostlyMatches(result, app);
+    }
+    
+    @DontRepeat
+    @Test
+    public void testSaveApplicationTwice() throws Exception
+    {
+        instance.saveApplication(app);
+        
+        Thread.sleep(5);
+        
+        instance.saveApplication(app);
     }
 
     @Test
