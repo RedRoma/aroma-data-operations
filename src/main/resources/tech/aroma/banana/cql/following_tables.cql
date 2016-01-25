@@ -1,6 +1,6 @@
 //Assumes the existence of a 'Banana' Keyspace
 
-//Defines an App's Followers
+/* Defines an App's Followers */
 CREATE TABLE IF NOT EXISTS Banana.Follow_Application_Followers
 (
 	app_id uuid,
