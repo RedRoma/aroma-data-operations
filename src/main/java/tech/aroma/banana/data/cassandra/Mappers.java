@@ -208,10 +208,17 @@ final class Mappers
                 token.setTimeOfExpiration(timeOfExpiration.getTime());
             }
             
+            String orgId = null;
+            if(doesRowContainColumn(row, Tables.Tokens.ORG_ID))
+            {
+                UUID orgUuid = row.getUUID(Tables.Tokens.ORG_ID);
+                orgId = orgUuid != null ? orgUuid.toString() : orgId;
+            }
+            
             token
                 .setTokenId(row.getUUID(Tables.Tokens.TOKEN_ID).toString())
                 .setOwnerId(row.getUUID(Tables.Tokens.OWNER_ID).toString())
-                .setOrganizationId(row.getUUID(Tables.Tokens.ORG_ID).toString())
+                .setOrganizationId(orgId)
                 .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME))
                 .setTokenType(row.get(Tables.Tokens.TOKEN_TYPE, TokenType.class));
             
