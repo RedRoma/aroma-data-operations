@@ -106,6 +106,7 @@ class Tables
     {
         static final String TABLE_NAME = "Organizations";
         static final String TABLE_NAME_MEMBERS = "Organizations_Members";
+        static final String TABLE_NAME_MEMBERS_RECENT = "Organizations_Members_Recent";
         
         static final String ORG_ID = "org_id";
         static final String ORG_NAME = "org_name";
@@ -145,6 +146,7 @@ class Tables
     static class Users
     {
         static final String TABLE_NAME = "Users";
+        static final String TABLE_NAME_RECENT = "Users_Recent";
         static final String TABLE_NAME_BY_EMAIL = "Users_By_Email";
         static final String TABLE_NAME_BY_GITHUB_PROFILE = "Users_By_Github_Profile";
         
