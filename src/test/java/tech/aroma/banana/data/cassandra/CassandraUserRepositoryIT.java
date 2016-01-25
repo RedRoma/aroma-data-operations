@@ -20,6 +20,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.apache.thrift.TException;
 import org.junit.After;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
@@ -39,7 +41,9 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
@@ -237,6 +241,29 @@ public class CassandraUserRepositoryIT
         if (!isNullOrEmpty(result.githubProfile))
         {
             assertThat(result.githubProfile, is(user.githubProfile));
+        }
+        
+    }
+
+    @Test
+    public void testGetRecentlyCreatedUsers() throws Exception
+    {
+        instance.saveUser(user);
+        
+        List<User> result = instance.getRecentlyCreatedUsers();
+        
+        Map<String, User> mapping = result.stream()
+            .collect(() -> Maps.<String, User>create(), 
+                     (map, user) -> map.put(user.userId, user),
+                     (left, right) -> left.putAll(right));
+        
+        assertThat(result, notNullValue());
+        assertThat(result, not(empty()));
+        
+        if (mapping.containsKey(user.userId))
+        {
+            User savedUser = mapping.get(user.userId);
+            assertMostlyMatch(savedUser, user);
         }
         
     }

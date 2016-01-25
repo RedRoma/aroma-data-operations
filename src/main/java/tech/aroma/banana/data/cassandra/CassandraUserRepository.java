@@ -21,9 +21,8 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.datastax.driver.core.querybuilder.Select;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,12 +35,15 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.data.cassandra.Tables.Users;
+import tech.aroma.banana.thrift.LengthOfTime;
+import tech.aroma.banana.thrift.TimeUnit;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.cassandra.Tables.Users.TABLE_NAME_BY_GITHUB_PROFILE;
@@ -84,22 +86,10 @@ final class CassandraUserRepository implements UserRepository
             .throwing(InvalidArgumentException.class)
             .is(validUser());
 
-        BatchStatement batchStatement = new BatchStatement(BatchStatement.Type.LOGGED);
+        Statement statement = createStatementToSaveUser(user);
 
-        Insert insertIntoUsersTable = createInsertIntoUserTable(user);
-        batchStatement.add(insertIntoUsersTable);
-
-        Insert insertIntoUsersByEmailTable = createInsertIntoUsersByEmailTable(user);
-        batchStatement.add(insertIntoUsersByEmailTable);
-
-        if (!isNullOrEmpty(user.githubProfile))
-        {
-            Insert insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
-            batchStatement.add(insertIntoUsersByGithubTable);
-        }
-        
-        LOG.debug("Executing batch statement in Cassandra to save user {}", user);
-        tryToExecute(batchStatement);
+        LOG.debug("Executing statement in Cassandra to save user {}", user);
+        tryToExecute(statement);
     }
 
     @Override
@@ -108,8 +98,8 @@ final class CassandraUserRepository implements UserRepository
         checkUserId(userId);
 
         LOG.debug("Executing query to get user with ID {}", userId);
-        Select query = createQueryToGetUser(userId);
-        
+        Statement query = createQueryToGetUser(userId);
+
         ResultSet results = tryToExecute(query);
 
         Row row = results.one();
@@ -118,7 +108,7 @@ final class CassandraUserRepository implements UserRepository
             .usingMessage("Could not find user with ID: " + userId)
             .is(notNull());
 
-        User user = createUserFromRow(row);
+        User user = convertRowToUser(row);
         return user;
     }
 
@@ -171,7 +161,7 @@ final class CassandraUserRepository implements UserRepository
             .usingMessage("Could not find user with email: " + emailAddress)
             .is(notNull());
 
-        User user = createUserFromRow(row);
+        User user = convertRowToUser(row);
 
         return user;
     }
@@ -205,18 +195,52 @@ final class CassandraUserRepository implements UserRepository
             .usingMessage("Could not find user with Github Profile: " + githubProfile)
             .is(notNull());
 
-        User user = createUserFromRow(row);
+        User user = convertRowToUser(row);
 
         return user;
     }
-    
+
     @Override
     public List<User> getRecentlyCreatedUsers() throws TException
     {
-        return Lists.emptyList();
+        List<User> users = Lists.create();
+        
+        Statement query = createQueryToGetRecentlyCreatedUsers();
+        
+        ResultSet results = tryToExecute(query);
+        
+        for(Row row : results)
+        {
+            User user = this.convertRowToUser(row);
+            users.add(user);
+        }
+        
+        return users;
     }
 
-    private Insert createInsertIntoUserTable(User user)
+    private Statement createStatementToSaveUser(User user)
+    {
+        BatchStatement batchStatement = new BatchStatement(BatchStatement.Type.LOGGED);
+
+        Statement insertIntoUsersTable = createInsertIntoUserTable(user);
+        batchStatement.add(insertIntoUsersTable);
+
+        Statement insertIntoUsersByEmailTable = createInsertIntoUsersByEmailTable(user);
+        batchStatement.add(insertIntoUsersByEmailTable);
+
+        if (!isNullOrEmpty(user.githubProfile))
+        {
+            Statement insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
+            batchStatement.add(insertIntoUsersByGithubTable);
+        }
+        
+        Statement insertIntoRecentUsersTable = createInsertIntoRecentUsersTable(user);
+        batchStatement.add(insertIntoRecentUsersTable);
+
+        return batchStatement;
+    }
+
+    private Statement createInsertIntoUserTable(User user)
     {
         UUID userUuid = UUID.fromString(user.userId);
 
@@ -230,11 +254,39 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.EMAILS, emails)
             .value(Users.ROLES, user.roles)
             .value(Users.GITHUB_PROFILE, user.githubProfile)
-            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink);
+            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink)
+            .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli());
+
+    }
+    
+    private Statement createInsertIntoRecentUsersTable(User user)
+    {
+        UUID userUuid = UUID.fromString(user.userId);
+
+        Set<String> emails = Sets.createFrom(user.email);
+        
+        LengthOfTime timeUserIsRecent = new LengthOfTime()
+            .setUnit(TimeUnit.DAYS)
+            .setValue(3);
+        
+        int recentDuration = (int) Times.toSeconds(timeUserIsRecent);
+
+        return queryBuilder.insertInto(Users.TABLE_NAME_RECENT)
+            .value(Users.USER_ID, userUuid)
+            .value(Users.FIRST_NAME, user.firstName)
+            .value(Users.MIDDLE_NAME, user.middleName)
+            .value(Users.LAST_NAME, user.lastName)
+            .value(Users.EMAILS, emails)
+            .value(Users.ROLES, user.roles)
+            .value(Users.GITHUB_PROFILE, user.githubProfile)
+            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink)
+            .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli())
+            .using(ttl(recentDuration));
+
 
     }
 
-    private Insert createInsertIntoUsersByEmailTable(User user)
+    private Statement createInsertIntoUsersByEmailTable(User user)
     {
         UUID userUuid = UUID.fromString(user.userId);
 
@@ -248,7 +300,7 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.PROFILE_IMAGE_ID, user.profileImageLink);
     }
 
-    private Insert createInsertIntoUsersByGithubTable(User user)
+    private Statement createInsertIntoUsersByGithubTable(User user)
     {
         UUID userUuid = UUID.fromString(user.userId);
 
@@ -261,7 +313,7 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.EMAIL, user.email);
     }
 
-    private Select createQueryToGetUser(String userId)
+    private Statement createQueryToGetUser(String userId)
     {
         UUID userUuid = UUID.fromString(userId);
 
@@ -290,8 +342,17 @@ final class CassandraUserRepository implements UserRepository
             .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
             .where(eq(Users.GITHUB_PROFILE, githubProfile));
     }
+    
+    private Statement createQueryToGetRecentlyCreatedUsers()
+    {
+        return queryBuilder
+            .select()
+            .all()
+            .from(Tables.Users.TABLE_NAME_RECENT)
+            .limit(100);
+    }
 
-    private User createUserFromRow(Row row)
+    private User convertRowToUser(Row row)
     {
         return userMapper.apply(row);
     }
@@ -365,6 +426,5 @@ final class CassandraUserRepository implements UserRepository
             throw new OperationFailedException("Data Operation Failed: " + ex.getMessage());
         }
     }
-
 
 }
