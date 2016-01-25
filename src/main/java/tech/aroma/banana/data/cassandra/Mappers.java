@@ -272,6 +272,15 @@ final class Mappers
                 user.setGithubProfile(githubProfile);
             }
             
+            if(doesRowContainColumn(row, Tables.Users.TIME_ACCOUNT_CREATED))
+            {
+                Date timeCreated = row.getTimestamp(Tables.Users.TIME_ACCOUNT_CREATED);
+                if(timeCreated != null)
+                {
+                    user.setTimeUserJoined(timeCreated.getTime());
+                }
+            }
+            
             return user
                 .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
                 .setFirstName(row.getString(Tables.Users.FIRST_NAME))
