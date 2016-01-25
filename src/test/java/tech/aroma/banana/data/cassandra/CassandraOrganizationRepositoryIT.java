@@ -37,6 +37,7 @@ import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
+import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -148,6 +149,19 @@ public class CassandraOrganizationRepositoryIT
         instance.saveOrganization(org);
         
         assertThat(instance.containsOrganization(orgId), is(true));
+    }
+    
+    @DontRepeat
+    @TimeSensitive
+    @Test
+    public void testSaveOrganizationTwice() throws Exception
+    {
+        instance.saveOrganization(org);
+        Thread.sleep(5);
+        instance.saveOrganization(org);
+        
+        Organization result = instance.getOrganization(orgId);
+        assertMostlyMatch(result, org);
     }
     
     @Test
