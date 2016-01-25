@@ -371,6 +371,14 @@ final class CassandraUserRepository implements UserRepository
 
         batch.add(deleteFromUsersTable);
 
+        Statement deleteFromRecentUsersTable = queryBuilder
+            .delete()
+            .all()
+            .from(Users.TABLE_NAME_RECENT)
+            .where(eq(Users.USER_ID, userUuuid));
+        
+        batch.add(deleteFromRecentUsersTable);
+        
         Statement deleteFromUserEmailsTable = queryBuilder
             .delete()
             .all()
@@ -378,7 +386,7 @@ final class CassandraUserRepository implements UserRepository
             .where(eq(Users.EMAIL, user.email));
 
         batch.add(deleteFromUserEmailsTable);
-
+        
         if (!isNullOrEmpty(user.githubProfile))
         {
             Statement deleteFromGithubTable = queryBuilder
