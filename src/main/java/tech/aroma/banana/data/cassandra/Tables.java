@@ -162,6 +162,7 @@ class Tables
         static final String BIRTH_DATE = "birthdate";
         static final String GITHUB_PROFILE = "github_profile";
         static final String PROFILE_IMAGE_ID = "profile_image_id";
+        static final String TIME_ACCOUNT_CREATED = "time_account_created";
         
     }
     
