@@ -94,7 +94,7 @@ public class CassandraFollowerRepositoryTest
     private User user;
 
     @GeneratePojo
-    private Application application;
+    private Application app;
 
     @GenerateString(UUID)
     private String userId;
@@ -119,7 +119,8 @@ public class CassandraFollowerRepositoryTest
         
         instance = new CassandraFollowerRepository(cassandra, queryBuilder, userMapper, applicationMapper);
         
-        application.applicationId = appId;
+        app.applicationId = appId;
+        app.unsetOrganizationId();
         user.userId = userId;
     }
     
@@ -153,7 +154,7 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testSaveFollowing() throws Exception
     {
-        instance.saveFollowing(user, application);
+        instance.saveFollowing(user, app);
         
         verify(cassandra).execute(statementCaptor.capture());
         Statement statementMade = statementCaptor.getValue();
@@ -166,7 +167,7 @@ public class CassandraFollowerRepositoryTest
         when(cassandra.execute(Mockito.any(Statement.class)))
             .thenThrow(new IllegalArgumentException());
 
-        assertThrows(() -> instance.saveFollowing(user, application))
+        assertThrows(() -> instance.saveFollowing(user, app))
             .isInstanceOf(TException.class);
     }
 
@@ -177,16 +178,16 @@ public class CassandraFollowerRepositoryTest
         User emptyUser = new User();
         Application emptyApp = new Application();
 
-        assertThrows(() -> instance.saveFollowing(emptyUser, application))
+        assertThrows(() -> instance.saveFollowing(emptyUser, app))
             .isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.saveFollowing(user, emptyApp))
             .isInstanceOf(InvalidArgumentException.class);
         
         User userWithBadId = user.setUserId(one(alphabeticString()));
-        Application appWithBadId = application.setApplicationId(one(alphabeticString()));
+        Application appWithBadId = app.setApplicationId(one(alphabeticString()));
 
-        assertThrows(() -> instance.saveFollowing(userWithBadId, application))
+        assertThrows(() -> instance.saveFollowing(userWithBadId, app))
             .isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.saveFollowing(user, appWithBadId))

@@ -48,6 +48,12 @@ public final class RequestAssertions
             
             checkThat(app.applicationId)
                 .is(validAppId());
+            
+            if(app.isSetOrganizationId())
+            {
+                checkThat(app.organizationId)
+                    .is(validOrgId());
+            }
         };
     }
     

@@ -72,9 +72,13 @@ public class MemoryFollowerRepositoryTest
     public void setUp()
     {
         application.applicationId = applicationId;
+        application.unsetOrganizationId();
+        
         user.userId = userId;
         
         appsFollowed.forEach((Application app) -> app.setApplicationId(one(uuids)));
+        appsFollowed.forEach(app -> app.unsetOrganizationId());
+        
         followers.forEach((User user) -> user.setUserId(one(uuids)));
         
         instance = new MemoryFollowerRepository();

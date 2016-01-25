@@ -72,7 +72,7 @@ public class RequestAssertionsTest
     private AuthenticationToken authToken;
     
     @GeneratePojo
-    private Application application;
+    private Application app;
 
     @GeneratePojo
     private Message message;
@@ -89,7 +89,8 @@ public class RequestAssertionsTest
     @Before
     public void setUp()
     {
-        application.applicationId = validId;
+        app.applicationId = validId;
+        app.organizationId = validId;
         message.messageId = validId;
         user.userId = validId;
         organization.organizationId = validId;
@@ -111,7 +112,7 @@ public class RequestAssertionsTest
         AlchemyAssertion<Application> assertion = RequestAssertions.validApplication();
         assertThat(assertion, notNullValue());
 
-        assertion.check(application);
+        assertion.check(app);
 
         assertThrows(() -> assertion.check(null))
             .isInstanceOf(FailedAssertionException.class);
@@ -120,7 +121,7 @@ public class RequestAssertionsTest
         assertThrows(() -> assertion.check(empty))
             .isInstanceOf(FailedAssertionException.class);
 
-        Application appWithInvalidId = new Application(application)
+        Application appWithInvalidId = new Application(app)
             .setApplicationId(this.invalidId);
 
         assertThrows(() -> assertion.check(appWithInvalidId))

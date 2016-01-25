@@ -33,6 +33,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -74,9 +75,14 @@ public class MemoryApplicationRepositoryTest
     public void setUp()
     {
         application.applicationId = applicationId;
+        application.organizationId = orgId;
         
         instance = new MemoryApplicationRepository();
-        applications.forEach((Application app) -> app.setApplicationId(one(uuids)));
+        
+        applications = applications.stream()
+            .map(app -> app.setApplicationId(one(uuids)))
+            .map(app -> app.setOrganizationId(orgId))
+            .collect(toList());
     }
     
     private void saveApplications(List<Application> applications) throws TException
