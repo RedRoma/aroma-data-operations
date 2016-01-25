@@ -33,6 +33,7 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
+import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
@@ -137,6 +138,17 @@ public class CassandraUserRepositoryIT
         instance.saveUser(user);
         
         assertThat(instance.containsUser(userId), is(true));
+    }
+    
+    @DontRepeat
+    @TimeSensitive
+    @Test
+    public void testSaveUserTwice() throws Exception
+    {
+        instance.saveUser(user);
+        
+        Thread.sleep(5);
+        instance.saveUser(user);
     }
     
     @Test
