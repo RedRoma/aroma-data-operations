@@ -16,10 +16,12 @@
 
 package tech.aroma.banana.data.memory;
 
+import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.thrift.User;
@@ -141,6 +143,12 @@ final class MemoryUserRepository implements UserRepository
         
         String userId = usersByGithubProfile.get(githubProfile);
         return users.get(userId);
+    }
+
+    @Override
+    public List<User> getRecentlyCreatedUsers() throws TException
+    {
+        return Lists.copy(users.values());
     }
 
 }

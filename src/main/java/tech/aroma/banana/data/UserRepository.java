@@ -17,6 +17,7 @@
 
 package tech.aroma.banana.data;
 
+import java.util.List;
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.User;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
@@ -39,5 +40,7 @@ public interface UserRepository
     User getUserByEmail(@Required String emailAddress) throws TException;
     
     User findByGithubProfile(@Required String githubProfile) throws TException;
+    
+    List<User> getRecentlyCreatedUsers() throws TException;
     
 }

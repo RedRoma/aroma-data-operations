@@ -46,3 +46,20 @@ CREATE TABLE IF NOT EXISTS Banana.Users_By_Email
 
 	PRIMARY KEY (email)
 );
+
+CREATE TABLE IF NOT EXISTS Banana.Users_Recent
+(
+	user_id uuid,
+	first_name text,
+	middle_name text,
+	last_name text,
+	emails set<text>,
+	organizations set<uuid>,
+	roles set<text>,
+	gender text,
+	birthdate timestamp,
+	profile_image_id text,
+	github_profile text,
+
+	PRIMARY KEY (user_id)
+);

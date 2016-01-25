@@ -24,6 +24,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.data.cassandra.Tables.Users;
@@ -95,18 +97,9 @@ final class CassandraUserRepository implements UserRepository
             Insert insertIntoUsersByGithubTable = createInsertIntoUsersByGithubTable(user);
             batchStatement.add(insertIntoUsersByGithubTable);
         }
-
-        LOG.debug("Executing Batch Statement: {}", batchStatement);
-        try
-        {
-            cassandra.execute(batchStatement);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to save user in Cassandra: {}", user, ex);
-            throw new OperationFailedException("Could not save user: " + ex.getMessage());
-        }
-
+        
+        LOG.debug("Executing batch statement in Cassandra to save user {}", user);
+        tryToExecute(batchStatement);
     }
 
     @Override
@@ -114,8 +107,10 @@ final class CassandraUserRepository implements UserRepository
     {
         checkUserId(userId);
 
+        LOG.debug("Executing query to get user with ID {}", userId);
         Select query = createQueryToGetUser(userId);
-        ResultSet results = cassandra.execute(query);
+        
+        ResultSet results = tryToExecute(query);
 
         Row row = results.one();
         checkThat(row)
@@ -138,15 +133,7 @@ final class CassandraUserRepository implements UserRepository
         Statement deleteUserStatement = createQueryToDeleteUser(user);
 
         LOG.debug("Executing Statement to delete user with ID {}", userId);
-        try
-        {
-            cassandra.execute(deleteUserStatement);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to delete User with ID {}", userId, ex);
-            throw new OperationFailedException("Could not delete user. " + ex.getMessage());
-        }
+        tryToExecute(deleteUserStatement);
     }
 
     @Override
@@ -156,17 +143,8 @@ final class CassandraUserRepository implements UserRepository
 
         Statement selectStatement = createQueryToCheckExistenceFor(userId);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(selectStatement);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to run Select Statement on Cassandra: {}", selectStatement, ex);
-            throw new OperationFailedException("Could not check for the existence of user." + ex.getMessage());
-        }
+        LOG.info("Issuing query to check if user with ID [{}] exists", userId);
+        ResultSet results = tryToExecute(selectStatement);
 
         long result = results.one().getLong(0);
         return result > 0L;
@@ -183,17 +161,8 @@ final class CassandraUserRepository implements UserRepository
 
         Statement query = createQueryToGetUserByEmail(emailAddress);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to execute query for user by email {}", emailAddress, ex);
-            throw new OperationFailedException("Could not find user with email." + ex.getMessage());
-        }
+        LOG.debug("Issuing CQL Query to find user with email {}", emailAddress);
+        ResultSet results = tryToExecute(query);
 
         Row row = results.one();
 
@@ -239,6 +208,12 @@ final class CassandraUserRepository implements UserRepository
         User user = createUserFromRow(row);
 
         return user;
+    }
+    
+    @Override
+    public List<User> getRecentlyCreatedUsers() throws TException
+    {
+        return Lists.emptyList();
     }
 
     private Insert createInsertIntoUserTable(User user)
@@ -377,5 +352,19 @@ final class CassandraUserRepository implements UserRepository
             .usingMessage("expecting UUID for userId")
             .is(validUUID());
     }
+
+    private ResultSet tryToExecute(Statement statement) throws OperationFailedException
+    {
+        try
+        {
+            return cassandra.execute(statement);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Cassandra Operation failed", ex);
+            throw new OperationFailedException("Data Operation Failed: " + ex.getMessage());
+        }
+    }
+
 
 }

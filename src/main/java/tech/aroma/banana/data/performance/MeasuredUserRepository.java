@@ -19,6 +19,7 @@ package tech.aroma.banana.data.performance;
 
 
 import decorice.DecoratedBy;
+import java.util.List;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -94,6 +95,13 @@ public final class MeasuredUserRepository implements UserRepository
     {
         Operation<User> operation = () -> delegate.findByGithubProfile(githubProfile);
         return Operations.logLatency(operation, "findByGithubProfile");
+    }
+
+    @Override
+    public List<User> getRecentlyCreatedUsers() throws TException
+    {
+        Operation<List<User>> opeartion = () -> delegate.getRecentlyCreatedUsers();
+        return Operations.logLatency(opeartion, "getRecentlyCreatedUsers");
     }
     
     

@@ -16,6 +16,7 @@
 
 package tech.aroma.banana.data.memory;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,10 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -202,6 +206,19 @@ public class MemoryUserRepositoryTest
         
         assertThrows(() -> instance.findByGithubProfile(null))
             .isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @Test
+    public void testGetRecentlyCreatedUsers() throws Exception
+    {
+        List<User> result = instance.getRecentlyCreatedUsers();
+        assertThat(result, notNullValue());
+        assertThat(result, is(empty()));
+        
+        instance.saveUser(user);
+        
+        result = instance.getRecentlyCreatedUsers();
+        assertThat(result, contains(user));
     }
 
 }
