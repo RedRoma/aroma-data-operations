@@ -40,6 +40,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -151,14 +152,7 @@ public class CassandraTokenRepositoryIT
     @Test
     public void testGetTokensBelongingTo() throws Exception
     {
-        AlchemyGenerator<AuthenticationToken> generator = pojos(AuthenticationToken.class);
-        Set<AuthenticationToken> expected = listOf(generator)
-            .stream()
-            .map(t -> t.setTokenId(one(uuids)))
-            .map(t -> t.setOwnerId(ownerId))
-            .map(t -> t.setOrganizationId(orgId))
-            .map(t -> t.setOrganizationName(null))
-            .collect(toSet());
+        Set<AuthenticationToken> expected = createTokens();
 
         try
         {
@@ -200,6 +194,32 @@ public class CassandraTokenRepositoryIT
             .collect(toList());
         
         instance.deleteTokens(tokenIds);
+    }
+ 
+    @DontRepeat
+    @Test
+    public void testDeleteTokensBelongingTo() throws Exception
+    {
+        Set<AuthenticationToken> tokens = createTokens();
+        saveTokens(tokens);
+        
+        instance.deleteTokensBelongingTo(ownerId);
+        
+        List<AuthenticationToken> result = instance.getTokensBelongingTo(ownerId);
+        assertThat(result, is(empty()));
+    }
+
+    private Set<AuthenticationToken> createTokens()
+    {
+        AlchemyGenerator<AuthenticationToken> generator = pojos(AuthenticationToken.class);
+
+        return listOf(generator)
+            .stream()
+            .map(t -> t.setTokenId(one(uuids)))
+            .map(t -> t.setOwnerId(ownerId))
+            .map(t -> t.setOrganizationId(orgId))
+            .map(t -> t.setOrganizationName(null))
+            .collect(toSet());
     }
 
 }
