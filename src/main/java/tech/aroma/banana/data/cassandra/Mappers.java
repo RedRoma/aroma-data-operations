@@ -92,6 +92,15 @@ final class Mappers
                 app.setTimeOfProvisioning(timeOfProvisioning.getTime());
             }
             
+            if(doesRowContainColumn(row, Tables.Applications.TIME_OF_TOKEN_EXPIRATION))
+            {
+                Date tokenExpiration = row.getTimestamp(Tables.Applications.TIME_OF_TOKEN_EXPIRATION);
+                if(tokenExpiration != null)
+                {
+                    app.setTimeOfTokenExpiration(tokenExpiration.getTime());
+                }
+            }
+            
             //Transform the UUIDs to Strings
             Set<String> owners = row.getSet(Tables.Applications.OWNERS, UUID.class)
                 .stream()
