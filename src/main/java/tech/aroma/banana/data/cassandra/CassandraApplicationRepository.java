@@ -56,6 +56,7 @@ import static tech.aroma.banana.data.cassandra.Tables.Applications.PROGRAMMING_L
 import static tech.aroma.banana.data.cassandra.Tables.Applications.TABLE_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.TABLE_NAME_RECENTLY_CREATED;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.TIER;
+import static tech.aroma.banana.data.cassandra.Tables.Applications.TIME_OF_TOKEN_EXPIRATION;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.TIME_PROVISIONED;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
@@ -324,6 +325,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
+            .value(TIME_OF_TOKEN_EXPIRATION, app.timeOfTokenExpiration)
             .value(TIER, app.tier);
         
         batch.add(insertIntoMainTable);
@@ -339,6 +341,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
+            .value(TIME_OF_TOKEN_EXPIRATION, app.timeOfTokenExpiration)
             .value(TIER, app.tier)
             .using(ttl(timeToLive.intValue()));
         
