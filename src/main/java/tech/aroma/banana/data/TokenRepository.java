@@ -19,6 +19,7 @@ package tech.aroma.banana.data;
 import java.util.List;
 import java.util.Objects;
 import org.apache.thrift.TException;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
@@ -72,11 +73,57 @@ public interface TokenRepository
         checkThat(tokenIds)
             .throwing(InvalidArgumentException.class)
             .is(notNull());
-
-        for (String token : tokenIds)
+        
+        List<TException> exceptions = Lists.create();
+        
+        tokenIds
+            .parallelStream()
+            .forEach(tokenId ->
+            {
+                try
+                {
+                    deleteToken(tokenId);
+                }
+                catch (TException ex)
+                {
+                    exceptions.add(ex);
+                }
+            });
+        
+        if (!Lists.isEmpty(exceptions))
         {
-            deleteToken(token);
+            throw Lists.oneOf(exceptions);
         }
+    }
+    
+    default void deleteTokensBelongingTo(@Required String ownerId) throws TException
+    {
+        checkThat(ownerId)
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
+        
+        List<TException> exceptions = Lists.create();
+        
+        this.getTokensBelongingTo(ownerId)
+            .parallelStream()
+            .map(AuthenticationToken::getTokenId)
+            .forEach(id ->
+            {
+                try
+                {
+                    this.deleteToken(id);
+                }
+                catch (TException ex)
+                {
+                    exceptions.add(ex);
+                }
+            });
+        
+        if(!Lists.isEmpty(exceptions))
+        {
+            throw Lists.oneOf(exceptions);
+        }
+        
     }
 
 }
