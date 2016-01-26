@@ -36,6 +36,7 @@ import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.banana.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
@@ -322,7 +323,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID msgId = UUID.fromString(message.messageId);
         UUID appId = UUID.fromString(message.applicationId);
 
-        Long timeToLive = Times.toSeconds(lifetime);
+        Long timeToLive = TimeFunctions.toSeconds(lifetime);
 
         return queryBuilder
             .insertInto(Messages.TABLE_NAME)

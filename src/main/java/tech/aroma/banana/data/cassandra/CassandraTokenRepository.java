@@ -38,6 +38,7 @@ import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.banana.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
@@ -254,7 +255,7 @@ final class CassandraTokenRepository implements TokenRepository
         UUID ownerId = UUID.fromString(token.ownerId);
         UUID orgId = null;
         
-        long timeToLive = Times.toSeconds(DEFAULT_TOKEN_LIFETIME);
+        long timeToLive = TimeFunctions.toSeconds(DEFAULT_TOKEN_LIFETIME);
 
         if (!isNullOrEmpty(token.organizationId))
         {

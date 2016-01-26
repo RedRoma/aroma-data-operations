@@ -41,6 +41,7 @@ import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
+import tech.aroma.banana.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
@@ -269,7 +270,7 @@ final class CassandraUserRepository implements UserRepository
             .setUnit(TimeUnit.DAYS)
             .setValue(3);
         
-        int recentDuration = (int) Times.toSeconds(timeUserIsRecent);
+        int recentDuration = (int) TimeFunctions.toSeconds(timeUserIsRecent);
 
         return queryBuilder.insertInto(Users.TABLE_NAME_RECENT)
             .value(Users.USER_ID, userUuid)
