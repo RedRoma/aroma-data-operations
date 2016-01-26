@@ -46,6 +46,7 @@ class Tables
         static final String OWNERS = "owners";
         static final String PROGRAMMING_LANGUAGE = "programming_language";
         static final String TIME_PROVISIONED = "time_provisioned";
+        static final String TIME_OF_TOKEN_EXPIRATION = "time_of_token_expiration";
         static final String TIER = "tier";
     }
     
