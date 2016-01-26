@@ -36,6 +36,7 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.equalTo;
@@ -81,8 +82,8 @@ final class MemoryMessageRepository implements MessageRepository, ExpirationList
         
         String appId = message.applicationId;
         
-        Set<String> existing = messagesByApplication.getOrDefault(message.applicationId, Sets.create());
-        
+        Set<String> existing = messagesByApplication.getOrDefault(appId, Sets.create());
+        existing.add(msgId);
         messagesByApplication.put(appId, existing);
     }
     
@@ -153,6 +154,10 @@ final class MemoryMessageRepository implements MessageRepository, ExpirationList
     @Override
     public List<Message> getByApplication(String applicationId) throws TException
     {
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(validAppId());
+        
         return messagesByApplication.getOrDefault(applicationId, Sets.emptySet())
             .stream()
             .map(id -> messages.get(id))
@@ -163,6 +168,14 @@ final class MemoryMessageRepository implements MessageRepository, ExpirationList
     @Override
     public List<Message> getByTitle(String applicationId, String title) throws TException
     {
+        checkThat(applicationId)
+            .throwing(InvalidArgumentException.class)
+            .is(validAppId());
+        
+        checkThat(title)
+            .throwing(InvalidArgumentException.class)
+            .is(nonEmptyString());
+        
         return messagesByApplication.getOrDefault(applicationId, Sets.emptySet())
             .stream()
             .map(id -> messages.get(id))
