@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Banana.Applications
 	programming_language text,
 	time_provisioned timestamp,
 	tier text,
+	time_of_token_expiration timestamp,
 
 	PRIMARY KEY (app_id)
 );
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS Banana.Applications_Recently_Created
 	programming_language text,
 	time_provisioned timestamp,
 	tier text,
+	time_of_token_expiration timestamp,
 
 	PRIMARY KEY (app_id)
 );
