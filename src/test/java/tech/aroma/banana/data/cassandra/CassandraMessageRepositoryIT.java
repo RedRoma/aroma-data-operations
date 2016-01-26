@@ -47,6 +47,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -122,21 +123,11 @@ public class CassandraMessageRepositoryIT
     {
         try
         {
-            instance.deleteMessage(appId, msgId);
-        }
-        catch(Exception ex)
-        {
-            System.out.println("Failed to delete message: " + ex);
-        }
-        
-        try
-        {
-            deleteMessages(messages);
+            instance.deleteAllMessages(appId);
         }
         catch (Exception ex)
         {
-            System.out.println("Failed to delete messages: " + ex);
-
+            System.out.println("Failed to delete all messages for App: " + appId + "|" + ex.getMessage());
         }
     }
 
@@ -272,6 +263,24 @@ public class CassandraMessageRepositoryIT
         assertThat(result.timeMessageReceived, is(expected.timeMessageReceived));
         assertThat(result.timeOfCreation, is(expected.timeOfCreation));
         assertThat(result.urgency, is(expected.urgency));
+    }
+
+    @Test
+    public void testDeleteAllMessages() throws Exception
+    {
+        saveMessages(messages);
+        
+        long count = instance.getCountByApplication(appId);
+        assertThat(count, greaterThan(0L));
+        
+        instance.deleteAllMessages(appId);
+        
+        Thread.sleep(10);
+        count = instance.getCountByApplication(appId);
+        assertThat(count, is(0L));
+        
+        List<Message> messages = instance.getByApplication(appId);
+        assertThat(messages, is(empty()));
     }
 
 }

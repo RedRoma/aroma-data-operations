@@ -118,17 +118,8 @@ final class CassandraMessageRepository implements MessageRepository
 
         Statement query = createQueryForMessageWithId(applicationId, messageId);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query Cassandra for Message with ID: {}", messageId, ex);
-            throw new OperationFailedException("Could not query for message");
-        }
+        LOG.debug("Querying cassandra for message with ID [{}] and App [{}]", messageId, applicationId);
+        ResultSet results = tryToExecute(query, "Failed to query for message with ID: " + messageId);
 
         Row row = results.one();
         checkThat(row)
@@ -147,17 +138,8 @@ final class CassandraMessageRepository implements MessageRepository
         Message message = getMessage(applicationId, messageId);
 
         Statement deleteStatement = createDeleteStatementFor(message);
-
-        try
-        {
-            cassandra.execute(deleteStatement);
-            LOG.debug("Successfully delete Message with ID {} from Cassandra", messageId);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to delete message with ID [{}] from Cassandra", message, ex);
-            throw new OperationFailedException("Could not delete message: " + messageId);
-        }
+        
+        tryToExecute(deleteStatement, "Failed to delete message with ID: " + messageId);
     }
 
     @Override
@@ -168,17 +150,7 @@ final class CassandraMessageRepository implements MessageRepository
 
         Statement query = createQueryToCheckIfMessageExists(applicationId, messageId);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query Cassadnra to check for existence of message with ID [{}]", messageId, ex);
-            throw new OperationFailedException("Could not query for message: " + messageId);
-        }
+        ResultSet results = tryToExecute(query, "Could not query for message: " + messageId);
 
         Row row = results.one();
         checkRowIsPresent(row);
@@ -198,17 +170,7 @@ final class CassandraMessageRepository implements MessageRepository
 
         Statement query = createQueryToFindMessageByHostname(hostname);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query cassandra for Messages by hostname [{}]", hostname, ex);
-            throw new OperationFailedException("Could not query for messages by hostname: " + hostname);
-        }
+        ResultSet results = tryToExecute(query, "Could not query for mesages by hostname: " + hostname);
 
         List<Message> messages = Lists.create();
 
@@ -229,18 +191,8 @@ final class CassandraMessageRepository implements MessageRepository
         checkAppId(applicationId);
 
         Statement query = createQueryToFindMessagesByApplication(applicationId);
-
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query cassandra for Messages by app_id [{}]", applicationId, ex);
-            throw new OperationFailedException("Could not query for messages by app: " + applicationId);
-        }
+        
+        ResultSet results = tryToExecute(query, "Could not query for messages by App: " + applicationId);
 
         List<Message> messages = Lists.create();
 
@@ -263,17 +215,7 @@ final class CassandraMessageRepository implements MessageRepository
 
         Statement query = createQueryToFindMessagesByTitle(title);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query cassandra for Messages by app_id [{}] and title [{}]", applicationId, title, ex);
-            throw new OperationFailedException("Could not query for messages by app and title" + applicationId + ", " + title);
-        }
+        ResultSet results = tryToExecute(query, "Could not get messages by Title: " + title + ", App: " + applicationId);
 
         List<Message> messages = Lists.create();
 
@@ -295,17 +237,7 @@ final class CassandraMessageRepository implements MessageRepository
 
         Statement query = createQueryToCountMessagesByApplication(applicationId);
 
-        ResultSet results;
-
-        try
-        {
-            results = cassandra.execute(query);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to query cassandra for Messages by app_id [{}]", applicationId, ex);
-            throw new OperationFailedException("Could not query for messages by app: " + applicationId);
-        }
+        ResultSet results = tryToExecute(query, "Failed to count messages for App: " + applicationId);
 
         Row row = results.one();
         checkRowIsPresent(row);
@@ -313,6 +245,17 @@ final class CassandraMessageRepository implements MessageRepository
         return row.getLong(0);
     }
 
+    @Override
+    public void deleteAllMessages(String applicationId) throws TException
+    {
+        checkAppId(applicationId);
+        
+        Statement deleteStatement = createStatementToDeleteAllMessagesFor(applicationId);
+        
+        tryToExecute(deleteStatement, "Failed to delete All Messages for App: " + applicationId);
+    }
+    
+    
     private Statement createInsertForMessage(Message message, LengthOfTime lifetime) throws InvalidArgumentException
     {
         checkThat(message.messageId, message.applicationId)
@@ -461,8 +404,8 @@ final class CassandraMessageRepository implements MessageRepository
         
         return queryBuilder
             .select()
-            .column(TOTAL_MESSAGES)
-            .from(Messages.TABLE_NAME_TOTALS_BY_APP)
+            .countAll()
+            .from(Messages.TABLE_NAME)
             .where(eq(APP_ID, appId));
     }
 
@@ -483,6 +426,40 @@ final class CassandraMessageRepository implements MessageRepository
             .is(nonEmptyString())
             .usingMessage("appId must be a UUID Type")
             .is(validUUID());
+    }
+
+    private Statement createStatementToDeleteAllMessagesFor(String applicationId)
+    {
+        UUID appId = UUID.fromString(applicationId);
+        
+        Statement deleteFromMainTable = queryBuilder
+            .delete()
+            .all()
+            .from(Messages.TABLE_NAME)
+            .where(eq(APP_ID, appId));
+            
+        return deleteFromMainTable;
+    }
+
+    private ResultSet tryToExecute(Statement statement, String errorMessage) throws OperationFailedException
+    {
+        ResultSet results;
+        try
+        {
+            results = cassandra.execute(statement);
+        }
+        catch(Exception ex)
+        {
+            LOG.error("Failed to execute Cassandra statement: {}", statement, ex);
+            throw new OperationFailedException(errorMessage + " | " + ex.getMessage());
+        }            
+        
+        checkThat(results)
+            .throwing(OperationFailedException.class)
+            .usingMessage("Cassandra returned null response")
+            .is(notNull());
+        
+        return results;
     }
 
 }
