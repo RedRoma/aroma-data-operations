@@ -17,6 +17,7 @@
 package tech.aroma.banana.data;
 
 import java.util.List;
+import java.util.Objects;
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -63,7 +64,7 @@ public interface TokenRepository
             .throwing(InvalidTokenException.class)
             .is(tokenContainingOwnerId());
 
-        return ownerId.equals(token.ownerId);
+        return Objects.equals(ownerId, token.ownerId);
     }
 
     default void deleteTokens(@Required List<String> tokenIds) throws TException
