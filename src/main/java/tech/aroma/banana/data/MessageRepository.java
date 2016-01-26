@@ -19,6 +19,7 @@ package tech.aroma.banana.data;
 
 import java.util.List;
 import org.apache.thrift.TException;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.TimeUnit;
@@ -52,6 +53,30 @@ public interface MessageRepository
     Message getMessage(@Required String applicationId, @Required String messageId) throws TException;
 
     void deleteMessage(@Required String applicationId, @Required String messageId) throws TException;
+    
+    default void deleteAllMessages(@Required String applicationId) throws TException
+    {
+        List<TException> exceptions = Lists.create();
+        
+        getByApplication(applicationId)
+            .stream()
+            .forEach(message -> 
+            {
+                try
+                {
+                    deleteMessage(applicationId, message.messageId);
+                }
+                catch(TException ex)
+                {
+                    exceptions.add(ex);
+                }
+            });
+        
+        if(!Lists.isEmpty(exceptions))
+        {
+            throw Lists.oneOf(exceptions);
+        }
+    }
 
     boolean containsMessage(@Required String applicationId, @Required String messageId) throws TException;
 
