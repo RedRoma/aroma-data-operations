@@ -60,6 +60,7 @@ final class MemoryOrganizationRepository implements OrganizationRepository
     public void saveOrganization(Organization organization) throws TException
     {
         checkThat(organization)
+            .throwing(InvalidArgumentException.class)
             .is(validOrganization());
         
         String orgId = organization.organizationId;
