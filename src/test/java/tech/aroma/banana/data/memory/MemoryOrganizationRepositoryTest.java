@@ -115,6 +115,14 @@ public class MemoryOrganizationRepositoryTest
         assertThat(instance.containsOrganization(orgId), is(false));
     }
 
+    @DontRepeat
+    @Test
+    public void testDeleteOrganizationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteOrganization(badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+
     @Test
     public void testContainsOrganization() throws Exception
     {
