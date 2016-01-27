@@ -187,6 +187,14 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testGetOrganizationOwners() throws Exception
     {
+        instance.saveOrganization(org);
+        
+        List<User> owners = instance.getOrganizationOwners(orgId);
+        
+        for(User owner : owners)
+        {
+            assertThat(owner.userId, isIn(org.owners));
+        }
     }
 
     @Test
