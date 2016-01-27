@@ -47,7 +47,7 @@ import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThr
  *
  * @author SirWellington
  */
-@Repeat(10)
+@Repeat(100)
 @RunWith(AlchemyTestRunner.class)
 public class MemoryTokenRepositoryTest
 {
