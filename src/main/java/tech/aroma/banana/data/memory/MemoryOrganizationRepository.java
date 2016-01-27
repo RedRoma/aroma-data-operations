@@ -152,7 +152,7 @@ final class MemoryOrganizationRepository implements OrganizationRepository
         return members.getOrDefault(organizationId, Sets.emptySet())
             .stream()
             .map(User::getUserId)
-            .allMatch(id -> Objects.equals(id, userId));
+            .anyMatch(id -> Objects.equals(id, userId));
     }
 
     @Override
