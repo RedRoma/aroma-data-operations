@@ -32,6 +32,7 @@ import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.thrift.authentication.AuthenticationToken;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
+import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
 import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions;
 
@@ -48,6 +49,7 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.n
  *
  * @author SirWellington
  */
+@ThreadSafe
 @StrategyPattern(role = CONCRETE_BEHAVIOR)
 final class MemoryTokenRepository implements TokenRepository, ExpirationListener<String, AuthenticationToken>
 {
@@ -85,7 +87,10 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             .usingMessage("token does not exists")
             .is(keyInMap(tokens));
 
-        return tokens.get(tokenId);
+        synchronized (tokens)
+        {
+            return tokens.get(tokenId);
+        }
     }
 
     @Override
@@ -117,10 +122,14 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
 
         long timeToLiveSeconds = now.until(expirationTime, ChronoUnit.SECONDS);
 
-        this.tokens.put(token.tokenId, token, timeToLiveSeconds, TimeUnit.SECONDS);
+        synchronized(tokens)
+        {
+            this.tokens.put(token.tokenId, token, timeToLiveSeconds, TimeUnit.SECONDS);
 
-        addTokenForOwner(token);
+            addTokenForOwner(token);
+        }
     }
+        
 
     @Override
     public List<AuthenticationToken> getTokensBelongingTo(String ownerId) throws TException
@@ -130,7 +139,10 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             .usingMessage("ownerId missing")
             .is(nonEmptyString());
 
-        return tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
+        synchronized(tokens)
+        {
+            return tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
+        }
     }
 
     @Override
@@ -141,14 +153,17 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             .throwing(InvalidArgumentException.class)
             .is(nonEmptyString());
 
-        AuthenticationToken token = tokens.remove(tokenId);
-
-        if (token == null)
+        synchronized (tokens)
         {
-            return;
-        }
+            AuthenticationToken token = tokens.remove(tokenId);
 
-        deleteTokenFromOwner(token);
+            if (token == null)
+            {
+                return;
+            }
+
+            deleteTokenFromOwner(token);
+        }
     }
 
     @Override
@@ -161,33 +176,42 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
             return;
         }
 
-        this.deleteTokenFromOwner(value);
-
-        List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(value.ownerId, Lists.emptyList());
-        
-        if (Lists.isEmpty(ownerTokens))
+        synchronized (tokens)
         {
-            tokensByOwner.remove(ownerId);
+            this.deleteTokenFromOwner(value);
+
+            List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(value.ownerId, Lists.emptyList());
+
+            if (!Lists.isEmpty(ownerTokens))
+            {
+                tokensByOwner.remove(ownerId);
+            }
         }
     }
 
     private void addTokenForOwner(AuthenticationToken token)
     {
-        List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(token.ownerId, Lists.create());
-        ownerTokens.add(token);
-        this.tokensByOwner.put(token.ownerId, ownerTokens);
+        synchronized (tokens)
+        {
+            List<AuthenticationToken> ownerTokens = this.tokensByOwner.getOrDefault(token.ownerId, Lists.create());
+            ownerTokens.add(token);
+            this.tokensByOwner.put(token.ownerId, ownerTokens);
+        }
     }
 
     private void deleteTokenFromOwner(AuthenticationToken token)
     {
         String ownerId = token.ownerId;
-        List<AuthenticationToken> ownerTokens = tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
+        synchronized (tokens)
+        {
+            List<AuthenticationToken> ownerTokens = tokensByOwner.getOrDefault(ownerId, Lists.emptyList());
 
-        ownerTokens = ownerTokens.stream()
-            .filter(t -> !Objects.equals(t.tokenId, token.tokenId))
-            .collect(toList());
+            ownerTokens = ownerTokens.stream()
+                .filter(t -> !Objects.equals(t.tokenId, token.tokenId))
+                .collect(toList());
 
-        this.tokensByOwner.put(ownerId, ownerTokens);
+            this.tokensByOwner.put(ownerId, ownerTokens);
+        }
     }
 
 }
