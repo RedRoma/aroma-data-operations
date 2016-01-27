@@ -106,6 +106,9 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testDeleteOrganization() throws Exception
     {
+        instance.saveOrganization(org);
+        instance.deleteOrganization(orgId);
+        assertThat(instance.containsOrganization(orgId), is(false));
     }
 
     @Test
