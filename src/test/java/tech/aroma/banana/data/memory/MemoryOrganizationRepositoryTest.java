@@ -239,11 +239,23 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testDeleteMember() throws Exception
     {
+        instance.saveOrganization(org);
+        instance.saveMemberInOrganization(orgId, user);
+        
+        instance.deleteMember(orgId, userId);
+        assertThat(instance.isMemberInOrganization(orgId, userId), is(false));
     }
 
     @Test
     public void testDeleteAllMembers() throws Exception
     {
+        instance.saveOrganization(org);
+        instance.saveMemberInOrganization(orgId, user);
+        
+        instance.deleteAllMembers(orgId);
+        
+        List<User> members = instance.getOrganizationMembers(orgId);
+        assertThat(members, is(empty()));
     }
 
     private void setupData()
