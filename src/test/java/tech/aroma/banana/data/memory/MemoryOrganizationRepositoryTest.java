@@ -34,6 +34,7 @@ import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -57,6 +58,9 @@ public class MemoryOrganizationRepositoryTest
     
     @GenerateString(UUID)
     private String userId;
+    
+    @GenerateString(ALPHABETIC)
+    private String badId;
     
     private MemoryOrganizationRepository instance;
 
@@ -114,6 +118,22 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testContainsOrganization() throws Exception
     {
+        assertThat(instance.containsOrganization(orgId), is(false));
+        
+        instance.saveOrganization(org);
+        
+        assertThat(instance.containsOrganization(orgId), is(true));
+    }
+
+    @DontRepeat
+    @Test
+    public void testContainsOrganizationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.containsOrganization(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.containsOrganization(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
