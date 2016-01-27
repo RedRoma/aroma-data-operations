@@ -26,6 +26,7 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
+import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.UserRepository;
 
@@ -45,6 +46,7 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
         bind(FollowerRepository.class).to(MemoryFollowerRepository.class).in(Singleton.class);
         bind(InboxRepository.class).to(MemoryInboxRepository.class).in(Singleton.class);
         bind(MessageRepository.class).to(MemoryMessageRepository.class).in(Singleton.class);
+        bind(OrganizationRepository.class).to(MemoryOrganizationRepository.class).in(Singleton.class);
         bind(TokenRepository.class).to(MemoryTokenRepository.class).in(Singleton.class);
         bind(UserRepository.class).to(MemoryUserRepository.class).in(Singleton.class);
     }
