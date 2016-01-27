@@ -200,11 +200,24 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testSaveMemberInOrganization() throws Exception
     {
+        instance.saveOrganization(org);
+        instance.saveMemberInOrganization(orgId, user);
+        
+        boolean memberInOrganization = instance.isMemberInOrganization(orgId, userId);
+        assertThat(memberInOrganization, is(true));
     }
 
     @Test
     public void testIsMemberInOrganization() throws Exception
     {
+        boolean memberInOrganization = instance.isMemberInOrganization(orgId, userId);
+        assertThat(memberInOrganization, is(false));
+        
+        instance.saveOrganization(org);
+        instance.saveMemberInOrganization(orgId, user);
+        
+        memberInOrganization = instance.isMemberInOrganization(orgId, userId);
+        assertThat(memberInOrganization, is(true));
     }
 
     @Test
