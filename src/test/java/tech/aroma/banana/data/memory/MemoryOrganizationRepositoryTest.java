@@ -35,6 +35,7 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
@@ -223,6 +224,16 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testGetOrganizationMembers() throws Exception
     {
+        instance.saveOrganization(org);
+        
+        List<User> members = instance.getOrganizationMembers(orgId);
+        assertThat(members, is(empty()));
+        
+        instance.saveMemberInOrganization(orgId, user);
+        
+        members = instance.getOrganizationMembers(orgId);
+        assertThat(members, not(empty()));
+        assertThat(members, contains(user));
     }
 
     @Test
