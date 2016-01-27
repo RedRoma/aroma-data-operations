@@ -16,9 +16,13 @@
 
 package tech.aroma.banana.data.memory;
 
+import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sir.wellington.alchemy.collections.lists.Lists;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -29,9 +33,16 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
@@ -147,6 +158,30 @@ public class MemoryOrganizationRepositoryTest
     @Test
     public void testSearchByName() throws Exception
     {
+        List<Organization> orgs = listOf(pojos(Organization.class))
+            .stream()
+            .map(org -> org.setOrganizationId(one(uuids)))
+            .map(org -> org.setOwners(Lists.emptyList()))
+            .collect(toList());
+        
+        Set<String> orgNames = orgs.stream()
+            .map(Organization::getOrganizationName)
+            .collect(toSet());
+        
+        String oneName = Sets.oneOf(orgNames);
+        
+        for(Organization organization : orgs)
+        {
+            instance.saveOrganization(organization);
+        }
+        
+        List<Organization> result = instance.searchByName(oneName);
+        assertThat(result, not(empty()));
+        
+        for(Organization organization : result)
+        {
+            assertThat(organization, isIn(orgs));
+        }
     }
 
     @Test
