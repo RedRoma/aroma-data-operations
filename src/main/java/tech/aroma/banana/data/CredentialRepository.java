@@ -43,5 +43,5 @@ public interface CredentialRepository
     
     String getEncryptedPassword(@Required String userId) throws TException;
     
-    void deletEncryptedPassword(@Required String userId) throws TException;
+    void deleteEncryptedPassword(@Required String userId) throws TException;
 }
