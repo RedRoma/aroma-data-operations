@@ -23,6 +23,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import java.util.Date;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
@@ -36,7 +37,6 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.now;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
@@ -161,7 +161,7 @@ final class CassandraCredentialsRepository implements CredentialRepository
         return queryBuilder
             .insertInto(Credentials.TABLE_NAME)
             .value(Credentials.USER_ID, userUuid)
-            .value(Credentials.TIME_CREATED, now())
+            .value(Credentials.TIME_CREATED, new Date())
             .value(Credentials.ENCRYPTED_PASSWORD, encryptedPassword);
     }
 
