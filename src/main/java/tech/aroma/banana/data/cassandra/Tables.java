@@ -24,7 +24,8 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 /**
- *
+ * Contains all of the Tables and Column names used by the Banana Service in Cassandra.
+ * 
  * @author SirWellington
  */
 @Internal
@@ -48,6 +49,15 @@ class Tables
         static final String TIME_PROVISIONED = "time_provisioned";
         static final String TIME_OF_TOKEN_EXPIRATION = "time_of_token_expiration";
         static final String TIER = "tier";
+    }
+    
+    static class Credentials
+    {
+        static final String TABLE_NAME = "Credentials";
+        
+        static final String USER_ID = "user_id";
+        static final String ENCRYPTED_PASSWORD = "encrypted_password";
+        static final String TIME_CREATED = "time_created";
     }
     
     static class Follow
