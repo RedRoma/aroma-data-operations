@@ -22,10 +22,10 @@ import com.datastax.driver.core.Session;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.util.function.Function;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
+import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
@@ -54,13 +54,14 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
-        bind(ApplicationRepository.class).to(CassandraApplicationRepository.class).in(Singleton.class);
-        bind(FollowerRepository.class).to(CassandraFollowerRepository.class).in(Singleton.class);
-        bind(InboxRepository.class).to(CassandraInboxRepository.class).in(Singleton.class);
-        bind(MessageRepository.class).to(CassandraMessageRepository.class).in(Singleton.class);
-        bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).in(Singleton.class);
-        bind(TokenRepository.class).to(CassandraTokenRepository.class).in(Singleton.class);
-        bind(UserRepository.class).to(CassandraUserRepository.class).in(Singleton.class);
+        bind(ApplicationRepository.class).to(CassandraApplicationRepository.class).asEagerSingleton();
+        bind(CredentialRepository.class).to(CassandraCredentialsRepository.class).asEagerSingleton();
+        bind(FollowerRepository.class).to(CassandraFollowerRepository.class).asEagerSingleton();
+        bind(InboxRepository.class).to(CassandraInboxRepository.class).asEagerSingleton();
+        bind(MessageRepository.class).to(CassandraMessageRepository.class).asEagerSingleton();
+        bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).asEagerSingleton();
+        bind(TokenRepository.class).to(CassandraTokenRepository.class).asEagerSingleton();
+        bind(UserRepository.class).to(CassandraUserRepository.class).asEagerSingleton();
     }
 
     @Provides
