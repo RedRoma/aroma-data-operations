@@ -19,10 +19,10 @@ package tech.aroma.banana.data.memory;
 
 
 import com.google.inject.AbstractModule;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
+import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
@@ -42,13 +42,14 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
-        bind(ApplicationRepository.class).to(MemoryApplicationRepository.class).in(Singleton.class);
-        bind(FollowerRepository.class).to(MemoryFollowerRepository.class).in(Singleton.class);
-        bind(InboxRepository.class).to(MemoryInboxRepository.class).in(Singleton.class);
-        bind(MessageRepository.class).to(MemoryMessageRepository.class).in(Singleton.class);
-        bind(OrganizationRepository.class).to(MemoryOrganizationRepository.class).in(Singleton.class);
-        bind(TokenRepository.class).to(MemoryTokenRepository.class).in(Singleton.class);
-        bind(UserRepository.class).to(MemoryUserRepository.class).in(Singleton.class);
+        bind(ApplicationRepository.class).to(MemoryApplicationRepository.class).asEagerSingleton();
+        bind(CredentialRepository.class).to(MemoryCredentialsRepository.class).asEagerSingleton();
+        bind(FollowerRepository.class).to(MemoryFollowerRepository.class).asEagerSingleton();
+        bind(InboxRepository.class).to(MemoryInboxRepository.class).asEagerSingleton();
+        bind(MessageRepository.class).to(MemoryMessageRepository.class).asEagerSingleton();
+        bind(OrganizationRepository.class).to(MemoryOrganizationRepository.class).asEagerSingleton();
+        bind(TokenRepository.class).to(MemoryTokenRepository.class).asEagerSingleton();
+        bind(UserRepository.class).to(MemoryUserRepository.class).asEagerSingleton();
     }
 
 }

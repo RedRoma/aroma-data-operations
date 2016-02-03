@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.banana.data.ApplicationRepository;
+import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.MessageRepository;
@@ -54,6 +55,9 @@ public class ModuleMemoryDataRepositoriesTest
         
         ApplicationRepository appRepo = injector.getInstance(ApplicationRepository.class);
         assertThat(appRepo, notNullValue());
+        
+        CredentialRepository credentialsRepo = injector.getInstance(CredentialRepository.class);
+        assertThat(credentialsRepo, notNullValue());
         
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followRepo, notNullValue());
