@@ -263,7 +263,7 @@ final class CassandraInboxRepository implements InboxRepository
             .from(Inbox.TABLE_NAME)
             .where(eq(Inbox.USER_ID, userUuid))
             .orderBy(desc(Inbox.MESSAGE_ID))
-            .limit(10_000);
+            .limit(5_000);
     }
 
     private Statement createQueryToCheckIfInInboxOf(String userId, Message message)
