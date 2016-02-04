@@ -47,6 +47,8 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *

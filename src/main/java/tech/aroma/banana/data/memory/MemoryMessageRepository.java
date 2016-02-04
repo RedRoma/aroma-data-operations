@@ -36,13 +36,14 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.equalTo;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicationId;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -156,7 +157,7 @@ final class MemoryMessageRepository implements MessageRepository, ExpirationList
     {
         checkThat(applicationId)
             .throwing(InvalidArgumentException.class)
-            .is(validAppId());
+            .is(validApplicationId());
         
         return messagesByApplication.getOrDefault(applicationId, Sets.emptySet())
             .stream()
@@ -170,7 +171,7 @@ final class MemoryMessageRepository implements MessageRepository, ExpirationList
     {
         checkThat(applicationId)
             .throwing(InvalidArgumentException.class)
-            .is(validAppId());
+            .is(validApplicationId());
         
         checkThat(title)
             .throwing(InvalidArgumentException.class)

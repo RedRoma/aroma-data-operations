@@ -19,6 +19,7 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -47,7 +48,7 @@ public final class RequestAssertions
                 .are(nonEmptyString());
             
             checkThat(app.applicationId)
-                .is(validAppId());
+                .is(validApplicationId());
             
             if(app.isSetOrganizationId())
             {
@@ -111,7 +112,7 @@ public final class RequestAssertions
         };
     }
     
-    public static AlchemyAssertion<String> validAppId()
+    public static AlchemyAssertion<String> validApplicationId()
     {
         return appId ->
         {

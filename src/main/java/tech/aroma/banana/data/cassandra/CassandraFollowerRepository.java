@@ -39,7 +39,6 @@ import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.now;
-import static tech.aroma.banana.data.assertions.RequestAssertions.validAppId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
@@ -49,6 +48,9 @@ import static tech.aroma.banana.data.cassandra.Tables.Follow.TIME_OF_FOLLOW;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_FIRST_NAME;
 import static tech.aroma.banana.data.cassandra.Tables.Follow.USER_ID;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicationId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
@@ -334,7 +336,7 @@ final class CassandraFollowerRepository implements FollowerRepository
     {
         checkThat(applicationId)
             .throwing(InvalidArgumentException.class)
-            .is(validAppId());
+            .is(validApplicationId());
 
     }
 
