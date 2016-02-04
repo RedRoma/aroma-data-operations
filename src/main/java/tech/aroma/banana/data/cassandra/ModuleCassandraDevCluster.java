@@ -63,7 +63,7 @@ public final class ModuleCassandraDevCluster extends AbstractModule
     Cluster provideCassandraCluster(ReconnectionPolicy reconnectionPolicy)
     {
         return Cluster.builder()
-            .addContactPoint("cassandra-01.aroma.tech")
+            .addContactPoint("cassandra-02.dev.redroma.tech")
             .withPort(9042)
             .withCredentials("cassandra", "cassandra")
             .withReconnectionPolicy(reconnectionPolicy)
