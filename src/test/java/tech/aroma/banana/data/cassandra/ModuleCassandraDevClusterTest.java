@@ -18,6 +18,7 @@ package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.policies.ReconnectionPolicy;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -36,11 +37,11 @@ import static org.junit.Assert.assertThat;
  */
 @IntegrationTest
 @RunWith(AlchemyTestRunner.class)
-public class ModuleCassandraDevClusterTest 
+public class ModuleCassandraDevClusterTest
 {
 
     private ModuleCassandraDevCluster instance;
-    
+
     @Before
     public void setUp()
     {
@@ -51,13 +52,13 @@ public class ModuleCassandraDevClusterTest
     public void testModule()
     {
         Injector injector = Guice.createInjector(instance);
-        
+
         Cluster cluster = injector.getInstance(Cluster.class);
         assertThat(cluster, notNullValue());
-        
+
         Session session = injector.getInstance(Session.class);
         assertThat(session, notNullValue());
-        
+
         QueryBuilder queryBuilder = injector.getInstance(QueryBuilder.class);
         assertThat(queryBuilder, notNullValue());
     }
@@ -65,27 +66,36 @@ public class ModuleCassandraDevClusterTest
     @Test
     public void testProvideCassandraCluster()
     {
-        Cluster cluster = instance.provideCassandraCluster();
+        ReconnectionPolicy policy = instance.provideReconnectPolicy();
+        Cluster cluster = instance.provideCassandraCluster(policy);
         assertThat(cluster, notNullValue());
     }
 
     @Test
     public void testProvideCassandraSession()
     {
-        Cluster cluster = instance.provideCassandraCluster();
-        
+        ReconnectionPolicy policy = instance.provideReconnectPolicy();
+        Cluster cluster = instance.provideCassandraCluster(policy);
+
         Session session = instance.provideCassandraSession(cluster);
         assertThat(session, notNullValue());
     }
-    
 
     @Test
     public void testProvideCQLBuilder()
     {
-        Cluster cluster = instance.provideCassandraCluster();
-        
+        ReconnectionPolicy policy = instance.provideReconnectPolicy();
+        Cluster cluster = instance.provideCassandraCluster(policy);
+
         QueryBuilder queryBuilder = instance.provideCQLBuilder(cluster);
         assertThat(queryBuilder, notNullValue());
+    }
+
+    @Test
+    public void testProvideReconnectPolicy()
+    {
+        ReconnectionPolicy result = instance.provideReconnectPolicy();
+        assertThat(result, notNullValue());
     }
 
 }

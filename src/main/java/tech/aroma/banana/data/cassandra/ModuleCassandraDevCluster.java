@@ -18,10 +18,12 @@ package tech.aroma.banana.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.policies.Policies;
+import com.datastax.driver.core.policies.ExponentialReconnectionPolicy;
+import com.datastax.driver.core.policies.ReconnectionPolicy;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,16 +47,26 @@ public final class ModuleCassandraDevCluster extends AbstractModule
     protected void configure()
     {
     }
+    
+    @Provides
+    ReconnectionPolicy provideReconnectPolicy()
+    {
+        long baseAttempt = TimeUnit.SECONDS.toMillis(5);
+        long maxTimeWaiting = TimeUnit.MINUTES.toMillis(1);
+        
+        ExponentialReconnectionPolicy policy = new ExponentialReconnectionPolicy(baseAttempt, maxTimeWaiting);
+        return policy;
+    }
 
     @Provides
     @Singleton
-    Cluster provideCassandraCluster()
+    Cluster provideCassandraCluster(ReconnectionPolicy reconnectionPolicy)
     {
         return Cluster.builder()
             .addContactPoint("cassandra-01.aroma.tech")
             .withPort(9042)
             .withCredentials("cassandra", "cassandra")
-            .withReconnectionPolicy(Policies.defaultReconnectionPolicy())
+            .withReconnectionPolicy(reconnectionPolicy)
             .build();
     }
 
