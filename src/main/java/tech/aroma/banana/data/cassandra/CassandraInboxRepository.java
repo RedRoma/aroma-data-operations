@@ -38,6 +38,7 @@ import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
@@ -46,8 +47,6 @@ import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -262,7 +261,8 @@ final class CassandraInboxRepository implements InboxRepository
             .select()
             .all()
             .from(Inbox.TABLE_NAME)
-            .where(eq(Inbox.USER_ID, userUuid));
+            .where(eq(Inbox.USER_ID, userUuid))
+            .orderBy(desc(Inbox.MESSAGE_ID));
     }
 
     private Statement createQueryToCheckIfInInboxOf(String userId, Message message)
