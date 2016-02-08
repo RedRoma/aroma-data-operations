@@ -60,7 +60,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraInboxRepositoryIT
 {
 
-    private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 2);
+    private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 5);
 
     private static Session session;
     private static QueryBuilder queryBuilder;
@@ -153,7 +153,7 @@ public class CassandraInboxRepositoryIT
     {
         for (Message msg : messages)
         {
-            instance.saveMessageForUser(user, msg);
+            instance.saveMessageForUser(user, msg, MESSAGE_LIFETIME);
         }
     }
 
@@ -168,7 +168,7 @@ public class CassandraInboxRepositoryIT
     @Test
     public void testSaveMessageForUser() throws Exception
     {
-        instance.saveMessageForUser(user, message);
+        instance.saveMessageForUser(user, message, MESSAGE_LIFETIME);
         assertThat(instance.containsMessageInInbox(userId, message), is(true));
     }
 
