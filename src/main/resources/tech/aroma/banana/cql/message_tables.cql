@@ -16,8 +16,11 @@ CREATE TABLE IF NOT EXISTS Banana.Messages
 
 	PRIMARY KEY ((app_id), message_id)
 )
-WITH gc_grace_seconds=84000
-AND compaction = {'class' : 'DateTieredCompactionStrategy' }
+WITH gc_grace_seconds=43200
+AND compaction =
+{	'class' : 'DateTieredCompactionStrategy',
+	'max_sstable_age_days' : '180'
+ }
 ;
 
 CREATE INDEX IF NOT EXISTS Messages_By_Title ON Banana.Messages (title);

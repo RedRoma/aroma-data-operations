@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.InboxRepository;
+import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
@@ -36,7 +37,6 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
@@ -51,7 +51,7 @@ final class MemoryInboxRepository implements InboxRepository
     private final Map<String, List<Message>> messagesForUser = Maps.createSynchronized();
 
     @Override
-    public void saveMessageForUser(@Required User user, @Required Message message) throws TException
+    public void saveMessageForUser(@Required User user, @Required Message message, @Required LengthOfTime lifetime) throws TException
     {
         checkThat(message)
             .throwing(InvalidArgumentException.class)

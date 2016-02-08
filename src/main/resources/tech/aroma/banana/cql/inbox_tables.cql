@@ -17,6 +17,6 @@ CREATE TABLE IF NOT EXISTS Banana.Inbox
 
 	PRIMARY KEY ((user_id), message_id)
 )
-WITH gc_grace_seconds=84000
+WITH gc_grace_seconds=43200
 AND compaction = {'class' : 'DateTieredCompactionStrategy' }
 ;

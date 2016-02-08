@@ -23,7 +23,6 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import javax.inject.Inject;
 import org.apache.thrift.TException;
@@ -32,20 +31,20 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.InboxRepository;
 import tech.aroma.banana.data.cassandra.Tables.Inbox;
+import tech.aroma.banana.thrift.LengthOfTime;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.User;
 import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.banana.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessageId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -77,7 +76,7 @@ final class CassandraInboxRepository implements InboxRepository
     }
 
     @Override
-    public void saveMessageForUser(@Required User user, @Required Message message) throws TException
+    public void saveMessageForUser(@Required User user, @Required Message message,  @Required LengthOfTime lifetime) throws TException
     {
         checkThat(message)
             .throwing(InvalidArgumentException.class)
@@ -87,7 +86,7 @@ final class CassandraInboxRepository implements InboxRepository
             .throwing(InvalidArgumentException.class)
             .is(validUser());
 
-        Statement insertStatement = createInsertStatementFor(message, user);
+        Statement insertStatement = createInsertStatementFor(message, user, lifetime);
 
         try
         {
@@ -231,12 +230,12 @@ final class CassandraInboxRepository implements InboxRepository
         return count;
     }
 
-    private Statement createInsertStatementFor(Message message, User user)
+    private Statement createInsertStatementFor(Message message, User user, LengthOfTime lifetime)
     {
         UUID msgUuid = UUID.fromString(message.messageId);
         UUID userUuid = UUID.fromString(user.userId);
         UUID appUuid = UUID.fromString(message.applicationId);
-        long timeToLive = TimeUnit.DAYS.toSeconds(5);
+        long timeToLive = TimeFunctions.toSeconds(lifetime);
 
         return queryBuilder
             .insertInto(Inbox.TABLE_NAME)
