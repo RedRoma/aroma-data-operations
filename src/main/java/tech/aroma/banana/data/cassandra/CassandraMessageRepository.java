@@ -40,6 +40,7 @@ import tech.aroma.banana.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static java.lang.String.format;
 import static tech.aroma.banana.data.cassandra.Tables.Messages.APP_ID;
 import static tech.aroma.banana.data.cassandra.Tables.Messages.APP_NAME;
@@ -280,7 +281,7 @@ final class CassandraMessageRepository implements MessageRepository
             .value(URGENCY, message.urgency)
             .value(TIME_CREATED, message.timeOfCreation)
             .value(TIME_RECEIVED, message.timeMessageReceived)
-            .using(QueryBuilder.ttl(timeToLive.intValue()));
+            .using(ttl(timeToLive.intValue()));
     }
 
     private Statement createUpdateForMessageByApp(Message message)
