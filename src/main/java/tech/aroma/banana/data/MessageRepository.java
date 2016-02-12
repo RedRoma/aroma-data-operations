@@ -26,11 +26,6 @@ import tech.aroma.banana.thrift.TimeUnit;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
-/*
- * It may be necessary to create a separate Pojo if the Service Operations
- * need more information than is provided by the Thrift Message Object.
- */
-
 /**
  * Answers questions and performs actions relating to {@linkplain Message Messages}.
  * 
