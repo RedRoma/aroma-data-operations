@@ -1,10 +1,10 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
 /*
 In these tables, an owner can be either a User or an Application,
 depending on the Token Type.
 */
-CREATE TABLE IF NOT EXISTS Banana.Tokens
+CREATE TABLE IF NOT EXISTS Aroma.Tokens
 (
 	token_id uuid,
 	owner_id uuid,
@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS Banana.Tokens
 	PRIMARY KEY (token_id)
 );
 
-CREATE INDEX IF NOT EXISTS Tokens_By_Type ON Banana.Tokens (token_type);
+CREATE INDEX IF NOT EXISTS Tokens_By_Type ON Aroma.Tokens (token_type);
 
-CREATE TABLE IF NOT EXISTS Banana.Tokens_By_Owner
+CREATE TABLE IF NOT EXISTS Aroma.Tokens_By_Owner
 (
 	owner_id uuid,
 	token_id uuid,

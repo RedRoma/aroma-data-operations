@@ -1,7 +1,7 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
 /* Stores Organization Information */
-CREATE TABLE IF NOT EXISTS Banana.Organizations
+CREATE TABLE IF NOT EXISTS Aroma.Organizations
 (
 	org_id uuid,
 	org_name text,
@@ -18,12 +18,12 @@ CREATE TABLE IF NOT EXISTS Banana.Organizations
 	PRIMARY KEY (org_id)
 );
 
-CREATE INDEX IF NOT EXISTS Organizations_By_Tier ON Banana.Organizations (tier);
+CREATE INDEX IF NOT EXISTS Organizations_By_Tier ON Aroma.Organizations (tier);
 
-CREATE INDEX IF NOT EXISTS Organizations_By_Industry ON Banana.Organizations (industry);
+CREATE INDEX IF NOT EXISTS Organizations_By_Industry ON Aroma.Organizations (industry);
 
 /* Stores information relating to an Organization's members */
-CREATE TABLE IF NOT EXISTS Banana.Organizations_Members
+CREATE TABLE IF NOT EXISTS Aroma.Organizations_Members
 (
 	org_id uuid,
 	user_id uuid,
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS Banana.Organizations_Members
 	PRIMARY KEY ((org_id), user_id)
 );
 
-CREATE INDEX IF NOT EXISTS Organizations_Members_By_Email ON Banana.Organizations_Members (user_email);
+CREATE INDEX IF NOT EXISTS Organizations_Members_By_Email ON Aroma.Organizations_Members (user_email);
 
-CREATE INDEX IF NOT EXISTS Organizations_Members_By_Role ON Banana.Organizations_Members (user_roles);
+CREATE INDEX IF NOT EXISTS Organizations_Members_By_Role ON Aroma.Organizations_Members (user_roles);
 
-CREATE INDEX IF NOT EXISTS Organizations_Members_By_User ON Banana.Organizations_Members (user_id);
+CREATE INDEX IF NOT EXISTS Organizations_Members_By_User ON Aroma.Organizations_Members (user_id);

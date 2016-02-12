@@ -1,6 +1,6 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
-CREATE TABLE IF NOT EXISTS Banana.Inbox
+CREATE TABLE IF NOT EXISTS Aroma.Inbox
 (
 	user_id uuid,
 	message_id timeuuid,

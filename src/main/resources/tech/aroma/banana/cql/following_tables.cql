@@ -1,7 +1,7 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
 /* Defines an App's Followers */
-CREATE TABLE IF NOT EXISTS Banana.Follow_Application_Followers
+CREATE TABLE IF NOT EXISTS Aroma.Follow_Application_Followers
 (
 	app_id uuid,
 	user_id uuid,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Banana.Follow_Application_Followers
 );
 
 //Defines the Apps a User is following
-CREATE TABLE IF NOT EXISTS Banana.Follow_User_Followings
+CREATE TABLE IF NOT EXISTS Aroma.Follow_User_Followings
 (
 	user_id uuid,
 	app_id uuid,

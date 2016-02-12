@@ -1,6 +1,6 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
-CREATE TABLE IF NOT EXISTS Banana.Messages
+CREATE TABLE IF NOT EXISTS Aroma.Messages
 (
 	message_id timeuuid,
 	title text,
@@ -23,11 +23,11 @@ AND compaction =
  }
 ;
 
-CREATE INDEX IF NOT EXISTS Messages_By_Title ON Banana.Messages (title);
+CREATE INDEX IF NOT EXISTS Messages_By_Title ON Aroma.Messages (title);
 
-CREATE INDEX IF NOT EXISTS Messages_By_Hostname  ON Banana.Messages (hostname);
+CREATE INDEX IF NOT EXISTS Messages_By_Hostname  ON Aroma.Messages (hostname);
 
-CREATE TABLE IF NOT EXISTS Banana.Messages_Rate_Limit
+CREATE TABLE IF NOT EXISTS Aroma.Messages_Rate_Limit
 (
 	app_id uuid,
 	request_time timeuuid,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Banana.Messages_Rate_Limit
 	PRIMARY KEY ((app_id), request_time)
 );
 
-CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_App
+CREATE TABLE IF NOT EXISTS Aroma.Messages_Totals_By_App
 (
 	app_id uuid,
 	total_messages counter,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_App
 	PRIMARY KEY (app_id)
 );
 
-CREATE TABLE IF NOT EXISTS Banana.Messages_Totals_By_Title
+CREATE TABLE IF NOT EXISTS Aroma.Messages_Totals_By_Title
 (
 	app_id uuid,
 	title text,

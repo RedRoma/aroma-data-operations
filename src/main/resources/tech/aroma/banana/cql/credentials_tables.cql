@@ -1,9 +1,9 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
 /*
 	Used to store encrypted User Passwords.
 */
-CREATE TABLE IF NOT EXISTS Banana.Credentials
+CREATE TABLE IF NOT EXISTS Aroma.Credentials
 (
 	user_id uuid,
 	encrypted_password text,

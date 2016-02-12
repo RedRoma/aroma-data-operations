@@ -1,6 +1,6 @@
-//Assumes the existence of a 'Banana' Keyspace
+//Assumes the existence of a 'Aroma' Keyspace
 
-CREATE TABLE IF NOT EXISTS Banana.Users
+CREATE TABLE IF NOT EXISTS Aroma.Users
 (
 	user_id uuid,
 	first_name text,
@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS Banana.Users
 	PRIMARY KEY (user_id)
 );
 
-CREATE INDEX IF NOT EXISTS Users_By_Last_Name_Index ON Banana.Users (last_name);
-CREATE INDEX IF NOT EXISTS Users_By_First_Name_Index ON Banana.Users (first_name);
-CREATE INDEX IF NOT EXISTS Users_By_Roles_Index ON Banana.Users (roles);
+CREATE INDEX IF NOT EXISTS Users_By_Last_Name_Index ON Aroma.Users (last_name);
+CREATE INDEX IF NOT EXISTS Users_By_First_Name_Index ON Aroma.Users (first_name);
+CREATE INDEX IF NOT EXISTS Users_By_Roles_Index ON Aroma.Users (roles);
 
-CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
+CREATE TABLE IF NOT EXISTS  Aroma.Users_By_Github_Profile
 (
 	github_profile text,
 	user_id uuid,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS  Banana.Users_By_Github_Profile
 	PRIMARY KEY (github_profile)
 );
 
-CREATE TABLE IF NOT EXISTS Banana.Users_By_Email
+CREATE TABLE IF NOT EXISTS Aroma.Users_By_Email
 (
 	email text,
 	user_id uuid,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Banana.Users_By_Email
 	PRIMARY KEY (email)
 );
 
-CREATE TABLE IF NOT EXISTS Banana.Users_Recent
+CREATE TABLE IF NOT EXISTS Aroma.Users_Recent
 (
 	user_id uuid,
 	first_name text,
