@@ -24,7 +24,7 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
 /**
- * Contains all of the Tables and Column names used by the Banana Service in Cassandra.
+ * Contains all of the Tables and Column names used by the Aroma Service in Cassandra.
  * 
  * @author SirWellington
  */
