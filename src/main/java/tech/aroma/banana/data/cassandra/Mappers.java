@@ -50,7 +50,7 @@ import static tech.aroma.banana.data.cassandra.Tables.Messages.MESSAGE_ID;
 
 /**
  * This class contains a lot of data-marshalling logic to transform
- * Cassandra Rows into the appropriate Banana Thrift Objects.
+ * Cassandra Rows into the appropriate Aroma Thrift Objects.
  * 
  * @author SirWellington
  */
