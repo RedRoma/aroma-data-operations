@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Messages
 
 	PRIMARY KEY ((app_id), message_id)
 )
-WITH gc_grace_seconds=43200
+WITH gc_grace_seconds=600
 AND compaction =
 {	'class' : 'DateTieredCompactionStrategy',
 	'max_sstable_age_days' : '180'
@@ -33,7 +33,13 @@ CREATE TABLE IF NOT EXISTS Aroma.Messages_Rate_Limit
 	request_time timeuuid,
 
 	PRIMARY KEY ((app_id), request_time)
-);
+)
+WITH gc_grace_seconds=600
+AND compaction =
+{	'class' : 'DateTieredCompactionStrategy',
+	'max_sstable_age_days' : '30'
+ }
+ ;
 
 CREATE TABLE IF NOT EXISTS Aroma.Messages_Totals_By_App
 (
