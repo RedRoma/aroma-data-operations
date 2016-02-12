@@ -76,7 +76,7 @@ public final class ModuleCassandraDevCluster extends AbstractModule
     {
         checkThat(cluster).is(notNull());
 
-        return cluster.connect("Banana");
+        return cluster.connect("Aroma");
     }
 
     @Provides
