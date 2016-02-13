@@ -44,6 +44,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validApplication;
+import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicationId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validOrgId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
 import static tech.aroma.banana.data.cassandra.Tables.Applications.APP_DESCRIPTION;
@@ -61,9 +62,6 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
-import static tech.aroma.banana.data.assertions.RequestAssertions.validApplicationId;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
@@ -99,7 +97,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .throwing(InvalidArgumentException.class)
             .is(validApplication());
         
-        Statement statement = createInsertStatementFor(application);
+        Statement statement = createStatementToSave(application);
         
         try
         {
@@ -300,7 +298,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
         return apps;
     }
     
-    private Statement createInsertStatementFor(Application app)
+    private Statement createStatementToSave(Application app)
     {
         BatchStatement batch = new BatchStatement();
         
