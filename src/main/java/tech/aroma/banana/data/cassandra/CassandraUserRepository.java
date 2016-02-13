@@ -52,8 +52,6 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  * Stores user information in Cassandra.
@@ -300,7 +298,9 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.MIDDLE_NAME, user.middleName)
             .value(Users.LAST_NAME, user.lastName)
             .value(Users.GITHUB_PROFILE, user.githubProfile)
-            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink);
+            .value(Users.PROFILE_IMAGE_ID, user.profileImageLink)
+            .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli());
+
     }
 
     private Statement createInsertIntoUsersByGithubTable(User user)
@@ -313,7 +313,9 @@ final class CassandraUserRepository implements UserRepository
             .value(Users.FIRST_NAME, user.firstName)
             .value(Users.MIDDLE_NAME, user.middleName)
             .value(Users.LAST_NAME, user.lastName)
-            .value(Users.EMAIL, user.email);
+            .value(Users.EMAIL, user.email)
+            .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli());
+
     }
 
     private Statement createQueryToGetUser(String userId)
