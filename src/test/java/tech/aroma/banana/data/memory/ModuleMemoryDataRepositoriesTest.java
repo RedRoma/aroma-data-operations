@@ -25,6 +25,7 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
+import tech.aroma.banana.data.MediaRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -61,6 +62,9 @@ public class ModuleMemoryDataRepositoriesTest
         
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followRepo, notNullValue());
+        
+        MediaRepository mediaRepo = injector.getInstance(MediaRepository.class);
+        assertThat(mediaRepo, notNullValue());
         
         MessageRepository messageRepo = injector.getInstance(MessageRepository.class);
         assertThat(messageRepo, notNullValue());
