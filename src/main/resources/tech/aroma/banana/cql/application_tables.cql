@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Applications
 	time_provisioned timestamp,
 	tier text,
 	time_of_token_expiration timestamp,
+	app_icon_media_id uuid,
 
 	PRIMARY KEY (app_id)
 );
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Applications_Recently_Created
 	time_provisioned timestamp,
 	tier text,
 	time_of_token_expiration timestamp,
+	app_icon_media_id uuid,
 
 	PRIMARY KEY (app_id)
 );
