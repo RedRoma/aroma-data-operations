@@ -38,7 +38,7 @@ public interface MediaRepository
     
     Image getMedia(@NonEmpty String mediaId) throws DoesNotExistException, TException;
     
-    default boolean hasMedia(@NonEmpty String mediaId) throws TException
+    default boolean containsMedia(@NonEmpty String mediaId) throws TException
     {
         try
         {
@@ -57,7 +57,7 @@ public interface MediaRepository
     
     Image getThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws DoesNotExistException, TException;
     
-    default boolean hasThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException
+    default boolean containsThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException
     {
         try
         {
