@@ -91,6 +91,20 @@ class Tables
         static final String TOTAL_MESSAGES = Messages.TOTAL_MESSAGES;
     }
         
+    static class Media
+    {
+        static final String TABLE_NAME = "Media";
+        static final String TABLE_NAME_THUMBNAILS = "Media_Thumbnails";
+        
+        static final String MEDIA_ID = "media_id";
+        static final String MEDIA_TYPE = "media_type";
+        static final String CREATION_TIME = "creation_time";
+        static final String EXPIRATION_TIME = "expiration_time";
+        static final String BINARY = "binary";
+        static final String DIMENSION = "dimension";
+        static final String WIDTH = "width";
+        static final String HEIGHT = "height";
+    }
     
     static class Messages
     {
