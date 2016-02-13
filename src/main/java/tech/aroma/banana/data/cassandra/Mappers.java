@@ -19,6 +19,7 @@ package tech.aroma.banana.data.cassandra;
 
 
 import com.datastax.driver.core.Row;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Dimension;
+import tech.aroma.banana.thrift.Image;
+import tech.aroma.banana.thrift.ImageType;
 import tech.aroma.banana.thrift.Industry;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Organization;
@@ -120,6 +124,35 @@ final class Mappers
                 .setTier(row.get(Tables.Applications.TIER, Tier.class));
             
             return app;
+        };
+    }
+    
+    static Function<Row, Image> imageMapper()
+    {
+        return row ->
+        {
+            
+            Image image = new Image();
+            
+            ByteBuffer binary = row.getBytes(Tables.Media.BINARY);
+            image.setData(binary);
+            
+            int width = row.getInt(Tables.Media.WIDTH);
+            int height = row.getInt(Tables.Media.HEIGHT);
+            image.setDimension(new Dimension(width, height));
+            
+            String mediaType = row.getString(Tables.Media.MEDIA_TYPE);
+            
+            try
+            {
+                image.setImageType(ImageType.valueOf(mediaType));
+            }
+            catch (Exception ex)
+            {
+                LOG.warn("Could not find ImageType: {}", mediaType, ex);
+            }
+            
+            return image;
         };
     }
     

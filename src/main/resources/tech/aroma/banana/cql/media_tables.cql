@@ -4,7 +4,9 @@
 CREATE TABLE IF NOT EXISTS Aroma.Media
 (
 	media_id uuid,
-	media_type string,
+	media_type text,
+	width int,
+	height int,
 	creation_time timestamp,
 	expiration_time timestamp,
 	binary blob,
@@ -18,9 +20,10 @@ WITH gc_grace_seconds=43200
 CREATE TABLE IF NOT EXISTS Aroma.Media_Thumbnails
 (
 	media_id uuid,
-	dimension string,
-	int width,
-	int height,
+	dimension text,
+	media_type text,
+	width int,
+	height int,
 	creation_time timestamp,
 	expiration_time timestamp,
 	binary blob,

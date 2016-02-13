@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
+import tech.aroma.banana.data.MediaRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.TokenRepository;
@@ -107,6 +108,9 @@ public class ModuleCassandraDataRepositoriesTest
         
         InboxRepository inboxRepo = injector.getInstance(InboxRepository.class);
         assertThat(inboxRepo, notNullValue());
+        
+        MediaRepository mediaRepo = injector.getInstance(MediaRepository.class);
+        assertThat(mediaRepo, notNullValue());
         
         MessageRepository messageRepo = injector.getInstance(MessageRepository.class);
         assertThat(messageRepo, notNullValue());

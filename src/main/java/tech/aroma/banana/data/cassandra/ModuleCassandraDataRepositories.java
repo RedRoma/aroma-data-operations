@@ -28,11 +28,13 @@ import tech.aroma.banana.data.ApplicationRepository;
 import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.InboxRepository;
+import tech.aroma.banana.data.MediaRepository;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.thrift.Application;
+import tech.aroma.banana.thrift.Image;
 import tech.aroma.banana.thrift.Message;
 import tech.aroma.banana.thrift.Organization;
 import tech.aroma.banana.thrift.User;
@@ -58,6 +60,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(CredentialRepository.class).to(CassandraCredentialsRepository.class).asEagerSingleton();
         bind(FollowerRepository.class).to(CassandraFollowerRepository.class).asEagerSingleton();
         bind(InboxRepository.class).to(CassandraInboxRepository.class).asEagerSingleton();
+        bind(MediaRepository.class).to(CassandraMediaRepository.class).asEagerSingleton();
         bind(MessageRepository.class).to(CassandraMessageRepository.class).asEagerSingleton();
         bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).asEagerSingleton();
         bind(TokenRepository.class).to(CassandraTokenRepository.class).asEagerSingleton();
@@ -70,6 +73,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         return Mappers.appMapper();
     }
 
+    @Provides
+    Function<Row, Image> provideImageMapper()
+    {
+        return Mappers.imageMapper();
+    }
+    
     @Provides
     Function<Row, Message> provideMessageMapper()
     {
