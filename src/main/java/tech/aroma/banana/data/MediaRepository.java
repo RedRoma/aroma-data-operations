@@ -42,7 +42,7 @@ public interface MediaRepository
     
     void saveThumbnail(@NonEmpty String mediaId, @Required Dimension dimension, Image thumbnail) throws TException;
     
-    Image getThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException;
+    Image getThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws DoesNotExistException, TException;
     
     void deleteThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException;
     
