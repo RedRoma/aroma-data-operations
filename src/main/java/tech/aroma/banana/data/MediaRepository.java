@@ -19,6 +19,7 @@ package tech.aroma.banana.data;
 
 import org.apache.thrift.TException;
 import tech.aroma.banana.thrift.Dimension;
+import tech.aroma.banana.thrift.Image;
 import tech.aroma.banana.thrift.exceptions.DoesNotExistException;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
@@ -33,15 +34,15 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 public interface MediaRepository 
 {
     
-    void saveMedia(@NonEmpty String mediaId, @Required byte[] binary) throws TException;
+    void saveMedia(@NonEmpty String mediaId, @Required Image image) throws TException;
     
-    byte[] getMedia(@NonEmpty String mediaId) throws DoesNotExistException, TException;
+    Image getMedia(@NonEmpty String mediaId) throws DoesNotExistException, TException;
     
     void deleteMedia(@NonEmpty String mediaId) throws TException;
     
-    void saveThumbnail(@NonEmpty String mediaId, @Required Dimension dimension, @Required byte[] binary) throws TException;
+    void saveThumbnail(@NonEmpty String mediaId, @Required Dimension dimension, Image thumbnail) throws TException;
     
-    byte[] getThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException;
+    Image getThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException;
     
     void deleteThumbnail(@NonEmpty String mediaId, @Required Dimension dimension) throws TException;
     
