@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Users
 	birthdate timestamp,
 	profile_image_id text,
 	github_profile text,
+	time_account_created timestamp,
 
 	PRIMARY KEY (user_id)
 );
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS  Aroma.Users_By_Github_Profile
 	last_name text,
 	//This is the email associated with the GitHub account
 	email text,
+	time_account_created timestamp,
 
 	PRIMARY KEY (github_profile)
 );
@@ -43,6 +45,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Users_By_Email
 	last_name text,
 	github_profile text,
 	profile_image_id text,
+	time_account_created timestamp,
 
 	PRIMARY KEY (email)
 );
@@ -60,6 +63,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Users_Recent
 	birthdate timestamp,
 	profile_image_id text,
 	github_profile text,
+	time_account_created timestamp,
 
 	PRIMARY KEY (user_id)
 );
