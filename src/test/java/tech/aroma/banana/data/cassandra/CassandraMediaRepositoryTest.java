@@ -32,6 +32,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import tech.aroma.banana.thrift.Dimension;
 import tech.aroma.banana.thrift.Image;
+import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -46,6 +47,7 @@ import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -73,7 +75,7 @@ public class CassandraMediaRepositoryTest
     @GenerateString(UUID)
     private String mediaId;
     
-    @GenerateString(UUID)
+    @GenerateString(ALPHABETIC)
     private String badId;
     
     @GeneratePojo
@@ -137,6 +139,29 @@ public class CassandraMediaRepositoryTest
         Statement statement = captor.getValue();
         assertThat(statement, notNullValue());
         assertThat(statement, is(instanceOf(Insert.class)));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testSaveMediaWithBadArgs() throws Exception
+    {
+        //Missing media id
+        assertThrows(() -> instance.saveMedia("", image))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        //Missing Image
+        assertThrows(() -> instance.saveMedia(mediaId, null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        //bad Id
+        assertThrows(() -> instance.saveMedia(badId, image))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        //Empty Image
+        Image emptyImage = new Image();
+        assertThrows(() -> instance.saveMedia(badId, emptyImage))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
     @Test
