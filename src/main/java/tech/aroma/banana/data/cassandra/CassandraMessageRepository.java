@@ -38,6 +38,7 @@ import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
 import tech.aroma.banana.thrift.exceptions.OperationFailedException;
 import tech.aroma.banana.thrift.functions.TimeFunctions;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
@@ -396,7 +397,8 @@ final class CassandraMessageRepository implements MessageRepository
             .all()
             .from(Messages.TABLE_NAME)
             .where(eq(APP_ID, appId))
-            .limit(2000);
+            .orderBy(desc(MESSAGE_ID))
+            .limit(3000);
     }
 
     private Statement createQueryToCountMessagesByApplication(String applicationId)
