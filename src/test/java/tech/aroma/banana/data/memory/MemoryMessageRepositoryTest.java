@@ -81,6 +81,7 @@ public class MemoryMessageRepositoryTest
 
         messages = messages.stream()
             .map(m -> m.setMessageId(one(uuids)))
+            .map(m -> m.setApplicationId(applicationId))
             .collect(toList());
     }
 
@@ -232,7 +233,8 @@ public class MemoryMessageRepositoryTest
         messages.forEach(msg -> msg.setTitle(title));
         saveMessages(messages);
 
-        List<Message> result = instance.getByTitle(applicationId, title);
+        String otherAppId = one(uuids);
+        List<Message> result = instance.getByTitle(otherAppId, title);
         assertThat(result, is(empty()));
     }
 
