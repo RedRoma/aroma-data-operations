@@ -41,13 +41,13 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessageId;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUserId;
-import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
  *
@@ -86,7 +86,7 @@ final class CassandraInboxRepository implements InboxRepository
             .throwing(InvalidArgumentException.class)
             .is(validUser());
 
-        Statement insertStatement = createInsertStatementFor(message, user, lifetime);
+        Statement insertStatement = createStatementToSaveMessage(message, user, lifetime);
 
         try
         {
@@ -230,7 +230,7 @@ final class CassandraInboxRepository implements InboxRepository
         return count;
     }
 
-    private Statement createInsertStatementFor(Message message, User user, LengthOfTime lifetime)
+    private Statement createStatementToSaveMessage(Message message, User user, LengthOfTime lifetime)
     {
         UUID msgUuid = UUID.fromString(message.messageId);
         UUID userUuid = UUID.fromString(user.userId);
@@ -241,7 +241,7 @@ final class CassandraInboxRepository implements InboxRepository
             .insertInto(Inbox.TABLE_NAME)
             .value(Inbox.USER_ID, userUuid)
             .value(Inbox.MESSAGE_ID, msgUuid)
-            //Purposely not including body in Inbox for now.
+            .value(Inbox.BODY, message.body)
             .value(Inbox.APP_ID, appUuid)
             .value(Inbox.URGENCY, message.urgency)
             .value(Inbox.TITLE, message.title)
