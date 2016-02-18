@@ -46,12 +46,6 @@ import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
-import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 
 /**
  *
@@ -98,6 +92,7 @@ public class RequestAssertionsTest
         app.applicationId = validId;
         app.organizationId = validId;
         message.messageId = validId;
+        message.applicationId = validId;
         user.userId = validId;
         organization.organizationId = validId;
 
@@ -192,6 +187,11 @@ public class RequestAssertionsTest
         Message messageWithInvalidId = new Message(message)
             .setMessageId(invalidId);
         assertThrows(() -> assertion.check(messageWithInvalidId))
+            .isInstanceOf(FailedAssertionException.class);
+        
+        Message messageWithInvalidAppId = new Message(message)
+        .setApplicationId(invalidId);
+        assertThrows(() -> assertion.check(messageWithInvalidAppId))
             .isInstanceOf(FailedAssertionException.class);
 
     }
