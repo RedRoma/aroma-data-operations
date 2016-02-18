@@ -142,6 +142,7 @@ final class CassandraInboxRepository implements InboxRepository
         checkUserId(userId);
 
         checkThat(message)
+            .throwing(InvalidArgumentException.class)
             .is(validMessage());
 
         Statement query = createQueryToCheckIfInInboxOf(userId, message);
@@ -331,7 +332,7 @@ final class CassandraInboxRepository implements InboxRepository
     private void checkUserId(String userId) throws InvalidArgumentException
     {
         checkThat(userId)
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
             .is(validUserId());
     }
 

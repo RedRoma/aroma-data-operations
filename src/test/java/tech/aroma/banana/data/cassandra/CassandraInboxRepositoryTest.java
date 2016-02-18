@@ -55,6 +55,8 @@ import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -221,12 +223,38 @@ public class CassandraInboxRepositoryTest
             .isInstanceOf(InvalidArgumentException.class);
     }
     
-
     @Test
     public void testContainsMessageInInbox() throws Exception
     {
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        
+        boolean result = instance.containsMessageInInbox(userId, message);
+        assertThat(result, is(true));
+
+        count = 0L;
+        when(row.getLong(0)).thenReturn(count);
+        result = instance.containsMessageInInbox(userId, message);
+        assertThat(result, is(false));
+        
     }
 
+    @DontRepeat
+    @Test
+    public void testContainsMessageInInboxWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.containsMessageInInbox(badId, message))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        Message messageWithBadId = new Message(message).setMessageId(badId);
+        assertThrows(() -> instance.containsMessageInInbox(userId, messageWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        Message messageWithBadAppId = new Message(message).setApplicationId(badId);
+        assertThrows(() -> instance.containsMessageInInbox(userId, messageWithBadAppId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
+    
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
