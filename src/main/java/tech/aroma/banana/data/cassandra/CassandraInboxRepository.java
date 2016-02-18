@@ -79,11 +79,11 @@ final class CassandraInboxRepository implements InboxRepository
     public void saveMessageForUser(@Required User user, @Required Message message,  @Required LengthOfTime lifetime) throws TException
     {
         checkThat(message)
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
             .is(validMessage());
 
         checkThat(user)
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
             .is(validUser());
 
         Statement insertStatement = createStatementToSaveMessage(message, user, lifetime);
@@ -119,6 +119,11 @@ final class CassandraInboxRepository implements InboxRepository
             LOG.error("Failed to query for Messages in Inbox for User [{}]", userId, ex);
             throw new OperationFailedException("Could not fetch inbox: " + ex.getMessage());
         }
+        
+        checkThat(results)
+            .throwing(OperationFailedException.class)
+            .usingMessage("Cassandra returned null results")
+            .is(notNull());
 
         List<Message> messages = Lists.create();
 

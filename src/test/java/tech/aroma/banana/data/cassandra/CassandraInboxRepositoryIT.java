@@ -243,6 +243,7 @@ public class CassandraInboxRepositoryIT
         assertThat(result.timeMessageReceived, is(expected.timeMessageReceived));
         assertThat(result.timeOfCreation, is(expected.timeOfCreation));
         assertThat(result.urgency, is(expected.urgency));
+        assertThat(result.body, is(expected.body));
     }
 
 }
