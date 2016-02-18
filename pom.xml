@@ -13,7 +13,7 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
-    <url>https://github.com/AromaTech/banana-data-operations</url>
+    <url>https://github.com/RedRoma/banana-data-operations</url>
     <description>
         Part of the Banana Service Project.
         Simplicity is paramount.
@@ -22,13 +22,13 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/AromaTech/banana-data-operations/issues</url>
+        <url>https://github.com/RedRoma/banana-data-operations/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:AromaTech/banana-data-operations.git</connection>
-        <developerConnection>scm:git:git@github.com:AromaTech/banana-data-operations.git</developerConnection>
-        <url>git@github.com:AromaTech/banana-data-operations-annotations.git</url>
+        <connection>scm:git:git@github.com:RedRoma/banana-data-operations.git</connection>
+        <developerConnection>scm:git:git@github.com:RedRoma/banana-data-operations.git</developerConnection>
+        <url>git@github.com:RedRoma/banana-data-operations-annotations.git</url>
     </scm>
 
     <inceptionYear>2015</inceptionYear>
