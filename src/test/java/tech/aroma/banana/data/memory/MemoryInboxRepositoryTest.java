@@ -82,6 +82,7 @@ public class MemoryInboxRepositoryTest
             .setName(nameOfUser);
         
         message.messageId = messageId;
+        message.applicationId = appId;
         
         instance = new MemoryInboxRepository();
         
