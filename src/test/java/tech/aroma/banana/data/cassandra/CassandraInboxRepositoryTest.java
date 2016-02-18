@@ -21,6 +21,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
@@ -258,6 +259,12 @@ public class CassandraInboxRepositoryTest
     @Test
     public void testDeleteMessageForUser() throws Exception
     {
+        instance.deleteMessageForUser(userId, messageId);
+        
+        verify(cassandra).execute(captor.capture());
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Delete.Where.class)));
     }
 
     @Test
