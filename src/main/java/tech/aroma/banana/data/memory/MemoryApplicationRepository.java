@@ -31,9 +31,9 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.ApplicationRepository;
-import tech.aroma.banana.thrift.Application;
-import tech.aroma.banana.thrift.exceptions.ApplicationDoesNotExistException;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.Application;
+import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
 
 import static sir.wellington.alchemy.collections.lists.Lists.isEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;

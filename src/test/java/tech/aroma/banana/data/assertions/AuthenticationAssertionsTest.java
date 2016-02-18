@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import tech.aroma.banana.data.TokenRepository;
-import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;

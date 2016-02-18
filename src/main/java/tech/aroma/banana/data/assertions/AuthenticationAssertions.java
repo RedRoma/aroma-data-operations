@@ -19,7 +19,7 @@ package tech.aroma.banana.data.assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.TokenRepository;
-import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;

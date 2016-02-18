@@ -24,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.MediaRepository;
-import tech.aroma.banana.thrift.Dimension;
-import tech.aroma.banana.thrift.Image;
-import tech.aroma.banana.thrift.exceptions.DoesNotExistException;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.Dimension;
+import tech.aroma.thrift.Image;
+import tech.aroma.thrift.exceptions.DoesNotExistException;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;

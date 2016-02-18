@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.InboxRepository;
-import tech.aroma.banana.thrift.LengthOfTime;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.validMessage;

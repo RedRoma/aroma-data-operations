@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.banana.data.UserRepository;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.UserDoesNotExistException;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.UserDoesNotExistException;
 
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.banana.data.assertions.RequestAssertions.validUser;

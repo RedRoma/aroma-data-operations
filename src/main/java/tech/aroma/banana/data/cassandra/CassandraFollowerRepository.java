@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.FollowerRepository;
 import tech.aroma.banana.data.cassandra.Tables.Follow;
-import tech.aroma.banana.thrift.Application;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.Application;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.now;

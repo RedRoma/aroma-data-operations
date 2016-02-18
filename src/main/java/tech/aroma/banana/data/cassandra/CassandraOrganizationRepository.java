@@ -34,11 +34,11 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.cassandra.Tables.Organizations;
 import tech.aroma.banana.data.cassandra.Tables.Users;
-import tech.aroma.banana.thrift.Organization;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.OperationFailedException;
-import tech.aroma.banana.thrift.exceptions.OrganizationDoesNotExistException;
+import tech.aroma.thrift.Organization;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.OrganizationDoesNotExistException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static java.util.stream.Collectors.toList;

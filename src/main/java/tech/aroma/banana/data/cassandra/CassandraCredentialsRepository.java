@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.CredentialRepository;
 import tech.aroma.banana.data.cassandra.Tables.Credentials;
-import tech.aroma.banana.thrift.exceptions.DoesNotExistException;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.DoesNotExistException;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;

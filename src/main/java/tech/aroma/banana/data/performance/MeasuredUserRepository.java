@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.UserRepository;
 import tech.aroma.banana.data.performance.Operation.VoidOperation;
-import tech.aroma.banana.thrift.User;
+import tech.aroma.thrift.User;
 import tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern;
 
 import static tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern.Role.DECORATOR;

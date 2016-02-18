@@ -23,7 +23,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.ApplicationRepository;
-import tech.aroma.banana.thrift.Application;
+import tech.aroma.thrift.Application;
 import tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern;
 
 import static tech.sirwellington.alchemy.annotations.designs.patterns.DecoratorPattern.Role.DECORATOR;

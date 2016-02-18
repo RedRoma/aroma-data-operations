@@ -20,9 +20,9 @@ package tech.aroma.banana.data;
 import java.util.List;
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.lists.Lists;
-import tech.aroma.banana.thrift.LengthOfTime;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.TimeUnit;
+import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.TimeUnit;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 

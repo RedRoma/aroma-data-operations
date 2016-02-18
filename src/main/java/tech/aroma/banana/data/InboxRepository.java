@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
-import tech.aroma.banana.thrift.LengthOfTime;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.service.BananaServiceConstants;
+import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.service.AromaServiceConstants;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
@@ -38,7 +38,7 @@ public interface InboxRepository
 {
     default void saveMessageForUser(@Required User user, @Required Message message) throws TException
     {
-        this.saveMessageForUser(user, message, BananaServiceConstants.DEFAULT_INBOX_LIFETIME);
+        this.saveMessageForUser(user, message, AromaServiceConstants.DEFAULT_INBOX_LIFETIME);
     }
     
     void saveMessageForUser(@Required User user, @Required Message message, @Required LengthOfTime lifetime) throws TException;

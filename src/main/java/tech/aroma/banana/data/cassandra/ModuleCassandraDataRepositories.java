@@ -33,12 +33,12 @@ import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.OrganizationRepository;
 import tech.aroma.banana.data.TokenRepository;
 import tech.aroma.banana.data.UserRepository;
-import tech.aroma.banana.thrift.Application;
-import tech.aroma.banana.thrift.Image;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.Organization;
-import tech.aroma.banana.thrift.User;
-import tech.aroma.banana.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.Application;
+import tech.aroma.thrift.Image;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.Organization;
+import tech.aroma.thrift.User;
+import tech.aroma.thrift.authentication.AuthenticationToken;
 
 
 /**

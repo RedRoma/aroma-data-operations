@@ -29,22 +29,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.TokenRepository;
-import tech.aroma.banana.thrift.authentication.AuthenticationToken;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.InvalidTokenException;
+import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.InvalidTokenException;
 import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
 import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions;
 
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.banana.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.banana.thrift.assertions.BananaAssertions.legalToken;
+import static tech.aroma.thrift.assertions.AromaAssertions.legalToken;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.CONCRETE_BEHAVIOR;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *

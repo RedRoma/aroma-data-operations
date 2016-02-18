@@ -19,7 +19,7 @@ package tech.aroma.banana.data;
 
 import java.util.List;
 import org.apache.thrift.TException;
-import tech.aroma.banana.thrift.Application;
+import tech.aroma.thrift.Application;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 

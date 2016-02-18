@@ -30,11 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.banana.data.MediaRepository;
 import tech.aroma.banana.data.cassandra.Tables.Media;
-import tech.aroma.banana.thrift.Dimension;
-import tech.aroma.banana.thrift.Image;
-import tech.aroma.banana.thrift.exceptions.DoesNotExistException;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.Dimension;
+import tech.aroma.thrift.Image;
+import tech.aroma.thrift.exceptions.DoesNotExistException;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;

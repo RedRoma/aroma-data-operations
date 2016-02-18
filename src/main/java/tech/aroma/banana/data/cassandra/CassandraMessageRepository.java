@@ -31,12 +31,12 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.banana.data.MessageRepository;
 import tech.aroma.banana.data.cassandra.Tables.Messages;
-import tech.aroma.banana.thrift.LengthOfTime;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
-import tech.aroma.banana.thrift.exceptions.OperationFailedException;
-import tech.aroma.banana.thrift.functions.TimeFunctions;
+import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.MessageDoesNotExistException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;

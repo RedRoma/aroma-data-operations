@@ -18,9 +18,9 @@
 package tech.aroma.banana.data;
 
 import org.apache.thrift.TException;
-import tech.aroma.banana.thrift.Dimension;
-import tech.aroma.banana.thrift.Image;
-import tech.aroma.banana.thrift.exceptions.DoesNotExistException;
+import tech.aroma.thrift.Dimension;
+import tech.aroma.thrift.Image;
+import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 

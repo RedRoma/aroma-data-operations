@@ -27,11 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.banana.data.MessageRepository;
-import tech.aroma.banana.thrift.LengthOfTime;
-import tech.aroma.banana.thrift.Message;
-import tech.aroma.banana.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.banana.thrift.exceptions.MessageDoesNotExistException;
-import tech.aroma.banana.thrift.functions.TimeFunctions;
+import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Message;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.MessageDoesNotExistException;
+import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static java.util.stream.Collectors.toList;
