@@ -266,15 +266,60 @@ public class CassandraInboxRepositoryTest
         assertThat(statement, notNullValue());
         assertThat(statement, is(instanceOf(Delete.Where.class)));
     }
+    
+    @DontRepeat
+    @Test
+    public void testDeleteMessageForUserWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteMessageForUser(badId, messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessageForUser(userId, badId))
+            .isInstanceOf(InvalidArgumentException.class);
+    }
 
     @Test
     public void testDeleteAllMessagesForUser() throws Exception
     {
+        instance.deleteAllMessagesForUser(userId);
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Delete.Where.class)));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testDeleteAllMessagesForUserWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteAllMessagesForUser(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteAllMessagesForUser(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
     public void testCountInboxForUser() throws Exception
     {
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        
+        long result = instance.countInboxForUser(userId);
+        assertThat(result, is(count));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testCountInboxForUserWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.countInboxForUser(""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.countInboxForUser(badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
 }
