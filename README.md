@@ -1,7 +1,7 @@
 Aroma Service Data Operations
 ==============================================
 
-[<img src="https://raw.githubusercontent.com/RedRoma/banana/develop/Graphics/Logo.png" width="300">](https://github.com/RedRoma/banana)
+[<img src="https://raw.githubusercontent.com/RedRoma/aroma/develop/Graphics/Logo.png" width="300">](https://github.com/RedRoma/Aroma)
 
 [![Build Status](http://jenkins.sirwellington.tech/job/Aroma%20Data%20Operations/badge/icon)](http://jenkins.sirwellington.tech/job/Aroma%20Data%20Operations/)
 
