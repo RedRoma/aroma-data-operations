@@ -22,6 +22,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -40,7 +41,6 @@ import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.now;
 import static tech.aroma.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.data.assertions.RequestAssertions.validApplicationId;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
@@ -227,7 +227,7 @@ final class CassandraFollowerRepository implements FollowerRepository
             .value(USER_ID, userId)
             .value(APP_NAME, app.name)
             .value(USER_FIRST_NAME, user.firstName)
-            .value(TIME_OF_FOLLOW, now());
+            .value(TIME_OF_FOLLOW, Instant.now().toEpochMilli());
 
         batch.add(insertIntoAppFollowersTable);
 
@@ -237,7 +237,7 @@ final class CassandraFollowerRepository implements FollowerRepository
             .value(USER_ID, userId)
             .value(APP_NAME, app.name)
             .value(USER_FIRST_NAME, user.firstName)
-            .value(TIME_OF_FOLLOW, now());
+            .value(TIME_OF_FOLLOW, Instant.now().toEpochMilli());
 
         batch.add(insertIntoUserFollowingsTable);
 
@@ -302,6 +302,7 @@ final class CassandraFollowerRepository implements FollowerRepository
             .column(Follow.APP_ID).as(Applications.APP_ID)
             .column(Follow.USER_FIRST_NAME).as(Users.FIRST_NAME)
             .column(Follow.TIME_OF_FOLLOW)
+            .column(Follow.USER_ID)
             .from(Follow.TABLE_NAME_USER_FOLLOWING)
             .where(eq(USER_ID, userUuid));
     }
@@ -316,6 +317,7 @@ final class CassandraFollowerRepository implements FollowerRepository
             .column(Follow.APP_ID).as(Applications.APP_ID)
             .column(Follow.USER_FIRST_NAME).as(Users.FIRST_NAME)
             .column(Follow.TIME_OF_FOLLOW)
+            .column(Follow.USER_ID)
             .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(APP_ID, appUuid));
     }
@@ -333,14 +335,14 @@ final class CassandraFollowerRepository implements FollowerRepository
     private void checkUserId(String userId) throws InvalidArgumentException
     {
         checkThat(userId)
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
             .is(validUserId());
     }
 
     private void checkAppId(String applicationId) throws InvalidArgumentException
     {
         checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
             .is(validApplicationId());
 
     }
