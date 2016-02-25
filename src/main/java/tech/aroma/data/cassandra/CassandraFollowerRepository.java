@@ -31,7 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.FollowerRepository;
+import tech.aroma.data.cassandra.Tables.Applications;
 import tech.aroma.data.cassandra.Tables.Follow;
+import tech.aroma.data.cassandra.Tables.Users;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
@@ -296,7 +298,10 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         return queryBuilder
             .select()
-            .all()
+            .column(Follow.APP_NAME).as(Applications.APP_NAME)
+            .column(Follow.APP_ID).as(Applications.APP_ID)
+            .column(Follow.USER_FIRST_NAME).as(Users.FIRST_NAME)
+            .column(Follow.TIME_OF_FOLLOW)
             .from(Follow.TABLE_NAME_USER_FOLLOWING)
             .where(eq(USER_ID, userUuid));
     }
@@ -307,7 +312,10 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         return queryBuilder
             .select()
-            .all()
+            .column(Follow.APP_NAME).as(Applications.APP_NAME)
+            .column(Follow.APP_ID).as(Applications.APP_ID)
+            .column(Follow.USER_FIRST_NAME).as(Users.FIRST_NAME)
+            .column(Follow.TIME_OF_FOLLOW)
             .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(APP_ID, appUuid));
     }
