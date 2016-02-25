@@ -91,7 +91,7 @@ final class CassandraFollowerRepository implements FollowerRepository
             .throwing(InvalidArgumentException.class)
             .is(validApplication());
 
-        Statement insertStatement = createInsertStatementToSaveFollowing(user, application);
+        Statement insertStatement = createStatementToSaveFollowing(user, application);
 
         try
         {
@@ -212,7 +212,7 @@ final class CassandraFollowerRepository implements FollowerRepository
         return followers;
     }
 
-    private Statement createInsertStatementToSaveFollowing(User user, Application app)
+    private Statement createStatementToSaveFollowing(User user, Application app)
     {
         UUID userId = UUID.fromString(user.userId);
         UUID appId = UUID.fromString(app.applicationId);
