@@ -77,51 +77,74 @@ final class Mappers
             Application app = new Application();
             
             UUID appId = row.getUUID(Tables.Applications.APP_ID);
-            
+          
             if (appId != null)
             {
                 app.setApplicationId(appId.toString());
             }
-            
-            String programmingLanguage = row.getString(Tables.Applications.PROGRAMMING_LANGUAGE);
-            if (!isNullOrEmpty(programmingLanguage))
+
+            if (doesRowContainColumn(row, Tables.Applications.PROGRAMMING_LANGUAGE))
             {
-                ProgrammingLanguage language = ProgrammingLanguage.valueOf(programmingLanguage);
-                app.setProgrammingLanguage(language);
+                String programmingLanguage = row.getString(Tables.Applications.PROGRAMMING_LANGUAGE);
+                if (!isNullOrEmpty(programmingLanguage))
+                {
+                    ProgrammingLanguage language = ProgrammingLanguage.valueOf(programmingLanguage);
+                    app.setProgrammingLanguage(language);
+                }
             }
-            
-            Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
-            if (timeOfProvisioning != null)
+
+            if (doesRowContainColumn(row, Tables.Applications.TIME_PROVISIONED))
             {
-                app.setTimeOfProvisioning(timeOfProvisioning.getTime());
+
+                Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
+                if (timeOfProvisioning != null)
+                {
+                    app.setTimeOfProvisioning(timeOfProvisioning.getTime());
+                }
             }
-            
-            if(doesRowContainColumn(row, Tables.Applications.TIME_OF_TOKEN_EXPIRATION))
+
+            if (doesRowContainColumn(row, Tables.Applications.TIME_OF_TOKEN_EXPIRATION))
             {
                 Date tokenExpiration = row.getTimestamp(Tables.Applications.TIME_OF_TOKEN_EXPIRATION);
-                if(tokenExpiration != null)
+                if (tokenExpiration != null)
                 {
                     app.setTimeOfTokenExpiration(tokenExpiration.getTime());
                 }
             }
-            
-            //Transform the UUIDs to Strings
-            Set<String> owners = row.getSet(Tables.Applications.OWNERS, UUID.class)
-                .stream()
-                .map(UUID::toString)
-                .collect(Collectors.toSet());
-            
-            app.setOwners(owners);
-            
-            UUID orgId = row.getUUID(Tables.Applications.ORG_ID);
-            if (orgId != null)
+
+            if (doesRowContainColumn(row, Tables.Applications.OWNERS))
             {
-                app.setOrganizationId(orgId.toString());
+                //Transform the UUIDs to Strings
+                Set<String> owners = row.getSet(Tables.Applications.OWNERS, UUID.class)
+                    .stream()
+                    .map(UUID::toString)
+                    .collect(Collectors.toSet());
+
+                app.setOwners(owners);
+
             }
-         
-            app.setName(row.getString(Tables.Applications.APP_NAME))
-                .setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION))
-                .setTier(row.get(Tables.Applications.TIER, Tier.class));
+
+            if (doesRowContainColumn(row, Tables.Applications.ORG_ID))
+            {
+
+                UUID orgId = row.getUUID(Tables.Applications.ORG_ID);
+                if (orgId != null)
+                {
+                    app.setOrganizationId(orgId.toString());
+                }
+            }
+
+            if (doesRowContainColumn(row, Tables.Applications.APP_DESCRIPTION))
+            {
+                app.setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
+            }
+
+            if (doesRowContainColumn(row, Tables.Applications.TIER))
+            {
+                app.setTier(row.get(Tables.Applications.TIER, Tier.class));
+            }
+
+            app.setName(row.getString(Tables.Applications.APP_NAME));
             
             return app;
         };
@@ -323,11 +346,23 @@ final class Mappers
                 }
             }
             
+            if (doesRowContainColumn(row, Tables.Users.FIRST_NAME))
+            {
+                user.setFirstName(row.getString(Tables.Users.FIRST_NAME));
+            }
+
+            if (doesRowContainColumn(row, Tables.Users.MIDDLE_NAME))
+            {
+                user.setMiddleName(row.getString(Tables.Users.MIDDLE_NAME));
+            }
+
+            if (doesRowContainColumn(row, Tables.Users.LAST_NAME))
+            {
+                user.setLastName(row.getString(Tables.Users.LAST_NAME));
+            }
+            
             return user
                 .setUserId(row.getUUID(Tables.Users.USER_ID).toString())
-                .setFirstName(row.getString(Tables.Users.FIRST_NAME))
-                .setMiddleName(row.getString(Tables.Users.MIDDLE_NAME))
-                .setLastName(row.getString(Tables.Users.LAST_NAME))
                 .setEmail(email)
                 .setRoles(roles);
         };
