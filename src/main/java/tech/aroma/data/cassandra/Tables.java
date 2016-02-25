@@ -68,7 +68,7 @@ class Tables
         static final String APP_ID = "app_id";
         static final String USER_ID = "user_id";
         static final String APP_NAME = "app_name";
-        static final String USER_FIRST_NAME = "first_name";
+        static final String USER_FIRST_NAME = "user_first_name";
         static final String TIME_OF_FOLLOW = "time_of_follow";
     }
     
