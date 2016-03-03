@@ -15,9 +15,9 @@
 
     <url>https://github.com/RedRoma/aroma-data-operations</url>
     <description>
-        Part of the Banana Service Project.
+        Part of the Aroma Project.
         Simplicity is paramount.
-        Defines the Data Repositories and provides implementations for use in various Banana Services.
+        Defines the Data Repositories and provides implementations for use in various Aroma Services.
     </description>
 
     <issueManagement>
