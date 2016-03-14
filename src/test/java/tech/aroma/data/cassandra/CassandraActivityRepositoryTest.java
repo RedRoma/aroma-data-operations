@@ -222,6 +222,27 @@ public class CassandraActivityRepositoryTest
         assertThrows(() -> instance.getEvent(eventId, user))
             .isInstanceOf(DoesNotExistException.class);
     }
+    
+    @Test
+    public void testGetEventWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getEvent("", user))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getEvent(badId, user))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getEvent(eventId, null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getEvent(eventId, new User()))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        User userWithBadId = new User(user).setUserId(badId);
+        assertThrows(() -> instance.getEvent(eventId, userWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+    }
 
     @Test
     public void testGetAllEventsFor() throws Exception
