@@ -133,7 +133,7 @@ final class CassandraActivityRepository implements ActivityRepository
         ResultSet results = tryToExecute(query, "getAllEvents");
         
         return results.all().parallelStream()
-            .map(this::mapRowToEvent)
+            .map(eventMapper::apply)
             .filter(Objects::nonNull)
             .collect(toList());
     }
@@ -294,13 +294,20 @@ final class CassandraActivityRepository implements ActivityRepository
             .where(eq(Activity.TABLE_NAME, userUuid));
     }
 
-    private Event mapRowToEvent(Row row)
+    private Event mapRowToEvent(Row row) throws DoesNotExistException
     {
         if (row == null)
         {
             return new Event();
         }
 
-        return eventMapper.apply(row);
+        Event event = eventMapper.apply(row);
+        
+        checkThat(event)
+            .usingMessage("event does not exist")
+            .throwing(DoesNotExistException.class)
+            .is(notNull());
+        
+        return event;
     }
 }

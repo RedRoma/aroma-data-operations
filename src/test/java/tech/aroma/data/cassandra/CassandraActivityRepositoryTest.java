@@ -23,6 +23,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
+import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
@@ -125,6 +127,8 @@ public class CassandraActivityRepositoryTest
         
         when(session.execute(any(Statement.class)))
             .thenReturn(results);
+        
+        when(eventMapper.apply(row)).thenReturn(event);
     }
     
     @DontRepeat
@@ -198,6 +202,25 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testGetEvent() throws Exception
     {
+        Event result = instance.getEvent(eventId, user);
+        
+        assertThat(result, is(event));
+        
+        verify(session).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Select.Where.class)));
+    }
+    
+    @Test
+    public void testGetEventWhenNotExists() throws Exception
+    {
+        when(eventMapper.apply(row))
+            .thenReturn(null);
+        
+        assertThrows(() -> instance.getEvent(eventId, user))
+            .isInstanceOf(DoesNotExistException.class);
     }
 
     @Test
