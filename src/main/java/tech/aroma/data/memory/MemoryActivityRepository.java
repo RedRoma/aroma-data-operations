@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
+import tech.aroma.data.ActivityRepository;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
@@ -40,18 +41,14 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
-import tech.aroma.data.ActivityRepository;
-
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-
 /**
  *
  * @author SirWellington
  */
 @Internal
-final class MemoryEventRepository implements ActivityRepository
+final class MemoryActivityRepository implements ActivityRepository
 {
-    private final static Logger LOG = LoggerFactory.getLogger(MemoryEventRepository.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryActivityRepository.class);
 
     private final Map<User, List<Event>> events = Maps.createSynchronized();
     

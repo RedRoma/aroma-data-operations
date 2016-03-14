@@ -46,7 +46,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class MemoryEventRepositoryTest 
+public class MemoryActivityRepositoryTest 
 {
     private Event event;
     
@@ -63,13 +63,13 @@ public class MemoryEventRepositoryTest
     @GenerateString(ALPHABETIC)
     private String badId;
     
-    private MemoryEventRepository instance;
+    private MemoryActivityRepository instance;
     
 
     @Before
     public void setUp() throws Exception
     {
-        instance = new MemoryEventRepository();
+        instance = new MemoryActivityRepository();
         
         setupData();
     }

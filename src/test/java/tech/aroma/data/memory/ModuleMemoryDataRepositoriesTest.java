@@ -21,6 +21,7 @@ import com.google.inject.Injector;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
 import tech.aroma.data.FollowerRepository;
@@ -32,8 +33,6 @@ import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import tech.aroma.data.ActivityRepository;
 
 /**
  *
