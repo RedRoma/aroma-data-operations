@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
-import tech.aroma.data.EventRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -33,6 +32,8 @@ import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+
+import tech.aroma.data.ActivityRepository;
 
 /**
  *
@@ -61,7 +62,7 @@ public class ModuleMemoryDataRepositoriesTest
         CredentialRepository credentialsRepo = injector.getInstance(CredentialRepository.class);
         assertThat(credentialsRepo, notNullValue());
         
-        EventRepository eventRepo = injector.getInstance(EventRepository.class);
+        ActivityRepository eventRepo = injector.getInstance(ActivityRepository.class);
         assertThat(eventRepo, notNullValue());
         
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);

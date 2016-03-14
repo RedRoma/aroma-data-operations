@@ -25,17 +25,17 @@ import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.nonEmptyList;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 
 /**
- * Responsible for storage of Aroma {@linkplain Event Events}.
+ * Responsible for storage of User Activity, represented by Aroma {@linkplain Event Events}.
  * 
  * 
  * @author SirWellington
  */
-public interface EventRepository 
+public interface ActivityRepository 
 {
     void saveEvent(Event event, User forUser) throws TException;
     
