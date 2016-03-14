@@ -24,6 +24,8 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import sir.wellington.alchemy.collections.lists.Lists;
+import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
@@ -41,16 +45,19 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.EventGenerators.events;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
@@ -247,6 +254,51 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testGetAllEventsFor() throws Exception
     {
+        List<Event> events = listOf(events());
+        List<Row> rows = Lists.create();
+        
+        Map<Row, Event> rowMap = Maps.create();
+        
+        for (Event event : events)
+        {
+            Row row = mock(Row.class);
+            when(eventMapper.apply(row)).thenReturn(event);
+            rows.add(row);
+            
+            rowMap.put(row, event);
+        }
+        
+        when(results.iterator()).thenReturn(rows.iterator());
+        when(results.all()).thenReturn(rows);
+        
+        List<Event> response = instance.getAllEventsFor(user);
+        assertThat(response, is(events));
+    }
+
+    @Test
+    public void testGetAllEventsForWhenNone() throws Exception
+    {
+        List<Row> rows = Lists.emptyList();
+        when(results.iterator()).thenReturn(rows.iterator());
+        
+        List<Event> results = instance.getAllEventsFor(user);
+        assertThat(results, notNullValue());
+        assertThat(results, is(empty()));
+    }
+
+    @Test
+    public void testGetAllEventsForWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getAllEventsFor(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getAllEventsFor(new User()))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        User userWithBadId = new User(user).setUserId(badId);
+        assertThrows(() -> instance.getAllEventsFor(userWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
     @Test
