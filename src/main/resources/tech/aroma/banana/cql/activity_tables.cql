@@ -3,9 +3,11 @@
 // This Table Stores User Activity in Aroma
 CREATE TABLE IF NOT EXISTS Aroma.Activity
 (
-	// User ID of the intended recipient
-	user_id uuid,
-	event_id timeuuid,
+	// User ID of the intended actor
+	actor_id uuid,
+	//The ID of the event
+	event_id uuid,
+	//The Application in Question
 	app_id uuid,
 	time_of_event timestamp,
 	application_name text,
