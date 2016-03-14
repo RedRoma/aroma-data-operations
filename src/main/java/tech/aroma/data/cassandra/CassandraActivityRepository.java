@@ -110,7 +110,7 @@ final class CassandraActivityRepository implements ActivityRepository
         checkEventId(eventId);
         checkUser(user);
         
-        Statement query = createQueryToCheckIfEventExists(eventId, user);
+        Statement query = createQueryToGetEvent(eventId, user);
         
         ResultSet results = tryToExecute(query, "getEvent");
         
@@ -120,7 +120,7 @@ final class CassandraActivityRepository implements ActivityRepository
             .usingMessage("No such event with ID " + eventId + " for user " + user)
             .is(notNull());
         
-        return mapRowToEvent(results.one());
+        return mapRowToEvent(row);
     }
     
     @Override
@@ -235,7 +235,7 @@ final class CassandraActivityRepository implements ActivityRepository
         catch (Exception ex)
         {
             LOG.error("Failed to execute Cassandra Statement: {}", operationName, ex);
-            throw new OperationFailedException("Could not persist Event");
+            throw new OperationFailedException("Could not perform operation: " + ex.getMessage());
         }
     }
     
@@ -257,6 +257,19 @@ final class CassandraActivityRepository implements ActivityRepository
         return queryBuilder
             .select()
             .countAll()
+            .from(Activity.TABLE_NAME)
+            .where(eq(Activity.USER_ID, userUuid))
+            .and(eq(Activity.EVENT_ID, eventUuid));
+    }
+    
+    private Statement createQueryToGetEvent(String eventId, User user)
+    {
+        UUID eventUuid = UUID.fromString(eventId);
+        UUID userUuid = UUID.fromString(user.userId);
+        
+        return queryBuilder
+            .select()
+            .all()
             .from(Activity.TABLE_NAME)
             .where(eq(Activity.USER_ID, userUuid))
             .and(eq(Activity.EVENT_ID, eventUuid));
@@ -291,7 +304,7 @@ final class CassandraActivityRepository implements ActivityRepository
         return queryBuilder.delete()
             .all()
             .from(Activity.TABLE_NAME)
-            .where(eq(Activity.TABLE_NAME, userUuid));
+            .where(eq(Activity.USER_ID, userUuid));
     }
 
     private Event mapRowToEvent(Row row) throws DoesNotExistException
