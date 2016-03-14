@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
+import tech.aroma.data.EventRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -59,6 +60,9 @@ public class ModuleMemoryDataRepositoriesTest
         
         CredentialRepository credentialsRepo = injector.getInstance(CredentialRepository.class);
         assertThat(credentialsRepo, notNullValue());
+        
+        EventRepository eventRepo = injector.getInstance(EventRepository.class);
+        assertThat(eventRepo, notNullValue());
         
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followRepo, notNullValue());

@@ -27,7 +27,6 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.nonEmptyList;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 
 /**
@@ -67,9 +66,11 @@ public interface EventRepository
         
     }
     
-    void getEvent(@Required String eventId, @Required User user) throws TException;
+    boolean containsEvent(@Required String eventId, @Required User user) throws TException;
     
-    void getAllEventsFor(@Required User user) throws TException;
+    Event getEvent(@Required String eventId, @Required User user) throws TException;
+    
+    List<Event> getAllEventsFor(@Required User user) throws TException;
     
     void deleteEvent(@Required String eventId, @Required User user) throws TException;
     
