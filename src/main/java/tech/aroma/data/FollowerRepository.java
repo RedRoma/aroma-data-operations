@@ -26,7 +26,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 /**
  * Contains operations related to the following of Applications by Users.
- * ß
+ * 
  * @author SirWellington
  */
 public interface FollowerRepository 
