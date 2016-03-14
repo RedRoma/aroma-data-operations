@@ -21,6 +21,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
@@ -304,6 +305,31 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testDeleteEvent() throws Exception
     {
+        instance.deleteEvent(eventId, user);
+        
+        verify(session).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Delete.Where.class)));
+    }
+
+    @Test
+    public void testDeleteEventWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteEvent("", user))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteEvent(eventId, null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteEvent(eventId, new User()))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        User userWithBadId = new User(user).setUserId(badId);
+        assertThrows(() -> instance.deleteEvent(eventId, userWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
     @Test
