@@ -39,6 +39,7 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.events.Event;
 
 
 /**
@@ -73,6 +74,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         return Mappers.appMapper();
     }
 
+    @Provides
+    Function<Row, Event> provideEventMapper()
+    {
+        return Mappers.eventMapper();
+    }
+    
     @Provides
     Function<Row, Image> provideImageMapper()
     {
