@@ -26,10 +26,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.sets.Sets;
+import tech.aroma.data.cassandra.Tables.Activity;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Dimension;
 import tech.aroma.thrift.Image;
@@ -44,8 +46,10 @@ import tech.aroma.thrift.Urgency;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.TokenType;
+import tech.aroma.thrift.events.Event;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
+import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
@@ -147,6 +151,56 @@ final class Mappers
             app.setName(row.getString(Tables.Applications.APP_NAME));
             
             return app;
+        };
+    }
+    
+    static Function<Row, Event> eventMapper()
+    {
+        return row ->
+        {
+            Event event = new Event();
+            
+            UUID eventId = row.getUUID(Activity.EVENT_ID);
+            UUID appId = row.getUUID(Activity.APP_ID);
+            UUID actorId = row.getUUID(Activity.ACTOR_ID);
+            String serializedEvent = row.getString(Activity.SERIALIZED_EVENT);
+            
+            if (eventId != null)
+            {
+                event.setEventId(eventId.toString());
+            }
+            
+            if (appId != null)
+            {
+                event.setApplicationId(appId.toString());
+            }
+            
+            if (actorId != null)
+            {
+                event.setUserIdOfActor(actorId.toString());
+            }
+            
+            Date timeOfEvent = row.getTimestamp(Activity.TIME_OF_EVENT);
+            
+            if (timeOfEvent != null)
+            {
+                event.setTimestamp(timeOfEvent.getTime());
+            }
+            
+            if (!isNullOrEmpty(serializedEvent))
+            {
+                try
+                {
+                    event = ThriftObjects.fromJson(event, serializedEvent);
+                }
+                catch (TException ex)
+                {
+                    LOG.warn("Failed to deserialize {} as an Event", serializedEvent, ex);
+                }
+            }
+
+            return event;
+            
         };
     }
     

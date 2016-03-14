@@ -20,25 +20,31 @@ import com.datastax.driver.core.Row;
 import java.util.Date;
 import java.util.UUID;
 import java.util.function.Function;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import tech.aroma.data.cassandra.Tables.Activity;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
+import tech.aroma.thrift.events.Event;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static tech.aroma.thrift.generators.EventGenerators.events;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
 /**
@@ -66,12 +72,15 @@ public class MappersTest
 
     @GeneratePojo
     private Organization org;
+    
+    private Event event;
 
     @Before
     public void setUp()
     {
         user.userId = userId;
         
+        event = one(events());
     }
 
     @Test
@@ -130,6 +139,34 @@ public class MappersTest
         when(row.getString(Tables.Users.MIDDLE_NAME)).thenReturn(user.middleName);
         when(row.getString(Tables.Users.LAST_NAME)).thenReturn(user.lastName);
         when(row.getTimestamp(Tables.Users.BIRTH_DATE)).thenReturn(new Date(user.birthdate));
+        
+        return row;
+    }
+
+    @Test
+    public void testEventMapper() throws TException
+    {
+        Function<Row, Event> instance = Mappers.eventMapper();
+        assertThat(instance, notNullValue());
+        
+        Row row = rowFor(event);
+        Event result = instance.apply(row);
+        assertThat(result, is(event));
+    }
+
+    private Row rowFor(Event event) throws TException
+    {
+        Row row = mock(Row.class);
+        
+        String serializedEvent = ThriftObjects.toJson(event);
+        UUID actorId = UUID.fromString(event.userIdOfActor);
+        UUID appId = UUID.fromString(event.applicationId);
+        UUID eventId = UUID.fromString(event.eventId);
+        
+        when(row.getUUID(Activity.ACTOR_ID)).thenReturn(actorId);
+        when(row.getUUID(Activity.APP_ID)).thenReturn(appId);
+        when(row.getUUID(Activity.EVENT_ID)).thenReturn(eventId);
+        when(row.getString(Activity.SERIALIZED_EVENT)).thenReturn(serializedEvent);
         
         return row;
     }

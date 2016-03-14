@@ -12,10 +12,6 @@ CREATE TABLE IF NOT EXISTS Aroma.Activity
 	//The User ID of the person performing the action
 	actor_id uuid,
 	time_of_event timestamp,
-	app_name text,
-	actor_first_name text,
-	actor_last_name text,
-	actor_full_name text,
 	serialized_event text,
 
 	PRIMARY KEY ((user_id), event_id)
