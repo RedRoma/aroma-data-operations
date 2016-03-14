@@ -34,6 +34,24 @@ class Tables
 {
     private final static Logger LOG = LoggerFactory.getLogger(Tables.class);
     
+    static class Activity
+    {
+        static final String TABLE_NAME = "Activity";
+        
+        static final String USER_ID = "user_id";
+        static final String EVENT_ID = "event_id";
+        static final String APP_ID = "app_id";
+        static final String ACTOR_ID = "actor_id";
+        static final String TIME_OF_EVENT = "time_of_event";
+        static final String APP_NAME = "app_name";
+        static final String ACTOR_FIRST_NAME = "actor_first_name";
+        static final String ACTOR_MIDDLE_NAME = "actor_middle_name";
+        static final String ACTOR_LAST_NAME = "actor_last_name";
+        static final String ACTOR_FULL_NAME = "actor_full_name";
+        
+        static final String SERIALIZED_EVENT = "serialized_event";
+    }
+    
     static class Applications
     {
         static final String TABLE_NAME = "Applications";
