@@ -8,6 +8,10 @@ CREATE TABLE IF NOT EXISTS Aroma.Activity
 	event_id timeuuid,
 	app_id uuid,
 	time_of_event timestamp,
+	application_name text,
+	user_first_name text,
+	user_last_name text,
+	user_full_name text,
 	serialized_event text,
 
 	PRIMARY KEY ((user_id), event_id)
