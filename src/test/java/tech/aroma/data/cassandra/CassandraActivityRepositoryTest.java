@@ -20,11 +20,15 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
@@ -35,7 +39,12 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.EventGenerators.events;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -83,6 +92,9 @@ public class CassandraActivityRepositoryTest
     private String badId;
     
     private CassandraActivityRepository instance;
+    
+    @Captor
+    private ArgumentCaptor<Statement> captor;
 
     @Before
     public void setUp() throws Exception
@@ -124,6 +136,11 @@ public class CassandraActivityRepositoryTest
     {
         instance.saveEvent(event, user);
         
+        verify(session).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Insert.class)));
     }
     
     @Test
