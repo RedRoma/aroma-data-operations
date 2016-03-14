@@ -44,10 +44,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.EventGenerators.events;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -120,6 +122,9 @@ public class CassandraActivityRepositoryTest
         when(results.one()).thenReturn(row);
         
         queryBuilder = new QueryBuilder(cluster);
+        
+        when(session.execute(any(Statement.class)))
+            .thenReturn(results);
     }
     
     @DontRepeat
@@ -172,8 +177,22 @@ public class CassandraActivityRepositoryTest
     }
 
     @Test
-    public void testContainsEvent() throws Exception
+    public void testContainsEventWhenContains() throws Exception
     {
+        long count = one(positiveLongs());
+        when(row.getLong(0)).thenReturn(count);
+        
+        boolean result = instance.containsEvent(eventId, user);
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void testContainsEventWhenNotContains() throws Exception
+    {
+        when(row.getLong(0)).thenReturn(0L);
+        
+        boolean result = instance.containsEvent(eventId, user);
+        assertThat(result, is(false));
     }
 
     @Test
