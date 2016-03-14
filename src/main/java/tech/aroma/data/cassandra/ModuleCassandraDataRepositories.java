@@ -24,6 +24,7 @@ import com.google.inject.Provides;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
 import tech.aroma.data.FollowerRepository;
@@ -57,15 +58,16 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
-        bind(ApplicationRepository.class).to(CassandraApplicationRepository.class).asEagerSingleton();
-        bind(CredentialRepository.class).to(CassandraCredentialsRepository.class).asEagerSingleton();
-        bind(FollowerRepository.class).to(CassandraFollowerRepository.class).asEagerSingleton();
-        bind(InboxRepository.class).to(CassandraInboxRepository.class).asEagerSingleton();
-        bind(MediaRepository.class).to(CassandraMediaRepository.class).asEagerSingleton();
-        bind(MessageRepository.class).to(CassandraMessageRepository.class).asEagerSingleton();
-        bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class).asEagerSingleton();
-        bind(TokenRepository.class).to(CassandraTokenRepository.class).asEagerSingleton();
-        bind(UserRepository.class).to(CassandraUserRepository.class).asEagerSingleton();
+        bind(ActivityRepository.class).to(CassandraActivityRepository.class);
+        bind(ApplicationRepository.class).to(CassandraApplicationRepository.class);
+        bind(CredentialRepository.class).to(CassandraCredentialsRepository.class);
+        bind(FollowerRepository.class).to(CassandraFollowerRepository.class);
+        bind(InboxRepository.class).to(CassandraInboxRepository.class);
+        bind(MediaRepository.class).to(CassandraMediaRepository.class);
+        bind(MessageRepository.class).to(CassandraMessageRepository.class);
+        bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class);
+        bind(TokenRepository.class).to(CassandraTokenRepository.class);
+        bind(UserRepository.class).to(CassandraUserRepository.class);
     }
 
     @Provides
