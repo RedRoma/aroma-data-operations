@@ -335,6 +335,28 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testDeleteAllEventsFor() throws Exception
     {
+        instance.deleteAllEventsFor(user);
+        
+        verify(session).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Delete.Where.class)));
+    }
+
+    @Test
+    public void testDeleteAllEventsForWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteAllEventsFor(null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteAllEventsFor(new User()))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        User userWithBadId = new User(user).setUserId(badId);
+        assertThrows(() -> instance.deleteAllEventsFor(userWithBadId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
 }
