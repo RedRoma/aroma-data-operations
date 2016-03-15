@@ -20,9 +20,11 @@ package tech.aroma.data;
 import java.util.List;
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.lists.Lists;
+import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.service.AromaServiceConstants;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
@@ -37,7 +39,12 @@ import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertio
  */
 public interface ActivityRepository 
 {
-    void saveEvent(Event event, User forUser) throws TException;
+    default void saveEvent(Event event, User forUser) throws TException
+    {
+        this.saveEvent(event, forUser, AromaServiceConstants.DEFAULT_ACTIVITY_LIFETIME);
+    }
+    
+    void saveEvent(Event event, User forUser, LengthOfTime lifetime) throws TException;
     
     default void saveEvents(@Required Event event, List<User> users) throws TException
     {

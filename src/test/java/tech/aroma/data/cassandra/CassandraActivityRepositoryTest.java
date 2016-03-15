@@ -157,7 +157,7 @@ public class CassandraActivityRepositoryTest
         
         Statement statement = captor.getValue();
         assertThat(statement, notNullValue());
-        assertThat(statement, is(instanceOf(Insert.class)));
+        assertThat(statement, is(instanceOf(Insert.Options.class)));
     }
     
     @Test

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.data.ActivityRepository;
+import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
@@ -38,6 +39,7 @@ import static java.util.stream.Collectors.toList;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
@@ -53,10 +55,11 @@ final class MemoryActivityRepository implements ActivityRepository
     private final Map<User, List<Event>> events = Maps.createSynchronized();
     
     @Override
-    public void saveEvent(Event event, User forUser) throws TException
+    public void saveEvent(Event event, User forUser, LengthOfTime lifetime) throws TException
     {
         checkEvent(event);
         checkUser(forUser);
+        checkLifetime(lifetime);
         User user = forUser;
         
         List<Event> eventsForUser = events.getOrDefault(user, Lists.create());
@@ -148,6 +151,19 @@ final class MemoryActivityRepository implements ActivityRepository
             .is(nonEmptyString())
             .usingMessage("Event ID must be a valid UUID")
             .is(validUUID());
+    }
+
+    private void checkLifetime(LengthOfTime lifetime) throws InvalidArgumentException
+    {
+        checkThat(lifetime)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("lifetime cannot be null")
+            .is(notNull());
+        
+        checkThat(lifetime.value)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("Lifetime cannot be < 0")
+            .is(greaterThan(0L));
     }
 
 }

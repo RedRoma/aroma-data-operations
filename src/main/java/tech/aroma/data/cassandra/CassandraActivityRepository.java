@@ -33,19 +33,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.cassandra.Tables.Activity;
+import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
@@ -74,14 +78,15 @@ final class CassandraActivityRepository implements ActivityRepository
     }
     
     @Override
-    public void saveEvent(Event event, User forUser) throws TException
+    public void saveEvent(Event event, User forUser, LengthOfTime lifetime) throws TException
     {
         checkEvent(event);
         checkUser(forUser);
+        checkLifetime(lifetime);
         
         User user = forUser;
         
-        Statement insertStatement = createStatementToSaveEventForUser(event, user);
+        Statement insertStatement = createStatementToSaveEventForUser(event, user, lifetime);
         
         tryToExecute(insertStatement, "saveEvent");
     }
@@ -189,11 +194,12 @@ final class CassandraActivityRepository implements ActivityRepository
             .is(trueStatement());
     }
     
-    private Statement createStatementToSaveEventForUser(Event event, User user) throws TException
+    private Statement createStatementToSaveEventForUser(Event event, User user, LengthOfTime lifetime) throws TException
     {
         UUID eventId = UUID.fromString(event.eventId);
         UUID userId = UUID.fromString(user.userId);
         String serializedEvent = ThriftObjects.toJson(event);
+        
         
         Insert statement = queryBuilder.insertInto(Activity.TABLE_NAME)
             .value(Activity.USER_ID, userId)
@@ -222,8 +228,10 @@ final class CassandraActivityRepository implements ActivityRepository
             timeOfEvent = new Date(event.timestamp);
             statement = statement.value(Activity.TIME_OF_EVENT, timeOfEvent);
         }
-        
-        return statement;
+
+        int ttl = (int) TimeFunctions.toSeconds(lifetime);
+
+        return statement.using(ttl(ttl));
     }
     
     private ResultSet tryToExecute(Statement statement, String operationName) throws OperationFailedException
@@ -322,5 +330,18 @@ final class CassandraActivityRepository implements ActivityRepository
             .is(notNull());
         
         return event;
+    }
+
+    private void checkLifetime(LengthOfTime lifetime) throws InvalidArgumentException
+    {
+        checkThat(lifetime)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("lifetime missing")
+            .is(notNull());
+        
+        checkThat(lifetime.value)
+            .throwing(InvalidArgumentException.class)
+            .usingMessage("Lifetime duration must be > 0")
+            .is(greaterThan(0L));
     }
 }
