@@ -130,7 +130,7 @@ public class CassandraInboxRepositoryIT
     {
         try
         {
-            instance.deleteMessageForUser(userId, msgId);
+            instance.deleteAllMessagesForUser(userId);
         }
         catch (Exception ex)
         {
