@@ -65,7 +65,7 @@ public final class ModuleCassandraDevCluster extends AbstractModule
         return Cluster.builder()
             .addContactPoint("cassandra-02.dev.redroma.tech")
             .withPort(9042)
-            .withCredentials("cassandra", "cassandra")
+            .withCredentials("cassandra", "NvrCXg300Utn1TBzi5Q9W550I4BeGt")
             .withReconnectionPolicy(reconnectionPolicy)
             .build();
     }
