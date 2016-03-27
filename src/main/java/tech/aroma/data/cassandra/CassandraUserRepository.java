@@ -268,7 +268,7 @@ final class CassandraUserRepository implements UserRepository
         
         LengthOfTime timeUserIsRecent = new LengthOfTime()
             .setUnit(TimeUnit.DAYS)
-            .setValue(3);
+            .setValue(5);
         
         int recentDuration = (int) TimeFunctions.toSeconds(timeUserIsRecent);
 
