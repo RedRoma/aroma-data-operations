@@ -71,7 +71,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
 {
     
     private final static Logger LOG = LoggerFactory.getLogger(CassandraApplicationRepository.class);
-    private final static Duration DEFAULT_RECENT_DURATION = Duration.ofDays(3);
+    private final static Duration DEFAULT_RECENT_DURATION = Duration.ofDays(5);
     
     private final Session cassandra;
     private final QueryBuilder queryBuilder;
