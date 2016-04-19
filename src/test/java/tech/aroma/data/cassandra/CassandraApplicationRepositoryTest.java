@@ -39,7 +39,6 @@ import tech.aroma.thrift.Application;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
@@ -57,8 +56,10 @@ import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_DESCRIPTION;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_NAME;
+import static tech.aroma.data.cassandra.Tables.Applications.ICON_MEDIA_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.ORG_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.TIME_PROVISIONED;
+import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.longs;
@@ -89,7 +90,6 @@ public class CassandraApplicationRepositoryTest
 
     private CassandraApplicationRepository instance;
 
-    @GeneratePojo
     private Application app;
 
     @GenerateString(UUID)
@@ -109,8 +109,10 @@ public class CassandraApplicationRepositoryTest
     @Before
     public void setUp()
     {
-        app.applicationId = appId;
+        app = one(applications());
+        appId = app.applicationId;
         app.organizationId = orgId;
+        
         mockRow = mockRowFor(app);
 
         List<String> owners = listOf(uuids, 5);
@@ -345,6 +347,9 @@ public class CassandraApplicationRepositoryTest
 
         when(row.getUUID(APP_ID))
             .thenReturn(fromString(app.applicationId));
+        
+        when(row.getUUID(ICON_MEDIA_ID))
+            .thenReturn(fromString(app.applicationIconMediaId));
 
         when(row.getUUID(ORG_ID))
             .thenReturn(fromString(app.organizationId));

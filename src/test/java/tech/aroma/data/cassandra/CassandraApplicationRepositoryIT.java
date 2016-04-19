@@ -28,6 +28,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.Application;
@@ -36,8 +39,6 @@ import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
@@ -48,9 +49,9 @@ import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -64,6 +65,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraApplicationRepositoryIT
 {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CassandraApplicationRepositoryIT.class);
+    
     private static Session session;
     private static QueryBuilder queryBuilder;
 
@@ -74,11 +77,8 @@ public class CassandraApplicationRepositoryIT
         session = TestCassandraProviders.getTestSession();
     }
 
-    
-    @GeneratePojo
     private Application app;
 
-    @GenerateList(Application.class)
     private List<Application> apps;
     
     private final Map<String,Application> appIdMap = Maps.createSynchronized();
@@ -102,18 +102,19 @@ public class CassandraApplicationRepositoryIT
     @Before
     public void setUp()
     {
-        app.applicationId = appId;
+        app = one(applications());
+        appId = app.applicationId;
+        
         app.organizationId = orgId;
-        owners = listOf(uuids, 5);
+        owners = Lists.copy(app.owners);
         
         app.setOwners(toSet((owners)));
         instance = new CassandraApplicationRepository(session, queryBuilder, appMapper);
         
         
-        apps = apps.stream()
+        apps = listOf(applications(), 20).stream()
             .map(app -> app.setOrganizationId(orgId))
             .map(app -> app.setOwners(Sets.createFrom(ownerId)))
-            .map(app -> app.setApplicationId(one(uuids)))
             .collect(toList());
         
         apps.forEach(app -> appIdMap.put(app.applicationId, app));
@@ -122,16 +123,11 @@ public class CassandraApplicationRepositoryIT
     @After
     public void cleanUp() throws TException
     {
+        deleteApp(app);
+        deleteApps(apps);
+
         appIdMap.clear();
         apps.clear();
-        
-        try
-        {
-            instance.deleteApplication(appId);
-        }
-        catch(Exception ex)
-        {
-        }
     }
     
     private void saveApplication(List<Application> apps) throws TException
@@ -142,12 +138,21 @@ public class CassandraApplicationRepositoryIT
         }
     }
     
-    private void deleteApps(List<Application> apps) throws TException
+    private void deleteApp(Application app)
     {
-        for (Application app : apps)
+        try
         {
             instance.deleteApplication(app.applicationId);
         }
+        catch (TException ex)
+        {
+            LOG.warn("Failed to delete App: {}", app, ex);
+        }
+    }    
+
+    private void deleteApps(List<Application> apps) throws TException
+    {
+        apps.parallelStream().forEach(this::deleteApp);
     }
     
     @Test
@@ -289,6 +294,7 @@ public class CassandraApplicationRepositoryIT
         assertThat(result.name, is(expected.name));
         assertThat(result.organizationId, is(expected.organizationId));
         assertThat(result.applicationDescription, is(expected.applicationDescription));
+        assertThat(result.applicationIconMediaId, is(expected.applicationIconMediaId));
         
         assertThat(result.owners, is(expected.owners));
         assertThat(result.timeOfProvisioning, is(expected.timeOfProvisioning));

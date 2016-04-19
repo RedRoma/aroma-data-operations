@@ -86,6 +86,15 @@ final class Mappers
             {
                 app.setApplicationId(appId.toString());
             }
+            
+            if (doesRowContainColumn(row, Tables.Applications.ICON_MEDIA_ID))
+            {
+                UUID iconMediaId = row.getUUID(Tables.Applications.ICON_MEDIA_ID);
+                if (iconMediaId != null)
+                {
+                    app.setApplicationIconMediaId(iconMediaId.toString());
+                }
+            }
 
             if (doesRowContainColumn(row, Tables.Applications.PROGRAMMING_LANGUAGE))
             {

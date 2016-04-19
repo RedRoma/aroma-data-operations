@@ -50,6 +50,7 @@ import static tech.aroma.data.assertions.RequestAssertions.validUserId;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_DESCRIPTION;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_NAME;
+import static tech.aroma.data.cassandra.Tables.Applications.ICON_MEDIA_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.ORG_ID;
 import static tech.aroma.data.cassandra.Tables.Applications.OWNERS;
 import static tech.aroma.data.cassandra.Tables.Applications.PROGRAMMING_LANGUAGE;
@@ -304,7 +305,13 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         UUID appId = UUID.fromString(app.applicationId);
         
+        UUID iconId = null;
         UUID orgId = null;
+        
+        if (app.isSetApplicationIconMediaId())
+        {
+            iconId = UUID.fromString(app.applicationIconMediaId);
+        }
         
         if (app.isSetOrganizationId())
         {
@@ -321,6 +328,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
             .value(APP_DESCRIPTION, app.applicationDescription)
+            .value(ICON_MEDIA_ID, iconId)
             .value(ORG_ID, orgId)
             .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
@@ -337,6 +345,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
             .value(APP_DESCRIPTION, app.applicationDescription)
+            .value(ICON_MEDIA_ID, iconId)
             .value(ORG_ID, orgId)
             .value(OWNERS, owners)
             .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
