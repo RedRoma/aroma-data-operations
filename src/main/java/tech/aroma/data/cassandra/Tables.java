@@ -60,6 +60,7 @@ class Tables
         static final String APP_ID = "app_id";
         static final String APP_NAME = "name";
         static final String APP_DESCRIPTION = "app_description";
+        static final String ICON_MEDIA_ID = "app_icon_media_id";
         static final String ORG_ID = "organization_id";
         static final String ORG_NAME = "organization_name";
         static final String OWNERS = "owners";
