@@ -24,6 +24,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import java.util.List;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,7 @@ import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.events.Event;
+import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
@@ -189,6 +191,14 @@ public class ModuleCassandraDataRepositoriesTest
     public void testProvideUserMapper()
     {
         Function<Row, User> result = instance.provideUserMapper();
+        
+        assertThat(result, notNullValue());
+    }
+
+    @Test
+    public void testProvideReactionsMapper()
+    {
+        Function<Row, List<Reaction>> result = instance.provideReactionsMapper();
         
         assertThat(result, notNullValue());
     }

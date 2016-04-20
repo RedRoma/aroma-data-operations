@@ -21,6 +21,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import java.util.List;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.events.Event;
+import tech.aroma.thrift.reactions.Reaction;
 
 
 /**
@@ -104,6 +106,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
     Function<Row, AuthenticationToken> provideTokenMapper()
     {
         return Mappers.tokenMapper();
+    }
+    
+    @Provides
+    Function<Row, List<Reaction>> provideReactionsMapper()
+    {
+        return Mappers.reactionsMapper();
     }
     
     @Provides
