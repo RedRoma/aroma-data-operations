@@ -28,6 +28,7 @@ import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
+import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
@@ -75,6 +76,9 @@ public class ModuleMemoryDataRepositoriesTest
         
         InboxRepository inboxRepo = injector.getInstance(InboxRepository.class);
         assertThat(inboxRepo, notNullValue());
+        
+        ReactionRepository reactionRepo = injector.getInstance(ReactionRepository.class);
+        assertThat(reactionRepo, notNullValue());
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());

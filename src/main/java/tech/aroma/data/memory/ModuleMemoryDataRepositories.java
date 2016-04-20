@@ -29,6 +29,7 @@ import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
+import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
 import tech.aroma.data.UserRepository;
 
@@ -52,6 +53,7 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
         bind(MediaRepository.class).to(MemoryMediaRepository.class).asEagerSingleton();
         bind(MessageRepository.class).to(MemoryMessageRepository.class).asEagerSingleton();
         bind(OrganizationRepository.class).to(MemoryOrganizationRepository.class).asEagerSingleton();
+        bind(ReactionRepository.class).to(MemoryReactionRepository.class).asEagerSingleton();
         bind(TokenRepository.class).to(MemoryTokenRepository.class).asEagerSingleton();
         bind(UserRepository.class).to(MemoryUserRepository.class).asEagerSingleton();
     }
