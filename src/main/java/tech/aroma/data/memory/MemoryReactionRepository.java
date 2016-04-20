@@ -52,6 +52,7 @@ final class MemoryReactionRepository implements ReactionRepository
         if (Lists.isEmpty(reactions))
         {
             database.remove(userId);
+            return;
         }
         
         database.put(userId, reactions);
@@ -73,6 +74,7 @@ final class MemoryReactionRepository implements ReactionRepository
         if (Lists.isEmpty(reactions))
         {
             database.remove(appId);
+            return;
         }
         
         database.put(appId, reactions);
