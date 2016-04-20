@@ -171,6 +171,14 @@ class Tables
         static final String USER_ROLES = "user_roles";
         static final String USER_EMAIL = "user_email";
     }
+    
+    static class Reactions
+    {
+        static final String TABLE_NAME = "Reactions";
+        
+        static final String OWNER_ID = "owner_id";
+        static final String SERIALIZED_REACTIONS = "serialized_reactions";
+    }
 
     static class Tokens
     {
