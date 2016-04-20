@@ -58,7 +58,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  *
  * @author SirWellington
  */
-@Repeat(10)
+@Repeat(50)
 @RunWith(AlchemyTestRunner.class)
 public class CassandraReactionRepositoryTest
 {
@@ -226,6 +226,19 @@ public class CassandraReactionRepositoryTest
     @Test
     public void testGetReactionsForApplication() throws Exception
     {
+        List<Reaction> results = instance.getReactionsForApplication(ownerId);
+        
+        assertThat(results, is(reactions));
+    }
+
+    @Test
+    public void testGetReactionsForApplicationWheEmpty() throws Exception
+    {
+        when(resultSet.one()).thenReturn(null);
+        
+        List<Reaction> results = instance.getReactionsForApplication(ownerId);
+        assertThat(results, notNullValue());
+        assertThat(results, empty());
     }
 
     @Test
