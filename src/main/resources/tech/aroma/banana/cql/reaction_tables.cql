@@ -7,7 +7,7 @@ Both are expected to be unique.
 CREATE TABLE IF NOT EXISTS Aroma.Reactions
 (
 	owner_id uuid,
-	list<string> serializedReactions,
+	serialized_reactions list<text>,
 
-	PRIMARY KEY (token_id)
+	PRIMARY KEY (owner_id)
 );
