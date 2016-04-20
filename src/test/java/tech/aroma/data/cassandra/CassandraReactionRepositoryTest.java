@@ -196,6 +196,24 @@ public class CassandraReactionRepositoryTest
     @Test
     public void testSaveReactionsForApplication() throws Exception
     {
+        instance.saveReactionsForApplication(ownerId, reactions);
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, is(instanceOf(Insert.class)));
+    }
+
+    @Test
+    public void testSaveReactionsForApplicationWhenEmpty() throws Exception
+    {
+        instance.saveReactionsForApplication(ownerId, null);
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, is(instanceOf(Delete.Where.class)));
     }
 
     @Test

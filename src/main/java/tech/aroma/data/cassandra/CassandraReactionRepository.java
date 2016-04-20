@@ -117,8 +117,13 @@ final class CassandraReactionRepository implements ReactionRepository
 
         if (Lists.isEmpty(reactions))
         {
-            createQueryToRemoveReactionsFor(appId);
+            Statement statement = createQueryToRemoveReactionsFor(appId);
+            tryToExecute(statement, "deleteReactionsForApplication");
+            return;
         }
+        
+        Statement statement = createStatementToSaveReactions(appId, reactions);
+        tryToExecute(statement, "saveReactionsForApplication");
     }
 
     @Override
