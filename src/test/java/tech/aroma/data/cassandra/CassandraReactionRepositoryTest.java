@@ -41,7 +41,9 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
@@ -88,7 +90,7 @@ public class CassandraReactionRepositoryTest
     private ArgumentCaptor<Statement> captor;
 
     @Mock
-    private ResultSet results;
+    private ResultSet resultSet;
 
     @Mock
     private Row row;
@@ -118,8 +120,9 @@ public class CassandraReactionRepositoryTest
     {
         queryBuilder = new QueryBuilder(cluster);
 
-        when(results.one()).thenReturn(row);
+        when(resultSet.one()).thenReturn(row);
         when(reactionsMapper.apply(row)).thenReturn(reactions);
+        when(cassandra.execute(any(Statement.class))).thenReturn(resultSet);
     }
 
     @DontRepeat
@@ -169,6 +172,18 @@ public class CassandraReactionRepositoryTest
     @Test
     public void testGetReactionsForUser() throws Exception
     {
+        List<Reaction> results = instance.getReactionsForUser(ownerId);
+        assertThat(results, is(reactions));
+    }
+
+    @Test
+    public void testGetReactionsForUserWhenEmpty() throws Exception
+    {
+        when(resultSet.one()).thenReturn(null);
+        
+        List<Reaction> results = instance.getReactionsForUser(ownerId);
+        assertThat(results, notNullValue());
+        assertThat(results, is(empty()));
     }
 
     @Test
