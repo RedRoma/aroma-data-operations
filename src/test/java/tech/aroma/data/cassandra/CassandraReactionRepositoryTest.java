@@ -21,6 +21,8 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
+import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
@@ -39,6 +41,9 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.*;
 import static tech.aroma.thrift.generators.ReactionGenerators.reactions;
@@ -134,6 +139,24 @@ public class CassandraReactionRepositoryTest
     @Test
     public void testSaveReactionsForUser() throws Exception
     {
+        instance.saveReactionsForUser(ownerId, reactions);
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Insert.class));
+    }
+
+    @Test
+    public void testSaveReactionsForUserWhenEmpty() throws Exception
+    {
+        instance.saveReactionsForUser(ownerId, Lists.emptyList());
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, instanceOf(Delete.Where.class));
     }
 
     @Test
