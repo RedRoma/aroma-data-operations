@@ -18,8 +18,11 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +34,7 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.events.Event;
+import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -38,13 +42,16 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.EventGenerators.events;
+import static tech.aroma.thrift.generators.ReactionGenerators.reactions;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
 /**
@@ -74,6 +81,12 @@ public class MappersTest
     private Organization org;
     
     private Event event;
+    
+    private Reaction reaction;
+    
+    private List<Reaction> reactions;
+    
+    private List<String> serializedReactions;
 
     @Before
     public void setUp()
@@ -81,6 +94,25 @@ public class MappersTest
         user.userId = userId;
         
         event = one(events());
+        reaction = one(reactions());
+        reactions = listOf(reactions(), 10);
+        
+        serializedReactions = reactions.parallelStream()
+            .map(this::toJson)
+            .filter(Objects::nonNull)
+            .collect(toList());
+    }
+    
+    private <T extends TBase> String toJson(T object)
+    {
+        try
+        {
+            return ThriftObjects.toJson(object);
+        }
+        catch (TException ex)
+        {
+            return null;
+        }
     }
 
     @Test
@@ -169,6 +201,28 @@ public class MappersTest
         when(row.getString(Activity.SERIALIZED_EVENT)).thenReturn(serializedEvent);
         
         return row;
+    }
+
+    @Test
+    public void testReactionsMapper()
+    {
+        Function<Row, List<Reaction>> mapper = Mappers.reactionsMapper();
+        assertThat(mapper, notNullValue());
+
+        when(row.getList(Tables.Reactions.SERIALIZED_REACTIONS, String.class))
+            .thenReturn(serializedReactions);
+        
+        List<Reaction> result = mapper.apply(row);
+        assertThat(result, is(reactions));
+    }
+
+    @Test
+    public void testDeserializeReaction() throws TException
+    {
+        String json = ThriftObjects.toJson(reaction);
+        
+        Reaction result = Mappers.deserializeReaction(json);
+        assertThat(result, is(reaction));
     }
 
 }

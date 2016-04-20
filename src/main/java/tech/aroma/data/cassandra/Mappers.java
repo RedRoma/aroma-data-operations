@@ -22,6 +22,7 @@ import com.datastax.driver.core.Row;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -47,6 +48,7 @@ import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.TokenType;
 import tech.aroma.thrift.events.Event;
+import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
@@ -352,6 +354,41 @@ final class Mappers
             
             return token;
         };
+    }
+    
+    
+    static Function<Row, List<Reaction>> reactionsMapper()
+    {
+        return row ->
+        {
+            List<Reaction> reactions = Lists.create();
+            
+            if (!doesRowContainColumn(row, Tables.Reactions.SERIALIZED_REACTIONS))
+            {
+                return reactions;
+            }
+            
+            List<String> serializedReactions = row.getList(Tables.Reactions.SERIALIZED_REACTIONS, String.class);
+            
+            return serializedReactions.parallelStream()
+                .map(Mappers::deserializeReaction)
+                .filter(Objects::nonNull)
+                .collect(toList());
+            
+        };
+    }
+    
+    static Reaction deserializeReaction(String json)
+    {
+        try
+        {
+            return ThriftObjects.fromJson(new Reaction(), json);
+        }
+        catch (TException ex)
+        {
+            LOG.warn("Failed to deserialize Reaction: {}", json, ex);
+            return null;
+        }
     }
     
     static Function<Row, User> userMapper()
