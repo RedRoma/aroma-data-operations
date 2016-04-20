@@ -370,7 +370,7 @@ final class Mappers
             
             List<String> serializedReactions = row.getList(Tables.Reactions.SERIALIZED_REACTIONS, String.class);
             
-            return serializedReactions.parallelStream()
+            return serializedReactions.stream()
                 .map(Mappers::deserializeReaction)
                 .filter(Objects::nonNull)
                 .collect(toList());
