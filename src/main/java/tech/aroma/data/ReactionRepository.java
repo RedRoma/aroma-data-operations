@@ -33,7 +33,7 @@ public interface ReactionRepository
 
     List<Reaction> getReactionsForUser(String userId) throws TException;
 
-    void saveReactionsForApplication(String applicationId, List<Reaction> reactions) throws TException;
+    void saveReactionsForApplication(String appId, List<Reaction> reactions) throws TException;
 
-    List<Reaction> getReactionsForApplication(String applicationId, List<Reaction> reactions) throws TException;
+    List<Reaction> getReactionsForApplication(String appId) throws TException;
 }
