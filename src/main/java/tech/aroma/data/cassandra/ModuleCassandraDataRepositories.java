@@ -33,6 +33,7 @@ import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
+import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
 import tech.aroma.data.UserRepository;
 import tech.aroma.thrift.Application;
@@ -68,6 +69,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(MediaRepository.class).to(CassandraMediaRepository.class);
         bind(MessageRepository.class).to(CassandraMessageRepository.class);
         bind(OrganizationRepository.class).to(CassandraOrganizationRepository.class);
+        bind(ReactionRepository.class).to(CassandraReactionRepository.class);
         bind(TokenRepository.class).to(CassandraTokenRepository.class);
         bind(UserRepository.class).to(CassandraUserRepository.class);
     }

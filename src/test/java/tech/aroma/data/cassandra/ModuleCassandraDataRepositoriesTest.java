@@ -37,6 +37,7 @@ import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
+import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
 import tech.aroma.data.UserRepository;
 import tech.aroma.thrift.Application;
@@ -132,6 +133,9 @@ public class ModuleCassandraDataRepositoriesTest
         OrganizationRepository orgRepo = injector.getInstance(OrganizationRepository.class);
         assertThat(orgRepo, notNullValue());
 
+        ReactionRepository reactionRepo = injector.getInstance(ReactionRepository.class);
+        assertThat(reactionRepo, notNullValue());
+        
         TokenRepository tokenRepo = injector.getInstance(TokenRepository.class);
         assertThat(tokenRepo, notNullValue());
 
