@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Inbox
 	ip_address text,
 	app_id uuid,
 	app_name text,
+	device_name text,
 
 	PRIMARY KEY ((user_id), message_id)
 )

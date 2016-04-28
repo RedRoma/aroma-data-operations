@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Messages
 	ip_address text,
 	app_id uuid,
 	app_name text,
+	device_name text,
 
 	PRIMARY KEY ((app_id), message_id)
 )
@@ -26,6 +27,8 @@ AND compaction =
 CREATE INDEX IF NOT EXISTS Messages_By_Title ON Aroma.Messages (title);
 
 CREATE INDEX IF NOT EXISTS Messages_By_Hostname  ON Aroma.Messages (hostname);
+
+CREATE INDEX IF NOT EXISTS Messages_By_Device_Name  ON Aroma.Messages (device_name);
 
 CREATE TABLE IF NOT EXISTS Aroma.Messages_Rate_Limit
 (
