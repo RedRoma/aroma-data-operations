@@ -102,6 +102,7 @@ class Tables
         static final String TITLE = Messages.TITLE;
         static final String BODY = Messages.BODY;
         static final String URGENCY = Messages.URGENCY;
+        static final String DEVICE_NAME = Messages.DEVICE_NAME;
         static final String HOSTNAME = Messages.HOSTNAME;
         static final String IP_ADDRESS = Messages.IP_ADDRESS;
         static final String MAC_ADDRESS = Messages.MAC_ADDRESS;
