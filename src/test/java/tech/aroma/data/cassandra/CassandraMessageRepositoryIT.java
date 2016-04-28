@@ -40,7 +40,6 @@ import tech.sirwellington.alchemy.generator.AlchemyGenerator;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
@@ -54,6 +53,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
+import static tech.aroma.thrift.generators.MessageGenerators.messages;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -82,7 +82,6 @@ public class CassandraMessageRepositoryIT
     }
 
     
-    @GeneratePojo
     private Message message;
     
     @GenerateString(UUID)
@@ -100,22 +99,36 @@ public class CassandraMessageRepositoryIT
 
 
     @Before
-    public void setUp()
+    public void setUp() throws Exception
     {
         instance = new CassandraMessageRepository(session, queryBuilder, messageMapper);
-        
-        AlchemyGenerator<String> timeUids = () -> UUIDs.timeBased().toString();
-        
-        messages = messages.stream()
-            .map(m -> m.setApplicationId(appId))
-            .map(m -> m.setMessageId(one(timeUids)))
-            .map(m -> { m.unsetIsTruncated(); return m;})
-            .collect(toList());
-        
+
+
+        setupData();
+    }
+
+    private void setupData() throws Exception
+    {
         msgId = UUIDs.timeBased().toString();
+
+        message = one(messages());
         message.messageId = msgId;
         message.applicationId = appId;
         message.unsetIsTruncated();
+
+        AlchemyGenerator<String> timeUids = () -> UUIDs.timeBased().toString();
+
+        messages = messages.stream()
+            .map(m -> m.setApplicationId(appId))
+            .map(m -> m.setMessageId(one(timeUids)))
+            .map(m ->
+            {
+                m.unsetIsTruncated();
+                return m;
+            })
+            .collect(toList());
+
+
     }
     
     @After
@@ -256,6 +269,7 @@ public class CassandraMessageRepositoryIT
         assertThat(result.applicationId, is(expected.applicationId));
         assertThat(result.applicationName, is(expected.applicationName));
         assertThat(result.body, is(expected.body));
+        assertThat(result.deviceName, is(expected.deviceName));
         assertThat(result.hostname, is(expected.hostname));
         assertThat(result.macAddress, is(expected.macAddress));
         assertThat(result.messageId, is(expected.messageId));

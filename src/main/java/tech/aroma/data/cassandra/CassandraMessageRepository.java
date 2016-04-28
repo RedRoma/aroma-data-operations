@@ -46,6 +46,7 @@ import static java.lang.String.format;
 import static tech.aroma.data.cassandra.Tables.Messages.APP_ID;
 import static tech.aroma.data.cassandra.Tables.Messages.APP_NAME;
 import static tech.aroma.data.cassandra.Tables.Messages.BODY;
+import static tech.aroma.data.cassandra.Tables.Messages.DEVICE_NAME;
 import static tech.aroma.data.cassandra.Tables.Messages.HOSTNAME;
 import static tech.aroma.data.cassandra.Tables.Messages.MAC_ADDRESS;
 import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
@@ -276,6 +277,7 @@ final class CassandraMessageRepository implements MessageRepository
             .value(APP_ID, appId)
             .value(APP_NAME, message.applicationName)
             .value(BODY, message.body)
+            .value(DEVICE_NAME, message.deviceName)
             .value(HOSTNAME, message.hostname)
             .value(MAC_ADDRESS, message.macAddress)
             .value(TITLE, message.title)

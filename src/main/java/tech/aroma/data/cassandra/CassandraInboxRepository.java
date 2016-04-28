@@ -253,6 +253,7 @@ final class CassandraInboxRepository implements InboxRepository
             .value(Inbox.TITLE, message.title)
             .value(Inbox.TIME_CREATED, message.timeOfCreation)
             .value(Inbox.TIME_RECEIVED, message.timeMessageReceived)
+            .value(Inbox.DEVICE_NAME, message.deviceName)
             .value(Inbox.HOSTNAME, message.hostname)
             .value(Inbox.MAC_ADDRESS, message.macAddress)
             .value(Inbox.APP_NAME, message.applicationName)
