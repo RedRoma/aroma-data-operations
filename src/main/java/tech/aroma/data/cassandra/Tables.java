@@ -137,6 +137,7 @@ class Tables
         static final String TITLE = "title";
         static final String BODY = "body";
         static final String URGENCY = "urgency";
+        static final String DEVICE_NAME = "device_name";
         static final String HOSTNAME = "hostname";
         static final String IP_ADDRESS = "ip_address";
         static final String MAC_ADDRESS = "mac_address";
