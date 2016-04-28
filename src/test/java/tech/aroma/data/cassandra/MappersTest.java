@@ -136,6 +136,7 @@ public class MappersTest
     {
         Function<Row, Message> mapper = Mappers.messageMapper();
         assertThat(mapper, notNullValue());
+        
     }
 
     @Test
