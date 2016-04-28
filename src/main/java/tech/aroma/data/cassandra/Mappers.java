@@ -256,8 +256,8 @@ final class Mappers
             message.setMessageId(msgId.toString())
                 .setApplicationId(appId.toString())
                 .setTitle(row.getString(Tables.Messages.TITLE))
+                .setDeviceName(row.getString(Tables.Messages.DEVICE_NAME))
                 .setHostname(row.getString(Tables.Messages.HOSTNAME))
-                .setHostname(row.getString(Tables.Messages.DEVICE_NAME))
                 .setMacAddress(row.getString(Tables.Messages.MAC_ADDRESS))
                 .setBody(row.getString(Tables.Messages.BODY))
                 .setApplicationName(row.getString(Tables.Messages.APP_NAME));
