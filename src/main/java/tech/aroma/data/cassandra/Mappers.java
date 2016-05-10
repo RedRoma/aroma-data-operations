@@ -110,7 +110,6 @@ final class Mappers
 
             if (doesRowContainColumn(row, Tables.Applications.TIME_PROVISIONED))
             {
-
                 Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
                 if (timeOfProvisioning != null)
                 {
@@ -156,7 +155,13 @@ final class Mappers
 
             if (doesRowContainColumn(row, Tables.Applications.TIER))
             {
-                app.setTier(row.get(Tables.Applications.TIER, Tier.class));
+                String string = row.getString(Tables.Applications.TIER);
+                
+                if (!isNullOrEmpty(string))
+                {
+                    Tier tier = Tier.valueOf(string);
+                    app.setTier(tier);
+                }
             }
 
             app.setName(row.getString(Tables.Applications.APP_NAME));
@@ -304,15 +309,26 @@ final class Mappers
                     .collect(toList());
             }
             
+            String tier = row.getString(Tables.Organizations.TIER);
+            
+            if (!isNullOrEmpty(tier))
+            {
+                org.setTier(Tier.valueOf(tier));
+            }
+            
+            String industry = row.getString(Tables.Organizations.INDUSTRY);
+            if (!isNullOrEmpty(industry))
+            {
+                org.setIndustry(Industry.valueOf(industry));
+            }
+            
             org.setOrganizationId(orgUuid.toString())
                 .setOrganizationName(row.getString(Tables.Organizations.ORG_NAME))
                 .setLogoLink(row.getString(Tables.Organizations.ICON_LINK))
                 .setOrganizationDescription(row.getString(Tables.Organizations.DESCRIPTION))
-                .setIndustry(row.get(Tables.Organizations.INDUSTRY, Industry.class))
                 .setGithubProfile(row.getString(Tables.Organizations.GITHUB_PROFILE))
                 .setOrganizationEmail(row.getString(Tables.Organizations.EMAIL))
                 .setStockMarketSymbol(row.getString(Tables.Organizations.STOCK_NAME))
-                .setTier(row.get(Tables.Organizations.TIER, Tier.class))
                 .setWebsite(row.getString(Tables.Organizations.WEBSITE))
                 .setOwners(owners);
             
