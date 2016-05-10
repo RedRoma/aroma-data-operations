@@ -36,6 +36,7 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.data.UserRepository;
 import tech.aroma.data.cassandra.Tables.Users;
 import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.Role;
 import tech.aroma.thrift.TimeUnit;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
@@ -45,6 +46,7 @@ import tech.aroma.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.data.cassandra.Tables.Users.TABLE_NAME_BY_GITHUB_PROFILE;
@@ -64,19 +66,16 @@ final class CassandraUserRepository implements UserRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraUserRepository.class);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, User> userMapper;
 
     @Inject
     CassandraUserRepository(Session cassandra,
-                            QueryBuilder queryBuilder,
                             Function<Row, User> userMapper)
     {
-        checkThat(cassandra, queryBuilder, userMapper)
+        checkThat(cassandra, userMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.userMapper = userMapper;
     }
 
@@ -246,14 +245,19 @@ final class CassandraUserRepository implements UserRepository
         UUID userUuid = UUID.fromString(user.userId);
 
         Set<String> emails = Sets.createFrom(user.email);
-
-        return queryBuilder.insertInto(Users.TABLE_NAME)
+        Set<String> roles = Sets.nullToEmpty(user.roles)
+            .stream()
+            .map(Role::toString)
+            .collect(toSet());
+        
+        return QueryBuilder
+            .insertInto(Users.TABLE_NAME)
             .value(Users.USER_ID, userUuid)
             .value(Users.FIRST_NAME, user.firstName)
             .value(Users.MIDDLE_NAME, user.middleName)
             .value(Users.LAST_NAME, user.lastName)
             .value(Users.EMAILS, emails)
-            .value(Users.ROLES, user.roles)
+            .value(Users.ROLES, roles)
             .value(Users.GITHUB_PROFILE, user.githubProfile)
             .value(Users.PROFILE_IMAGE_ID, user.profileImageLink)
             .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli());
@@ -265,6 +269,10 @@ final class CassandraUserRepository implements UserRepository
         UUID userUuid = UUID.fromString(user.userId);
 
         Set<String> emails = Sets.createFrom(user.email);
+        Set<String> roles = Sets.nullToEmpty(user.roles)
+            .stream()
+            .map(Role::toString)
+            .collect(toSet());
         
         LengthOfTime timeUserIsRecent = new LengthOfTime()
             .setUnit(TimeUnit.DAYS)
@@ -272,13 +280,14 @@ final class CassandraUserRepository implements UserRepository
         
         int recentDuration = (int) TimeFunctions.toSeconds(timeUserIsRecent);
 
-        return queryBuilder.insertInto(Users.TABLE_NAME_RECENT)
+        return QueryBuilder
+            .insertInto(Users.TABLE_NAME_RECENT)
             .value(Users.USER_ID, userUuid)
             .value(Users.FIRST_NAME, user.firstName)
             .value(Users.MIDDLE_NAME, user.middleName)
             .value(Users.LAST_NAME, user.lastName)
             .value(Users.EMAILS, emails)
-            .value(Users.ROLES, user.roles)
+            .value(Users.ROLES, roles)
             .value(Users.GITHUB_PROFILE, user.githubProfile)
             .value(Users.PROFILE_IMAGE_ID, user.profileImageLink)
             .value(Users.TIME_ACCOUNT_CREATED, Instant.now().toEpochMilli())
@@ -291,7 +300,8 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
 
-        return queryBuilder.insertInto(Users.TABLE_NAME_BY_EMAIL)
+        return QueryBuilder
+            .insertInto(Users.TABLE_NAME_BY_EMAIL)
             .value(Users.USER_ID, userUuid)
             .value(Users.EMAIL, user.email)
             .value(Users.FIRST_NAME, user.firstName)
@@ -307,7 +317,8 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
 
-        return queryBuilder.insertInto(Users.TABLE_NAME_BY_GITHUB_PROFILE)
+        return QueryBuilder
+            .insertInto(Users.TABLE_NAME_BY_GITHUB_PROFILE)
             .value(Users.GITHUB_PROFILE, user.githubProfile)
             .value(Users.USER_ID, userUuid)
             .value(Users.FIRST_NAME, user.firstName)
@@ -322,7 +333,7 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(userId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Users.TABLE_NAME)
@@ -332,7 +343,7 @@ final class CassandraUserRepository implements UserRepository
 
     private Statement createQueryToGetUserByEmail(String email)
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Users.TABLE_NAME_BY_EMAIL)
@@ -341,7 +352,7 @@ final class CassandraUserRepository implements UserRepository
 
     private Statement createQueryToGetUsersByGithubProfile(String githubProfile)
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
@@ -350,7 +361,7 @@ final class CassandraUserRepository implements UserRepository
     
     private Statement createQueryToGetRecentlyCreatedUsers()
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Tables.Users.TABLE_NAME_RECENT)
@@ -368,7 +379,7 @@ final class CassandraUserRepository implements UserRepository
 
         BatchStatement batch = new BatchStatement();
 
-        Statement deleteFromUsersTable = queryBuilder
+        Statement deleteFromUsersTable = QueryBuilder
             .delete()
             .all()
             .from(Users.TABLE_NAME)
@@ -376,7 +387,7 @@ final class CassandraUserRepository implements UserRepository
 
         batch.add(deleteFromUsersTable);
 
-        Statement deleteFromRecentUsersTable = queryBuilder
+        Statement deleteFromRecentUsersTable = QueryBuilder
             .delete()
             .all()
             .from(Users.TABLE_NAME_RECENT)
@@ -384,7 +395,7 @@ final class CassandraUserRepository implements UserRepository
         
         batch.add(deleteFromRecentUsersTable);
         
-        Statement deleteFromUserEmailsTable = queryBuilder
+        Statement deleteFromUserEmailsTable = QueryBuilder
             .delete()
             .all()
             .from(Users.TABLE_NAME_BY_EMAIL)
@@ -394,7 +405,7 @@ final class CassandraUserRepository implements UserRepository
         
         if (!isNullOrEmpty(user.githubProfile))
         {
-            Statement deleteFromGithubTable = queryBuilder
+            Statement deleteFromGithubTable = QueryBuilder
                 .delete()
                 .all()
                 .from(Users.TABLE_NAME_BY_GITHUB_PROFILE)
@@ -410,7 +421,7 @@ final class CassandraUserRepository implements UserRepository
     {
         UUID userUuid = UUID.fromString(userId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Users.TABLE_NAME)
