@@ -17,7 +17,6 @@
 package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -75,9 +74,6 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 @RunWith(AlchemyTestRunner.class)
 public class CassandraApplicationRepositoryTest
 {
-
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
 
     @Mock(answer = RETURNS_MOCKS)
     private Session session;
