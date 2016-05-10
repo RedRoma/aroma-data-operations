@@ -135,9 +135,10 @@ final class CassandraMessageRepository implements MessageRepository
     @Override
     public void deleteMessage(String applicationId, String messageId) throws TException
     {
-        Message message = getMessage(applicationId, messageId);
+        checkAppId(applicationId);
+        checkMessageId(messageId);
 
-        Statement deleteStatement = createDeleteStatementFor(message);
+        Statement deleteStatement = createDeleteStatementFor(applicationId, messageId);
         
         tryToExecute(deleteStatement, "Failed to delete message with ID: " + messageId);
     }
@@ -346,10 +347,10 @@ final class CassandraMessageRepository implements MessageRepository
         return messageMapper.apply(row);
     }
 
-    private Statement createDeleteStatementFor(Message message)
+    private Statement createDeleteStatementFor(String applicationId, String messageId)
     {
-        UUID msgId = UUID.fromString(message.messageId);
-        UUID appId = UUID.fromString(message.applicationId);
+        UUID msgId = UUID.fromString(messageId);
+        UUID appId = UUID.fromString(applicationId);
         
         Statement deleteFromMainTable = QueryBuilder
             .delete()

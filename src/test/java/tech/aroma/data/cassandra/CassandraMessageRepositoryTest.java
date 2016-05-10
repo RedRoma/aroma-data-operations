@@ -20,7 +20,9 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
+import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.Before;
@@ -42,6 +44,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -173,11 +176,64 @@ public class CassandraMessageRepositoryTest
     @Test
     public void testGetMessage() throws Exception
     {
+        Message result = instance.getMessage(appId, messageId);
+        assertThat(result, is(message));
+        
+        verify(cassandra).execute(captor.capture());
+        
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Select.class));
+    }
+    
+    @DontRepeat
+    @Test
+    public void testGetMessageWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getMessage("", messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getMessage(appId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getMessage(badId, messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.getMessage(appId, badId))
+            .isInstanceOf(InvalidArgumentException.class);
     }
 
     @Test
     public void testDeleteMessage() throws Exception
     {
+        instance.deleteMessage(appId, messageId);
+
+        verify(cassandra).execute(captor.capture());
+
+        Statement statement = captor.getValue();
+        assertThat(statement, notNullValue());
+        assertThat(statement, instanceOf(Delete.Where.class));
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteMessageWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.deleteMessage("", messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessage(appId, ""))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessage(badId, messageId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessage(appId, badId))
+            .isInstanceOf(InvalidArgumentException.class);
+        
+        assertThrows(() -> instance.deleteMessage(null, null))
+            .isInstanceOf(InvalidArgumentException.class);
+        
     }
 
     @Test
