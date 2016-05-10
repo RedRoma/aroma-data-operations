@@ -315,10 +315,11 @@ final class Mappers
         {
             Organization org = new Organization();
             
+            //Org ID
             UUID orgUuid = row.getUUID(Tables.Organizations.ORG_ID);
             
+            //Owners
             List<String> owners = Lists.create();
-            
             if (doesRowContainColumn(row, Tables.Organizations.OWNERS))
             {
                 Set<UUID> ownerIds = row.getSet(Tables.Organizations.OWNERS, UUID.class);
@@ -326,20 +327,22 @@ final class Mappers
                     .map(UUID::toString)
                     .collect(toList());
             }
-            
+
+            //Tier
             String tier = row.getString(Tables.Organizations.TIER);
-            
             if (!isNullOrEmpty(tier))
             {
                 org.setTier(Tier.valueOf(tier));
             }
-            
+
+            //Industry
             String industry = row.getString(Tables.Organizations.INDUSTRY);
             if (!isNullOrEmpty(industry))
             {
                 org.setIndustry(Industry.valueOf(industry));
             }
             
+            //Other Info
             org.setOrganizationId(orgUuid.toString())
                 .setOrganizationName(row.getString(Tables.Organizations.ORG_NAME))
                 .setLogoLink(row.getString(Tables.Organizations.ICON_LINK))
