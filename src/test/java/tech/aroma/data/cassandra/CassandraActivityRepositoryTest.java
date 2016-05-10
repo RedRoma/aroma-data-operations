@@ -23,7 +23,6 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +78,6 @@ public class CassandraActivityRepositoryTest
     @Mock
     private Session session;
     
-    private QueryBuilder queryBuilder;
-    
     @Mock
     private Function<Row, Event> eventMapper;
     
@@ -115,7 +112,7 @@ public class CassandraActivityRepositoryTest
         setupData();
         setupMocks();
         
-        instance = new CassandraActivityRepository(session, queryBuilder, eventMapper);
+        instance = new CassandraActivityRepository(session, eventMapper);
     }
 
 
@@ -131,8 +128,6 @@ public class CassandraActivityRepositoryTest
     {
         when(results.one()).thenReturn(row);
         
-        queryBuilder = new QueryBuilder(cluster);
-        
         when(session.execute(any(Statement.class)))
             .thenReturn(results);
         
@@ -143,9 +138,8 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testConstructor()
     {
-        assertThrows(() -> new CassandraActivityRepository(null, queryBuilder, eventMapper));
-        assertThrows(() -> new CassandraActivityRepository(session, null, eventMapper));
-        assertThrows(() -> new CassandraActivityRepository(session, queryBuilder, null));
+        assertThrows(() -> new CassandraActivityRepository(null, eventMapper));
+        assertThrows(() -> new CassandraActivityRepository(session, null));
     }
 
     @Test
