@@ -63,21 +63,18 @@ final class CassandraFollowerRepository implements FollowerRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraFollowerRepository.class);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, User> userMapper;
     private final Function<Row, Application> applicationMapper;
 
     @Inject
     CassandraFollowerRepository(Session cassandra,
-                                QueryBuilder queryBuilder,
                                 Function<Row, User> userMapper,
                                 Function<Row, Application> applicationMapper)
     {
-        checkThat(cassandra, queryBuilder, userMapper, applicationMapper)
+        checkThat(cassandra, userMapper, applicationMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.applicationMapper = applicationMapper;
         this.userMapper = userMapper;
     }
@@ -221,7 +218,7 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         BatchStatement batch = new BatchStatement();
 
-        Statement insertIntoAppFollowersTable = queryBuilder
+        Statement insertIntoAppFollowersTable = QueryBuilder
             .insertInto(Follow.TABLE_NAME_APP_FOLLOWERS)
             .value(APP_ID, appId)
             .value(USER_ID, userId)
@@ -231,7 +228,7 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         batch.add(insertIntoAppFollowersTable);
 
-        Statement insertIntoUserFollowingsTable = queryBuilder
+        Statement insertIntoUserFollowingsTable = QueryBuilder
             .insertInto(Follow.TABLE_NAME_USER_FOLLOWING)
             .value(APP_ID, appId)
             .value(USER_ID, userId)
@@ -251,7 +248,7 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         BatchStatement batch = new BatchStatement();
 
-        Statement deleteFromAppFollowersTable = queryBuilder
+        Statement deleteFromAppFollowersTable = QueryBuilder
             .delete()
             .all()
             .from(Follow.TABLE_NAME_APP_FOLLOWERS)
@@ -260,7 +257,7 @@ final class CassandraFollowerRepository implements FollowerRepository
 
         batch.add(deleteFromAppFollowersTable);
 
-        Statement deleteFromUserFollowingsTable = queryBuilder
+        Statement deleteFromUserFollowingsTable = QueryBuilder
             .delete()
             .all()
             .from(Follow.TABLE_NAME_USER_FOLLOWING)
@@ -277,7 +274,8 @@ final class CassandraFollowerRepository implements FollowerRepository
         UUID appUuid = UUID.fromString(applicationId);
         UUID userUuid = UUID.fromString(userId);
 
-        return queryBuilder.select()
+        return QueryBuilder
+            .select()
             .countAll()
             .from(Follow.TABLE_NAME_APP_FOLLOWERS)
             .where(eq(USER_ID, userUuid))
@@ -296,7 +294,7 @@ final class CassandraFollowerRepository implements FollowerRepository
     {
         UUID userUuid = UUID.fromString(userId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .column(Follow.APP_NAME).as(Applications.APP_NAME)
             .column(Follow.APP_ID).as(Applications.APP_ID)
@@ -311,7 +309,7 @@ final class CassandraFollowerRepository implements FollowerRepository
     {
         UUID appUuid = UUID.fromString(applicationId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .column(Follow.APP_NAME).as(Applications.APP_NAME)
             .column(Follow.APP_ID).as(Applications.APP_ID)
