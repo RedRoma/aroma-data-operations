@@ -54,6 +54,7 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
@@ -466,11 +467,15 @@ final class Mappers
             
             Set<Role> roles = Sets.create();
 
-            if(doesRowContainColumn(row, Tables.Users.ROLES))
+            if (doesRowContainColumn(row, Tables.Users.ROLES))
             {
-                roles = row.getSet(Tables.Users.ROLES, Role.class);
+                Set<String> set = row.getSet(Tables.Users.ROLES, String.class);
+                roles = Sets.nullToEmpty(set)
+                    .stream()
+                    .map(Role::valueOf)
+                    .collect(toSet());
             }
-    
+
             if(doesRowContainColumn(row, Tables.Users.PROFILE_IMAGE_ID))
             {
                 String profileImageLink = row.getString(Tables.Users.PROFILE_IMAGE_ID);
