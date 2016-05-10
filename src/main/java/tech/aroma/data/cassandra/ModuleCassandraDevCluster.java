@@ -17,11 +17,9 @@
 package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.CodecRegistry;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.policies.ExponentialReconnectionPolicy;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
-import com.datastax.driver.extras.codecs.enums.EnumNameCodec;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.util.concurrent.TimeUnit;
@@ -63,18 +61,12 @@ public final class ModuleCassandraDevCluster extends AbstractModule
     @Singleton
     Cluster provideCassandraCluster(ReconnectionPolicy reconnectionPolicy)
     {
-        Cluster cluster = Cluster.builder()
+        return Cluster.builder()
             .addContactPoint("cassandra-02.dev.redroma.tech")
             .withPort(9042)
             .withCredentials("cassandra", "NvrCXg300Utn1TBzi5Q9W550I4BeGt")
             .withReconnectionPolicy(reconnectionPolicy)
             .build();
-        
-        CodecRegistry codecs = cluster.getConfiguration().getCodecRegistry();
-        codecs.register(new EnumNameCodec<>(Enum.class));
-        
-        return cluster;
-        
     }
 
     @Provides
