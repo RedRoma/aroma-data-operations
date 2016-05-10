@@ -82,13 +82,23 @@ final class Mappers
         {
             Application app = new Application();
             
+            //App ID
             UUID appId = row.getUUID(Tables.Applications.APP_ID);
-          
             if (appId != null)
             {
                 app.setApplicationId(appId.toString());
             }
             
+            //App Name
+            app.setName(row.getString(Tables.Applications.APP_NAME));
+            
+            //App Description
+            if (doesRowContainColumn(row, Tables.Applications.APP_DESCRIPTION))
+            {
+                app.setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
+            }
+            
+            //Media ID
             if (doesRowContainColumn(row, Tables.Applications.ICON_MEDIA_ID))
             {
                 UUID iconMediaId = row.getUUID(Tables.Applications.ICON_MEDIA_ID);
@@ -98,6 +108,7 @@ final class Mappers
                 }
             }
 
+            //Programming Language
             if (doesRowContainColumn(row, Tables.Applications.PROGRAMMING_LANGUAGE))
             {
                 String programmingLanguage = row.getString(Tables.Applications.PROGRAMMING_LANGUAGE);
@@ -108,6 +119,7 @@ final class Mappers
                 }
             }
 
+            //Time Provisioned
             if (doesRowContainColumn(row, Tables.Applications.TIME_PROVISIONED))
             {
                 Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
@@ -117,6 +129,7 @@ final class Mappers
                 }
             }
 
+            //Token Expiration
             if (doesRowContainColumn(row, Tables.Applications.TIME_OF_TOKEN_EXPIRATION))
             {
                 Date tokenExpiration = row.getTimestamp(Tables.Applications.TIME_OF_TOKEN_EXPIRATION);
@@ -126,6 +139,7 @@ final class Mappers
                 }
             }
 
+            //Owners
             if (doesRowContainColumn(row, Tables.Applications.OWNERS))
             {
                 //Transform the UUIDs to Strings
@@ -135,12 +149,11 @@ final class Mappers
                     .collect(Collectors.toSet());
 
                 app.setOwners(owners);
-
             }
 
+            //ORG ID
             if (doesRowContainColumn(row, Tables.Applications.ORG_ID))
             {
-
                 UUID orgId = row.getUUID(Tables.Applications.ORG_ID);
                 if (orgId != null)
                 {
@@ -148,24 +161,17 @@ final class Mappers
                 }
             }
 
-            if (doesRowContainColumn(row, Tables.Applications.APP_DESCRIPTION))
-            {
-                app.setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
-            }
-
+            //Tier
             if (doesRowContainColumn(row, Tables.Applications.TIER))
             {
-                String string = row.getString(Tables.Applications.TIER);
+                String tier = row.getString(Tables.Applications.TIER);
                 
-                if (!isNullOrEmpty(string))
+                if (!isNullOrEmpty(tier))
                 {
-                    Tier tier = Tier.valueOf(string);
-                    app.setTier(tier);
+                    app.setTier(Tier.valueOf(tier));
                 }
             }
 
-            app.setName(row.getString(Tables.Applications.APP_NAME));
-            
             return app;
         };
     }
