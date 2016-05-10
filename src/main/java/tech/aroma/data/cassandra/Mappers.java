@@ -363,19 +363,21 @@ final class Mappers
         {
             AuthenticationToken token = new AuthenticationToken();
             
+            //Time of Creation
             Date timeOfCreation = row.getTimestamp(Tables.Tokens.TIME_OF_CREATION);
-            Date timeOfExpiration = row.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION);
-            
             if (timeOfCreation != null)
             {
                 token.setTimeOfCreation(timeOfCreation.getTime());
             }
             
+            //Time of Expiration
+            Date timeOfExpiration = row.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION);
             if (timeOfExpiration != null)
             {
                 token.setTimeOfExpiration(timeOfExpiration.getTime());
             }
             
+            //Org ID
             String orgId = null;
             if(doesRowContainColumn(row, Tables.Tokens.ORG_ID))
             {
@@ -383,12 +385,18 @@ final class Mappers
                 orgId = orgUuid != null ? orgUuid.toString() : orgId;
             }
             
+            //Token Type
+            String tokenType = row.getString(Tables.Tokens.TOKEN_TYPE);
+            if (!isNullOrEmpty(tokenType))
+            {
+                token.setTokenType(TokenType.valueOf(tokenType));
+            }
+            
             token
                 .setTokenId(row.getUUID(Tables.Tokens.TOKEN_ID).toString())
                 .setOwnerId(row.getUUID(Tables.Tokens.OWNER_ID).toString())
                 .setOrganizationId(orgId)
-                .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME))
-                .setTokenType(row.get(Tables.Tokens.TOKEN_TYPE, TokenType.class));
+                .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME));
             
             return token;
         };
