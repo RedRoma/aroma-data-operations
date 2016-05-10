@@ -71,19 +71,16 @@ final class CassandraMessageRepository implements MessageRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraMessageRepository.class);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Message> messageMapper;
 
     @Inject
     CassandraMessageRepository(Session cassandra, 
-                               QueryBuilder queryBuilder,
                                Function<Row, Message> messageMapper)
     {
-        checkThat(cassandra, queryBuilder, messageMapper)
+        checkThat(cassandra, messageMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.messageMapper = messageMapper;
     }
 
@@ -266,12 +263,16 @@ final class CassandraMessageRepository implements MessageRepository
             .are(nonEmptyString())
             .are(validUUID());
 
+        //UUIDs
         UUID msgId = UUID.fromString(message.messageId);
         UUID appId = UUID.fromString(message.applicationId);
+        
+        //Urgency
+        String urgency = message.urgency != null ? message.urgency.toString() : null;
 
         Long timeToLive = TimeFunctions.toSeconds(lifetime);
 
-        return queryBuilder
+        return QueryBuilder
             .insertInto(Messages.TABLE_NAME)
             .value(MESSAGE_ID, msgId)
             .value(APP_ID, appId)
@@ -281,7 +282,7 @@ final class CassandraMessageRepository implements MessageRepository
             .value(HOSTNAME, message.hostname)
             .value(MAC_ADDRESS, message.macAddress)
             .value(TITLE, message.title)
-            .value(URGENCY, message.urgency)
+            .value(URGENCY, urgency)
             .value(TIME_CREATED, message.timeOfCreation)
             .value(TIME_RECEIVED, message.timeMessageReceived)
             .using(ttl(timeToLive.intValue()));
@@ -291,7 +292,7 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID appId = UUID.fromString(message.applicationId);
 
-        return queryBuilder
+        return QueryBuilder
             .update(Messages.TABLE_NAME_TOTALS_BY_APP)
             .where(eq(APP_ID, appId))
             .with(incr(TOTAL_MESSAGES, 1));
@@ -301,7 +302,7 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID appId = UUID.fromString(message.applicationId);
 
-        return queryBuilder
+        return QueryBuilder
             .update(Messages.TABLE_NAME_TOTALS_BY_TITLE)
             .where(eq(APP_ID, appId))
             .and(eq(TITLE, message.title))
@@ -323,7 +324,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID appId = UUID.fromString(applicationId);
         UUID msgId = UUID.fromString(messageId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Messages.TABLE_NAME)
@@ -350,7 +351,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID msgId = UUID.fromString(message.messageId);
         UUID appId = UUID.fromString(message.applicationId);
         
-        Statement deleteFromMainTable = queryBuilder
+        Statement deleteFromMainTable = QueryBuilder
             .delete()
             .all()
             .from(Messages.TABLE_NAME)
@@ -365,7 +366,7 @@ final class CassandraMessageRepository implements MessageRepository
         UUID msgId = UUID.fromString(messageId);
         UUID appId = UUID.fromString(applicationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Messages.TABLE_NAME)
@@ -375,7 +376,7 @@ final class CassandraMessageRepository implements MessageRepository
 
     private Statement createQueryToFindMessageByHostname(String hostname)
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Messages.TABLE_NAME)
@@ -394,7 +395,7 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID appId = UUID.fromString(applicationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Messages.TABLE_NAME)
@@ -407,7 +408,7 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID appId = UUID.fromString(applicationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Messages.TABLE_NAME)
@@ -416,7 +417,7 @@ final class CassandraMessageRepository implements MessageRepository
 
     private Statement createQueryToFindMessagesByTitle(String title)
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Messages.TABLE_NAME)
@@ -437,7 +438,7 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID appId = UUID.fromString(applicationId);
         
-        Statement deleteFromMainTable = queryBuilder
+        Statement deleteFromMainTable = QueryBuilder
             .delete()
             .all()
             .from(Messages.TABLE_NAME)
