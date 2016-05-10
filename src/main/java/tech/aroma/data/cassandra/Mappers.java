@@ -240,13 +240,16 @@ final class Mappers
             
             Image image = new Image();
             
+            //Binary
             ByteBuffer binary = row.getBytes(Tables.Media.BINARY);
             image.setData(binary);
             
+            //Dimensions
             int width = row.getInt(Tables.Media.WIDTH);
             int height = row.getInt(Tables.Media.HEIGHT);
             image.setDimension(new Dimension(width, height));
             
+            //Media Type
             String mediaType = row.getString(Tables.Media.MEDIA_TYPE);
             
             try
@@ -268,6 +271,7 @@ final class Mappers
         {
             Message message = new Message();
             
+            //UUIDs
             UUID msgId = row.getUUID(MESSAGE_ID);
             UUID appId = row.getUUID(APP_ID);
             
@@ -280,6 +284,7 @@ final class Mappers
                 .setBody(row.getString(Tables.Messages.BODY))
                 .setApplicationName(row.getString(Tables.Messages.APP_NAME));
             
+            //Time Created & Received
             Date timeCreated = row.getTimestamp(Tables.Messages.TIME_CREATED);
             Date timeReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED);
             
@@ -292,13 +297,13 @@ final class Mappers
             {
                 message.setTimeMessageReceived(timeReceived.getTime());
             }
-            
+
+            //Urgency
             String urgency = row.getString(Tables.Messages.URGENCY);
             if (!isNullOrEmpty(urgency))
             {
                 message.setUrgency(Urgency.valueOf(urgency));
             }
-            
             
             return message;
         };
