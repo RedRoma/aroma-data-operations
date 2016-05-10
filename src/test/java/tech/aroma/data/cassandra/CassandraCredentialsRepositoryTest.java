@@ -23,7 +23,6 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,8 +65,6 @@ public class CassandraCredentialsRepositoryTest
     @Mock
     private Session cassandra;
 
-    private QueryBuilder queryBuilder;
-
     private CassandraCredentialsRepository instance;
 
     @GenerateString(UUID)
@@ -94,7 +91,7 @@ public class CassandraCredentialsRepositoryTest
         setupData();
         setupMocks();
 
-        instance = new CassandraCredentialsRepository(cassandra, queryBuilder);
+        instance = new CassandraCredentialsRepository(cassandra);
     }
 
     private void setupData() throws Exception
@@ -104,8 +101,6 @@ public class CassandraCredentialsRepositoryTest
 
     private void setupMocks() throws Exception
     {
-        queryBuilder = new QueryBuilder(cluster);
-
         when(results.one()).thenReturn(row);
         when(cassandra.execute(Mockito.any(Statement.class)))
             .thenReturn(results);
@@ -116,11 +111,9 @@ public class CassandraCredentialsRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraCredentialsRepository(null, queryBuilder))
+        assertThrows(() -> new CassandraCredentialsRepository(null))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraCredentialsRepository(cassandra, null))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
