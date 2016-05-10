@@ -182,33 +182,40 @@ final class Mappers
         {
             Event event = new Event();
             
+            //UUIDs
             UUID eventId = row.getUUID(Activity.EVENT_ID);
             UUID appId = row.getUUID(Activity.APP_ID);
             UUID actorId = row.getUUID(Activity.ACTOR_ID);
+            
+            //Serialized Event
             String serializedEvent = row.getString(Activity.SERIALIZED_EVENT);
             
+            //Event ID
             if (eventId != null)
             {
                 event.setEventId(eventId.toString());
             }
             
+            //App ID
             if (appId != null)
             {
                 event.setApplicationId(appId.toString());
             }
             
+            //Actor ID
             if (actorId != null)
             {
                 event.setUserIdOfActor(actorId.toString());
             }
             
+            //Time of Event
             Date timeOfEvent = row.getTimestamp(Activity.TIME_OF_EVENT);
-            
             if (timeOfEvent != null)
             {
                 event.setTimestamp(timeOfEvent.getTime());
             }
-            
+
+            //Serialized Event
             if (!isNullOrEmpty(serializedEvent))
             {
                 try
