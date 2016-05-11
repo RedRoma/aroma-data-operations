@@ -22,7 +22,7 @@ To use, simply add the following maven dependency.
 <dependency>
 	<groupId>tech.aroma</groupId>
 	<artifactId>aroma-data-operations</artifactId>
-	<version>1.1</version>
+	<version>1.0</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ To use, simply add the following maven dependency.
 <dependency>
 	<groupId>tech.aroma</groupId>
 	<artifactId>aroma-data-operations</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 </dependency>
 ```
 
