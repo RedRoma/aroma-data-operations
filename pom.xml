@@ -5,11 +5,11 @@
     <parent>
         <groupId>tech.aroma</groupId>
         <artifactId>aroma</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5</version>
     </parent>
 
     <artifactId>aroma-data-operations</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
@@ -96,13 +96,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift</artifactId>
-            <version>1.10-SNAPSHOT</version>
+            <version>1.9</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift-generators</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -127,7 +127,6 @@
         <dependency>
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
-            <version>3.0.1</version>
         </dependency>
 
         <!--=======================-->
