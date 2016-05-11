@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>aroma-data-operations</artifactId>
-    <version>1.1</version>
+    <version>1.0</version>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
@@ -114,7 +114,7 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
-        
+
         <!--Decorater Pattern for Guice-->
         <dependency>
             <groupId>tech.sirwellington.decorice</groupId>
@@ -129,7 +129,7 @@
             <artifactId>cassandra-driver-core</artifactId>
             <version>2.2.0-rc3</version>
         </dependency>
-        
+
         <!--=======================-->
         <!--EXPIRING MAP-->
         <!--=======================-->
@@ -146,7 +146,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-    
+
     </dependencies>
 
     <build>
