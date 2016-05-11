@@ -32,7 +32,6 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.TimeUnit;
-import tech.aroma.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
@@ -55,7 +54,6 @@ import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElement
 import static tech.aroma.thrift.generators.MessageGenerators.messages;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -188,8 +186,7 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testDeleteWhenNotPresent() throws Exception
     {
-        assertThrows(() -> instance.deleteMessage(appId, msgId))
-            .isInstanceOf(MessageDoesNotExistException.class);
+        instance.deleteMessage(appId, msgId);
     }
 
     @Test
