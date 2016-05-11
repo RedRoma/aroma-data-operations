@@ -20,7 +20,6 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.policies.ExponentialReconnectionPolicy;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.util.concurrent.TimeUnit;
@@ -77,14 +76,6 @@ public final class ModuleCassandraDevCluster extends AbstractModule
         checkThat(cluster).is(notNull());
 
         return cluster.connect("Aroma");
-    }
-
-    @Provides
-    QueryBuilder provideCQLBuilder(@Required Cluster cluster)
-    {
-        checkThat(cluster).is(notNull());
-
-        return new QueryBuilder(cluster);
     }
 
 }

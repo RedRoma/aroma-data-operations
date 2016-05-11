@@ -19,7 +19,6 @@ package tech.aroma.data.cassandra;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.junit.Before;
@@ -59,8 +58,6 @@ public class ModuleCassandraDevClusterTest
         Session session = injector.getInstance(Session.class);
         assertThat(session, notNullValue());
 
-        QueryBuilder queryBuilder = injector.getInstance(QueryBuilder.class);
-        assertThat(queryBuilder, notNullValue());
     }
 
     @Test
@@ -86,9 +83,6 @@ public class ModuleCassandraDevClusterTest
     {
         ReconnectionPolicy policy = instance.provideReconnectPolicy();
         Cluster cluster = instance.provideCassandraCluster(policy);
-
-        QueryBuilder queryBuilder = instance.provideCQLBuilder(cluster);
-        assertThat(queryBuilder, notNullValue());
     }
 
     @Test

@@ -67,19 +67,16 @@ final class CassandraTokenRepository implements TokenRepository
     private static final LengthOfTime DEFAULT_TOKEN_LIFETIME = new LengthOfTime(TimeUnit.DAYS, 60);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, AuthenticationToken> tokenMapper;
 
     @Inject
     CassandraTokenRepository(Session cassandra,
-                             QueryBuilder queryBuilder,
                              Function<Row, AuthenticationToken> tokenMapper)
     {
-        checkThat(cassandra, queryBuilder, tokenMapper)
+        checkThat(cassandra, tokenMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.tokenMapper = tokenMapper;
     }
 
@@ -175,7 +172,7 @@ final class CassandraTokenRepository implements TokenRepository
     {
         UUID tokenUuid = UUID.fromString(tokenId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Tokens.TABLE_NAME)
@@ -200,7 +197,7 @@ final class CassandraTokenRepository implements TokenRepository
     {
         UUID tokenUuid = UUID.fromString(tokenId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Tokens.TABLE_NAME)
@@ -251,9 +248,17 @@ final class CassandraTokenRepository implements TokenRepository
 
     private Statement createStatementToInsert(AuthenticationToken token) throws InvalidArgumentException
     {
+        //UUIDs
         UUID tokenId = UUID.fromString(token.tokenId);
         UUID ownerId = UUID.fromString(token.ownerId);
         UUID orgId = null;
+        
+        //Enums
+        String tokenType = null;
+        if (token.tokenType != null)
+        {
+            tokenType = token.tokenType.toString();
+        }
         
         long timeToLive = TimeFunctions.toSeconds(DEFAULT_TOKEN_LIFETIME);
 
@@ -269,7 +274,7 @@ final class CassandraTokenRepository implements TokenRepository
 
         BatchStatement batch = new BatchStatement();
 
-        Statement insertIntoMainTable = queryBuilder
+        Statement insertIntoMainTable = QueryBuilder
             .insertInto(Tokens.TABLE_NAME)
             .value(TOKEN_ID, tokenId)
             .value(OWNER_ID, ownerId)
@@ -277,12 +282,12 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, token.tokenType)
+            .value(TOKEN_TYPE, tokenType)
             .using(ttl((int) timeToLive));
 
         batch.add(insertIntoMainTable);
 
-        Statement insertIntoOwnersTable = queryBuilder
+        Statement insertIntoOwnersTable = QueryBuilder
             .insertInto(Tokens.TABLE_NAME_BY_OWNER)
             .value(OWNER_ID, ownerId)
             .value(TOKEN_ID, tokenId)
@@ -290,7 +295,7 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, token.tokenType)
+            .value(TOKEN_TYPE, tokenType)
             .using(ttl((int) timeToLive));
 
         batch.add(insertIntoOwnersTable);
@@ -315,7 +320,7 @@ final class CassandraTokenRepository implements TokenRepository
     {
         UUID ownerUuid = UUID.fromString(ownerId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Tokens.TABLE_NAME_BY_OWNER)
@@ -334,7 +339,7 @@ final class CassandraTokenRepository implements TokenRepository
 
         BatchStatement batch = new BatchStatement();
 
-        Statement deleteFromMainTable = queryBuilder
+        Statement deleteFromMainTable = QueryBuilder
             .delete()
             .all()
             .from(Tokens.TABLE_NAME)
@@ -342,7 +347,7 @@ final class CassandraTokenRepository implements TokenRepository
         
         batch.add(deleteFromMainTable);
 
-        Statement deleteFromOwnersTable = queryBuilder
+        Statement deleteFromOwnersTable = QueryBuilder
             .delete()
             .all()
             .from(Tokens.TABLE_NAME_BY_OWNER)

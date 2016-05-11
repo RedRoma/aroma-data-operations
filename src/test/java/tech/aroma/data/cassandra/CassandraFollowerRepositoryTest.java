@@ -16,12 +16,10 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +46,6 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,16 +65,11 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraFollowerRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
     
     @Captor
     private ArgumentCaptor<Statement> statementCaptor;
-    
-    private QueryBuilder queryBuilder;
     
     @Mock
     private Function<Row, User> userMapper;
@@ -113,11 +105,9 @@ public class CassandraFollowerRepositoryTest
     @Before
     public void setUp()
     {
-        queryBuilder = new QueryBuilder(cluster);
-        
         createStubs();
         
-        instance = new CassandraFollowerRepository(cassandra, queryBuilder, userMapper, applicationMapper);
+        instance = new CassandraFollowerRepository(cassandra, userMapper, applicationMapper);
         
         app.applicationId = appId;
         app.unsetOrganizationId();
@@ -137,18 +127,14 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraFollowerRepository(null, queryBuilder, userMapper, applicationMapper))
+        assertThrows(() -> new CassandraFollowerRepository(null, userMapper, applicationMapper))
             .isInstanceOf(IllegalArgumentException.class);
-        
-        assertThrows(() -> new CassandraFollowerRepository(cassandra, null, userMapper, applicationMapper))
+
+        assertThrows(() -> new CassandraFollowerRepository(cassandra, null, applicationMapper))
             .isInstanceOf(IllegalArgumentException.class);
-        
-        assertThrows(() -> new CassandraFollowerRepository(cassandra, queryBuilder, null, applicationMapper))
+
+        assertThrows(() -> new CassandraFollowerRepository(cassandra, userMapper, null))
             .isInstanceOf(IllegalArgumentException.class);
-        
-        assertThrows(() -> new CassandraFollowerRepository(cassandra, queryBuilder, userMapper, null))
-            .isInstanceOf(IllegalArgumentException.class);
-        
     }
 
     @Test

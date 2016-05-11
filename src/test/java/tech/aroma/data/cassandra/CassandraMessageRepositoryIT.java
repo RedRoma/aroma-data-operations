@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +32,6 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.TimeUnit;
-import tech.aroma.thrift.exceptions.MessageDoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
@@ -56,7 +54,6 @@ import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElement
 import static tech.aroma.thrift.generators.MessageGenerators.messages;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -72,13 +69,11 @@ public class CassandraMessageRepositoryIT
     private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 2);
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
         session = TestCassandraProviders.getTestSession();
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
     
@@ -101,7 +96,7 @@ public class CassandraMessageRepositoryIT
     @Before
     public void setUp() throws Exception
     {
-        instance = new CassandraMessageRepository(session, queryBuilder, messageMapper);
+        instance = new CassandraMessageRepository(session, messageMapper);
 
 
         setupData();
@@ -191,8 +186,7 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testDeleteWhenNotPresent() throws Exception
     {
-        assertThrows(() -> instance.deleteMessage(appId, msgId))
-            .isInstanceOf(MessageDoesNotExistException.class);
+        instance.deleteMessage(appId, msgId);
     }
 
     @Test

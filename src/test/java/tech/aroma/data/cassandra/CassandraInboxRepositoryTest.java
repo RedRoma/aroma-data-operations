@@ -16,14 +16,12 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.function.Function;
@@ -52,7 +50,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,13 +68,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraInboxRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
-
-    private QueryBuilder queryBuilder;
 
     @Mock
     private Function<Row, Message> messageMapper;
@@ -120,7 +112,7 @@ public class CassandraInboxRepositoryTest
         setupData();
         setupMocks();
 
-        instance = new CassandraInboxRepository(cassandra, queryBuilder, messageMapper);
+        instance = new CassandraInboxRepository(cassandra, messageMapper);
     }
 
     private void setupData() throws Exception
@@ -133,8 +125,6 @@ public class CassandraInboxRepositoryTest
 
     private void setupMocks() throws Exception
     {
-        queryBuilder = new QueryBuilder(cluster);
-
         when(cassandra.execute(any(Statement.class))).thenReturn(results);
         when(results.one()).thenReturn(row);
         
@@ -149,13 +139,10 @@ public class CassandraInboxRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraInboxRepository(null, queryBuilder, messageMapper))
+        assertThrows(() -> new CassandraInboxRepository(null, messageMapper))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraInboxRepository(cassandra, null, messageMapper))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        assertThrows(() -> new CassandraInboxRepository(cassandra, queryBuilder, null))
+        assertThrows(() -> new CassandraInboxRepository(cassandra, null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

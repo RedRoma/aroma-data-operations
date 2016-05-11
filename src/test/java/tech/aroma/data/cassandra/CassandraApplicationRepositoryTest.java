@@ -17,12 +17,10 @@
 package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -78,15 +76,10 @@ public class CassandraApplicationRepositoryTest
 {
 
     @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
-    @Mock(answer = RETURNS_MOCKS)
     private Session session;
 
     @Captor
     private ArgumentCaptor<Statement> captor;
-
-    private QueryBuilder queryBuilder;
 
     private CassandraApplicationRepository instance;
 
@@ -118,9 +111,7 @@ public class CassandraApplicationRepositoryTest
         List<String> owners = listOf(uuids, 5);
         app.setOwners(toSet(owners));
 
-        queryBuilder = new QueryBuilder(cluster);
-
-        instance = new CassandraApplicationRepository(session, queryBuilder, appMapper);
+        instance = new CassandraApplicationRepository(session, appMapper);
         
         when(appMapper.apply(mockRow))
             .thenReturn(app);
@@ -130,13 +121,10 @@ public class CassandraApplicationRepositoryTest
     @Test
     public void testConstructor()
     {
-        assertThrows(() -> new CassandraApplicationRepository(session, null, null))
+        assertThrows(() -> new CassandraApplicationRepository(session, null))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraApplicationRepository(null, queryBuilder, null))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        assertThrows(() -> new CassandraApplicationRepository(null, null, appMapper))
+        assertThrows(() -> new CassandraApplicationRepository(null, appMapper))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

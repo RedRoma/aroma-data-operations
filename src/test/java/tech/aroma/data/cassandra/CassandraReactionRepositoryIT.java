@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.thrift.TException;
@@ -52,12 +51,10 @@ public class CassandraReactionRepositoryIT
 {
     
     private static Session session;
-    private static QueryBuilder queryBuilder;
     
     @BeforeClass
     public static void begin()
     {
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
         session = TestCassandraProviders.getTestSession();
     }
     
@@ -73,7 +70,7 @@ public class CassandraReactionRepositoryIT
     @Before
     public void setUp() throws Exception
     {
-        instance = new CassandraReactionRepository(session, queryBuilder, reactionsMapper);
+        instance = new CassandraReactionRepository(session, reactionsMapper);
         
         setupData();
         setupMocks();

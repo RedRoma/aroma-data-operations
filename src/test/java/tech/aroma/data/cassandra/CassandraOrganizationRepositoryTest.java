@@ -16,7 +16,6 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -24,7 +23,6 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.exceptions.NoHostAvailableException;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +58,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -82,13 +79,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraOrganizationRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
-
-    private QueryBuilder queryBuilder;
 
     @Mock
     private Function<Row, Organization> organizationMapper;
@@ -137,8 +129,7 @@ public class CassandraOrganizationRepositoryTest
 
         org.owners = listOf(uuids, 3);
 
-        queryBuilder = new QueryBuilder(cluster);
-        instance = new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, userMapper);
+        instance = new CassandraOrganizationRepository(cassandra, organizationMapper, userMapper);
 
         setupBasicStubbing();
     }
@@ -147,16 +138,13 @@ public class CassandraOrganizationRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraOrganizationRepository(null, queryBuilder, organizationMapper, userMapper))
+        assertThrows(() -> new CassandraOrganizationRepository(null, organizationMapper, userMapper))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraOrganizationRepository(cassandra, null, organizationMapper, userMapper))
+        assertThrows(() -> new CassandraOrganizationRepository(cassandra, null, userMapper))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraOrganizationRepository(cassandra, queryBuilder, null, userMapper))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        assertThrows(() -> new CassandraOrganizationRepository(cassandra, queryBuilder, organizationMapper, null))
+        assertThrows(() -> new CassandraOrganizationRepository(cassandra, organizationMapper, null))
             .isInstanceOf(IllegalArgumentException.class);
 
     }
