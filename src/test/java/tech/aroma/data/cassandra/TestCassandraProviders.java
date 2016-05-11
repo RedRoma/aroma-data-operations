@@ -45,6 +45,8 @@ final class TestCassandraProviders
 
     static Session getTestSession()
     {
-        return INJECTOR.getInstance(Session.class);
+        Cluster cluster = createTestCluster();
+        return cluster.connect("Aroma_Tests");
+//        return INJECTOR.getInstance(Session.class);
     }
 }
