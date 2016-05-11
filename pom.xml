@@ -5,11 +5,11 @@
     <parent>
         <groupId>tech.aroma</groupId>
         <artifactId>aroma</artifactId>
-        <version>1.5</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>aroma-data-operations</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
