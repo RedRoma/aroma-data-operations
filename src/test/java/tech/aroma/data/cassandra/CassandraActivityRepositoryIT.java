@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.After;
@@ -57,13 +56,11 @@ public class CassandraActivityRepositoryIT
 {
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
     private static Function<Row, Event> eventMapper;
 
     @BeforeClass
     public static void begin()
     {
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
         session = TestCassandraProviders.getTestSession();
         eventMapper = Mappers.eventMapper();
     }
@@ -87,7 +84,7 @@ public class CassandraActivityRepositoryIT
 
         setupData();
 
-        instance = new CassandraActivityRepository(session, queryBuilder, eventMapper);
+        instance = new CassandraActivityRepository(session, eventMapper);
     }
 
     private void setupData() throws Exception

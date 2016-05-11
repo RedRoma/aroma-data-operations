@@ -53,16 +53,13 @@ final class CassandraCredentialsRepository implements CredentialRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraCredentialsRepository.class);
     
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
 
     @Inject
-    CassandraCredentialsRepository(Session cassandra, QueryBuilder queryBuilder)
+    CassandraCredentialsRepository(Session cassandra)
     {
-        checkThat(cassandra, queryBuilder)
-            .are(notNull());
+        checkThat(cassandra).is(notNull());
         
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
     }
 
     @Override
@@ -158,7 +155,7 @@ final class CassandraCredentialsRepository implements CredentialRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .insertInto(Credentials.TABLE_NAME)
             .value(Credentials.USER_ID, userUuid)
             .value(Credentials.TIME_CREATED, new Date())
@@ -170,7 +167,7 @@ final class CassandraCredentialsRepository implements CredentialRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Credentials.TABLE_NAME)
@@ -195,7 +192,7 @@ final class CassandraCredentialsRepository implements CredentialRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select(Credentials.ENCRYPTED_PASSWORD)
             .from(Credentials.TABLE_NAME)
             .where(eq(Credentials.USER_ID, userUuid));
@@ -213,7 +210,7 @@ final class CassandraCredentialsRepository implements CredentialRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Credentials.TABLE_NAME)

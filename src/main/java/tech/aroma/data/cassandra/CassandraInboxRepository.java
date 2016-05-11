@@ -59,19 +59,16 @@ final class CassandraInboxRepository implements InboxRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraInboxRepository.class);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Message> messageMapper;
 
     @Inject
     CassandraInboxRepository(Session cassandra,
-                             QueryBuilder queryBuilder,
                              Function<Row, Message> messageMapper)
     {
-        checkThat(cassandra, queryBuilder, messageMapper)
+        checkThat(cassandra, messageMapper)
             .are(notNull());
 
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.messageMapper = messageMapper;
     }
 
@@ -238,18 +235,27 @@ final class CassandraInboxRepository implements InboxRepository
 
     private Statement createStatementToSaveMessage(Message message, User user, LengthOfTime lifetime)
     {
+        //UUIDs
         UUID msgUuid = UUID.fromString(message.messageId);
         UUID userUuid = UUID.fromString(user.userId);
         UUID appUuid = UUID.fromString(message.applicationId);
+        
+        //Urgency
+        String urgency = null;
+        if (message.urgency != null)
+        {
+            urgency = message.urgency.toString();
+        }
+        
         long timeToLive = TimeFunctions.toSeconds(lifetime);
 
-        return queryBuilder
+        return QueryBuilder
             .insertInto(Inbox.TABLE_NAME)
             .value(Inbox.USER_ID, userUuid)
             .value(Inbox.MESSAGE_ID, msgUuid)
             .value(Inbox.BODY, message.body)
             .value(Inbox.APP_ID, appUuid)
-            .value(Inbox.URGENCY, message.urgency)
+            .value(Inbox.URGENCY, urgency)
             .value(Inbox.TITLE, message.title)
             .value(Inbox.TIME_CREATED, message.timeOfCreation)
             .value(Inbox.TIME_RECEIVED, message.timeMessageReceived)
@@ -265,7 +271,7 @@ final class CassandraInboxRepository implements InboxRepository
     {
         UUID userUuid = UUID.fromString(userId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Inbox.TABLE_NAME)
@@ -279,7 +285,7 @@ final class CassandraInboxRepository implements InboxRepository
         UUID userUuid = UUID.fromString(userId);
         UUID msgUuid = UUID.fromString(message.messageId);
 
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Inbox.TABLE_NAME)
@@ -293,7 +299,7 @@ final class CassandraInboxRepository implements InboxRepository
         UUID userUuid = UUID.fromString(userId);
         UUID msgUuid = UUID.fromString(messageId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Inbox.TABLE_NAME)
@@ -305,7 +311,7 @@ final class CassandraInboxRepository implements InboxRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Inbox.TABLE_NAME)
@@ -316,7 +322,7 @@ final class CassandraInboxRepository implements InboxRepository
     {
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Inbox.TABLE_NAME)

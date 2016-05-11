@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
 import java.util.Set;
@@ -72,13 +71,11 @@ public class CassandraMessageRepositoryIT
     private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 2);
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
         session = TestCassandraProviders.getTestSession();
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
     
@@ -101,7 +98,7 @@ public class CassandraMessageRepositoryIT
     @Before
     public void setUp() throws Exception
     {
-        instance = new CassandraMessageRepository(session, queryBuilder, messageMapper);
+        instance = new CassandraMessageRepository(session, messageMapper);
 
 
         setupData();

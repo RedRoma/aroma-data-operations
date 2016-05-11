@@ -54,6 +54,7 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
 import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
@@ -82,13 +83,23 @@ final class Mappers
         {
             Application app = new Application();
             
+            //App ID
             UUID appId = row.getUUID(Tables.Applications.APP_ID);
-          
             if (appId != null)
             {
                 app.setApplicationId(appId.toString());
             }
             
+            //App Name
+            app.setName(row.getString(Tables.Applications.APP_NAME));
+            
+            //App Description
+            if (doesRowContainColumn(row, Tables.Applications.APP_DESCRIPTION))
+            {
+                app.setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
+            }
+            
+            //Media ID
             if (doesRowContainColumn(row, Tables.Applications.ICON_MEDIA_ID))
             {
                 UUID iconMediaId = row.getUUID(Tables.Applications.ICON_MEDIA_ID);
@@ -98,6 +109,7 @@ final class Mappers
                 }
             }
 
+            //Programming Language
             if (doesRowContainColumn(row, Tables.Applications.PROGRAMMING_LANGUAGE))
             {
                 String programmingLanguage = row.getString(Tables.Applications.PROGRAMMING_LANGUAGE);
@@ -108,9 +120,9 @@ final class Mappers
                 }
             }
 
+            //Time Provisioned
             if (doesRowContainColumn(row, Tables.Applications.TIME_PROVISIONED))
             {
-
                 Date timeOfProvisioning = row.getTimestamp(Tables.Applications.TIME_PROVISIONED);
                 if (timeOfProvisioning != null)
                 {
@@ -118,6 +130,7 @@ final class Mappers
                 }
             }
 
+            //Token Expiration
             if (doesRowContainColumn(row, Tables.Applications.TIME_OF_TOKEN_EXPIRATION))
             {
                 Date tokenExpiration = row.getTimestamp(Tables.Applications.TIME_OF_TOKEN_EXPIRATION);
@@ -127,6 +140,7 @@ final class Mappers
                 }
             }
 
+            //Owners
             if (doesRowContainColumn(row, Tables.Applications.OWNERS))
             {
                 //Transform the UUIDs to Strings
@@ -136,12 +150,11 @@ final class Mappers
                     .collect(Collectors.toSet());
 
                 app.setOwners(owners);
-
             }
 
+            //ORG ID
             if (doesRowContainColumn(row, Tables.Applications.ORG_ID))
             {
-
                 UUID orgId = row.getUUID(Tables.Applications.ORG_ID);
                 if (orgId != null)
                 {
@@ -149,18 +162,17 @@ final class Mappers
                 }
             }
 
-            if (doesRowContainColumn(row, Tables.Applications.APP_DESCRIPTION))
-            {
-                app.setApplicationDescription(row.getString(Tables.Applications.APP_DESCRIPTION));
-            }
-
+            //Tier
             if (doesRowContainColumn(row, Tables.Applications.TIER))
             {
-                app.setTier(row.get(Tables.Applications.TIER, Tier.class));
+                String tier = row.getString(Tables.Applications.TIER);
+                
+                if (!isNullOrEmpty(tier))
+                {
+                    app.setTier(Tier.valueOf(tier));
+                }
             }
 
-            app.setName(row.getString(Tables.Applications.APP_NAME));
-            
             return app;
         };
     }
@@ -171,33 +183,40 @@ final class Mappers
         {
             Event event = new Event();
             
+            //UUIDs
             UUID eventId = row.getUUID(Activity.EVENT_ID);
             UUID appId = row.getUUID(Activity.APP_ID);
             UUID actorId = row.getUUID(Activity.ACTOR_ID);
+            
+            //Serialized Event
             String serializedEvent = row.getString(Activity.SERIALIZED_EVENT);
             
+            //Event ID
             if (eventId != null)
             {
                 event.setEventId(eventId.toString());
             }
             
+            //App ID
             if (appId != null)
             {
                 event.setApplicationId(appId.toString());
             }
             
+            //Actor ID
             if (actorId != null)
             {
                 event.setUserIdOfActor(actorId.toString());
             }
             
+            //Time of Event
             Date timeOfEvent = row.getTimestamp(Activity.TIME_OF_EVENT);
-            
             if (timeOfEvent != null)
             {
                 event.setTimestamp(timeOfEvent.getTime());
             }
-            
+
+            //Serialized Event
             if (!isNullOrEmpty(serializedEvent))
             {
                 try
@@ -222,13 +241,16 @@ final class Mappers
             
             Image image = new Image();
             
+            //Binary
             ByteBuffer binary = row.getBytes(Tables.Media.BINARY);
             image.setData(binary);
             
+            //Dimensions
             int width = row.getInt(Tables.Media.WIDTH);
             int height = row.getInt(Tables.Media.HEIGHT);
             image.setDimension(new Dimension(width, height));
             
+            //Media Type
             String mediaType = row.getString(Tables.Media.MEDIA_TYPE);
             
             try
@@ -250,6 +272,7 @@ final class Mappers
         {
             Message message = new Message();
             
+            //UUIDs
             UUID msgId = row.getUUID(MESSAGE_ID);
             UUID appId = row.getUUID(APP_ID);
             
@@ -262,6 +285,7 @@ final class Mappers
                 .setBody(row.getString(Tables.Messages.BODY))
                 .setApplicationName(row.getString(Tables.Messages.APP_NAME));
             
+            //Time Created & Received
             Date timeCreated = row.getTimestamp(Tables.Messages.TIME_CREATED);
             Date timeReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED);
             
@@ -274,13 +298,13 @@ final class Mappers
             {
                 message.setTimeMessageReceived(timeReceived.getTime());
             }
-            
+
+            //Urgency
             String urgency = row.getString(Tables.Messages.URGENCY);
             if (!isNullOrEmpty(urgency))
             {
                 message.setUrgency(Urgency.valueOf(urgency));
             }
-            
             
             return message;
         };
@@ -292,10 +316,11 @@ final class Mappers
         {
             Organization org = new Organization();
             
+            //Org ID
             UUID orgUuid = row.getUUID(Tables.Organizations.ORG_ID);
             
+            //Owners
             List<String> owners = Lists.create();
-            
             if (doesRowContainColumn(row, Tables.Organizations.OWNERS))
             {
                 Set<UUID> ownerIds = row.getSet(Tables.Organizations.OWNERS, UUID.class);
@@ -303,16 +328,29 @@ final class Mappers
                     .map(UUID::toString)
                     .collect(toList());
             }
+
+            //Tier
+            String tier = row.getString(Tables.Organizations.TIER);
+            if (!isNullOrEmpty(tier))
+            {
+                org.setTier(Tier.valueOf(tier));
+            }
+
+            //Industry
+            String industry = row.getString(Tables.Organizations.INDUSTRY);
+            if (!isNullOrEmpty(industry))
+            {
+                org.setIndustry(Industry.valueOf(industry));
+            }
             
+            //Other Info
             org.setOrganizationId(orgUuid.toString())
                 .setOrganizationName(row.getString(Tables.Organizations.ORG_NAME))
                 .setLogoLink(row.getString(Tables.Organizations.ICON_LINK))
                 .setOrganizationDescription(row.getString(Tables.Organizations.DESCRIPTION))
-                .setIndustry(row.get(Tables.Organizations.INDUSTRY, Industry.class))
                 .setGithubProfile(row.getString(Tables.Organizations.GITHUB_PROFILE))
                 .setOrganizationEmail(row.getString(Tables.Organizations.EMAIL))
                 .setStockMarketSymbol(row.getString(Tables.Organizations.STOCK_NAME))
-                .setTier(row.get(Tables.Organizations.TIER, Tier.class))
                 .setWebsite(row.getString(Tables.Organizations.WEBSITE))
                 .setOwners(owners);
             
@@ -326,19 +364,21 @@ final class Mappers
         {
             AuthenticationToken token = new AuthenticationToken();
             
+            //Time of Creation
             Date timeOfCreation = row.getTimestamp(Tables.Tokens.TIME_OF_CREATION);
-            Date timeOfExpiration = row.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION);
-            
             if (timeOfCreation != null)
             {
                 token.setTimeOfCreation(timeOfCreation.getTime());
             }
             
+            //Time of Expiration
+            Date timeOfExpiration = row.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION);
             if (timeOfExpiration != null)
             {
                 token.setTimeOfExpiration(timeOfExpiration.getTime());
             }
             
+            //Org ID
             String orgId = null;
             if(doesRowContainColumn(row, Tables.Tokens.ORG_ID))
             {
@@ -346,12 +386,18 @@ final class Mappers
                 orgId = orgUuid != null ? orgUuid.toString() : orgId;
             }
             
+            //Token Type
+            String tokenType = row.getString(Tables.Tokens.TOKEN_TYPE);
+            if (!isNullOrEmpty(tokenType))
+            {
+                token.setTokenType(TokenType.valueOf(tokenType));
+            }
+            
             token
                 .setTokenId(row.getUUID(Tables.Tokens.TOKEN_ID).toString())
                 .setOwnerId(row.getUUID(Tables.Tokens.OWNER_ID).toString())
                 .setOrganizationId(orgId)
-                .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME))
-                .setTokenType(row.get(Tables.Tokens.TOKEN_TYPE, TokenType.class));
+                .setOwnerName(row.getString(Tables.Tokens.OWNER_NAME));
             
             return token;
         };
@@ -421,11 +467,15 @@ final class Mappers
             
             Set<Role> roles = Sets.create();
 
-            if(doesRowContainColumn(row, Tables.Users.ROLES))
+            if (doesRowContainColumn(row, Tables.Users.ROLES))
             {
-                roles = row.getSet(Tables.Users.ROLES, Role.class);
+                Set<String> set = row.getSet(Tables.Users.ROLES, String.class);
+                roles = Sets.nullToEmpty(set)
+                    .stream()
+                    .map(Role::valueOf)
+                    .collect(toSet());
             }
-    
+
             if(doesRowContainColumn(row, Tables.Users.PROFILE_IMAGE_ID))
             {
                 String profileImageLink = row.getString(Tables.Users.PROFILE_IMAGE_ID);

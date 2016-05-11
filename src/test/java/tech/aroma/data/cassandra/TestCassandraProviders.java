@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
@@ -47,10 +46,5 @@ final class TestCassandraProviders
     static Session getTestSession()
     {
         return INJECTOR.getInstance(Session.class);
-    }
-
-    static QueryBuilder getQueryBuilder()
-    {
-        return INJECTOR.getInstance(QueryBuilder.class);
     }
 }

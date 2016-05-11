@@ -75,19 +75,16 @@ final class CassandraApplicationRepository implements ApplicationRepository
     private final static Duration DEFAULT_RECENT_DURATION = Duration.ofDays(5);
     
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Application> applicationMapper;
     
     @Inject
     CassandraApplicationRepository(Session cassandra, 
-                                   QueryBuilder queryBuilder,
                                    Function<Row, Application> applicationMapper)
     {
-        checkThat(queryBuilder, cassandra, applicationMapper)
+        checkThat(cassandra, applicationMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.applicationMapper = applicationMapper;
     }
     
@@ -302,11 +299,25 @@ final class CassandraApplicationRepository implements ApplicationRepository
     private Statement createStatementToSave(Application app)
     {
         BatchStatement batch = new BatchStatement();
-        
+
+        //UUIDs
         UUID appId = UUID.fromString(app.applicationId);
-        
         UUID iconId = null;
         UUID orgId = null;
+        
+        //Enums
+        String tier = null;
+        String programmingLanguage = null;
+        
+        if (app.tier != null)
+        {
+            tier = app.tier.toString();
+        }
+        
+        if (app.programmingLanguage != null)
+        {
+            programmingLanguage = app.programmingLanguage.toString();
+        }
         
         if (app.isSetApplicationIconMediaId())
         {
@@ -323,7 +334,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .map(UUID::fromString)
             .collect(Collectors.toSet());
         
-        Statement insertIntoMainTable = queryBuilder
+        Statement insertIntoMainTable = QueryBuilder
             .insertInto(TABLE_NAME)
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
@@ -331,16 +342,17 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(ICON_MEDIA_ID, iconId)
             .value(ORG_ID, orgId)
             .value(OWNERS, owners)
-            .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
+            .value(PROGRAMMING_LANGUAGE, programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIME_OF_TOKEN_EXPIRATION, app.timeOfTokenExpiration)
-            .value(TIER, app.tier);
+            .value(TIER, tier);
         
         batch.add(insertIntoMainTable);
         
+        //Save into the "Recents Table"
         Long timeToLive = DEFAULT_RECENT_DURATION.getSeconds();
         
-        Statement insertIntoRecentlyCreated = queryBuilder
+        Statement insertIntoRecentlyCreated = QueryBuilder
             .insertInto(TABLE_NAME_RECENTLY_CREATED)
             .value(APP_ID, appId)
             .value(APP_NAME, app.name)
@@ -348,10 +360,10 @@ final class CassandraApplicationRepository implements ApplicationRepository
             .value(ICON_MEDIA_ID, iconId)
             .value(ORG_ID, orgId)
             .value(OWNERS, owners)
-            .value(PROGRAMMING_LANGUAGE, app.programmingLanguage)
+            .value(PROGRAMMING_LANGUAGE, programmingLanguage)
             .value(TIME_PROVISIONED, app.timeOfProvisioning)
             .value(TIME_OF_TOKEN_EXPIRATION, app.timeOfTokenExpiration)
-            .value(TIER, app.tier)
+            .value(TIER, tier)
             .using(ttl(timeToLive.intValue()));
         
         batch.add(insertIntoRecentlyCreated);
@@ -364,7 +376,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         UUID appId = UUID.fromString(app.applicationId);
         
-        Statement deleteFromMainTable = queryBuilder
+        Statement deleteFromMainTable = QueryBuilder
             .delete()
             .all()
             .from(TABLE_NAME)
@@ -372,7 +384,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
         
         batch.add(deleteFromMainTable);
         
-        Statement deleteFromRecentsTable = queryBuilder
+        Statement deleteFromRecentsTable = QueryBuilder
             .delete()
             .all()
             .from(TABLE_NAME_RECENTLY_CREATED)
@@ -386,7 +398,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         UUID appId = UUID.fromString(applicationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
@@ -410,7 +422,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         UUID appId = UUID.fromString(applicationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(TABLE_NAME)
@@ -429,7 +441,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         UUID ownerId = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
@@ -440,7 +452,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     {
         UUID uuid = UUID.fromString(orgId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(TABLE_NAME)
@@ -457,7 +469,7 @@ final class CassandraApplicationRepository implements ApplicationRepository
     
     private Statement createQueryForRecentlyCreatedApps()
     {
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(TABLE_NAME_RECENTLY_CREATED)

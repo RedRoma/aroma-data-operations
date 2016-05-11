@@ -16,14 +16,12 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.junit.Before;
@@ -46,7 +44,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.*;
 import static tech.aroma.thrift.generators.ReactionGenerators.reactions;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
@@ -63,13 +60,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraReactionRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
-
-    private QueryBuilder queryBuilder;
 
     @Mock
     private Function<Row, List<Reaction>> reactionsMapper;
@@ -101,7 +93,7 @@ public class CassandraReactionRepositoryTest
         setupData();
         setupMocks();
 
-        instance = new CassandraReactionRepository(cassandra, queryBuilder, reactionsMapper);
+        instance = new CassandraReactionRepository(cassandra, reactionsMapper);
     }
 
     private void setupData() throws Exception
@@ -118,8 +110,6 @@ public class CassandraReactionRepositoryTest
 
     private void setupMocks() throws Exception
     {
-        queryBuilder = new QueryBuilder(cluster);
-
         when(resultSet.one()).thenReturn(row);
         when(reactionsMapper.apply(row)).thenReturn(reactions);
         when(cassandra.execute(any(Statement.class))).thenReturn(resultSet);
@@ -129,13 +119,10 @@ public class CassandraReactionRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraReactionRepository(null, queryBuilder, reactionsMapper))
+        assertThrows(() -> new CassandraReactionRepository(null, reactionsMapper))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraReactionRepository(cassandra, null, reactionsMapper))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        assertThrows(() -> new CassandraReactionRepository(cassandra, queryBuilder, null))
+        assertThrows(() -> new CassandraReactionRepository(cassandra, null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
