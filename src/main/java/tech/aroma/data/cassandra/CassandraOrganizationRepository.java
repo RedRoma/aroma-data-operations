@@ -35,6 +35,7 @@ import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.cassandra.Tables.Organizations;
 import tech.aroma.data.cassandra.Tables.Users;
 import tech.aroma.thrift.Organization;
+import tech.aroma.thrift.Role;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
@@ -77,21 +78,18 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraOrganizationRepository.class);
     
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Organization> organizationMapper;
     private final Function<Row, User> userMapper;
     
     @Inject
     CassandraOrganizationRepository(Session cassandra,
-                                    QueryBuilder queryBuilder,
                                     Function<Row, Organization> organizationMapper,
                                     Function<Row, User> userMapper)
     {
-        checkThat(cassandra, queryBuilder, organizationMapper, userMapper)
+        checkThat(cassandra, organizationMapper, userMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.organizationMapper = organizationMapper;
         this.userMapper = userMapper;
     }
@@ -333,17 +331,22 @@ final class CassandraOrganizationRepository implements OrganizationRepository
             .map(UUID::fromString)
             .collect(toSet());
         
-        return queryBuilder
+        
+        //Enums
+        String industry = org.industry != null ? org.industry.toString() : null;
+        String tier = org.tier != null ? org.tier.toString() : null;
+        
+        return QueryBuilder
             .insertInto(Organizations.TABLE_NAME)
             .value(ORG_ID, orgUuid)
             .value(ORG_NAME, org.organizationName)
             .value(OWNERS, owners)
             .value(ICON_LINK, org.logoLink)
-            .value(INDUSTRY, org.industry)
+            .value(INDUSTRY, industry)
             .value(EMAIL, org.organizationEmail)
             .value(GITHUB_PROFILE, org.githubProfile)
             .value(STOCK_NAME, org.stockMarketSymbol)
-            .value(TIER, org.tier)
+            .value(TIER, tier)
             .value(DESCRIPTION, org.organizationDescription)
             .value(WEBSITE, org.website);
     }
@@ -352,7 +355,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     {
         UUID orgUuid = UUID.fromString(organizationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Organizations.TABLE_NAME)
@@ -371,7 +374,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     {
         UUID orgUuid = UUID.fromString(organizationId);
 
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Organizations.TABLE_NAME)
@@ -382,7 +385,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     {
         UUID orgUuid = UUID.fromString(organizationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Organizations.TABLE_NAME)
@@ -393,7 +396,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     {
         UUID orgUuid = UUID.fromString(organizationId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .column(USER_ID).as(Users.USER_ID)
             .column(USER_FIRST_NAME).as(Users.FIRST_NAME)
@@ -410,13 +413,19 @@ final class CassandraOrganizationRepository implements OrganizationRepository
         UUID orgUuid = UUID.fromString(organizationId);
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder
+        //Enums
+        Set<String> roles = Sets.nullToEmpty(user.roles)
+            .stream()
+            .map(Role::toString)
+            .collect(toSet());
+        
+        return QueryBuilder
             .insertInto(Organizations.TABLE_NAME_MEMBERS)
             .value(ORG_ID, orgUuid)
             .value(USER_ID, userUuid)
             .value(USER_FIRST_NAME, user.firstName)
             .value(USER_LAST_NAME, user.lastName)
-            .value(USER_ROLES, user.roles)
+            .value(USER_ROLES, roles)
             .value(USER_EMAIL, user.email);
     }
     
@@ -425,7 +434,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
         UUID orgUuid = UUID.fromString(organizationId);
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Organizations.TABLE_NAME_MEMBERS)
@@ -438,7 +447,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
         UUID orgUuid = UUID.fromString(organizationId);
         UUID userUuid = UUID.fromString(userId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Organizations.TABLE_NAME_MEMBERS)
@@ -450,7 +459,7 @@ final class CassandraOrganizationRepository implements OrganizationRepository
     {
         UUID orgUuid = UUID.fromString(organizationId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Organizations.TABLE_NAME_MEMBERS)

@@ -63,17 +63,15 @@ final class CassandraActivityRepository implements ActivityRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraActivityRepository.class);
     
     private final Session session;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Event> eventMapper;
     
     @Inject
-    CassandraActivityRepository(Session session, QueryBuilder queryBuilder, Function<Row, Event> eventMapper)
+    CassandraActivityRepository(Session session, Function<Row, Event> eventMapper)
     {
-        checkThat(session, queryBuilder, eventMapper)
+        checkThat(session, eventMapper)
             .are(notNull());
         
         this.session = session;
-        this.queryBuilder = queryBuilder;
         this.eventMapper = eventMapper;
     }
     
@@ -201,7 +199,8 @@ final class CassandraActivityRepository implements ActivityRepository
         String serializedEvent = ThriftObjects.toJson(event);
         
         
-        Insert statement = queryBuilder.insertInto(Activity.TABLE_NAME)
+        Insert statement = QueryBuilder
+            .insertInto(Activity.TABLE_NAME)
             .value(Activity.USER_ID, userId)
             .value(Activity.EVENT_ID, eventId)
             .value(Activity.SERIALIZED_EVENT, serializedEvent);
@@ -262,7 +261,7 @@ final class CassandraActivityRepository implements ActivityRepository
         UUID eventUuid = UUID.fromString(eventId);
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .countAll()
             .from(Activity.TABLE_NAME)
@@ -275,7 +274,7 @@ final class CassandraActivityRepository implements ActivityRepository
         UUID eventUuid = UUID.fromString(eventId);
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Activity.TABLE_NAME)
@@ -287,7 +286,8 @@ final class CassandraActivityRepository implements ActivityRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder.select()
+        return QueryBuilder
+            .select()
             .all()
             .from(Activity.TABLE_NAME)
             .where(eq(Activity.USER_ID, userUuid));
@@ -298,7 +298,8 @@ final class CassandraActivityRepository implements ActivityRepository
         UUID eventUuid = UUID.fromString(eventId);
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder.delete()
+        return QueryBuilder
+            .delete()
             .all()
             .from(Activity.TABLE_NAME)
             .where(eq(Activity.USER_ID, userUuid))
@@ -309,7 +310,8 @@ final class CassandraActivityRepository implements ActivityRepository
     {
         UUID userUuid = UUID.fromString(user.userId);
         
-        return queryBuilder.delete()
+        return QueryBuilder
+            .delete()
             .all()
             .from(Activity.TABLE_NAME)
             .where(eq(Activity.USER_ID, userUuid));

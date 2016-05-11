@@ -16,14 +16,12 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +49,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -73,13 +70,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraActivityRepositoryTest 
 {
     
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-    
     @Mock
     private Session session;
-    
-    private QueryBuilder queryBuilder;
     
     @Mock
     private Function<Row, Event> eventMapper;
@@ -115,7 +107,7 @@ public class CassandraActivityRepositoryTest
         setupData();
         setupMocks();
         
-        instance = new CassandraActivityRepository(session, queryBuilder, eventMapper);
+        instance = new CassandraActivityRepository(session, eventMapper);
     }
 
 
@@ -131,8 +123,6 @@ public class CassandraActivityRepositoryTest
     {
         when(results.one()).thenReturn(row);
         
-        queryBuilder = new QueryBuilder(cluster);
-        
         when(session.execute(any(Statement.class)))
             .thenReturn(results);
         
@@ -143,9 +133,8 @@ public class CassandraActivityRepositoryTest
     @Test
     public void testConstructor()
     {
-        assertThrows(() -> new CassandraActivityRepository(null, queryBuilder, eventMapper));
-        assertThrows(() -> new CassandraActivityRepository(session, null, eventMapper));
-        assertThrows(() -> new CassandraActivityRepository(session, queryBuilder, null));
+        assertThrows(() -> new CassandraActivityRepository(null, eventMapper));
+        assertThrows(() -> new CassandraActivityRepository(session, null));
     }
 
     @Test

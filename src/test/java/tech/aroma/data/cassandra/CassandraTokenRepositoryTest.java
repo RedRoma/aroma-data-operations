@@ -22,7 +22,6 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -82,8 +81,6 @@ public class CassandraTokenRepositoryTest
     @Mock(answer = RETURNS_MOCKS)
     private Cluster cluster;
 
-    private QueryBuilder queryBuilder;
-
     @Mock
     private Function<Row, AuthenticationToken> tokenMapper;
 
@@ -116,9 +113,7 @@ public class CassandraTokenRepositoryTest
     @Before
     public void setUp()
     {
-        queryBuilder = new QueryBuilder(cluster);
-
-        instance = new CassandraTokenRepository(cassandra, queryBuilder, tokenMapper);
+        instance = new CassandraTokenRepository(cassandra, tokenMapper);
 
         token.tokenId = tokenId;
         token.ownerId = ownerId;
@@ -133,9 +128,8 @@ public class CassandraTokenRepositoryTest
     @Test
     public void testConstructor()
     {
-        assertThrows(() -> new CassandraTokenRepository(null, queryBuilder, tokenMapper));
-        assertThrows(() -> new CassandraTokenRepository(cassandra, null, tokenMapper));
-        assertThrows(() -> new CassandraTokenRepository(cassandra, queryBuilder, null));
+        assertThrows(() -> new CassandraTokenRepository(null, tokenMapper));
+        assertThrows(() -> new CassandraTokenRepository(cassandra, null));
     }
 
     @Test

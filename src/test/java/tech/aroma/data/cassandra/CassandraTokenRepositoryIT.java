@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -61,13 +60,11 @@ public class CassandraTokenRepositoryIT
 {
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
         session = TestCassandraProviders.getTestSession();
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
     private final Function<Row, AuthenticationToken> organizationMapper = Mappers.tokenMapper();
@@ -89,7 +86,7 @@ public class CassandraTokenRepositoryIT
     @Before
     public void setUp()
     {
-        instance = new CassandraTokenRepository(session, queryBuilder, organizationMapper);
+        instance = new CassandraTokenRepository(session, organizationMapper);
         token.tokenId = tokenId;
         token.ownerId = ownerId;
         token.organizationId = orgId;

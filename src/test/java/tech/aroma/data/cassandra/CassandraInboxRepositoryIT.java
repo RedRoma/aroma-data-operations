@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
 import java.util.Map;
@@ -63,13 +62,11 @@ public class CassandraInboxRepositoryIT
     private static final LengthOfTime MESSAGE_LIFETIME = new LengthOfTime(TimeUnit.MINUTES, 5);
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
         session = TestCassandraProviders.getTestSession();
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
 
     
@@ -100,7 +97,7 @@ public class CassandraInboxRepositoryIT
     @Before
     public void setUp()
     {
-        instance = new CassandraInboxRepository(session, queryBuilder, messageMapper);
+        instance = new CassandraInboxRepository(session, messageMapper);
 
         AlchemyGenerator<String> timeUids = () -> UUIDs.timeBased().toString();
 

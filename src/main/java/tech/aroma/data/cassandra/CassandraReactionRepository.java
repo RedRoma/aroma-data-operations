@@ -55,17 +55,15 @@ final class CassandraReactionRepository implements ReactionRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraReactionRepository.class);
 
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, List<Reaction>> reactionMapper;
 
     @Inject
-    CassandraReactionRepository(Session cassandra, QueryBuilder queryBuilder, Function<Row, List<Reaction>> reactionMapper)
+    CassandraReactionRepository(Session cassandra, Function<Row, List<Reaction>> reactionMapper)
     {
-        checkThat(cassandra, queryBuilder, reactionMapper)
+        checkThat(cassandra, reactionMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.reactionMapper = reactionMapper;
     }
 
@@ -172,7 +170,8 @@ final class CassandraReactionRepository implements ReactionRepository
     {
         UUID ownerUuid = UUID.fromString(ownerId);
 
-        return queryBuilder.delete().all()
+        return QueryBuilder
+            .delete().all()
             .from(Reactions.TABLE_NAME)
             .where(eq(OWNER_ID, ownerUuid));
     }
@@ -186,7 +185,8 @@ final class CassandraReactionRepository implements ReactionRepository
             .filter(Objects::nonNull)
             .collect(toList());
 
-        return queryBuilder.insertInto(Reactions.TABLE_NAME)
+        return QueryBuilder
+            .insertInto(Reactions.TABLE_NAME)
             .value(Reactions.OWNER_ID, ownerUuid)
             .value(Reactions.SERIALIZED_REACTIONS, serializedReactions);
     }
@@ -195,7 +195,8 @@ final class CassandraReactionRepository implements ReactionRepository
     {
         UUID ownerUuid = UUID.fromString(ownerId);
 
-        return queryBuilder.select().all()
+        return QueryBuilder
+            .select().all()
             .from(Reactions.TABLE_NAME)
             .where(eq(Reactions.OWNER_ID, ownerUuid));
     }

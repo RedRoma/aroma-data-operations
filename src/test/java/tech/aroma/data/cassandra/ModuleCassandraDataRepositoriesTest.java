@@ -19,7 +19,6 @@ package tech.aroma.data.cassandra;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -87,12 +86,6 @@ public class ModuleCassandraDataRepositoriesTest
         Cluster provideCluster()
         {
             return cluster;
-        }
-
-        @Provides
-        QueryBuilder provideQueryBuilder()
-        {
-            return new QueryBuilder(cluster);
         }
 
     };
