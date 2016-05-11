@@ -96,13 +96,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift</artifactId>
-            <version>1.9</version>
+            <version>1.10-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift-generators</artifactId>
-            <version>1.0</version>
+            <version>1.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
