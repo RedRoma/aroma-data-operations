@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.thrift.TException;
@@ -55,12 +54,10 @@ public class CassandraMediaRepositoryIT
 {
 
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
         session = TestCassandraProviders.getTestSession();
     }
 
@@ -83,7 +80,7 @@ public class CassandraMediaRepositoryIT
     @Before
     public void setUp() throws Exception
     {
-        instance = new CassandraMediaRepository(session, queryBuilder, imageMapper);
+        instance = new CassandraMediaRepository(session, imageMapper);
 
         setupData();
         setupMocks();

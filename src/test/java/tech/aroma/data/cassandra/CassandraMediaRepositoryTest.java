@@ -16,13 +16,11 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +41,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -59,13 +56,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraMediaRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
-
-    private QueryBuilder queryBuilder;
 
     @Mock
     private Function<Row, Image> imageMapper;
@@ -99,7 +91,7 @@ public class CassandraMediaRepositoryTest
         setupData();
         setupMocks();
 
-        instance = new CassandraMediaRepository(cassandra, queryBuilder, imageMapper);
+        instance = new CassandraMediaRepository(cassandra, imageMapper);
     }
 
     private void setupData() throws Exception
@@ -109,8 +101,6 @@ public class CassandraMediaRepositoryTest
 
     private void setupMocks() throws Exception
     {
-        queryBuilder = new QueryBuilder(cluster);
-
         when(results.one()).thenReturn(row);
         when(imageMapper.apply(row)).thenReturn(image);
     }
@@ -119,13 +109,10 @@ public class CassandraMediaRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraMediaRepository(null, queryBuilder, imageMapper))
+        assertThrows(() -> new CassandraMediaRepository(null,  imageMapper))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraMediaRepository(cassandra, null, imageMapper))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        assertThrows(() -> new CassandraMediaRepository(cassandra, queryBuilder, null))
+        assertThrows(() -> new CassandraMediaRepository(cassandra, null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

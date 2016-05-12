@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -68,12 +67,10 @@ public class CassandraApplicationRepositoryIT
     private static final Logger LOG = LoggerFactory.getLogger(CassandraApplicationRepositoryIT.class);
     
     private static Session session;
-    private static QueryBuilder queryBuilder;
 
     @BeforeClass
     public static void begin()
     {
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
         session = TestCassandraProviders.getTestSession();
     }
 
@@ -109,7 +106,7 @@ public class CassandraApplicationRepositoryIT
         owners = Lists.copy(app.owners);
         
         app.setOwners(toSet((owners)));
-        instance = new CassandraApplicationRepository(session, queryBuilder, appMapper);
+        instance = new CassandraApplicationRepository(session, appMapper);
         
         
         apps = listOf(applications(), 20).stream()

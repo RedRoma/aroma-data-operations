@@ -16,14 +16,12 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +41,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Answers.RETURNS_MOCKS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -60,13 +57,8 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 public class CassandraCredentialsRepositoryTest
 {
 
-    @Mock(answer = RETURNS_MOCKS)
-    private Cluster cluster;
-
     @Mock
     private Session cassandra;
-
-    private QueryBuilder queryBuilder;
 
     private CassandraCredentialsRepository instance;
 
@@ -94,7 +86,7 @@ public class CassandraCredentialsRepositoryTest
         setupData();
         setupMocks();
 
-        instance = new CassandraCredentialsRepository(cassandra, queryBuilder);
+        instance = new CassandraCredentialsRepository(cassandra);
     }
 
     private void setupData() throws Exception
@@ -104,8 +96,6 @@ public class CassandraCredentialsRepositoryTest
 
     private void setupMocks() throws Exception
     {
-        queryBuilder = new QueryBuilder(cluster);
-
         when(results.one()).thenReturn(row);
         when(cassandra.execute(Mockito.any(Statement.class)))
             .thenReturn(results);
@@ -116,11 +106,9 @@ public class CassandraCredentialsRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new CassandraCredentialsRepository(null, queryBuilder))
+        assertThrows(() -> new CassandraCredentialsRepository(null))
             .isInstanceOf(IllegalArgumentException.class);
 
-        assertThrows(() -> new CassandraCredentialsRepository(cassandra, null))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

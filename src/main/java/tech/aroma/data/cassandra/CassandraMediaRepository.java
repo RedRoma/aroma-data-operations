@@ -53,17 +53,15 @@ final class CassandraMediaRepository implements MediaRepository
     private final static Logger LOG = LoggerFactory.getLogger(CassandraMediaRepository.class);
     
     private final Session cassandra;
-    private final QueryBuilder queryBuilder;
     private final Function<Row, Image> imageMapper;
     
     @Inject
-    CassandraMediaRepository(Session cassandra, QueryBuilder queryBuilder, Function<Row, Image> imageMapper)
+    CassandraMediaRepository(Session cassandra, Function<Row, Image> imageMapper)
     {
-        checkThat(cassandra, queryBuilder, imageMapper)
+        checkThat(cassandra, imageMapper)
             .are(notNull());
         
         this.cassandra = cassandra;
-        this.queryBuilder = queryBuilder;
         this.imageMapper = imageMapper;
     }
     
@@ -203,10 +201,10 @@ final class CassandraMediaRepository implements MediaRepository
     private Statement createStatementToSaveImage(String mediaId, Image image)
     {
         UUID mediaUuid = UUID.fromString(mediaId);
-        String type = image.getImageType() != null ? image.imageType.toString() : null;
+        String type = image.imageType != null ? image.imageType.toString() : null;
         Dimension dimension = image.dimension != null ? image.dimension : new Dimension();
         
-        return queryBuilder
+        return QueryBuilder
             .insertInto(Tables.Media.TABLE_NAME)
             .value(Media.MEDIA_ID, mediaUuid)
             .value(Media.MEDIA_TYPE, type)
@@ -220,7 +218,7 @@ final class CassandraMediaRepository implements MediaRepository
     {
         UUID mediaUuid = UUID.fromString(mediaId);
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Tables.Media.TABLE_NAME)
@@ -252,7 +250,7 @@ final class CassandraMediaRepository implements MediaRepository
     {
         UUID mediaUuid = UUID.fromString(mediaId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Tables.Media.TABLE_NAME)
@@ -283,7 +281,7 @@ final class CassandraMediaRepository implements MediaRepository
         String dimensionString = dimension.toString();
         String mediaType = thumbnail.imageType != null ? thumbnail.imageType.toString() : null;
         
-        return queryBuilder
+        return QueryBuilder
             .insertInto(Tables.Media.TABLE_NAME_THUMBNAILS)
             .value(Media.MEDIA_ID, mediaUuid)
             .value(Media.DIMENSION, dimensionString)
@@ -300,7 +298,7 @@ final class CassandraMediaRepository implements MediaRepository
         UUID mediaUuid = UUID.fromString(mediaId);
         String dimensionString = dimension.toString();
         
-        return queryBuilder
+        return QueryBuilder
             .select()
             .all()
             .from(Tables.Media.TABLE_NAME_THUMBNAILS)
@@ -313,7 +311,7 @@ final class CassandraMediaRepository implements MediaRepository
         UUID mediaUuid = UUID.fromString(mediaId);
         String dimensionString = dimension.toString();
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Tables.Media.TABLE_NAME_THUMBNAILS)
@@ -325,7 +323,7 @@ final class CassandraMediaRepository implements MediaRepository
     {
         UUID mediaUuid = UUID.fromString(mediaId);
         
-        return queryBuilder
+        return QueryBuilder
             .delete()
             .all()
             .from(Tables.Media.TABLE_NAME_THUMBNAILS)

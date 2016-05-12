@@ -18,7 +18,6 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +66,11 @@ public class CassandraOrganizationRepositoryIT
 {
     
     private static Session session;
-    private static QueryBuilder queryBuilder;
     
     @BeforeClass
     public static void begin()
     {
         session = TestCassandraProviders.getTestSession();
-        queryBuilder = TestCassandraProviders.getQueryBuilder();
     }
     
     
@@ -112,7 +109,7 @@ public class CassandraOrganizationRepositoryIT
         
         org.owners = listOf(uuids, 5);
         
-        instance = new CassandraOrganizationRepository(session, queryBuilder, organizationMapper, userMapper);
+        instance = new CassandraOrganizationRepository(session, organizationMapper, userMapper);
         
         mapOfMembers = Maps.create();
         members = members
