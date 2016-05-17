@@ -85,7 +85,6 @@ class Tables
         
         static final String USER_ID = Users.USER_ID;
         static final String SERIALIZED_DEVICE = "serialized_device";
-        static final String TIME_REGISTERED = "time_registered";
     }
     
     static class Follow
