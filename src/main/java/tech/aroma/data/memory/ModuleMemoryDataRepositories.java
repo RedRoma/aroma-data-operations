@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
+import tech.aroma.data.DeviceRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -45,9 +46,10 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
+        bind(ActivityRepository.class).to(MemoryActivityRepository.class).asEagerSingleton();
         bind(ApplicationRepository.class).to(MemoryApplicationRepository.class).asEagerSingleton();
         bind(CredentialRepository.class).to(MemoryCredentialsRepository.class).asEagerSingleton();
-        bind(ActivityRepository.class).to(MemoryActivityRepository.class).asEagerSingleton();
+        bind(DeviceRepository.class).to(MemoryDeviceRepository.class).asEagerSingleton();
         bind(FollowerRepository.class).to(MemoryFollowerRepository.class).asEagerSingleton();
         bind(InboxRepository.class).to(MemoryInboxRepository.class).asEagerSingleton();
         bind(MediaRepository.class).to(MemoryMediaRepository.class).asEagerSingleton();
