@@ -79,6 +79,15 @@ class Tables
         static final String TIME_CREATED = "time_created";
     }
     
+    static class Devices
+    {
+        static final String TABLE_NAME = "User_Devices";
+        
+        static final String USER_ID = Users.USER_ID;
+        static final String SERIALIZED_DEVICE = "serialized_device";
+        static final String TIME_REGISTERED = "time_registered";
+    }
+    
     static class Follow
     {
         static final String TABLE_NAME_APP_FOLLOWERS = "Follow_Application_Followers";
