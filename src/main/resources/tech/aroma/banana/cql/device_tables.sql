@@ -6,9 +6,9 @@
 */
 CREATE TABLE IF NOT EXISTS Aroma.User_Devices
 (
-	user_id uuid,
+    user_id uuid,
     //The Thrift structures representing a Device (Android, or iOS) Serialized as a JSON String
-	serialized_devices set<text>
+	serialized_devices set<text>,
 
 	PRIMARY KEY (user_id)
 );
