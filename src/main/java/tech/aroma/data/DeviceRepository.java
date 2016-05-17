@@ -25,7 +25,9 @@ import tech.aroma.thrift.channels.MobileDevice;
 
 
 /**
- *
+ * This Repository is responsible for storing User Devices. This is useful for sending Push Notifications
+ * to Aroma Users.
+ * 
  * @author SirWellington
  */
 public interface DeviceRepository 
