@@ -47,6 +47,7 @@ import tech.aroma.thrift.Urgency;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.TokenType;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.annotations.access.Internal;
@@ -180,8 +181,47 @@ final class Mappers
             return app;
         };
     }
+        
     
-     //==========================================================
+    //==========================================================
+    // DEVICE MAPPER
+    //==========================================================
+    
+    static Function<Row, Set<MobileDevice>> mobileDeviceMapper()
+    {
+        return row ->
+        {
+            if (doesRowContainColumn(row, Tables.Devices.SERIALIZED_DEVICES))
+            {
+                Set<String> serializedDevices = row.getSet(Tables.Devices.SERIALIZED_DEVICES, String.class);
+                
+                return Sets.nullToEmpty(serializedDevices)
+                    .stream()
+                    .map(Mappers::deserializeDevice)
+                    .filter(Objects::nonNull)
+                    .collect(toSet());
+            }
+            
+            return Sets.emptySet();
+        };
+    }
+
+    private static MobileDevice deserializeDevice(String serializedDevice)
+    {
+        try
+        {
+            return ThriftObjects.fromJson(new MobileDevice(), serializedDevice);
+        }
+        catch(Exception ex)
+        {
+            LOG.error("Failed to Deserialized Device {}", serializedDevice, ex);
+            //Nulls will be filtered out in the Functional Operations.
+            return null;
+        }
+    }
+    
+
+    //==========================================================
     // EVENT MAPPER
     //==========================================================
 
