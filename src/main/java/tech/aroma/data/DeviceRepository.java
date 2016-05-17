@@ -17,11 +17,13 @@
 
 package tech.aroma.data;
 
-import java.util.List;
 import java.util.Set;
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.sets.Sets;
+import tech.aroma.thrift.User;
 import tech.aroma.thrift.channels.MobileDevice;
+import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
+import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
 /**
@@ -44,13 +46,40 @@ public interface DeviceRepository
         return devices.contains(mobileDevice);
     }
     
-    void saveMobileDevice(String userId, MobileDevice mobileDevice) throws TException;
+    void saveMobileDevice(@NonEmpty String userId, @Required MobileDevice mobileDevice) throws TException;
     
-    void saveMobileDevices(String userId, List<MobileDevice> mobileDevices) throws TException;
+    /**
+     * This Operation overwrites all existing Mobile Devices registered for the specified User.
+     * 
+     * @param userId The {@linkplain User#userId User ID} to save and associate the devices with.
+     * @param mobileDevices The Set of Mobile Devices belonging to the user.
+     * @throws TException 
+     */
+    void saveMobileDevices(@NonEmpty String userId, @Required Set<MobileDevice> mobileDevices) throws TException;
     
-    Set<MobileDevice> getMobileDevice(String userId) throws TException;
+    /**
+     * Get the Set of all Mobile Devices registered to a {@link User}.
+     * 
+     * @param userId The {@linkplain User#userId User ID} of the User.
+     * @return
+     * @throws TException 
+     */
+    Set<MobileDevice> getMobileDevice(@NonEmpty String userId) throws TException;
     
-    void deleteMovileDevice(String userId, MobileDevice mobileDevice) throws TException;
+    /**
+     * Disassociates and removes a device associated with a particular user.
+     * 
+     * @param userId The User ID the Device is associated with.
+     * @param mobileDevice The Device to remove.
+     * @throws TException 
+     */
+    void deleteMovileDevice(@NonEmpty String userId, @Required MobileDevice mobileDevice) throws TException;
     
-    void deleteAllMobileDevice(String userId) throws TException;
+    /**
+     * Removes an Disassociates all devices registered to the specified {@Link User}.
+     * 
+     * @param userId
+     * @throws TException 
+     */
+    void deleteAllMobileDevice(@NonEmpty String userId) throws TException;
 }
