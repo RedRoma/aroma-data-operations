@@ -36,7 +36,7 @@ public interface DeviceRepository
 {
     default boolean containsMobileDevice(String userId, MobileDevice mobileDevice) throws TException
     {
-        Set<MobileDevice> devices = getMobileDevice(userId);
+        Set<MobileDevice> devices = getMobileDevices(userId);
         
         if (Sets.isEmpty(devices))
         {
@@ -64,7 +64,7 @@ public interface DeviceRepository
      * @return
      * @throws TException 
      */
-    Set<MobileDevice> getMobileDevice(@NonEmpty String userId) throws TException;
+    Set<MobileDevice> getMobileDevices(@NonEmpty String userId) throws TException;
     
     /**
      * Disassociates and removes a device associated with a particular user.
