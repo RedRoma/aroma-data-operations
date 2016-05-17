@@ -24,6 +24,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
+import tech.aroma.data.DeviceRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -45,6 +47,7 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -111,6 +114,9 @@ public class ModuleCassandraDataRepositoriesTest
         ApplicationRepository appRepo = injector.getInstance(ApplicationRepository.class);
         assertThat(appRepo, notNullValue());
 
+        DeviceRepository deviceRepo = injector.getInstance(DeviceRepository.class);
+        assertThat(deviceRepo, notNullValue());
+        
         FollowerRepository followerRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followerRepo, notNullValue());
 
@@ -197,6 +203,13 @@ public class ModuleCassandraDataRepositoriesTest
     {
         Function<Row, List<Reaction>> result = instance.provideReactionsMapper();
         
+        assertThat(result, notNullValue());
+    }
+
+    @Test
+    public void testProvideMobileDeviceMapper()
+    {
+        Function<Row, Set<MobileDevice>> result = instance.provideMobileDeviceMapper();
         assertThat(result, notNullValue());
     }
 

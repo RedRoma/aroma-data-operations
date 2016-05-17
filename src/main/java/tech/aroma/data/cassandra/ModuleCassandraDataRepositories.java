@@ -22,12 +22,14 @@ import com.datastax.driver.core.Session;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
+import tech.aroma.data.DeviceRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -42,6 +44,7 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 
@@ -64,6 +67,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(ActivityRepository.class).to(CassandraActivityRepository.class);
         bind(ApplicationRepository.class).to(CassandraApplicationRepository.class);
         bind(CredentialRepository.class).to(CassandraCredentialsRepository.class);
+        bind(DeviceRepository.class).to(CassandraDeviceRepository.class);
         bind(FollowerRepository.class).to(CassandraFollowerRepository.class);
         bind(InboxRepository.class).to(CassandraInboxRepository.class);
         bind(MediaRepository.class).to(CassandraMediaRepository.class);
@@ -80,6 +84,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         return Mappers.appMapper();
     }
 
+    @Provides
+    Function<Row, Set<MobileDevice>> provideMobileDeviceMapper()
+    {
+        return Mappers.mobileDeviceMapper();
+    }
+    
     @Provides
     Function<Row, Event> provideEventMapper()
     {
