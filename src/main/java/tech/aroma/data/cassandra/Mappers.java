@@ -77,6 +77,10 @@ final class Mappers
     }
     
     
+    //==========================================================
+    // APP MAPPER
+    //==========================================================
+    
     static Function<Row, Application> appMapper()
     {
         return row ->
@@ -177,6 +181,10 @@ final class Mappers
         };
     }
     
+     //==========================================================
+    // EVENT MAPPER
+    //==========================================================
+
     static Function<Row, Event> eventMapper()
     {
         return row ->
@@ -234,6 +242,10 @@ final class Mappers
         };
     }
     
+    //==========================================================
+    // IMAGE MAPPER
+    //==========================================================
+
     static Function<Row, Image> imageMapper()
     {
         return row ->
@@ -265,7 +277,11 @@ final class Mappers
             return image;
         };
     }
-    
+
+    //==========================================================
+    // MESSAGE MAPPER
+    //==========================================================
+
     static Function<Row, Message> messageMapper()
     {
         return row ->
@@ -310,6 +326,9 @@ final class Mappers
         };
     }
     
+    //==========================================================
+    // ORG MAPPER
+    //==========================================================
     static Function<Row, Organization> orgMapper()
     {
         return row ->
@@ -357,7 +376,10 @@ final class Mappers
             return org;
         };
     }
-    
+
+    //==========================================================
+    // TOKEN MAPPER
+    //==========================================================
     static Function<Row, AuthenticationToken> tokenMapper()
     {
         return row ->
@@ -402,8 +424,11 @@ final class Mappers
             return token;
         };
     }
-    
-    
+  
+    //==========================================================
+    // REACTIONS MAPPER
+    //==========================================================
+
     static Function<Row, List<Reaction>> reactionsMapper()
     {
         return row ->
@@ -437,7 +462,10 @@ final class Mappers
             return null;
         }
     }
-    
+
+    //==========================================================
+    // USERS MAPPER
+    //==========================================================
     static Function<Row, User> userMapper()
     {
         return row ->
@@ -518,7 +546,11 @@ final class Mappers
                 .setRoles(roles);
         };
     }
-    
+
+    //==========================================================
+    // UTILITY FUNCTIONS
+    //==========================================================
+
     private static boolean doesRowContainColumn(Row row, String column)
     {
         try
