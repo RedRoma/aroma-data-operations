@@ -73,7 +73,7 @@ public interface DeviceRepository
      * @param mobileDevice The Device to remove.
      * @throws TException 
      */
-    void deleteMovileDevice(@NonEmpty String userId, @Required MobileDevice mobileDevice) throws TException;
+    void deleteMobileDevice(@NonEmpty String userId, @Required MobileDevice mobileDevice) throws TException;
     
     /**
      * Removes an Disassociates all devices registered to the specified {@Link User}.
