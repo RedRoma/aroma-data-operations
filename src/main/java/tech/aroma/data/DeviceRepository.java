@@ -81,5 +81,5 @@ public interface DeviceRepository
      * @param userId
      * @throws TException 
      */
-    void deleteAllMobileDevice(@NonEmpty String userId) throws TException;
+    void deleteAllMobileDevices(@NonEmpty String userId) throws TException;
 }
