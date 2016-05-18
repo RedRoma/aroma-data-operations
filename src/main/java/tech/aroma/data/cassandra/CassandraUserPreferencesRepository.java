@@ -38,6 +38,8 @@ import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
+import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
+import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 import tech.sirwellington.alchemy.thrift.ThriftObjects;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.add;
@@ -46,6 +48,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.remove;
 import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.validMobileDevice;
 import static tech.aroma.data.assertions.RequestAssertions.validUserId;
+import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.CONCRETE_BEHAVIOR;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
@@ -55,6 +58,8 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  * @author SirWellington
  */
 @Internal
+@StrategyPattern(role = CONCRETE_BEHAVIOR)
+@ThreadSafe
 final class CassandraUserPreferencesRepository implements UserPreferencesRepository
 {
     private final static Logger LOG = LoggerFactory.getLogger(CassandraUserPreferencesRepository.class);
@@ -63,7 +68,8 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
     private final Function<Row, Set<MobileDevice>> mobileDeviceMapper;
 
     @Inject
-    CassandraUserPreferencesRepository(Session cassandra, Function<Row, Set<MobileDevice>> mobileDeviceMapper)
+    CassandraUserPreferencesRepository(Session cassandra, 
+                                       Function<Row, Set<MobileDevice>> mobileDeviceMapper)
     {
         checkThat(cassandra, mobileDeviceMapper)
             .are(notNull());

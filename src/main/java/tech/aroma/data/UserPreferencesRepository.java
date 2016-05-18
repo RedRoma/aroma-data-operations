@@ -24,6 +24,10 @@ import tech.aroma.thrift.User;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
+import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
+import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
+
+import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.INTERFACE;
 
 
 /**
@@ -39,6 +43,8 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  * 
  * @author SirWellington
  */
+@StrategyPattern(role = INTERFACE)
+@ThreadSafe
 public interface UserPreferencesRepository 
 {
     default boolean containsMobileDevice(String userId, MobileDevice mobileDevice) throws TException

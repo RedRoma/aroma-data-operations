@@ -28,6 +28,7 @@ import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
+import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
 
 import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.validUserId;
@@ -40,6 +41,7 @@ import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.
  * @author SirWellington
  */
 @Internal
+@ThreadSafe
 final class MemoryUserPreferencesRepository implements UserPreferencesRepository
 {
 
