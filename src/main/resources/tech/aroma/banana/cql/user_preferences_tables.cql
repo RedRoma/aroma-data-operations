@@ -9,7 +9,7 @@
 CREATE TABLE IF NOT EXISTS Aroma.User_Preferences
 (
     user_id uuid,
-    //A Seriazlied Set of Mobile Devices used by this user, (Android, or iOS), Serialized as a JSON String
+    //A Serialized Set of Mobile Devices used by this user, (Android, or iOS), Serialized as a JSON String
 	serialized_devices set<text>,
     last_sign_in_time timestamp,
     /* These represent a User's personal reactions, serialized as a  */
