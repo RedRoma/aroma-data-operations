@@ -46,7 +46,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
  */
 @Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class CassandraDeviceRepositoryIT
+public class CassandraUserPreferencesRepositoryIT
 {
 
     private static Session session;
@@ -62,7 +62,7 @@ public class CassandraDeviceRepositoryIT
 
     Function<Row, Set<MobileDevice>> mapper = Mappers.mobileDeviceMapper();
 
-    private CassandraDeviceRepository instance;
+    private CassandraUserPreferencesRepository instance;
 
     private MobileDevice device;
     private Set<MobileDevice> devices;
@@ -72,7 +72,7 @@ public class CassandraDeviceRepositoryIT
     {
         setupData();
 
-        instance = new CassandraDeviceRepository(session, mapper);
+        instance = new CassandraUserPreferencesRepository(session, mapper);
     }
 
     @After

@@ -27,12 +27,19 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 
 /**
- * This Repository is responsible for storing User Devices. This is useful for sending Push Notifications
- * to Aroma Users.
+ * This Repository is responsible for storing information about Users, and their Preferences.
+ * 
+ * <pre>
+ * 
+ * For Example:
+ * + Mobile Device (used to send Push Notifications)
+ * + Personal Reactions (applied to messages that hit their Inboxes)
+ * + User Activity 
+ * </pre>
  * 
  * @author SirWellington
  */
-public interface DeviceRepository 
+public interface UserPreferencesRepository 
 {
     default boolean containsMobileDevice(String userId, MobileDevice mobileDevice) throws TException
     {

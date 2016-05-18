@@ -14,169 +14,116 @@
  * limitations under the License.
  */
 
-package tech.aroma.data.cassandra;
+package tech.aroma.data.memory;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.Delete;
-import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.Update;
 import java.util.Set;
-import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.ChannelGenerators.mobileDevices;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHANUMERIC;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  *
  * @author SirWellington
  */
-@Repeat(100)
+@Repeat(10)
 @RunWith(AlchemyTestRunner.class)
-public class CassandraDeviceRepositoryTest
+public class MemoryUserPreferencesRepositoryTest
 {
     
-    @Mock
-    private Session cassandra;
-    
-    @Mock
-    private Function<Row, Set<MobileDevice>> mobileDeviceMapper;
-    
-    @Mock
-    private ResultSet results;
-    
-    @Mock
-    private Row row;
-    
-    @Captor
-    private ArgumentCaptor<Statement> captor;
-    
-    @GenerateString(ALPHABETIC)
+    @GenerateString(ALPHANUMERIC)
     private String badId;
     
     @GenerateString(UUID)
     private String userId;
     
     private MobileDevice device;
-    private MobileDevice badDevice;
     private Set<MobileDevice> devices;
+    private MobileDevice emptyDevice;
     
-    private CassandraDeviceRepository instance;
-    
+    private MemoryUserPreferencesRepository instance;
+
     @Before
     public void setUp() throws Exception
     {
+        instance = new MemoryUserPreferencesRepository();
+        
         setupData();
         setupMocks();
-        
-        instance = new CassandraDeviceRepository(cassandra, mobileDeviceMapper);
-        verifyZeroInteractions(cassandra, mobileDeviceMapper);
     }
     
     private void setupData() throws Exception
     {
         device = one(mobileDevices());
-        badDevice = new MobileDevice();
-        devices = Sets.toSet(listOf(mobileDevices(), 10));
+        devices = Sets.copyOf(listOf(mobileDevices(), 10));
+        emptyDevice = new MobileDevice();
     }
     
     private void setupMocks() throws Exception
     {
-        when(cassandra.execute(any(Statement.class))).thenReturn(results);
-        when(results.one()).thenReturn(row);
-        when(mobileDeviceMapper.apply(row)).thenReturn(Sets.create());
         
-    }
-    
-    @DontRepeat
-    @Test
-    public void testConstructor() throws Exception
-    {
-        assertThrows(() -> new CassandraDeviceRepository(null, mobileDeviceMapper));
-        assertThrows(() -> new CassandraDeviceRepository(cassandra, null));
     }
     
     @Test
     public void testSaveMobileDevice() throws Exception
     {
         instance.saveMobileDevice(userId, device);
-        
-        verify(cassandra).execute(captor.capture());
-        
-        Statement statement = captor.getValue();
-        assertThat(statement, notNullValue());
-        assertThat(statement, is(instanceOf(Update.Where.class)));
+        assertThat(instance.containsMobileDevice(userId, device), is(true));
     }
     
     @Test
     public void testSaveMobileDeviceWithBadArgs() throws Exception
     {
-        assertThrows(() -> instance.saveMobileDevice(userId, badDevice)).isInstanceOf(InvalidArgumentException.class);
-        assertThrows(() -> instance.saveMobileDevice(userId, badDevice)).isInstanceOf(InvalidArgumentException.class);
-        assertThrows(() -> instance.saveMobileDevice(userId, badDevice)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.saveMobileDevice("", device)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.saveMobileDevice(badId, device)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.saveMobileDevice(userId, null)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.saveMobileDevice(userId, emptyDevice)).isInstanceOf(InvalidArgumentException.class);
     }
     
     @Test
     public void testSaveMobileDevices() throws Exception
     {
-        instance.saveMobileDevices(userId, devices);
         
-        verify(cassandra).execute(captor.capture());
-        
-        Statement statement = captor.getValue();
-        assertThat(statement, notNullValue());
-        assertThat(statement, is(instanceOf(Insert.class)));
     }
     
     @Test
     public void testSaveMobileDevicesWithBadArgs() throws Exception
     {
+        Set<MobileDevice> emptyDevices = Sets.createFrom(new MobileDevice());
+        
         assertThrows(() -> instance.saveMobileDevices("", devices)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.saveMobileDevices(badId, devices)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.saveMobileDevices(userId, null)).isInstanceOf(InvalidArgumentException.class);
-        assertThrows(() -> instance.saveMobileDevices(userId, Sets.createFrom(badDevice))).isInstanceOf(
-            InvalidArgumentException.class);
+        assertThrows(() -> instance.saveMobileDevices(userId, emptyDevices)).isInstanceOf(InvalidArgumentException.class);
     }
     
     @Test
     public void testGetMobileDevices() throws Exception
     {
-        when(mobileDeviceMapper.apply(row)).thenReturn(devices);
+        instance.saveMobileDevices(userId, devices);
         
         Set<MobileDevice> result = instance.getMobileDevices(userId);
         assertThat(result, is(devices));
     }
     
     @Test
-    public void testGetMobileDevicesWhenNone() throws Exception
+    public void testGetMobileDevicesWhenNoDevics() throws Exception
     {
         Set<MobileDevice> result = instance.getMobileDevices(userId);
         assertThat(result, notNullValue());
@@ -193,13 +140,20 @@ public class CassandraDeviceRepositoryTest
     @Test
     public void testDeleteMobileDevice() throws Exception
     {
+        instance.saveMobileDevice(userId, device);
+        assertThat(instance.containsMobileDevice(userId, device), is(true));
+
         instance.deleteMobileDevice(userId, device);
+        assertThat(instance.containsMobileDevice(userId, device), is(false));
+    }
+    
+    @Test
+    public void testDeleteMobileDeviceWhenDoesNotExist() throws Exception
+    {
+        instance.saveMobileDevice(userId, device);
         
-        verify(cassandra).execute(captor.capture());
-        
-        Statement statement = captor.getValue();
-        assertThat(statement, notNullValue());
-        assertThat(statement, is(instanceOf(Update.Where.class)));
+        MobileDevice newDevice = one(mobileDevices());
+        instance.deleteMobileDevice(userId, newDevice);
     }
     
     @Test
@@ -208,19 +162,34 @@ public class CassandraDeviceRepositoryTest
         assertThrows(() -> instance.deleteMobileDevice("", device)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.deleteMobileDevice(badId, device)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.deleteMobileDevice(userId, null)).isInstanceOf(InvalidArgumentException.class);
-        assertThrows(() -> instance.deleteMobileDevice(userId, badDevice)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.deleteMobileDevice(userId, emptyDevice)).isInstanceOf(InvalidArgumentException.class);
     }
     
     @Test
     public void testDeleteAllMobileDevices() throws Exception
     {
+        instance.saveMobileDevices(userId, devices);
+        for (MobileDevice d : devices)
+        {
+            assertThat(instance.containsMobileDevice(userId, d), is(true));
+        }
+        
+        
         instance.deleteAllMobileDevices(userId);
+        for (MobileDevice d : devices)
+        {
+            assertThat(instance.containsMobileDevice(userId, d), is(false));
+        }
         
-        verify(cassandra).execute(captor.capture());
-        
-        Statement statement = captor.getValue();
-        assertThat(statement, notNullValue());
-        assertThat(statement, is(instanceOf(Delete.Where.class)));
+        Set<MobileDevice> result = instance.getMobileDevices(userId);
+        assertThat(result, notNullValue());
+        assertThat(result, is(empty()));
+    }
+    
+    @Test
+    public void testDeleteAllMobileDevicesWhenNoneExist() throws Exception
+    {
+        instance.deleteAllMobileDevices(userId);
     }
     
     @Test

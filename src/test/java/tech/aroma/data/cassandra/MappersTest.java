@@ -240,7 +240,7 @@ public class MappersTest
         String serializedDevice = ThriftObjects.toJson(device);
         Set<String> expected = Sets.createFrom(serializedDevice);
         
-        when(row.getSet(Tables.Devices.SERIALIZED_DEVICES, String.class))
+        when(row.getSet(Tables.UserPreferences.SERIALIZED_DEVICES, String.class))
             .thenReturn(expected);
         
         Function<Row, Set<MobileDevice>> mapper = Mappers.mobileDeviceMapper();

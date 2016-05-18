@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import tech.aroma.data.ActivityRepository;
 import tech.aroma.data.ApplicationRepository;
 import tech.aroma.data.CredentialRepository;
-import tech.aroma.data.DeviceRepository;
 import tech.aroma.data.FollowerRepository;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
@@ -37,6 +36,7 @@ import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Image;
@@ -67,7 +67,6 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(ActivityRepository.class).to(CassandraActivityRepository.class);
         bind(ApplicationRepository.class).to(CassandraApplicationRepository.class);
         bind(CredentialRepository.class).to(CassandraCredentialsRepository.class);
-        bind(DeviceRepository.class).to(CassandraDeviceRepository.class);
         bind(FollowerRepository.class).to(CassandraFollowerRepository.class);
         bind(InboxRepository.class).to(CassandraInboxRepository.class);
         bind(MediaRepository.class).to(CassandraMediaRepository.class);
@@ -76,6 +75,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(ReactionRepository.class).to(CassandraReactionRepository.class);
         bind(TokenRepository.class).to(CassandraTokenRepository.class);
         bind(UserRepository.class).to(CassandraUserRepository.class);
+        bind(UserPreferencesRepository.class).to(CassandraUserPreferencesRepository.class);
     }
 
     @Provides

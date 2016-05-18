@@ -32,8 +32,8 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.sets.Sets;
-import tech.aroma.data.DeviceRepository;
-import tech.aroma.data.cassandra.Tables.Devices;
+import tech.aroma.data.UserPreferencesRepository;
+import tech.aroma.data.cassandra.Tables.UserPreferences;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
@@ -55,15 +55,15 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
  * @author SirWellington
  */
 @Internal
-final class CassandraDeviceRepository implements DeviceRepository
+final class CassandraUserPreferencesRepository implements UserPreferencesRepository
 {
-    private final static Logger LOG = LoggerFactory.getLogger(CassandraDeviceRepository.class);
+    private final static Logger LOG = LoggerFactory.getLogger(CassandraUserPreferencesRepository.class);
     
     private final Session cassandra;
     private final Function<Row, Set<MobileDevice>> mobileDeviceMapper;
 
     @Inject
-    CassandraDeviceRepository(Session cassandra, Function<Row, Set<MobileDevice>> mobileDeviceMapper)
+    CassandraUserPreferencesRepository(Session cassandra, Function<Row, Set<MobileDevice>> mobileDeviceMapper)
     {
         checkThat(cassandra, mobileDeviceMapper)
             .are(notNull());
@@ -170,9 +170,9 @@ final class CassandraDeviceRepository implements DeviceRepository
             .collect(toSet());
 
         return QueryBuilder
-            .insertInto(Tables.Devices.TABLE_NAME)
-            .value(Tables.Devices.USER_ID, userUuid)
-            .value(Tables.Devices.SERIALIZED_DEVICES, serializedDevices);
+            .insertInto(Tables.UserPreferences.TABLE_NAME)
+            .value(Tables.UserPreferences.USER_ID, userUuid)
+            .value(Tables.UserPreferences.SERIALIZED_DEVICES, serializedDevices);
     }
 
     private String serializeMobileDevice(MobileDevice device)
@@ -213,8 +213,8 @@ final class CassandraDeviceRepository implements DeviceRepository
         return QueryBuilder
             .select()
             .all()
-            .from(Devices.TABLE_NAME)
-            .where(eq(Devices.USER_ID, userUuid));
+            .from(UserPreferences.TABLE_NAME)
+            .where(eq(UserPreferences.USER_ID, userUuid));
     }
 
     private Statement createStatementToDeleteAllDevicesFor(String userId)
@@ -224,8 +224,8 @@ final class CassandraDeviceRepository implements DeviceRepository
         return QueryBuilder
             .delete()
             .all()
-            .from(Devices.TABLE_NAME)
-            .where(eq(Devices.USER_ID, userUuid));
+            .from(UserPreferences.TABLE_NAME)
+            .where(eq(UserPreferences.USER_ID, userUuid));
     }
 
     private Statement createStatementToAddDevice(String userId, MobileDevice mobileDevice)
@@ -234,9 +234,9 @@ final class CassandraDeviceRepository implements DeviceRepository
         String serializedDevice = serializeMobileDevice(mobileDevice);
         
         return QueryBuilder
-            .update(Devices.TABLE_NAME)
-            .with(add(Devices.SERIALIZED_DEVICES, serializedDevice))
-            .where(eq(Devices.USER_ID, userUuid));
+            .update(UserPreferences.TABLE_NAME)
+            .with(add(UserPreferences.SERIALIZED_DEVICES, serializedDevice))
+            .where(eq(UserPreferences.USER_ID, userUuid));
     }
 
     private Statement createStatementToRemoveDevice(String userId, MobileDevice mobileDevice)
@@ -245,9 +245,9 @@ final class CassandraDeviceRepository implements DeviceRepository
         String serializeDevice = serializeMobileDevice(mobileDevice);
         
         return QueryBuilder
-            .update(Devices.TABLE_NAME)
-            .with(remove(Devices.SERIALIZED_DEVICES, serializeDevice))
-            .where(eq(Devices.USER_ID, userUuid));
+            .update(UserPreferences.TABLE_NAME)
+            .with(remove(UserPreferences.SERIALIZED_DEVICES, serializeDevice))
+            .where(eq(UserPreferences.USER_ID, userUuid));
         
     }
 

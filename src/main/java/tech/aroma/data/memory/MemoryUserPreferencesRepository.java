@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.maps.Maps;
 import sir.wellington.alchemy.collections.sets.Sets;
-import tech.aroma.data.DeviceRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.access.Internal;
@@ -34,23 +34,16 @@ import static tech.aroma.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 /**
  *
  * @author SirWellington
  */
 @Internal
-final class MemoryDeviceRepository implements DeviceRepository
+final class MemoryUserPreferencesRepository implements UserPreferencesRepository
 {
 
-    private final static Logger LOG = LoggerFactory.getLogger(MemoryDeviceRepository.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MemoryUserPreferencesRepository.class);
     
     private final Map<String, Set<MobileDevice>> devices = Maps.createSynchronized();
     
