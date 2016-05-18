@@ -29,13 +29,12 @@ import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.data.ReactionRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import tech.aroma.data.UserPreferencesRepository;
 
 /**
  *
@@ -66,10 +65,7 @@ public class ModuleMemoryDataRepositoriesTest
         
         CredentialRepository credentialsRepo = injector.getInstance(CredentialRepository.class);
         assertThat(credentialsRepo, notNullValue());
-        
-        UserPreferencesRepository deviceRepo = injector.getInstance(UserPreferencesRepository.class);
-        assertThat(deviceRepo, notNullValue());
-     
+  
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followRepo, notNullValue());
         
@@ -87,6 +83,10 @@ public class ModuleMemoryDataRepositoriesTest
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());
+              
+        UserPreferencesRepository userPreferencesRepo = injector.getInstance(UserPreferencesRepository.class);
+        assertThat(userPreferencesRepo, notNullValue());
+     
      }
 
 }
