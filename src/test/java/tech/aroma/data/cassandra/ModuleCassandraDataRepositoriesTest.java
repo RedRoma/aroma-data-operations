@@ -39,6 +39,7 @@ import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Image;
@@ -55,8 +56,6 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_MOCKS;
-
-import tech.aroma.data.UserPreferencesRepository;
 
 /**
  *
@@ -115,9 +114,6 @@ public class ModuleCassandraDataRepositoriesTest
         ApplicationRepository appRepo = injector.getInstance(ApplicationRepository.class);
         assertThat(appRepo, notNullValue());
 
-        UserPreferencesRepository deviceRepo = injector.getInstance(UserPreferencesRepository.class);
-        assertThat(deviceRepo, notNullValue());
-        
         FollowerRepository followerRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followerRepo, notNullValue());
 
@@ -141,6 +137,10 @@ public class ModuleCassandraDataRepositoriesTest
 
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());
+        
+        UserPreferencesRepository deviceRepo = injector.getInstance(UserPreferencesRepository.class);
+        assertThat(deviceRepo, notNullValue());
+        
     }
 
     @Test
