@@ -50,7 +50,7 @@ import tech.aroma.thrift.reactions.Reaction;
 
 
 /**
- * Provides the Banana Repositories backed by a Cassandra Cluster.
+ * Provides the Aroma Repositories backed by a Cassandra Cluster.
  * 
  * This Module does not supply an actual Cassandra {@link Cluster} or {@link Session}.
  * 
