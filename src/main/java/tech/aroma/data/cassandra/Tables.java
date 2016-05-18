@@ -79,14 +79,6 @@ class Tables
         static final String TIME_CREATED = "time_created";
     }
     
-    static class Devices
-    {
-        static final String TABLE_NAME = "User_Devices";
-        
-        static final String USER_ID = Users.USER_ID;
-        static final String SERIALIZED_DEVICES = "serialized_devices";
-    }
-    
     static class Follow
     {
         static final String TABLE_NAME_APP_FOLLOWERS = "Follow_Application_Followers";
@@ -226,6 +218,17 @@ class Tables
         static final String PROFILE_IMAGE_ID = "profile_image_id";
         static final String TIME_ACCOUNT_CREATED = "time_account_created";
         
+    }
+    
+    static class UserPreferences
+    {
+
+        static final String TABLE_NAME = "User_Preferences";
+        
+        static final String USER_ID = Users.USER_ID;
+        static final String SERIALIZED_DEVICES = "serialized_devices";
+        static final String SERIALIZED_REACTIONS = "serialized_reactions";
+        static final String LAST_SIGN_IN_TIME = "last_sign_in_time";
     }
     
 }
