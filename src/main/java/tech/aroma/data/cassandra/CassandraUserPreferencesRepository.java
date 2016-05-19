@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
- 
 package tech.aroma.data.cassandra;
-
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -52,7 +50,6 @@ import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPa
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
-
 /**
  *
  * @author SirWellington
@@ -62,18 +59,19 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 @ThreadSafe
 final class CassandraUserPreferencesRepository implements UserPreferencesRepository
 {
+
     private final static Logger LOG = LoggerFactory.getLogger(CassandraUserPreferencesRepository.class);
-    
+
     private final Session cassandra;
     private final Function<Row, Set<MobileDevice>> mobileDeviceMapper;
 
     @Inject
-    CassandraUserPreferencesRepository(Session cassandra, 
+    CassandraUserPreferencesRepository(Session cassandra,
                                        Function<Row, Set<MobileDevice>> mobileDeviceMapper)
     {
         checkThat(cassandra, mobileDeviceMapper)
             .are(notNull());
-        
+
         this.cassandra = cassandra;
         this.mobileDeviceMapper = mobileDeviceMapper;
     }
@@ -124,7 +122,7 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
         checkMobileDevice(mobileDevice);
 
         Statement statement = createStatementToRemoveDevice(userId, mobileDevice);
-        
+
         tryToExecute(statement, "deleteMobileDevice");
     }
 
@@ -136,33 +134,6 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
         Statement statement = createStatementToDeleteAllDevicesFor(userId);
 
         tryToExecute(statement, "deleteAllMobileDevices");
-    }
-
-    private void checkMobileDevice(MobileDevice mobileDevice) throws InvalidArgumentException
-    {
-        checkThat(mobileDevice)
-            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
-            .is(validMobileDevice());
-    }
-
-    private void checkUserId(String userId) throws InvalidArgumentException
-    {
-        checkThat(userId)
-            .throwing(InvalidArgumentException.class)
-            .is(validUserId());
-    }
-
-    private void checkMobileDevices(Set<MobileDevice> mobileDevices) throws InvalidArgumentException
-    {
-        checkThat(mobileDevices)
-            .usingMessage("Mobile Devices cannot be null")
-            .throwing(InvalidArgumentException.class)
-            .is(notNull());
-
-        for (MobileDevice device : mobileDevices)
-        {
-            checkMobileDevice(device);
-        }
     }
 
     private Statement createStatementToSaveDevice(String userId, Set<MobileDevice> mobileDevices)
@@ -179,24 +150,6 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
             .insertInto(Tables.UserPreferences.TABLE_NAME)
             .value(Tables.UserPreferences.USER_ID, userUuid)
             .value(Tables.UserPreferences.SERIALIZED_DEVICES, serializedDevices);
-    }
-
-    private String serializeMobileDevice(MobileDevice device)
-    {
-        if (device == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            return ThriftObjects.toJson(device);
-        }
-        catch (Exception ex)
-        {
-            LOG.error("Failed to Serialize Mobile Device {}", device, ex);
-            return null;
-        }
     }
 
     private ResultSet tryToExecute(Statement statement, String operationName) throws OperationFailedException
@@ -238,7 +191,7 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
     {
         UUID userUuid = UUID.fromString(userId);
         String serializedDevice = serializeMobileDevice(mobileDevice);
-        
+
         return QueryBuilder
             .update(UserPreferences.TABLE_NAME)
             .with(add(UserPreferences.SERIALIZED_DEVICES, serializedDevice))
@@ -249,13 +202,57 @@ final class CassandraUserPreferencesRepository implements UserPreferencesReposit
     {
         UUID userUuid = UUID.fromString(userId);
         String serializeDevice = serializeMobileDevice(mobileDevice);
-        
+
         return QueryBuilder
             .update(UserPreferences.TABLE_NAME)
             .with(remove(UserPreferences.SERIALIZED_DEVICES, serializeDevice))
             .where(eq(UserPreferences.USER_ID, userUuid));
-        
+
+    }
+
+    private String serializeMobileDevice(MobileDevice device)
+    {
+        if (device == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return ThriftObjects.toJson(device);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to Serialize Mobile Device {}", device, ex);
+            return null;
+        }
+    }
+
+    private void checkMobileDevice(MobileDevice mobileDevice) throws InvalidArgumentException
+    {
+        checkThat(mobileDevice)
+            .throwing(ex -> new InvalidArgumentException(ex.getMessage()))
+            .is(validMobileDevice());
+    }
+
+    private void checkUserId(String userId) throws InvalidArgumentException
+    {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .is(validUserId());
+    }
+
+    private void checkMobileDevices(Set<MobileDevice> mobileDevices) throws InvalidArgumentException
+    {
+        checkThat(mobileDevices)
+            .usingMessage("Mobile Devices cannot be null")
+            .throwing(InvalidArgumentException.class)
+            .is(notNull());
+
+        for (MobileDevice device : mobileDevices)
+        {
+            checkMobileDevice(device);
+        }
     }
 
 }
-
