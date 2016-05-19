@@ -101,7 +101,7 @@ public interface UserPreferencesRepository
     void deleteMobileDevice(@NonEmpty String userId, @Required MobileDevice mobileDevice) throws TException;
     
     /**
-     * Removes an Disassociates all devices registered to the specified {@Link User}.
+     * Removes an Disassociates all devices registered to the specified {@link User}.
      * 
      * @param userId
      * @throws TException 
