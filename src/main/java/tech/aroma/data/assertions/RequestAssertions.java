@@ -21,6 +21,7 @@ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
@@ -157,7 +158,11 @@ public final class RequestAssertions
             
             checkThat(ios.deviceToken)
                 .usingMessage("iOS Device Token cannot be empty")
-                .is(nonEmptyString());
+                .is(notNull());
+            
+            checkThat(ios.getDeviceToken().length)
+                .usingMessage("iOS Device Token cannot be empty")
+                .is(greaterThan(0));
         };
     }
     
