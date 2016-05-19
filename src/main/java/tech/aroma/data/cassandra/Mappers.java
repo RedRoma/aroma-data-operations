@@ -47,6 +47,7 @@ import tech.aroma.thrift.Urgency;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.TokenType;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.annotations.access.Internal;
@@ -76,6 +77,10 @@ final class Mappers
         throw new IllegalAccessException("cannot instantiate");
     }
     
+    
+    //==========================================================
+    // APP MAPPER
+    //==========================================================
     
     static Function<Row, Application> appMapper()
     {
@@ -177,6 +182,11 @@ final class Mappers
         };
     }
     
+
+    //==========================================================
+    // EVENT MAPPER
+    //==========================================================
+
     static Function<Row, Event> eventMapper()
     {
         return row ->
@@ -234,6 +244,10 @@ final class Mappers
         };
     }
     
+    //==========================================================
+    // IMAGE MAPPER
+    //==========================================================
+
     static Function<Row, Image> imageMapper()
     {
         return row ->
@@ -265,7 +279,11 @@ final class Mappers
             return image;
         };
     }
-    
+
+    //==========================================================
+    // MESSAGE MAPPER
+    //==========================================================
+
     static Function<Row, Message> messageMapper()
     {
         return row ->
@@ -310,6 +328,9 @@ final class Mappers
         };
     }
     
+    //==========================================================
+    // ORG MAPPER
+    //==========================================================
     static Function<Row, Organization> orgMapper()
     {
         return row ->
@@ -357,7 +378,10 @@ final class Mappers
             return org;
         };
     }
-    
+
+    //==========================================================
+    // TOKEN MAPPER
+    //==========================================================
     static Function<Row, AuthenticationToken> tokenMapper()
     {
         return row ->
@@ -402,8 +426,11 @@ final class Mappers
             return token;
         };
     }
-    
-    
+  
+    //==========================================================
+    // REACTIONS MAPPER
+    //==========================================================
+
     static Function<Row, List<Reaction>> reactionsMapper()
     {
         return row ->
@@ -437,7 +464,10 @@ final class Mappers
             return null;
         }
     }
-    
+
+    //==========================================================
+    // USERS MAPPER
+    //==========================================================
     static Function<Row, User> userMapper()
     {
         return row ->
@@ -519,6 +549,53 @@ final class Mappers
         };
     }
     
+    
+    //==========================================================
+    // USER PREFERENCES MAPPER
+    //==========================================================
+    
+    /**
+     * Extracts {@linkplain MobileDevice Mobile Devices} from a {@linkplain Tables.UserPreferences User Preferences Row}.
+     * 
+     * @return 
+     */
+    static Function<Row, Set<MobileDevice>> mobileDeviceMapper()
+    {
+        return row ->
+        {
+            if (doesRowContainColumn(row, Tables.UserPreferences.SERIALIZED_DEVICES))
+            {
+                Set<String> serializedDevices = row.getSet(Tables.UserPreferences.SERIALIZED_DEVICES, String.class);
+                
+                return Sets.nullToEmpty(serializedDevices)
+                    .stream()
+                    .map(Mappers::deserializeDevice)
+                    .filter(Objects::nonNull)
+                    .collect(toSet());
+            }
+            
+            return Sets.emptySet();
+        };
+    }
+
+    private static MobileDevice deserializeDevice(String serializedDevice)
+    {
+        try
+        {
+            return ThriftObjects.fromJson(new MobileDevice(), serializedDevice);
+        }
+        catch(Exception ex)
+        {
+            LOG.error("Failed to Deserialized Device {}", serializedDevice, ex);
+            //Nulls will be filtered out in the Functional Operations.
+            return null;
+        }
+    }
+
+    //==========================================================
+    // UTILITY FUNCTIONS
+    //==========================================================
+
     private static boolean doesRowContainColumn(Row row, String column)
     {
         try

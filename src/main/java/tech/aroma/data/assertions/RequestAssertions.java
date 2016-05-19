@@ -10,6 +10,9 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.channels.AndroidDevice;
+import tech.aroma.thrift.channels.IOSDevice;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Optional;
@@ -17,6 +20,7 @@ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
@@ -126,6 +130,61 @@ public final class RequestAssertions
                 .is(nonEmptyString())
                 .usingMessage("appId must be a UUID")
                 .is(validUUID());
+        };
+    }
+    
+    public static AlchemyAssertion<AndroidDevice> validAndroidDevice()
+    {
+        return android ->
+        {
+            checkThat(android)
+                .usingMessage("Android Device cannot be null")
+                .is(notNull());
+            
+            checkThat(android.registrationId)
+                .usingMessage("Android Registration ID cannot be empty")
+                .is(nonEmptyString());
+        };
+    }
+    
+    public static AlchemyAssertion<IOSDevice> validiOSDevice()
+    {
+        return ios ->
+        {
+            checkThat(ios)
+                .usingMessage("iOS Device cannot be null")
+                .is(notNull());
+            
+            checkThat(ios.deviceToken)
+                .usingMessage("iOS Device Token cannot be empty")
+                .is(nonEmptyString());
+        };
+    }
+    
+    public static AlchemyAssertion<MobileDevice> validMobileDevice()
+    {
+        return device ->
+        {
+            checkThat(device)
+                .usingMessage("Mobile Device cannot be null")
+                .is(notNull());
+            
+            checkThat(device.isSet())
+                .usingMessage("Mobile Device must be set")
+                .is(trueStatement());
+            
+            if (device.isSetAndroidDevice())
+            {
+                checkThat(device.getAndroidDevice())
+                    .is(validAndroidDevice());
+            }
+            
+            if (device.isSetIosDevice())
+            {
+                checkThat(device.getIosDevice())
+                    .is(validiOSDevice());
+            }
+            
         };
     }
     

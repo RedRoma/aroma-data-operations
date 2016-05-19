@@ -28,6 +28,9 @@ import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.ApplicationToken;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.UserToken;
+import tech.aroma.thrift.channels.AndroidDevice;
+import tech.aroma.thrift.channels.IOSDevice;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -39,8 +42,10 @@ import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static tech.aroma.thrift.generators.ChannelGenerators.mobileDevices;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -294,6 +299,53 @@ public class RequestAssertionsTest
         assertThrows(() -> assertion.check(emptyToken))
             .isInstanceOf(FailedAssertionException.class);
 
+    }
+
+    @Test
+    public void testValidAndroidDevice()
+    {
+        AndroidDevice good = one(pojos(AndroidDevice.class));
+        AndroidDevice bad = new AndroidDevice();
+        
+        AlchemyAssertion<AndroidDevice> assertion = RequestAssertions.validAndroidDevice();
+        assertThat(assertion, notNullValue());
+        
+        //Check with good
+        assertion.check(good);
+        
+        //Check with bad
+        assertThrows(() -> assertion.check(bad));
+    }
+
+    @Test
+    public void testValidiOSDevice()
+    {
+        IOSDevice good = one(pojos(IOSDevice.class));
+        IOSDevice bad = new IOSDevice();
+        
+        AlchemyAssertion<IOSDevice> assertion = RequestAssertions.validiOSDevice();
+        
+        //Check with good
+        assertion.check(good);
+        
+        //Check with bad
+        assertThrows(() -> assertion.check(bad));
+    }
+
+    @Test
+    public void testValidMobileDevice()
+    {
+        MobileDevice good = one(mobileDevices());
+        MobileDevice bad = new MobileDevice();
+        
+        AlchemyAssertion<MobileDevice> assertion = RequestAssertions.validMobileDevice();
+        assertThat(assertion, notNullValue());
+        
+        //Check with good
+        assertion.check(good);
+        
+        //Check with bad
+        assertThrows(() -> assertion.check(bad));
     }
 
 }

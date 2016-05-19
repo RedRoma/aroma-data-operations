@@ -20,6 +20,7 @@ import com.datastax.driver.core.Row;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import org.apache.thrift.TBase;
@@ -28,11 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.data.cassandra.Tables.Activity;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
@@ -48,6 +51,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static tech.aroma.thrift.generators.ChannelGenerators.mobileDevices;
 import static tech.aroma.thrift.generators.EventGenerators.events;
 import static tech.aroma.thrift.generators.ReactionGenerators.reactions;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
@@ -71,6 +75,8 @@ public class MappersTest
     @GeneratePojo
     private Application app;
 
+    private MobileDevice device;
+    
     @GeneratePojo
     private Message message;
 
@@ -92,6 +98,8 @@ public class MappersTest
     public void setUp()
     {
         user.userId = userId;
+        
+        device = one(mobileDevices());
         
         event = one(events());
         reaction = one(reactions());
@@ -225,5 +233,22 @@ public class MappersTest
         Reaction result = Mappers.deserializeReaction(json);
         assertThat(result, is(reaction));
     }
+
+    @Test
+    public void testMobileDeviceMapper() throws TException
+    {
+        String serializedDevice = ThriftObjects.toJson(device);
+        Set<String> expected = Sets.createFrom(serializedDevice);
+        
+        when(row.getSet(Tables.UserPreferences.SERIALIZED_DEVICES, String.class))
+            .thenReturn(expected);
+        
+        Function<Row, Set<MobileDevice>> mapper = Mappers.mobileDeviceMapper();
+        assertThat(mapper, notNullValue());
+        
+        Set<MobileDevice> result = mapper.apply(row);
+        assertThat(result, is(Sets.createFrom(device)));
+    }
+
 
 }

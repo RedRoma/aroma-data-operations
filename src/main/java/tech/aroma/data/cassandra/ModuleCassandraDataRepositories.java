@@ -22,6 +22,7 @@ import com.datastax.driver.core.Session;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Image;
@@ -42,12 +44,13 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
 
 
 /**
- * Provides the Banana Repositories backed by a Cassandra Cluster.
+ * Provides the Aroma Repositories backed by a Cassandra Cluster.
  * 
  * This Module does not supply an actual Cassandra {@link Cluster} or {@link Session}.
  * 
@@ -72,6 +75,7 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         bind(ReactionRepository.class).to(CassandraReactionRepository.class);
         bind(TokenRepository.class).to(CassandraTokenRepository.class);
         bind(UserRepository.class).to(CassandraUserRepository.class);
+        bind(UserPreferencesRepository.class).to(CassandraUserPreferencesRepository.class);
     }
 
     @Provides
@@ -80,6 +84,12 @@ public final class ModuleCassandraDataRepositories extends AbstractModule
         return Mappers.appMapper();
     }
 
+    @Provides
+    Function<Row, Set<MobileDevice>> provideMobileDeviceMapper()
+    {
+        return Mappers.mobileDeviceMapper();
+    }
+    
     @Provides
     Function<Row, Event> provideEventMapper()
     {

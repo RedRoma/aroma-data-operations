@@ -31,6 +31,7 @@ import tech.aroma.data.MessageRepository;
 import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.ReactionRepository;
 import tech.aroma.data.TokenRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 
 /**
@@ -45,9 +46,9 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
     @Override
     protected void configure()
     {
+        bind(ActivityRepository.class).to(MemoryActivityRepository.class).asEagerSingleton();
         bind(ApplicationRepository.class).to(MemoryApplicationRepository.class).asEagerSingleton();
         bind(CredentialRepository.class).to(MemoryCredentialsRepository.class).asEagerSingleton();
-        bind(ActivityRepository.class).to(MemoryActivityRepository.class).asEagerSingleton();
         bind(FollowerRepository.class).to(MemoryFollowerRepository.class).asEagerSingleton();
         bind(InboxRepository.class).to(MemoryInboxRepository.class).asEagerSingleton();
         bind(MediaRepository.class).to(MemoryMediaRepository.class).asEagerSingleton();
@@ -56,6 +57,7 @@ public final class ModuleMemoryDataRepositories extends AbstractModule
         bind(ReactionRepository.class).to(MemoryReactionRepository.class).asEagerSingleton();
         bind(TokenRepository.class).to(MemoryTokenRepository.class).asEagerSingleton();
         bind(UserRepository.class).to(MemoryUserRepository.class).asEagerSingleton();
+        bind(UserPreferencesRepository.class).to(MemoryUserPreferencesRepository.class).asEagerSingleton();
     }
 
 }

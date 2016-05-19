@@ -29,6 +29,7 @@ import tech.aroma.data.InboxRepository;
 import tech.aroma.data.MediaRepository;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.data.ReactionRepository;
+import tech.aroma.data.UserPreferencesRepository;
 import tech.aroma.data.UserRepository;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
@@ -56,15 +57,15 @@ public class ModuleMemoryDataRepositoriesTest
     {
         Injector injector = Guice.createInjector(instance);
         
+        ActivityRepository eventRepo = injector.getInstance(ActivityRepository.class);
+        assertThat(eventRepo, notNullValue());
+
         ApplicationRepository appRepo = injector.getInstance(ApplicationRepository.class);
         assertThat(appRepo, notNullValue());
         
         CredentialRepository credentialsRepo = injector.getInstance(CredentialRepository.class);
         assertThat(credentialsRepo, notNullValue());
-        
-        ActivityRepository eventRepo = injector.getInstance(ActivityRepository.class);
-        assertThat(eventRepo, notNullValue());
-        
+  
         FollowerRepository followRepo = injector.getInstance(FollowerRepository.class);
         assertThat(followRepo, notNullValue());
         
@@ -82,6 +83,10 @@ public class ModuleMemoryDataRepositoriesTest
         
         UserRepository userRepo = injector.getInstance(UserRepository.class);
         assertThat(userRepo, notNullValue());
+              
+        UserPreferencesRepository userPreferencesRepo = injector.getInstance(UserPreferencesRepository.class);
+        assertThat(userPreferencesRepo, notNullValue());
+     
      }
 
 }

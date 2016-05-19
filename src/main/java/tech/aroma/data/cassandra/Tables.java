@@ -220,4 +220,15 @@ class Tables
         
     }
     
+    static class UserPreferences
+    {
+
+        static final String TABLE_NAME = "User_Preferences";
+        
+        static final String USER_ID = Users.USER_ID;
+        static final String SERIALIZED_DEVICES = "serialized_devices";
+        static final String SERIALIZED_REACTIONS = "serialized_reactions";
+        static final String LAST_SIGN_IN_TIME = "last_sign_in_time";
+    }
+    
 }
