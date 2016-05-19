@@ -22,12 +22,16 @@ import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.channels.MobileDevice;
+import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 import tech.sirwellington.alchemy.annotations.concurrency.ThreadSafe;
 import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 
+import static tech.aroma.data.assertions.RequestAssertions.validMobileDevice;
+import static tech.aroma.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.INTERFACE;
+import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 
 
 /**
@@ -49,6 +53,14 @@ public interface UserPreferencesRepository
 {
     default boolean containsMobileDevice(String userId, MobileDevice mobileDevice) throws TException
     {
+        checkThat(userId)
+            .throwing(InvalidArgumentException.class)
+            .is(validUserId());
+        
+        checkThat(mobileDevice)
+            .throwing(InvalidArgumentException.class)
+            .is(validMobileDevice());
+        
         Set<MobileDevice> devices = getMobileDevices(userId);
         
         if (Sets.isEmpty(devices))
