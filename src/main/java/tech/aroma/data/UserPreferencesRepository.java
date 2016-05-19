@@ -39,8 +39,8 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
  * 
  * <pre>
  * 
- * For Example:
- * + Mobile Device (used to send Push Notifications)
+ * Examples:
+ * + Mobile Devices (used to send Push Notifications)
  * + Personal Reactions (applied to messages that hit their Inboxes)
  * + User Activity 
  * </pre>
