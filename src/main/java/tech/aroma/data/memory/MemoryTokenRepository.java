@@ -97,18 +97,17 @@ final class MemoryTokenRepository implements TokenRepository, ExpirationListener
     public void saveToken(AuthenticationToken token) throws TException
     {
         checkThat(token)
-            .usingMessage("attempting to save null token")
-            .throwing(InvalidArgumentException.class)
+            .throwing(ex -> new InvalidTokenException(ex.getMessage()))
             .is(legalToken());
 
         checkThat(token.ownerId)
             .usingMessage("token missing ownerId")
-            .throwing(InvalidArgumentException.class)
+            .throwing(InvalidTokenException.class)
             .is(nonEmptyString());
         
         checkThat(token.tokenType)
             .usingMessage("tokenType is required")
-            .throwing(InvalidArgumentException.class)
+            .throwing(InvalidTokenException.class)
             .is(notNull());
         
         Instant expirationTime = Instant.ofEpochMilli(token.timeOfExpiration);

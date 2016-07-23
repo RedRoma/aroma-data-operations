@@ -28,11 +28,11 @@ import org.junit.runner.RunWith;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.InvalidTokenException;
+import tech.aroma.thrift.generators.TokenGenerators;
 import tech.sirwellington.alchemy.annotations.testing.TimeSensitive;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
 import tech.sirwellington.alchemy.test.junit.runners.Repeat;
 
 import static java.time.Instant.now;
@@ -54,7 +54,6 @@ public class MemoryTokenRepositoryTest
 
     private MemoryTokenRepository repository;
 
-    @GeneratePojo
     private AuthenticationToken token;
 
     @GenerateList(AuthenticationToken.class)
@@ -68,6 +67,7 @@ public class MemoryTokenRepositoryTest
     {
         repository = new MemoryTokenRepository();
 
+        token =  TokenGenerators.authenticationTokens().get();
         tokenId = token.getTokenId();
         ownerId = token.getOwnerId();
 
@@ -155,27 +155,27 @@ public class MemoryTokenRepositoryTest
     public void testSaveTokenWithBadArgs() throws Exception
     {
         assertThrows(() -> repository.saveToken(null))
-            .isInstanceOf(InvalidArgumentException.class);
+            .isInstanceOf(InvalidTokenException.class);
 
         //Missing Owner ID
         token.setOwnerId("");
 
         assertThrows(() -> repository.saveToken(token))
-            .isInstanceOf(InvalidArgumentException.class);
+            .isInstanceOf(InvalidTokenException.class);
 
         //Missing Token ID
         token.setOwnerId(ownerId);
         token.setTokenId("");
 
         assertThrows(() -> repository.saveToken(token))
-            .isInstanceOf(InvalidArgumentException.class);
+            .isInstanceOf(InvalidTokenException.class);
 
         //Missing Token Type
         token.setTokenId(tokenId);
         token.setTokenType(null);
 
         assertThrows(() -> repository.saveToken(token))
-            .isInstanceOf(InvalidArgumentException.class);
+            .isInstanceOf(InvalidTokenException.class);
 
     }
 
