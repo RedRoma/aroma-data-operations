@@ -185,7 +185,7 @@ final class CassandraTokenRepository implements TokenRepository
 
         checkThat(row)
             .throwing(InvalidTokenException.class)
-            .usingMessage("token does not exist")
+            .usingMessage("Token does not exist")
             .is(notNull());
 
         return row;
