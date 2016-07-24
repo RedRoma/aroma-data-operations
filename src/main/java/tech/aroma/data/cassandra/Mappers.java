@@ -46,6 +46,7 @@ import tech.aroma.thrift.Tier;
 import tech.aroma.thrift.Urgency;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
+import tech.aroma.thrift.authentication.TokenStatus;
 import tech.aroma.thrift.authentication.TokenType;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
@@ -415,6 +416,17 @@ final class Mappers
             if (!isNullOrEmpty(tokenType))
             {
                 token.setTokenType(TokenType.valueOf(tokenType));
+            }
+            
+            //Token status
+            if(doesRowContainColumn(row, Tables.Tokens.TOKEN_STATUS))
+            {
+                String status = row.getString(Tables.Tokens.TOKEN_STATUS);
+                
+                if (!isNullOrEmpty(status))
+                {
+                    token.setStatus(TokenStatus.valueOf(status));
+                }
             }
             
             token

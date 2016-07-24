@@ -35,6 +35,7 @@ import tech.aroma.thrift.Application;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;
+import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;
 import tech.aroma.thrift.reactions.Reaction;
@@ -54,6 +55,7 @@ import static org.mockito.Mockito.when;
 import static tech.aroma.thrift.generators.ChannelGenerators.mobileDevices;
 import static tech.aroma.thrift.generators.EventGenerators.events;
 import static tech.aroma.thrift.generators.ReactionGenerators.reactions;
+import static tech.aroma.thrift.generators.TokenGenerators.authenticationTokens;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
@@ -71,6 +73,8 @@ public class MappersTest
 
     @Mock
     private Row row;
+    
+    private AuthenticationToken token;
 
     @GeneratePojo
     private Application app;
@@ -109,6 +113,8 @@ public class MappersTest
             .map(this::toJson)
             .filter(Objects::nonNull)
             .collect(toList());
+        
+        token = one(authenticationTokens());
     }
     
     private <T extends TBase> String toJson(T object)
@@ -160,8 +166,8 @@ public class MappersTest
         Function<Row, User> mapper = Mappers.userMapper();
         assertThat(mapper, notNullValue());
         
-        Row row = rowFor(user);
-        User result = mapper.apply(row);
+        Row userRow = rowFor(user);
+        User result = mapper.apply(userRow);
         
         assertThat(result, notNullValue());
         assertThat(result.userId, is(user.userId));
@@ -173,15 +179,15 @@ public class MappersTest
     
     private Row rowFor(User user)
     {
-        Row row = mock(Row.class);
+        Row userRow = mock(Row.class);
         
-        when(row.getUUID(Tables.Users.USER_ID)).thenReturn(UUID.fromString(user.userId));
-        when(row.getString(Tables.Users.FIRST_NAME)).thenReturn(user.firstName);
-        when(row.getString(Tables.Users.MIDDLE_NAME)).thenReturn(user.middleName);
-        when(row.getString(Tables.Users.LAST_NAME)).thenReturn(user.lastName);
-        when(row.getTimestamp(Tables.Users.BIRTH_DATE)).thenReturn(new Date(user.birthdate));
+        when(userRow.getUUID(Tables.Users.USER_ID)).thenReturn(UUID.fromString(user.userId));
+        when(userRow.getString(Tables.Users.FIRST_NAME)).thenReturn(user.firstName);
+        when(userRow.getString(Tables.Users.MIDDLE_NAME)).thenReturn(user.middleName);
+        when(userRow.getString(Tables.Users.LAST_NAME)).thenReturn(user.lastName);
+        when(userRow.getTimestamp(Tables.Users.BIRTH_DATE)).thenReturn(new Date(user.birthdate));
         
-        return row;
+        return userRow;
     }
 
     @Test
@@ -190,26 +196,26 @@ public class MappersTest
         Function<Row, Event> instance = Mappers.eventMapper();
         assertThat(instance, notNullValue());
         
-        Row row = rowFor(event);
-        Event result = instance.apply(row);
+        Row eventRow = rowFor(event);
+        Event result = instance.apply(eventRow);
         assertThat(result, is(event));
     }
 
     private Row rowFor(Event event) throws TException
     {
-        Row row = mock(Row.class);
+        Row eventRow = mock(Row.class);
         
         String serializedEvent = ThriftObjects.toJson(event);
         UUID actorId = UUID.fromString(event.userIdOfActor);
         UUID appId = UUID.fromString(event.applicationId);
         UUID eventId = UUID.fromString(event.eventId);
         
-        when(row.getUUID(Activity.ACTOR_ID)).thenReturn(actorId);
-        when(row.getUUID(Activity.APP_ID)).thenReturn(appId);
-        when(row.getUUID(Activity.EVENT_ID)).thenReturn(eventId);
-        when(row.getString(Activity.SERIALIZED_EVENT)).thenReturn(serializedEvent);
+        when(eventRow.getUUID(Activity.ACTOR_ID)).thenReturn(actorId);
+        when(eventRow.getUUID(Activity.APP_ID)).thenReturn(appId);
+        when(eventRow.getUUID(Activity.EVENT_ID)).thenReturn(eventId);
+        when(eventRow.getString(Activity.SERIALIZED_EVENT)).thenReturn(serializedEvent);
         
-        return row;
+        return eventRow;
     }
 
     @Test
@@ -250,5 +256,49 @@ public class MappersTest
         assertThat(result, is(Sets.createFrom(device)));
     }
 
+    
+    @Test
+    public void testAuthenticationTokenMapper() throws Exception
+    {
+        Function<Row, AuthenticationToken> mapper = Mappers.tokenMapper();
+        assertThat(mapper, notNullValue());
+        
+        token.unsetOrganizationName();
+        Row tokenRow = rowFor(token);
+        
+        AuthenticationToken result = mapper.apply(tokenRow);
+        assertThat(result, is(token));
+    }
+    
+    private Row rowFor(AuthenticationToken token)
+    {
+        Row tokenRow = mock(Row.class);
+        
+        when(tokenRow.getTimestamp(Tables.Tokens.TIME_OF_EXPIRATION))
+            .thenReturn(new Date(token.timeOfExpiration));
+        
+        when(tokenRow.getTimestamp(Tables.Tokens.TIME_OF_CREATION))
+            .thenReturn(new Date(token.timeOfCreation));
+        
+        when(tokenRow.getUUID(Tables.Tokens.ORG_ID))
+            .thenReturn(UUID.fromString(token.organizationId));
+        
+        when(tokenRow.getUUID(Tables.Tokens.TOKEN_ID))
+            .thenReturn(UUID.fromString(token.tokenId));
+        
+        when(tokenRow.getString(Tables.Tokens.TOKEN_TYPE))
+            .thenReturn(token.tokenType.toString());
+        
+        when(tokenRow.getString(Tables.Tokens.TOKEN_STATUS))
+            .thenReturn(token.status.toString());
+        
+        when(tokenRow.getUUID(Tables.Tokens.OWNER_ID))
+            .thenReturn(UUID.fromString(token.ownerId));
+        
+        when(tokenRow.getString(Tables.Tokens.OWNER_NAME))
+            .thenReturn(token.ownerName);
+        
+        return tokenRow;
+    }
 
 }
