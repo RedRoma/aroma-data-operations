@@ -38,10 +38,8 @@ import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.InvalidTokenException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
-import tech.aroma.thrift.functions.TimeFunctions;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
 import static tech.aroma.data.assertions.AuthenticationAssertions.completeToken;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.data.cassandra.Tables.Tokens.ORG_ID;
@@ -64,7 +62,7 @@ final class CassandraTokenRepository implements TokenRepository
 {
 
     private final static Logger LOG = LoggerFactory.getLogger(CassandraTokenRepository.class);
-    private static final LengthOfTime DEFAULT_TOKEN_LIFETIME = new LengthOfTime(TimeUnit.DAYS, 60);
+    private static final LengthOfTime DEFAULT_TOKEN_LIFETIME = new LengthOfTime(TimeUnit.DAYS, 90);
 
     private final Session cassandra;
     private final Function<Row, AuthenticationToken> tokenMapper;
@@ -260,8 +258,6 @@ final class CassandraTokenRepository implements TokenRepository
             tokenType = token.tokenType.toString();
         }
         
-        long timeToLive = TimeFunctions.toSeconds(DEFAULT_TOKEN_LIFETIME);
-
         if (!isNullOrEmpty(token.organizationId))
         {
             checkThat(token.organizationId)
@@ -282,8 +278,7 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, tokenType)
-            .using(ttl((int) timeToLive));
+            .value(TOKEN_TYPE, tokenType);
 
         batch.add(insertIntoMainTable);
 
@@ -295,8 +290,7 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, tokenType)
-            .using(ttl((int) timeToLive));
+            .value(TOKEN_TYPE, tokenType);
 
         batch.add(insertIntoOwnersTable);
 
