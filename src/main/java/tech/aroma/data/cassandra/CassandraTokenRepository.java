@@ -32,8 +32,6 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.TokenRepository;
 import tech.aroma.data.cassandra.Tables.Tokens;
-import tech.aroma.thrift.LengthOfTime;
-import tech.aroma.thrift.TimeUnit;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.InvalidTokenException;
@@ -63,7 +61,6 @@ final class CassandraTokenRepository implements TokenRepository
 {
 
     private final static Logger LOG = LoggerFactory.getLogger(CassandraTokenRepository.class);
-    private static final LengthOfTime DEFAULT_TOKEN_LIFETIME = new LengthOfTime(TimeUnit.DAYS, 90);
 
     private final Session cassandra;
     private final Function<Row, AuthenticationToken> tokenMapper;
