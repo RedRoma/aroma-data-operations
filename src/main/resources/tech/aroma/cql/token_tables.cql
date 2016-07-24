@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Tokens
 	time_of_creation timestamp,
 	organization_id uuid,
 	token_type text,
+	token_status text,
 
 	PRIMARY KEY (token_id)
 );
@@ -29,6 +30,7 @@ CREATE TABLE IF NOT EXISTS Aroma.Tokens_By_Owner
 	time_of_expiration timestamp,
 	organization_id uuid,
 	token_type text,
+	token_status text,
 
 	PRIMARY KEY ((owner_id), token_id)
 );
