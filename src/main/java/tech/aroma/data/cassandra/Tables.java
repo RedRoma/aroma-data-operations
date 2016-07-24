@@ -195,6 +195,7 @@ class Tables
         static final String TIME_OF_CREATION = "time_of_creation";
         static final String ORG_ID = "organization_id";
         static final String TOKEN_TYPE = "token_type";
+        static final String TOKEN_STATUS = "token_status";
     }
     
     static class Users
