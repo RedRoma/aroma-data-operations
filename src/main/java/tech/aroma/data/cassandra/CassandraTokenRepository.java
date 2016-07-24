@@ -48,6 +48,7 @@ import static tech.aroma.data.cassandra.Tables.Tokens.OWNER_NAME;
 import static tech.aroma.data.cassandra.Tables.Tokens.TIME_OF_CREATION;
 import static tech.aroma.data.cassandra.Tables.Tokens.TIME_OF_EXPIRATION;
 import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_ID;
+import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_STATUS;
 import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_TYPE;
 import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
@@ -258,6 +259,12 @@ final class CassandraTokenRepository implements TokenRepository
             tokenType = token.tokenType.toString();
         }
         
+        String tokenStatus = null;
+        if (token.status != null)
+        {
+            tokenStatus = token.status.toString();
+        }
+        
         if (!isNullOrEmpty(token.organizationId))
         {
             checkThat(token.organizationId)
@@ -278,7 +285,8 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, tokenType);
+            .value(TOKEN_TYPE, tokenType)
+            .value(TOKEN_STATUS, tokenStatus);
 
         batch.add(insertIntoMainTable);
 
@@ -290,7 +298,8 @@ final class CassandraTokenRepository implements TokenRepository
             .value(OWNER_NAME, token.ownerName)
             .value(TIME_OF_EXPIRATION, token.timeOfExpiration)
             .value(TIME_OF_CREATION, token.timeOfCreation)
-            .value(TOKEN_TYPE, tokenType);
+            .value(TOKEN_TYPE, tokenType)
+            .value(TOKEN_STATUS, tokenStatus);
 
         batch.add(insertIntoOwnersTable);
 
