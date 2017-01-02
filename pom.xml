@@ -135,7 +135,7 @@
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
-            <version>0.5.5</version>
+            <version>0.5.7</version>
         </dependency>
 
         <!--=======================-->
