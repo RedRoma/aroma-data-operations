@@ -136,7 +136,7 @@ public class MemoryTokenRepositoryTest
         token.setTimeOfExpiration(now().plusSeconds(1).toEpochMilli());
         repository.saveToken(token);
 
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         assertThrows(() -> repository.getToken(tokenId))
             .isInstanceOf(InvalidTokenException.class);
     }
