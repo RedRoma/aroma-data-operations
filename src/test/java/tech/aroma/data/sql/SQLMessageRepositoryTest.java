@@ -1,6 +1,7 @@
 package tech.aroma.data.sql;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
+import tech.sirwellington.alchemy.generator.ObjectGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.is;
@@ -19,6 +21,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.BooleanGenerators.booleans;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 
@@ -262,5 +266,44 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.containsMessage(appId, alphabetic)).isInstanceOf(InvalidArgumentException.class);
 
     }
+
+
+    @Test
+    public void testGetByHostname() throws Exception
+    {
+        String hostname = alphabetic;
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
+
+        List<Message> messages = listOf(pojos(Message.class));
+
+        when(database.query(query, messageDeserializer, hostname)).thenReturn(messages);
+
+        List<Message> result = instance.getByHostname(hostname);
+
+        assertThat(result, is(messages));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByHostnameWhenDatabaseFails() throws Exception
+    {
+        String hostname = alphabetic;
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
+
+        when(database.query(query, messageDeserializer, hostname))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.getByHostname(hostname))
+                .isInstanceOf(OperationFailedException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByHostnameWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByHostname(null)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getByHostname("")).isInstanceOf(InvalidArgumentException.class);
+    }
+
 }
 
