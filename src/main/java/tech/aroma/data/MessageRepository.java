@@ -19,6 +19,7 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.TimeUnit;
+import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 /**
@@ -38,7 +39,7 @@ public interface MessageRepository
         this.saveMessage(message, defaultTime);
     }
 
-    void saveMessage(@Required Message message, @Required LengthOfTime lifetime) throws TException;
+    void saveMessage(@Required Message message, @Optional LengthOfTime lifetime) throws TException;
 
     Message getMessage(@Required String applicationId, @Required String messageId) throws TException;
 

@@ -2,8 +2,9 @@ package tech.aroma.data.sql;
 
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+import javax.inject.Inject;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import tech.aroma.thrift.Message;
 import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.access.Internal;
+import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions;
 
 import static tech.aroma.data.assertions.RequestAssertions.validLengthOfTime;
@@ -35,27 +37,40 @@ final class SQLMessageRepository implements MessageRepository
 
     private static final Logger LOG = LoggerFactory.getLogger(SQLMessageRepository.class);
 
-    private JdbcTemplate database;
-    private RowMapper<Message> messageDeserializer;
-    private DatabaseSerializer<Message> messageSerializer;
+    private final JdbcTemplate database;
+    private final DatabaseDeserializer<Message> messageDeserializer;
+    private final DatabaseSerializer<Message> messageSerializer;
 
-    @Override
-    public void saveMessage(Message message, LengthOfTime lifetime) throws TException
+    @Inject
+    SQLMessageRepository(JdbcTemplate database, DatabaseDeserializer<Message> messageDeserializer, DatabaseSerializer<Message> messageSerializer)
     {
-        checkThat(message, lifetime)
-                .throwing(InvalidArgumentException.class)
+        checkThat(database, messageDeserializer, messageSerializer)
                 .are(notNull());
 
+        this.database = database;
+        this.messageDeserializer = messageDeserializer;
+        this.messageSerializer = messageSerializer;
+    }
+
+    @Override
+    public void saveMessage(Message message, @Optional  LengthOfTime lifetime) throws TException
+    {
         checkThat(message)
                 .throwing(InvalidArgumentException.class)
+                .is(notNull())
                 .is(validMessage());
 
-        checkThat(lifetime)
-                .throwing(InvalidArgumentException.class)
-                .is(validLengthOfTime());
+        Duration messageDuration = null;
 
+        if (Objects.nonNull(lifetime))
+        {
 
-        Duration messageDuration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime);
+            checkThat(lifetime)
+                    .throwing(InvalidArgumentException.class)
+                    .is(validLengthOfTime());
+
+            messageDuration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime);
+        }
 
         _saveMessage(message, messageDuration);
     }
@@ -68,7 +83,7 @@ final class SQLMessageRepository implements MessageRepository
         {
             messageSerializer.save(message, messageDuration, statement, database);
         }
-        catch(SQLException ex)
+        catch(Exception ex)
         {
             LOG.error("Failed to serialize Message {} using statement [{}]", message, statement);
             throw new OperationFailedException();
