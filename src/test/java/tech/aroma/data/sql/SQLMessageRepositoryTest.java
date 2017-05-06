@@ -25,6 +25,7 @@ import static org.mockito.Mockito.*;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.BooleanGenerators.booleans;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
@@ -411,6 +412,46 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.getByTitle(appId, null)).isInstanceOf(InvalidArgumentException.class);
 
         assertThrows(() -> instance.getByTitle(alphabetic, alphabetic)).isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @Test
+    public void testGetCountByApplication() throws Exception
+    {
+        String query = SQLStatements.Queries.COUNT_MESSAGES;
+        long count = one(positiveLongs());
+
+        when(database.queryForObject(query, Long.class, UUID.fromString(appId)))
+                .thenReturn(count);
+
+        long result = instance.getCountByApplication(appId);
+        assertThat(result, is(count));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetCountWhenDatabaseFails() throws Exception
+    {
+        String query= SQLStatements.Queries.COUNT_MESSAGES;
+
+        when(database.queryForObject(query, Long.class, UUID.fromString(appId)))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.getCountByApplication(appId))
+                .isInstanceOf(OperationFailedException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetCountWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getCountByApplication(""))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.getCountByApplication(null))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.getCountByApplication(alphabetic))
+                .isInstanceOf(InvalidArgumentException.class);
     }
 }
 
