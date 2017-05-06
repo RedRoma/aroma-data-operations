@@ -28,10 +28,13 @@ final class SQLStatements
 
     static class Queries
     {
+        static final String CHECK_MESSAGE = loadSQLFile("/queries/check_message.sql");
+        static final String COUNT_MESSAGES = loadSQLFile("/queries/count_messages.sql");
+
         static final String SELECT_MESSAGE = loadSQLFile("/queries/select_message.sql");
         static final String SELECT_APP_MESSAGES = loadSQLFile("/queries/select_app_messages.sql");
-        static final String CHECK_MESSAGE = loadSQLFile("/queries/check_message.sql");
         static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("/queries/select_messages_by_hostname.sql");
+        static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("/queries/select_messages_by_title.sql");
     }
 
     static String loadSQLFile(String name)
