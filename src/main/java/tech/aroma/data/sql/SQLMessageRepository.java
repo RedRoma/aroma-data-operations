@@ -53,7 +53,7 @@ final class SQLMessageRepository implements MessageRepository
     }
 
     @Override
-    public void saveMessage(Message message, @Optional  LengthOfTime lifetime) throws TException
+    public void saveMessage(Message message, @Optional LengthOfTime lifetime) throws TException
     {
         checkThat(message)
                 .throwing(InvalidArgumentException.class)
@@ -83,7 +83,7 @@ final class SQLMessageRepository implements MessageRepository
         {
             messageSerializer.save(message, messageDuration, statement, database);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to serialize Message {} using statement [{}]", message, statement);
             throw new OperationFailedException();
@@ -101,10 +101,18 @@ final class SQLMessageRepository implements MessageRepository
         final UUID msgId = UUID.fromString(messageId);
         final String statement = SQLStatements.Queries.SELECT_MESSAGE;
 
-        Message message = database.queryForObject(statement,
-                                                  messageDeserializer,
-                                                  appId,
-                                                  msgId);
+        Message message;
+
+        try
+        {
+            message = database.queryForObject(statement, messageDeserializer, appId, msgId);
+
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to get message [{}/{}]", applicationId, messageId, ex);
+            throw new OperationFailedException(ex.getMessage());
+        }
 
         checkThat(message)
                 .throwing(DoesNotExistException.class)
@@ -130,7 +138,7 @@ final class SQLMessageRepository implements MessageRepository
 
             LOG.debug("{} rows affected deleting message [{}/{}]", updatedRows, applicationId, messageId);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to delete message [{}/{}]", applicationId, messageId);
             throw new OperationFailedException(ex.getMessage());
@@ -152,7 +160,7 @@ final class SQLMessageRepository implements MessageRepository
         {
             return database.queryForObject(statement, Boolean.class, appId, msgId);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to check whether message exists: [{}/{}]", appId, msgId);
             throw new OperationFailedException(ex.getMessage());
@@ -211,7 +219,7 @@ final class SQLMessageRepository implements MessageRepository
         {
             return database.query(query, messageDeserializer, appId, title);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to query for messages by title [{}/{}]", applicationId, title);
             throw new OperationFailedException(ex.getMessage());

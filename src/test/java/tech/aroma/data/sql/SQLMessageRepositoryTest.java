@@ -1,5 +1,6 @@
 package tech.aroma.data.sql;
 
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -132,6 +133,20 @@ public class SQLMessageRepositoryTest
 
         Message result = instance.getMessage(appId, messageId);
         assertThat(result, is(message));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetMessageWhenDatabaseFails() throws Exception
+    {
+        String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
+
+        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.getMessage(appId, messageId))
+                .isInstanceOf(OperationFailedException.class);
+
     }
 
     @DontRepeat
