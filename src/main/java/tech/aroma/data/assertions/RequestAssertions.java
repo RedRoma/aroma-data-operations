@@ -5,10 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
-import tech.aroma.thrift.Application;
-import tech.aroma.thrift.Message;
-import tech.aroma.thrift.Organization;
-import tech.aroma.thrift.User;
+import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.channels.AndroidDevice;
 import tech.aroma.thrift.channels.IOSDevice;
@@ -22,6 +19,7 @@ import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveLong;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
@@ -241,6 +239,22 @@ public final class RequestAssertions
                 .usingMessage("token missing ownerId")
                 .is(nonEmptyString());
             
+        };
+    }
+
+    public static AlchemyAssertion<LengthOfTime> validLengthOfTime()
+    {
+        return time ->
+        {
+            notNull().check(time);
+
+            checkThat(time.value)
+                    .usingMessage("Time value must be positive")
+                    .is(positiveLong());
+
+            checkThat(time.unit)
+                    .usingMessage("Time is missing unit")
+                    .is(notNull());
         };
     }
 

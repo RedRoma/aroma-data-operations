@@ -21,10 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.lists.Lists;
-import tech.aroma.thrift.Application;
-import tech.aroma.thrift.Message;
-import tech.aroma.thrift.Organization;
-import tech.aroma.thrift.User;
+import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.ApplicationToken;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.authentication.UserToken;
@@ -33,6 +30,8 @@ import tech.aroma.thrift.channels.IOSDevice;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
+import tech.sirwellington.alchemy.generator.EnumGenerators;
+import tech.sirwellington.alchemy.generator.NumberGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
@@ -45,6 +44,8 @@ import static org.junit.Assert.assertThat;
 import static tech.aroma.thrift.generators.ChannelGenerators.mobileDevices;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.negativeIntegers;
+import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
@@ -346,6 +347,39 @@ public class RequestAssertionsTest
         
         //Check with bad
         assertThrows(() -> assertion.check(bad));
+    }
+
+    @Test
+    public void testValidLengthOfTime() throws Exception
+    {
+        long value = one(positiveLongs());
+        TimeUnit unit = EnumGenerators.enumValueOf(TimeUnit.class).get();
+
+        LengthOfTime time = new LengthOfTime().setUnit(unit).setValue(value);
+
+        AlchemyAssertion<LengthOfTime> assertion = RequestAssertions.validLengthOfTime();
+        assertThat(assertion, notNullValue());
+
+        assertion.check(time);
+    }
+
+
+    @Test
+    public void testValidLengthOfTimeWithInvalid() throws Exception
+    {
+
+        AlchemyAssertion<LengthOfTime> assertion = RequestAssertions.validLengthOfTime();
+
+        long value = one(negativeIntegers());
+        TimeUnit unit = EnumGenerators.enumValueOf(TimeUnit.class).get();
+
+        LengthOfTime time = new LengthOfTime(unit, value);
+
+        assertThrows(() -> assertion.check(time)).isInstanceOf(FailedAssertionException.class);
+
+        time.unsetUnit();;
+        assertThrows(() -> assertion.check(time)).isInstanceOf(FailedAssertionException.class);
+
     }
 
 }
