@@ -1,5 +1,6 @@
 package tech.aroma.data.sql;
 
+import java.awt.dnd.InvalidDnDOperationException;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.UUID;
@@ -176,4 +177,54 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.getMessage(appId, alphabetic)).isInstanceOf(InvalidArgumentException.class);
 
     }
+
+    @Test
+    public void testDeleteMessage() throws Exception
+    {
+        instance.deleteMessage(appId, messageId);
+
+        String expectedStatement = SQLStatements.Deletes.MESSAGE;
+
+        verify(database).update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId));
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteMessageWithInvalidArgs() throws Exception
+    {
+        String alphabetic = one(alphabeticString());
+
+        assertThrows(() -> instance.deleteMessage(alphabetic, messageId))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteMessage(appId, alphabetic))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteMessage("", messageId))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteMessage(alphabetic, ""))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteMessage(null, messageId))
+                .isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.deleteMessage(appId, null))
+                .isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testDeleteWhenOperationFails() throws Exception
+    {
+
+        String expectedStatement = SQLStatements.Deletes.MESSAGE;
+        when(database.update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId)))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.deleteMessage(appId, messageId))
+                .isInstanceOf(OperationFailedException.class);
+
+    }
 }
+
