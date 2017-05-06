@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS Messages
     urgency TEXT,
     time_created TIMESTAMP,
     time_received TIMESTAMP,
+    expiration TIMESTAMP,
     hostname TEXT,
     ip_address TEXT,
     app_id UUID,
