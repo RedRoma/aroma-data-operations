@@ -1,17 +1,13 @@
 package tech.aroma.data.sql;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.*;
-
 import javax.inject.Inject;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
@@ -19,7 +15,6 @@ import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.arguments.Optional;
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions;
 
 import static tech.aroma.data.assertions.RequestAssertions.validLengthOfTime;
 import static tech.aroma.data.assertions.RequestAssertions.validMessage;
