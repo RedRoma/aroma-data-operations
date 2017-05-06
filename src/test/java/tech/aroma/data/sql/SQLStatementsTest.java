@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * @author SirWellington
  */
 @RunWith(AlchemyTestRunner.class)
-public class QueriesTest
+public class SQLStatementsTest
 {
 
 
@@ -25,9 +25,16 @@ public class QueriesTest
     }
 
     @Test
-    public void loadSQLFile() throws Exception
+    public void testInserts() throws Exception
     {
-        assertThat(Queries.INSERT_MESSAGE, not(Matchers.isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.MESSAGE, not(Matchers.isEmptyOrNullString()));
+    }
+
+    @Test
+    public void testQueries() throws Exception
+    {
+        assertThat(SQLStatements.Queries.SELECT_MESSAGE, not(Matchers.isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APP_MESSAGES, not(Matchers.isEmptyOrNullString()));
     }
 
 }

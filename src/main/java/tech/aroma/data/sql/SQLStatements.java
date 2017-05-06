@@ -8,16 +8,24 @@ import com.google.common.io.Resources;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 /**
- * Contains the SQL Queries that allow queries and updates.
+ * Contains the SQL SQLStatements that allow queries and updates.
  *
  * @author SirWellington
  */
 @Internal
-final class Queries
+final class SQLStatements
 {
 
-    //INSERT STATEMENTS
-    static final String INSERT_MESSAGE = loadSQLFile("insert_message.sql");
+    static class Inserts
+    {
+        static final String MESSAGE = loadSQLFile("/inserts/insert_message.sql");
+    }
+
+    static class Queries
+    {
+        static final String SELECT_MESSAGE = loadSQLFile("/queries/select_message.sql");
+        static final String SELECT_APP_MESSAGES = loadSQLFile("/queries/select_messages_for_app.sql");
+    }
 
     static String loadSQLFile(String name)
     {

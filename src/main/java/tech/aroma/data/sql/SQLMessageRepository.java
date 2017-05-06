@@ -5,12 +5,15 @@ import java.time.Duration;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
@@ -25,6 +28,9 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 @Internal
 final class SQLMessageRepository implements MessageRepository
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SQLMessageRepository.class);
+
     private JdbcTemplate database;
     private RowMapper<Message> messageDeserializaer;
     private DatabaseSerializer<Message> messageSerializer;
@@ -47,21 +53,21 @@ final class SQLMessageRepository implements MessageRepository
 
         Duration messageDuration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime);
 
-        tryToSaveMessage(message, messageDuration);
-
+        _saveMessage(message, messageDuration);
     }
 
-    private void tryToSaveMessage(Message message, Duration messageDuration)
+    private void _saveMessage(Message message, Duration messageDuration) throws OperationFailedException
     {
-        final String query = Queries.INSERT_MESSAGE;
+        final String statement = SQLStatements.Inserts.MESSAGE;
 
         try
         {
-            messageSerializer.save(message, messageDuration, query, database);
+            messageSerializer.save(message, messageDuration, statement, database);
         }
         catch(SQLException ex)
         {
-
+            LOG.error("Failed to serialize Message {} using statement [{}]", message, statement);
+            throw new OperationFailedException();
         }
     }
 

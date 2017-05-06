@@ -1,3 +1,7 @@
+---------------------------------------
+-- DDL FOR AROMA MESSAGES
+---------------------------------------
+
 CREATE TABLE IF NOT EXISTS Messages
 (
     message_id UUID,
