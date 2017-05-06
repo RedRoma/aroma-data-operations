@@ -16,6 +16,11 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 final class SQLStatements
 {
 
+    static class Deletes
+    {
+        static final String MESSAGE = loadSQLFile("/deletes/delete_message.sql");
+    }
+
     static class Inserts
     {
         static final String MESSAGE = loadSQLFile("/inserts/insert_message.sql");
@@ -24,7 +29,9 @@ final class SQLStatements
     static class Queries
     {
         static final String SELECT_MESSAGE = loadSQLFile("/queries/select_message.sql");
-        static final String SELECT_APP_MESSAGES = loadSQLFile("/queries/select_messages_for_app.sql");
+        static final String SELECT_APP_MESSAGES = loadSQLFile("/queries/select_app_messages.sql");
+        static final String CHECK_MESSAGE = loadSQLFile("/queries/check_message.sql");
+        static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("/queries/select_messages_by_hostname.sql");
     }
 
     static String loadSQLFile(String name)
