@@ -1,13 +1,12 @@
 package tech.aroma.data.sql;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 
 import org.apache.thrift.TException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
@@ -17,17 +16,18 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static tech.aroma.data.assertions.RequestAssertions.validLengthOfTime;
 import static tech.aroma.data.assertions.RequestAssertions.validMessage;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**
- * Created by sirwellington on 5/6/17.
+ * Saves and retrieves {@linkplain Message Messages} from the SQL Database.
  */
 @Internal
 final class SQLMessageRepository implements MessageRepository
 {
     private JdbcTemplate database;
-    private Function<ResultSet, Message> messageMapper;
+    private RowMapper<Message> messageDeserializaer;
+    private DatabaseSerializer<Message> messageSerializer;
 
     @Override
     public void saveMessage(Message message, LengthOfTime lifetime) throws TException
@@ -53,10 +53,16 @@ final class SQLMessageRepository implements MessageRepository
 
     private void tryToSaveMessage(Message message, Duration messageDuration)
     {
-        UUID messageId = UUID.fromString(message.messageId);
-        UUID appId = UUID.fromString(message.applicationId);
+        final String query = Queries.INSERT_MESSAGE;
 
+        try
+        {
+            messageSerializer.save(message, messageDuration, query, database);
+        }
+        catch(SQLException ex)
+        {
 
+        }
     }
 
     @Override
