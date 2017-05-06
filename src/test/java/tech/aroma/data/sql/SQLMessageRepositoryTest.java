@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.jdbc.core.JdbcTemplate;
 import sir.wellington.alchemy.collections.lists.Lists;
+import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
@@ -354,6 +355,62 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.getByApplication(null)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.getByApplication("")).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.getByApplication(alphabetic)).isInstanceOf(InvalidArgumentException.class);
+    }
+
+    @Test
+    public void testGetByTitle() throws Exception
+    {
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
+        String title = alphabetic;
+        List<Message> messages = listOf(pojos(Message.class));
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+                .thenReturn(messages);
+
+        List<Message> results = instance.getByTitle(appId, title);
+        assertThat(results, is(messages));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByTitleWhenNoMessages() throws Exception
+    {
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
+        String title = alphabetic;
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+                .thenReturn(Lists.emptyList());
+
+        List<Message> results = instance.getByTitle(appId, title);
+        assertThat(results, notNullValue());
+        assertThat(results, is(empty()));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByTitleWhenDatabaseFails() throws Exception
+    {
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
+        String title = alphabetic;
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.getByTitle(appId, title))
+                .isInstanceOf(OperationFailedException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByTitleWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByTitle("", alphabetic)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getByTitle(appId, "")).isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.getByTitle(null, alphabetic)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getByTitle(appId, null)).isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.getByTitle(alphabetic, alphabetic)).isInstanceOf(InvalidArgumentException.class);
     }
 }
 
