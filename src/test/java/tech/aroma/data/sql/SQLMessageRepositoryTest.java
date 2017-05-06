@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.BooleanGenerators.booleans;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 
@@ -51,6 +52,9 @@ public class SQLMessageRepositoryTest
 
     @GeneratePojo
     private LengthOfTime lifetime;
+
+    @GenerateString(GenerateString.Type.ALPHABETIC)
+    private String alphabetic;
 
     @Before
     public void setUp() throws Exception
@@ -163,7 +167,6 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.getMessage("", messageId)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.getMessage(appId, "")).isInstanceOf(InvalidArgumentException.class);
 
-        String alphabetic = one(alphabeticString());
         assertThrows(() -> instance.getMessage(alphabetic, messageId)).isInstanceOf(InvalidArgumentException.class);
         assertThrows(() -> instance.getMessage(appId, alphabetic)).isInstanceOf(InvalidArgumentException.class);
 
@@ -202,6 +205,7 @@ public class SQLMessageRepositoryTest
 
         assertThrows(() -> instance.deleteMessage(appId, null))
                 .isInstanceOf(InvalidArgumentException.class);
+
     }
 
     @DontRepeat
@@ -215,6 +219,47 @@ public class SQLMessageRepositoryTest
 
         assertThrows(() -> instance.deleteMessage(appId, messageId))
                 .isInstanceOf(OperationFailedException.class);
+
+    }
+
+
+    @Test
+    public void testContainsMessage() throws Exception
+    {
+        boolean expected = one(booleans());
+
+        String query = SQLStatements.Queries.CHECK_MESSAGE;
+        when(database.queryForObject(query, Boolean.class, UUID.fromString(appId), UUID.fromString(messageId)))
+                .thenReturn(expected);
+
+        boolean result = instance.containsMessage(appId, messageId);
+        assertThat(result, is(expected));
+    }
+
+    @DontRepeat
+    @Test
+    public void testContainsMessageWhenOperationFails() throws Exception
+    {
+        String query = SQLStatements.Queries.CHECK_MESSAGE;
+        when(database.update(eq(query), eq(Boolean.class), any(), any()))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.containsMessage(appId, messageId))
+                .isInstanceOf(OperationFailedException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testContainsMessageWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.containsMessage(null, messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.containsMessage(appId, null)).isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.containsMessage("", messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.containsMessage(appId, "")).isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.containsMessage(alphabetic, messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.containsMessage(appId, alphabetic)).isInstanceOf(InvalidArgumentException.class);
 
     }
 }
