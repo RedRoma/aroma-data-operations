@@ -1,7 +1,9 @@
 package tech.aroma.data.sql;
 
 import java.time.Duration;
+import java.util.UUID;
 
+import kotlin.jvm.Throws;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,16 +13,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import sun.security.util.Length;
 import tech.aroma.thrift.*;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
+import tech.sirwellington.alchemy.generator.StringGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
 
 /**
@@ -115,5 +120,45 @@ public class SQLMessageRepositoryTest
 
         assertThrows(() -> instance.saveMessage(message))
                 .isInstanceOf(OperationFailedException.class);
+    }
+
+
+    @Test
+    public void testGetMessage() throws Exception
+    {
+        String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
+        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+                .thenReturn(message);
+
+        Message result = instance.getMessage(appId, messageId);
+        assertThat(result, is(message));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetMessageWhenMessageDoesNotExist() throws Exception
+    {
+        String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
+        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+                .thenReturn(null);
+
+        assertThrows(() -> instance.getMessage(appId, messageId))
+                .isInstanceOf(DoesNotExistException.class);
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetMessageWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getMessage(null, messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getMessage(appId, null)).isInstanceOf(InvalidArgumentException.class);
+
+        assertThrows(() -> instance.getMessage("", messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getMessage(appId, "")).isInstanceOf(InvalidArgumentException.class);
+
+        String alphabetic = one(alphabeticString());
+        assertThrows(() -> instance.getMessage(alphabetic, messageId)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getMessage(appId, alphabetic)).isInstanceOf(InvalidArgumentException.class);
+
     }
 }

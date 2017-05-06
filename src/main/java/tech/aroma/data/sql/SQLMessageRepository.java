@@ -168,24 +168,76 @@ final class SQLMessageRepository implements MessageRepository
 
         String statement = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
 
-        return Lists.emptyList();
+        return database.query(statement, messageDeserializer, hostname);
     }
 
     @Override
     public List<Message> getByApplication(String applicationId) throws TException
     {
-        return null;
+        checkThat(applicationId)
+                .throwing(InvalidArgumentException.class)
+                .is(validUUID());
+
+        UUID appId = UUID.fromString(applicationId);
+        String query = SQLStatements.Queries.SELECT_APP_MESSAGES;
+
+        try
+        {
+            return database.query(query, messageDeserializer, appId);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to get messages for Application: {}", appId, ex);
+            throw new OperationFailedException(ex.getMessage());
+        }
     }
+
 
     @Override
     public List<Message> getByTitle(String applicationId, String title) throws TException
     {
-        return null;
+        checkThat(applicationId, title)
+                .throwing(InvalidArgumentException.class)
+                .are(nonEmptyString());
+
+        checkThat(applicationId)
+                .throwing(InvalidArgumentException.class)
+                .is(validUUID());
+
+        UUID appId = UUID.fromString(applicationId);
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
+
+        try
+        {
+            return database.query(query, messageDeserializer, appId, title);
+        }
+        catch(Exception ex)
+        {
+            LOG.error("Failed to query for messages by title [{}/{}]", applicationId, title);
+            throw new OperationFailedException(ex.getMessage());
+        }
     }
 
     @Override
     public long getCountByApplication(String applicationId) throws TException
     {
-        return 0;
+        checkThat(applicationId)
+                .throwing(InvalidArgumentException.class)
+                .is(nonEmptyString())
+                .is(validUUID());
+
+        UUID appId = UUID.fromString(applicationId);
+        String query = SQLStatements.Queries.COUNT_MESSAGES;
+
+
+        try
+        {
+            return database.queryForObject(query, Long.class, appId);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to determine the number of messages for App [{}]", applicationId);
+            throw new OperationFailedException(ex.getMessage());
+        }
     }
 }
