@@ -43,7 +43,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.COUNT_MESSAGES, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Queries.SELECT_MESSAGE, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Queries.SELECT_APP_MESSAGES, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE, not(isEmptyOrNullString()));
     }

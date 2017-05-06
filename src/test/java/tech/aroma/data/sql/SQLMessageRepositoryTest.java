@@ -9,13 +9,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.jdbc.core.JdbcTemplate;
+import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
-import tech.sirwellington.alchemy.generator.ObjectGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -305,5 +307,40 @@ public class SQLMessageRepositoryTest
         assertThrows(() -> instance.getByHostname("")).isInstanceOf(InvalidArgumentException.class);
     }
 
+    @Test
+    public void testGetByApplication() throws Exception
+    {
+        List<Message> messages = listOf(pojos(Message.class));
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+                .thenReturn(messages);
+
+        List<Message> results = instance.getByApplication(appId);
+        assertThat(results, is(messages));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByApplicationWhenNoMessages() throws Exception
+    {
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+                .thenReturn(Lists.emptyList());
+
+        List<Message> results = instance.getByApplication(appId);
+        assertThat(results, notNullValue());
+        assertThat(results, is(empty()));
+    }
+
+    @DontRepeat
+    @Test
+    public void testGetByApplicationWithBadArgs() throws Exception
+    {
+        assertThrows(() -> instance.getByApplication(null)).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getByApplication("")).isInstanceOf(InvalidArgumentException.class);
+        assertThrows(() -> instance.getByApplication(alphabetic)).isInstanceOf(InvalidArgumentException.class);
+    }
 }
 

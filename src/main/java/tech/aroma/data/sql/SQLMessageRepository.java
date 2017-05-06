@@ -190,7 +190,7 @@ final class SQLMessageRepository implements MessageRepository
                 .is(validUUID());
 
         UUID appId = UUID.fromString(applicationId);
-        String query = SQLStatements.Queries.SELECT_APP_MESSAGES;
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
 
         try
         {
