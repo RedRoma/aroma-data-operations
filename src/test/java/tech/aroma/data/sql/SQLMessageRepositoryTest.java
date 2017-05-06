@@ -336,6 +336,19 @@ public class SQLMessageRepositoryTest
 
     @DontRepeat
     @Test
+    public void testGetByApplicationWhenDatabaseFails() throws Exception
+    {
+        String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
+
+        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+                .thenThrow(new RuntimeException());
+
+        assertThrows(() -> instance.getByApplication(appId))
+                .isInstanceOf(OperationFailedException.class);
+    }
+
+    @DontRepeat
+    @Test
     public void testGetByApplicationWithBadArgs() throws Exception
     {
         assertThrows(() -> instance.getByApplication(null)).isInstanceOf(InvalidArgumentException.class);
