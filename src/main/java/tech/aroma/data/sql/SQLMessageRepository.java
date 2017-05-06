@@ -171,7 +171,15 @@ final class SQLMessageRepository implements MessageRepository
 
         String statement = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
 
-        return database.query(statement, messageDeserializer, hostname);
+        try
+        {
+            return database.query(statement, messageDeserializer, hostname);
+        }
+        catch (Exception ex)
+        {
+            LOG.error("Failed to get all messages by hostname: [{}]", hostname, ex);
+            throw new OperationFailedException("Coult not get all messages by hostname: " + hostname + " | " + ex.getMessage());
+        }
     }
 
     @Override
