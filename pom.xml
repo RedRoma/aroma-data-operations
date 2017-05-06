@@ -129,6 +129,23 @@
             <artifactId>cassandra-driver-core</artifactId>
         </dependency>
 
+
+        <!--=======================-->
+        <!--SQL-->
+        <!--=======================-->
+        <!--POSTGRESQL-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!--SPRING JDBC-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+
         <!--=======================-->
         <!--EXPIRING MAP-->
         <!--=======================-->
