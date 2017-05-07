@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
  * @author SirWellington
  */
 @FunctionalInterface
-interface DatabaseDeserializer<T> extends RowMapper<T>
+public interface DatabaseDeserializer<T> extends RowMapper<T>
 {
     T deserializer(ResultSet resultSet) throws SQLException;
 

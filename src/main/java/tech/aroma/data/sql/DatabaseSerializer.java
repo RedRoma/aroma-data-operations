@@ -12,7 +12,7 @@ import tech.sirwellington.alchemy.annotations.arguments.*;
  *
  * @author SirWellington
  */
-interface DatabaseSerializer<T extends TBase<?, ?>>
+public interface DatabaseSerializer<T extends TBase<?, ?>>
 {
     /**
      * Saves the object to the Database.
