@@ -77,6 +77,7 @@
         <dependency>
             <groupId>tech.sirwellington.alchemy</groupId>
             <artifactId>alchemy-arguments</artifactId>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
