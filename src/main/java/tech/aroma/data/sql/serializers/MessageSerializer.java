@@ -22,13 +22,13 @@ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.n
 
 /**
  * Serializes {@linkplain Message Messages} to the Database.
- * 
+ *
  * @author SirWellington
  */
 public class MessageSerializer implements DatabaseSerializer<Message>
 {
 
-    public static Logger LOG = LoggerFactory.getLogger(MessageSerializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageSerializer.class);
 
     @Override
     public void save(Message message, Duration timeToLive, String statement, JdbcTemplate database) throws SQLException
