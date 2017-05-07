@@ -80,8 +80,8 @@ final class SQLMessageRepository implements MessageRepository
         }
         catch (Exception ex)
         {
-            LOG.error("Failed to serialize Message {} using statement [{}]", message, statement);
-            throw new OperationFailedException();
+            LOG.error("Failed to serialize Message {} using statement [{}]", message, statement, ex);
+            throw new OperationFailedException(ex.getMessage());
         }
     }
 
