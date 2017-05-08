@@ -19,11 +19,11 @@ public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
     /**
      * Saves the object to the Database.
      *
-     * @param object The Object to save.
+     * @param object     The Object to save.
      * @param timeToLive The lifetime given to the object.
      *                   This parameter is optional and can be null.
-     * @param statement The SQL Statement to use when calling the database.
-     * @param database The database to write to.
+     * @param statement  The SQL Statement to use when calling the database.
+     * @param database   The database to write to.
      */
     void save(@Required T object,
               @Optional Duration timeToLive,
