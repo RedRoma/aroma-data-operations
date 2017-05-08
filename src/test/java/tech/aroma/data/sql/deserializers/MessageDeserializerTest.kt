@@ -12,7 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import tech.aroma.data.sql.Tables
-import tech.aroma.data.sql.toSQLTimestamp
+import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Message
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
@@ -73,7 +73,7 @@ class MessageDeserializerTest
         whenever(resultSet.getString(Tables.Messages.DEVICE_NAME)).thenReturn(message.deviceName)
         whenever(resultSet.getString(Tables.Messages.PRIORITY)).thenReturn(message.urgency.toString())
 
-        whenever(resultSet.getTimestamp(Tables.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toSQLTimestamp())
-        whenever(resultSet.getTimestamp(Tables.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toSQLTimestamp())
+        whenever(resultSet.getTimestamp(Tables.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toTimestamp())
+        whenever(resultSet.getTimestamp(Tables.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toTimestamp())
     }
 }

@@ -34,7 +34,7 @@ public fun ResultSet.hasColumn(column: String): Boolean
     }
 }
 
-public fun Long.toSQLTimestamp(): Timestamp
+public fun Long.toTimestamp(): Timestamp
 {
     return Timestamp(this)
 }
