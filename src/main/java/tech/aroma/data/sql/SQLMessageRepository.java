@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.LengthOfTime;
@@ -100,6 +101,11 @@ final class SQLMessageRepository implements MessageRepository
         {
             message = database.queryForObject(statement, serializer, appId, msgId);
 
+        }
+        catch (EmptyResultDataAccessException ex)
+        {
+            LOG.warn("Message does not exist: [{}/{}]", appId, messageId, ex);
+            throw new DoesNotExistException(ex.getMessage());
         }
         catch (Exception ex)
         {

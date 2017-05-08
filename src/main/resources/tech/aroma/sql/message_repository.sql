@@ -4,18 +4,18 @@
 
 CREATE TABLE IF NOT EXISTS Messages
 (
-    message_id UUID,
-    title TEXT,
-    body TEXT,
-    urgency TEXT,
-    time_created TIMESTAMP,
+    message_id    UUID,
+    title         TEXT,
+    body          TEXT,
+    priority      TEXT,
+    time_created  TIMESTAMP,
     time_received TIMESTAMP,
-    expiration TIMESTAMP,
-    hostname TEXT,
-    ip_address TEXT,
-    app_id UUID,
-    app_name TEXT,
-    device_name TEXT,
+    expiration    TIMESTAMP,
+    hostname      TEXT,
+    ip_address    TEXT,
+    app_id        UUID,
+    app_name      TEXT,
+    device_name   TEXT,
 
     PRIMARY KEY (app_id, message_id)
 )
