@@ -10,15 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.jdbc.core.JdbcTemplate;
 import sir.wellington.alchemy.collections.lists.Lists;
-import tech.aroma.data.MessageRepository;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -42,10 +39,7 @@ public class SQLMessageRepositoryTest
     private JdbcTemplate database;
 
     @Mock
-    private DatabaseDeserializer<Message> messageDeserializer;
-
-    @Mock
-    private DatabaseSerializer<Message> messageSerializer;
+    private DatabaseSerializer<Message> serializer;
 
     private SQLMessageRepository instance;
 
@@ -67,7 +61,7 @@ public class SQLMessageRepositoryTest
     @Before
     public void setUp() throws Exception
     {
-        instance = new SQLMessageRepository(database, messageDeserializer, messageSerializer);
+        instance = new SQLMessageRepository(database, serializer);
 
         lifetime.unit = TimeUnit.SECONDS;
         message.applicationId = appId;
@@ -78,9 +72,8 @@ public class SQLMessageRepositoryTest
     @Test
     public void testConstructor() throws Exception
     {
-        assertThrows(() -> new SQLMessageRepository(null, messageDeserializer, messageSerializer));
-        assertThrows(() -> new SQLMessageRepository(database, null, messageSerializer));
-        assertThrows(() -> new SQLMessageRepository(database, messageDeserializer, null));
+        assertThrows(() -> new SQLMessageRepository(null, serializer));
+        assertThrows(() -> new SQLMessageRepository(database, null));
     }
 
 
@@ -93,7 +86,7 @@ public class SQLMessageRepositoryTest
 
         String expectedStatement = SQLStatements.Inserts.MESSAGE;
 
-        verify(messageSerializer).save(message, duration, expectedStatement, database);
+        verify(serializer).save(message, duration, expectedStatement, database);
     }
 
     @DontRepeat
@@ -104,7 +97,7 @@ public class SQLMessageRepositoryTest
 
         String expectedStatement = SQLStatements.Inserts.MESSAGE;
 
-        verify(messageSerializer).save(message, null, expectedStatement, database);
+        verify(serializer).save(message, null, expectedStatement, database);
     }
 
     @DontRepeat
@@ -120,7 +113,7 @@ public class SQLMessageRepositoryTest
     public void testSaveWhenSerializerFails() throws Exception
     {
         doThrow(new RuntimeException())
-                .when(messageSerializer)
+                .when(serializer)
                 .save(any(), any(), any(), any());
 
         assertThrows(() -> instance.saveMessage(message))
@@ -132,7 +125,7 @@ public class SQLMessageRepositoryTest
     public void testGetMessage() throws Exception
     {
         String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
-        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        when(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenReturn(message);
 
         Message result = instance.getMessage(appId, messageId);
@@ -145,7 +138,7 @@ public class SQLMessageRepositoryTest
     {
         String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
 
-        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        when(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenThrow(new RuntimeException());
 
         assertThrows(() -> instance.getMessage(appId, messageId))
@@ -158,7 +151,7 @@ public class SQLMessageRepositoryTest
     public void testGetMessageWhenMessageDoesNotExist() throws Exception
     {
         String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
-        when(database.queryForObject(expectedQuery, messageDeserializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        when(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenReturn(null);
 
         assertThrows(() -> instance.getMessage(appId, messageId))
@@ -280,7 +273,7 @@ public class SQLMessageRepositoryTest
 
         List<Message> messages = listOf(pojos(Message.class));
 
-        when(database.query(query, messageDeserializer, hostname)).thenReturn(messages);
+        when(database.query(query, serializer, hostname)).thenReturn(messages);
 
         List<Message> result = instance.getByHostname(hostname);
 
@@ -294,7 +287,7 @@ public class SQLMessageRepositoryTest
         String hostname = alphabetic;
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
 
-        when(database.query(query, messageDeserializer, hostname))
+        when(database.query(query, serializer, hostname))
                 .thenThrow(new RuntimeException());
 
         assertThrows(() -> instance.getByHostname(hostname))
@@ -315,7 +308,7 @@ public class SQLMessageRepositoryTest
         List<Message> messages = listOf(pojos(Message.class));
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+        when(database.query(query, serializer, UUID.fromString(appId)))
                 .thenReturn(messages);
 
         List<Message> results = instance.getByApplication(appId);
@@ -328,7 +321,7 @@ public class SQLMessageRepositoryTest
     {
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+        when(database.query(query, serializer, UUID.fromString(appId)))
                 .thenReturn(Lists.emptyList());
 
         List<Message> results = instance.getByApplication(appId);
@@ -342,7 +335,7 @@ public class SQLMessageRepositoryTest
     {
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId)))
+        when(database.query(query, serializer, UUID.fromString(appId)))
                 .thenThrow(new RuntimeException());
 
         assertThrows(() -> instance.getByApplication(appId))
@@ -365,7 +358,7 @@ public class SQLMessageRepositoryTest
         String title = alphabetic;
         List<Message> messages = listOf(pojos(Message.class));
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+        when(database.query(query, serializer, UUID.fromString(appId), title))
                 .thenReturn(messages);
 
         List<Message> results = instance.getByTitle(appId, title);
@@ -379,7 +372,7 @@ public class SQLMessageRepositoryTest
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
         String title = alphabetic;
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+        when(database.query(query, serializer, UUID.fromString(appId), title))
                 .thenReturn(Lists.emptyList());
 
         List<Message> results = instance.getByTitle(appId, title);
@@ -394,7 +387,7 @@ public class SQLMessageRepositoryTest
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE;
         String title = alphabetic;
 
-        when(database.query(query, messageDeserializer, UUID.fromString(appId), title))
+        when(database.query(query, serializer, UUID.fromString(appId), title))
                 .thenThrow(new RuntimeException());
 
         assertThrows(() -> instance.getByTitle(appId, title))

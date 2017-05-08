@@ -33,18 +33,16 @@ final class SQLMessageRepository implements MessageRepository
     private static final Logger LOG = LoggerFactory.getLogger(SQLMessageRepository.class);
 
     private final JdbcTemplate database;
-    private final DatabaseDeserializer<Message> messageDeserializer;
-    private final DatabaseSerializer<Message> messageSerializer;
+    private final DatabaseSerializer<Message> serializer;
 
     @Inject
-    SQLMessageRepository(JdbcTemplate database, DatabaseDeserializer<Message> messageDeserializer, DatabaseSerializer<Message> messageSerializer)
+    SQLMessageRepository(JdbcTemplate database, DatabaseSerializer<Message> serializer)
     {
-        checkThat(database, messageDeserializer, messageSerializer)
+        checkThat(database, serializer)
                 .are(notNull());
 
         this.database = database;
-        this.messageDeserializer = messageDeserializer;
-        this.messageSerializer = messageSerializer;
+        this.serializer = serializer;
     }
 
     @Override
@@ -76,7 +74,7 @@ final class SQLMessageRepository implements MessageRepository
 
         try
         {
-            messageSerializer.save(message, messageDuration, statement, database);
+            serializer.save(message, messageDuration, statement, database);
         }
         catch (Exception ex)
         {
@@ -100,7 +98,7 @@ final class SQLMessageRepository implements MessageRepository
 
         try
         {
-            message = database.queryForObject(statement, messageDeserializer, appId, msgId);
+            message = database.queryForObject(statement, serializer, appId, msgId);
 
         }
         catch (Exception ex)
@@ -173,7 +171,7 @@ final class SQLMessageRepository implements MessageRepository
 
         try
         {
-            return database.query(statement, messageDeserializer, hostname);
+            return database.query(statement, serializer, hostname);
         }
         catch (Exception ex)
         {
@@ -194,7 +192,7 @@ final class SQLMessageRepository implements MessageRepository
 
         try
         {
-            return database.query(query, messageDeserializer, appId);
+            return database.query(query, serializer, appId);
         }
         catch (Exception ex)
         {
@@ -220,7 +218,7 @@ final class SQLMessageRepository implements MessageRepository
 
         try
         {
-            return database.query(query, messageDeserializer, appId, title);
+            return database.query(query, serializer, appId, title);
         }
         catch (Exception ex)
         {

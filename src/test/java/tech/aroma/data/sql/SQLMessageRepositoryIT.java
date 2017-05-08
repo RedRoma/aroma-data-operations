@@ -5,9 +5,7 @@ import java.time.Instant;
 import org.apache.thrift.TException;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.jdbc.core.JdbcTemplate;
-import tech.aroma.data.sql.serializers.MessageSerializer;
 import tech.aroma.thrift.Message;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
@@ -30,10 +28,7 @@ public class SQLMessageRepositoryIT
     @GenerateString(GenerateString.Type.UUID)
     private String messageId;
 
-    private DatabaseSerializer<Message> serializer = new MessageSerializer();
-
-    @Mock
-    private DatabaseDeserializer<Message> deserializer;
+    private DatabaseSerializer<Message> serializer = Resources.getMessageSerializer();
 
     @BeforeClass
     public static void setUp() throws Exception
@@ -49,7 +44,7 @@ public class SQLMessageRepositoryIT
         message.timeMessageReceived = Instant.now().toEpochMilli();
         message.timeOfCreation = Instant.now().toEpochMilli();
 
-        instance = new SQLMessageRepository(database, deserializer, serializer);
+        instance = new SQLMessageRepository(database, serializer);
     }
 
     @After
@@ -67,6 +62,7 @@ public class SQLMessageRepositoryIT
     @Test
     public void getMessage() throws Exception
     {
+
     }
 
     @Test
