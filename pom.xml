@@ -39,6 +39,15 @@
 
     <!-- END OF POM METADATA -->
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
     <dependencies>
 
         <!--=======================-->
@@ -74,7 +83,6 @@
             <groupId>com.natpryce</groupId>
             <artifactId>hamkrest</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -228,6 +236,22 @@
     <build>
         <plugins>
             <!-- These are Defined in the Parent Pom. -->
+
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>0.9.13</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>dokka</goal>
+                            <goal>dokka:javadoc</goal>
+                            <goal>dokka:javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
     </build>
