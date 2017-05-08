@@ -126,8 +126,6 @@ public class MessageSerializerTest
 
     private void checkMessageWithDuration(Message message, Duration ttl)
     {
-        Instant now = Instant.now();
-
         verify(database).update(eq(statement), captor.capture());
 
         List<Object> arguments = captor.getAllValues();

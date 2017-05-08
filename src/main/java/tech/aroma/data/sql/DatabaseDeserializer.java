@@ -13,12 +13,12 @@ import org.springframework.jdbc.core.RowMapper;
 @FunctionalInterface
 public interface DatabaseDeserializer<T> extends RowMapper<T>
 {
-    T deserializer(ResultSet resultSet) throws SQLException;
+    T deserialize(ResultSet resultSet) throws SQLException;
 
     @Override
     default T mapRow(ResultSet rs, int rowNum) throws SQLException
     {
-        return deserializer(rs);
+        return deserialize(rs);
     }
 
 }
