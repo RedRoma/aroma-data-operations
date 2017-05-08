@@ -1,17 +1,12 @@
 package tech.aroma.data.sql.serializers
 
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.Matchers.*
-import org.junit.Assert
+import org.junit.*
 import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Matchers
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.*
 import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.sql.Tables
@@ -103,10 +98,10 @@ class MessageSerializerTest
     @Throws(Exception::class)
     fun testWhenDatabaseFails()
     {
-        `when`(database.update(Matchers.anyString(), Matchers.anyVararg<Any>()))
+        whenever(database.update(eq(statement), Mockito.anyVararg<Any>()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.save(message, null!!, statement, database) }
+        assertThrows { instance.save(message, null, statement, database) }
     }
 
     @DontRepeat
@@ -176,7 +171,7 @@ class MessageSerializerTest
 
     private fun checkMessageWithDuration(message: Message, ttl: Duration?)
     {
-        verify<JdbcTemplate>(database).update(Matchers.eq<String>(statement), captor.capture())
+        verify(database).update(eq(statement), captor.capture())
 
         val arguments = captor.allValues
 

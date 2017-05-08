@@ -2,9 +2,8 @@ package tech.aroma.data.sql
 
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import java.sql.ResultSet
-import java.sql.SQLException
-import java.sql.Timestamp
+import java.sql.*
+import java.util.*
 
 /**
  *
@@ -37,4 +36,16 @@ public fun ResultSet.hasColumn(column: String): Boolean
 public fun Long.toTimestamp(): Timestamp
 {
     return Timestamp(this)
+}
+
+public fun String.asUUID(): UUID?
+{
+    return try
+    {
+        UUID.fromString(this)
+    }
+    catch (ex: Exception)
+    {
+        return null
+    }
 }
