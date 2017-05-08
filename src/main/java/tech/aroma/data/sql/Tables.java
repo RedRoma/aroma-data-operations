@@ -11,35 +11,35 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
  */
 @Internal
 @NonInstantiable
-final class Tables
+public final class Tables
 {
 
     @NonInstantiable
-    static class Applications
+    public static final class Applications
     {
-        final static String APP_ID = "app_id";
-        final static String APP_NAME = "app_name";
+        public final static String APP_ID = "app_id";
+        public final static String APP_NAME = "app_name";
     }
 
     @NonInstantiable
-    static class Messages
+    public static final class Messages
     {
-        static final String TABLE_NAME = "Messages";
-        static final String TABLE_NAME_TOTALS_BY_APP = "Messages_Totals_By_App";
-        static final String TABLE_NAME_TOTALS_BY_TITLE = "Messages_Totals_By_Title";
+        public static final String TABLE_NAME = "Messages";
+        public static final String TABLE_NAME_TOTALS_BY_APP = "Messages_Totals_By_App";
+        public static final String TABLE_NAME_TOTALS_BY_TITLE = "Messages_Totals_By_Title";
 
-        static final String MESSAGE_ID = "message_id";
-        static final String TITLE = "title";
-        static final String BODY = "body";
-        static final String PRIORITY = "priority";
-        static final String TIME_CREATED = "time_created";
-        static final String TIME_RECEIVED = "time_received";
-        static final String HOSTNAME = "hostname";
-        static final String IP_ADDRESS = "ip_address";
-        static final String DEVICE_NAME = "device_name";
-        static final String APP_Id = Applications.APP_ID;
-        static final String APP_NAME = Applications.APP_NAME;
-        static final String TOTAL_MESSAGES = "total_messages";
-        static final String REQUEST_TIME = "request_time";
+        public static final String MESSAGE_ID = "message_id";
+        public static final String TITLE = "title";
+        public static final String BODY = "body";
+        public static final String PRIORITY = "priority";
+        public static final String TIME_CREATED = "time_created";
+        public static final String TIME_RECEIVED = "time_received";
+        public static final String HOSTNAME = "hostname";
+        public static final String IP_ADDRESS = "ip_address";
+        public static final String DEVICE_NAME = "device_name";
+        public static final String APP_ID = Applications.APP_ID;
+        public static final String APP_NAME = Applications.APP_NAME;
+        public static final String TOTAL_MESSAGES = "total_messages";
+        public static final String REQUEST_TIME = "request_time";
     }
 }
