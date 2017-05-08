@@ -1,6 +1,8 @@
 package tech.aroma.data.sql.serializers
 
+import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.Matchers.*
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
+import tech.aroma.data.sql.Tables
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Message
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
@@ -22,6 +25,7 @@ import tech.sirwellington.alchemy.generator.NumberGenerators.integers
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
+import java.sql.ResultSet
 import java.sql.Timestamp
 import java.time.Duration
 import java.time.Instant
@@ -38,6 +42,9 @@ class MessageSerializerTest
 {
     @Mock
     private lateinit var database: JdbcTemplate
+
+    @Mock
+    private lateinit var resultSet: ResultSet
 
     @GenerateString
     private lateinit var statement: String
@@ -64,6 +71,9 @@ class MessageSerializerTest
     {
         message.messageId = messageId
         message.applicationId = appId
+
+        message.unsetIsTruncated()
+        setupResults()
 
         instance = MessageSerializer()
     }
@@ -128,6 +138,40 @@ class MessageSerializerTest
         assertThrows {
             instance.save(message, null, statement, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun testDeserialize()
+    {
+        val result = instance.deserialize(resultSet)
+
+        Assert.assertThat(result, org.hamcrest.Matchers.`is`(message))
+    }
+
+
+    @DontRepeat
+    @Test
+    fun testDeserializeWithBadArgs()
+    {
+        assertThrows {
+            instance.deserialize(null)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    private fun setupResults()
+    {
+        whenever(resultSet.getString(Tables.Messages.MESSAGE_ID)).thenReturn(message.messageId)
+        whenever(resultSet.getString(Tables.Messages.APP_ID)).thenReturn(message.applicationId)
+        whenever(resultSet.getString(Tables.Messages.APP_NAME)).thenReturn(message.applicationName)
+        whenever(resultSet.getString(Tables.Messages.TITLE)).thenReturn(message.title)
+        whenever(resultSet.getString(Tables.Messages.BODY)).thenReturn(message.body)
+        whenever(resultSet.getString(Tables.Messages.HOSTNAME)).thenReturn(message.hostname)
+        whenever(resultSet.getString(Tables.Messages.IP_ADDRESS)).thenReturn(message.macAddress)
+        whenever(resultSet.getString(Tables.Messages.DEVICE_NAME)).thenReturn(message.deviceName)
+        whenever(resultSet.getString(Tables.Messages.PRIORITY)).thenReturn(message.urgency.toString())
+
+        whenever(resultSet.getTimestamp(Tables.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toTimestamp())
+        whenever(resultSet.getTimestamp(Tables.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toTimestamp())
     }
 
     private fun checkMessageWithDuration(message: Message, ttl: Duration?)
