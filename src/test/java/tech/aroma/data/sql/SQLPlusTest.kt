@@ -4,6 +4,7 @@ package tech.aroma.data.sql
  * @author SirWellington
  */
 
+import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
@@ -34,7 +35,7 @@ class SQLPlusTest
         val function = ResultSet::hasColumn
 
         val result: Boolean = function.call(results, column)
-        com.natpryce.hamkrest.assertion.assert.that(result, equalTo(true))
+        assertThat(result, equalTo(true))
     }
 
     @Test
@@ -45,7 +46,7 @@ class SQLPlusTest
         val function = ResultSet::hasColumn
         val result = function.call(results, column)
 
-        com.natpryce.hamkrest.assertion.assert.that(result, equalTo(false))
+        assertThat(result, equalTo(false))
     }
 
     @DontRepeat
