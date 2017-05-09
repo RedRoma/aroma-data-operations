@@ -27,7 +27,7 @@ public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
      */
     void save(@Required T object,
               @Optional Duration timeToLive,
-              @NonEmpty String statement,
+              @Required @NonEmpty String statement,
               @Required JdbcTemplate database) throws SQLException;
 
 
