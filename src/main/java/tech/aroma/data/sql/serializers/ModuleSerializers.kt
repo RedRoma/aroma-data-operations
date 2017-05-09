@@ -15,7 +15,6 @@ class ModuleSerializers : AbstractModule()
     override fun configure()
     {
         bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()
-//        binder().bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()
     }
 
     private inline fun <reified T : Any> AbstractModule.bind(): AnnotatedBindingBuilder<T> = binder().bind<T>()
