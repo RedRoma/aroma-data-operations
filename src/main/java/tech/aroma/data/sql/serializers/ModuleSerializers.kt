@@ -23,8 +23,7 @@ class ModuleSerializers : AbstractModule()
 
 inline fun <reified T : Any> Binder.bind(): AnnotatedBindingBuilder<T>
 {
-    val literal = object : TypeLiteral<T>()
-    {}
+    val literal = object : TypeLiteral<T>() {}
     return bind(literal)
 }
 
