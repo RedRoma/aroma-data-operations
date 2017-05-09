@@ -27,9 +27,7 @@ public class Resources
 
     public static DatabaseSerializer<Message> getMessageSerializer()
     {
-        TypeLiteral<DatabaseSerializer<Message>> literal = new TypeLiteral<DatabaseSerializer<Message>>()
-        {
-        };
+        TypeLiteral<DatabaseSerializer<Message>> literal = new TypeLiteral<DatabaseSerializer<Message>>() {};
         return injector.getInstance(Key.get(literal));
     }
 }
