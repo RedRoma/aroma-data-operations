@@ -80,11 +80,11 @@ public class SQLMessageRepositoryTest
     @Test
     public void testSaveMessage() throws Exception
     {
+        String expectedStatement = SQLStatements.Inserts.MESSAGE;
 
         Duration duration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime);
         instance.saveMessage(message, lifetime);
 
-        String expectedStatement = SQLStatements.Inserts.MESSAGE;
 
         verify(serializer).save(message, duration, expectedStatement, database);
     }
@@ -93,9 +93,9 @@ public class SQLMessageRepositoryTest
     @Test
     public void testSaveMessageWithNoDuration() throws Exception
     {
-        instance.saveMessage(message, null);
-
         String expectedStatement = SQLStatements.Inserts.MESSAGE;
+
+        instance.saveMessage(message, null);
 
         verify(serializer).save(message, null, expectedStatement, database);
     }
@@ -125,6 +125,7 @@ public class SQLMessageRepositoryTest
     public void testGetMessage() throws Exception
     {
         String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
+
         when(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenReturn(message);
 
@@ -151,6 +152,7 @@ public class SQLMessageRepositoryTest
     public void testGetMessageWhenMessageDoesNotExist() throws Exception
     {
         String expectedQuery = SQLStatements.Queries.SELECT_MESSAGE;
+
         when(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenReturn(null);
 
@@ -176,9 +178,9 @@ public class SQLMessageRepositoryTest
     @Test
     public void testDeleteMessage() throws Exception
     {
-        instance.deleteMessage(appId, messageId);
-
         String expectedStatement = SQLStatements.Deletes.MESSAGE;
+
+        instance.deleteMessage(appId, messageId);
 
         verify(database).update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId));
     }
@@ -213,8 +215,8 @@ public class SQLMessageRepositoryTest
     @Test
     public void testDeleteWhenOperationFails() throws Exception
     {
-
         String expectedStatement = SQLStatements.Deletes.MESSAGE;
+
         when(database.update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenThrow(new RuntimeException());
 
@@ -227,9 +229,9 @@ public class SQLMessageRepositoryTest
     @Test
     public void testContainsMessage() throws Exception
     {
+        String query = SQLStatements.Queries.CHECK_MESSAGE;
         boolean expected = one(booleans());
 
-        String query = SQLStatements.Queries.CHECK_MESSAGE;
         when(database.queryForObject(query, Boolean.class, UUID.fromString(appId), UUID.fromString(messageId)))
                 .thenReturn(expected);
 
@@ -242,6 +244,7 @@ public class SQLMessageRepositoryTest
     public void testContainsMessageWhenOperationFails() throws Exception
     {
         String query = SQLStatements.Queries.CHECK_MESSAGE;
+
         when(database.update(eq(query), eq(Boolean.class), any(), any()))
                 .thenThrow(new RuntimeException());
 
@@ -268,8 +271,8 @@ public class SQLMessageRepositoryTest
     @Test
     public void testGetByHostname() throws Exception
     {
-        String hostname = alphabetic;
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
+        String hostname = alphabetic;
 
         List<Message> messages = listOf(pojos(Message.class));
 
@@ -284,8 +287,8 @@ public class SQLMessageRepositoryTest
     @Test
     public void testGetByHostnameWhenDatabaseFails() throws Exception
     {
-        String hostname = alphabetic;
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME;
+        String hostname = alphabetic;
 
         when(database.query(query, serializer, hostname))
                 .thenThrow(new RuntimeException());
@@ -305,8 +308,8 @@ public class SQLMessageRepositoryTest
     @Test
     public void testGetByApplication() throws Exception
     {
-        List<Message> messages = listOf(pojos(Message.class));
         String query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION;
+        List<Message> messages = listOf(pojos(Message.class));
 
         when(database.query(query, serializer, UUID.fromString(appId)))
                 .thenReturn(messages);
