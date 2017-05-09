@@ -1,6 +1,7 @@
 ---------------------------------------
--- DELETES AN ORGANIZATION
+-- REMOVES AN OWNER FROM AN ORGANIZATION
 ---------------------------------------
-DELETE
-FROM Organizations
+
+DELETE FROM Organization_Owners
 WHERE org_id = ?
+AND user_id = ?
