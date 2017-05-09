@@ -1,5 +1,8 @@
 ---------------------------------------
 -- DDL FOR AROMA MESSAGES
+--
+-- Messages are what Aroma logs when our
+-- customers send us messages.
 ---------------------------------------
 
 CREATE TABLE IF NOT EXISTS Messages
