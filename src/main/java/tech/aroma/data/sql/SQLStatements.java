@@ -51,12 +51,12 @@ final class SQLStatements
     {
         static final String CHECK_MESSAGE = loadSQLFile("/queries/check_message.sql");
         static final String COUNT_MESSAGES = loadSQLFile("/queries/count_messages.sql");
-
         static final String SELECT_MESSAGE = loadSQLFile("/queries/select_message.sql");
         static final String SELECT_MESSAGES_BY_APPLICATION = loadSQLFile("/queries/select_app_messages.sql");
         static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("/queries/select_messages_by_hostname.sql");
         static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("/queries/select_messages_by_title.sql");
 
+        static final String CHECK_ORGANIZATION = loadSQLFile("/queries/check_organization.sql");
         static final String SELECT_ORGANIZATION = loadSQLFile("/queries/select_organization.sql");
     }
 

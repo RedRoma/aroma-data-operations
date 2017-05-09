@@ -52,6 +52,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE, not(isEmptyOrNullString()));
 
+        assertThat(SQLStatements.Queries.CHECK_ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_ORGANIZATION, not(isEmptyOrNullString()));
     }
 
