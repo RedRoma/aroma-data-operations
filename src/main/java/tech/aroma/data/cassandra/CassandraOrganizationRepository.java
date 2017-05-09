@@ -16,16 +16,12 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,38 +30,15 @@ import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.data.OrganizationRepository;
 import tech.aroma.data.cassandra.Tables.Organizations;
 import tech.aroma.data.cassandra.Tables.Users;
-import tech.aroma.thrift.Organization;
-import tech.aroma.thrift.Role;
-import tech.aroma.thrift.User;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.thrift.exceptions.OperationFailedException;
-import tech.aroma.thrift.exceptions.OrganizationDoesNotExistException;
+import tech.aroma.thrift.*;
+import tech.aroma.thrift.exceptions.*;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static tech.aroma.data.assertions.RequestAssertions.validOrgId;
-import static tech.aroma.data.assertions.RequestAssertions.validOrganization;
-import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.aroma.data.assertions.RequestAssertions.validUserId;
-import static tech.aroma.data.cassandra.Tables.Organizations.DESCRIPTION;
-import static tech.aroma.data.cassandra.Tables.Organizations.EMAIL;
-import static tech.aroma.data.cassandra.Tables.Organizations.GITHUB_PROFILE;
-import static tech.aroma.data.cassandra.Tables.Organizations.ICON_LINK;
-import static tech.aroma.data.cassandra.Tables.Organizations.INDUSTRY;
-import static tech.aroma.data.cassandra.Tables.Organizations.ORG_ID;
-import static tech.aroma.data.cassandra.Tables.Organizations.ORG_NAME;
-import static tech.aroma.data.cassandra.Tables.Organizations.OWNERS;
-import static tech.aroma.data.cassandra.Tables.Organizations.STOCK_NAME;
-import static tech.aroma.data.cassandra.Tables.Organizations.TIER;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_EMAIL;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_FIRST_NAME;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_ID;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_LAST_NAME;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_MIDDLE_NAME;
-import static tech.aroma.data.cassandra.Tables.Organizations.USER_ROLES;
-import static tech.aroma.data.cassandra.Tables.Organizations.WEBSITE;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.aroma.data.assertions.RequestAssertions.*;
+import static tech.aroma.data.cassandra.Tables.Organizations.*;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**

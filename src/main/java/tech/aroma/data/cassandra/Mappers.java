@@ -18,48 +18,32 @@
 package tech.aroma.data.cassandra;
 
 
-import com.datastax.driver.core.Row;
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sir.wellington.alchemy.collections.lists.Lists;
-import sir.wellington.alchemy.collections.sets.Sets;
-import tech.aroma.data.cassandra.Tables.Activity;
-import tech.aroma.thrift.Application;
-import tech.aroma.thrift.Dimension;
-import tech.aroma.thrift.Image;
-import tech.aroma.thrift.ImageType;
-import tech.aroma.thrift.Industry;
-import tech.aroma.thrift.Message;
-import tech.aroma.thrift.Organization;
-import tech.aroma.thrift.ProgrammingLanguage;
-import tech.aroma.thrift.Role;
-import tech.aroma.thrift.Tier;
-import tech.aroma.thrift.Urgency;
-import tech.aroma.thrift.User;
-import tech.aroma.thrift.authentication.AuthenticationToken;
-import tech.aroma.thrift.authentication.TokenStatus;
-import tech.aroma.thrift.authentication.TokenType;
-import tech.aroma.thrift.channels.MobileDevice;
-import tech.aroma.thrift.events.Event;
-import tech.aroma.thrift.reactions.Reaction;
-import tech.sirwellington.alchemy.annotations.access.Internal;
-import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
-import tech.sirwellington.alchemy.thrift.ThriftObjects;
+ import java.nio.ByteBuffer;
+ import java.util.*;
+ import java.util.function.Function;
+ import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
-import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
+ import com.datastax.driver.core.Row;
+ import org.apache.thrift.TException;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import sir.wellington.alchemy.collections.lists.Lists;
+ import sir.wellington.alchemy.collections.sets.Sets;
+ import tech.aroma.data.cassandra.Tables.Activity;
+ import tech.aroma.thrift.*;
+ import tech.aroma.thrift.authentication.*;
+ import tech.aroma.thrift.channels.MobileDevice;
+ import tech.aroma.thrift.events.Event;
+ import tech.aroma.thrift.reactions.Reaction;
+ import tech.sirwellington.alchemy.annotations.access.Internal;
+ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
+ import tech.sirwellington.alchemy.thrift.ThriftObjects;
+
+ import static java.util.stream.Collectors.toList;
+ import static java.util.stream.Collectors.toSet;
+ import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
+ import static tech.aroma.data.cassandra.Tables.Applications.APP_ID;
+ import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
 
 /**
  * This class contains a lot of data-marshalling logic to transform

@@ -16,31 +16,30 @@
 
 package tech.aroma.data.memory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import net.jodah.expiringmap.ExpirationPolicy;
-import net.jodah.expiringmap.ExpiringMap;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sir.wellington.alchemy.collections.lists.Lists;
-import sir.wellington.alchemy.collections.maps.Maps;
-import sir.wellington.alchemy.collections.sets.Sets;
-import tech.aroma.data.ApplicationRepository;
-import tech.aroma.thrift.Application;
-import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
+ import java.util.*;
+ import java.util.concurrent.TimeUnit;
+ import java.util.function.Predicate;
+ import java.util.stream.Collectors;
 
-import static sir.wellington.alchemy.collections.lists.Lists.isEmpty;
-import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.data.assertions.RequestAssertions.validApplication;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+ import net.jodah.expiringmap.ExpirationPolicy;
+ import net.jodah.expiringmap.ExpiringMap;
+ import org.apache.thrift.TException;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import sir.wellington.alchemy.collections.lists.Lists;
+ import sir.wellington.alchemy.collections.maps.Maps;
+ import sir.wellington.alchemy.collections.sets.Sets;
+ import tech.aroma.data.ApplicationRepository;
+ import tech.aroma.thrift.Application;
+ import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
+ import tech.aroma.thrift.exceptions.InvalidArgumentException;
+
+ import static sir.wellington.alchemy.collections.lists.Lists.isEmpty;
+ import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
+ import static tech.aroma.data.assertions.RequestAssertions.validApplication;
+ import static tech.sirwellington.alchemy.arguments.Arguments.*;
+ import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
+ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
 /**
  *

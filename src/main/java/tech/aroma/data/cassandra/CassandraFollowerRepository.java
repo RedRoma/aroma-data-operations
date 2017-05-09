@@ -16,41 +16,29 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.FollowerRepository;
-import tech.aroma.data.cassandra.Tables.Applications;
-import tech.aroma.data.cassandra.Tables.Follow;
-import tech.aroma.data.cassandra.Tables.Users;
+import tech.aroma.data.cassandra.Tables.*;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static tech.aroma.data.assertions.RequestAssertions.validApplication;
-import static tech.aroma.data.assertions.RequestAssertions.validApplicationId;
-import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.aroma.data.assertions.RequestAssertions.validUserId;
-import static tech.aroma.data.cassandra.Tables.Follow.APP_ID;
-import static tech.aroma.data.cassandra.Tables.Follow.APP_NAME;
-import static tech.aroma.data.cassandra.Tables.Follow.TIME_OF_FOLLOW;
-import static tech.aroma.data.cassandra.Tables.Follow.USER_FIRST_NAME;
-import static tech.aroma.data.cassandra.Tables.Follow.USER_ID;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.aroma.data.assertions.RequestAssertions.*;
+import static tech.aroma.data.cassandra.Tables.Follow.*;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**

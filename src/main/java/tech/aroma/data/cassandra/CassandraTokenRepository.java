@@ -16,16 +16,13 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,22 +30,13 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.TokenRepository;
 import tech.aroma.data.cassandra.Tables.Tokens;
 import tech.aroma.thrift.authentication.AuthenticationToken;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.thrift.exceptions.InvalidTokenException;
-import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.*;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static tech.aroma.data.assertions.AuthenticationAssertions.completeToken;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
-import static tech.aroma.data.cassandra.Tables.Tokens.ORG_ID;
-import static tech.aroma.data.cassandra.Tables.Tokens.OWNER_ID;
-import static tech.aroma.data.cassandra.Tables.Tokens.OWNER_NAME;
-import static tech.aroma.data.cassandra.Tables.Tokens.TIME_OF_CREATION;
-import static tech.aroma.data.cassandra.Tables.Tokens.TIME_OF_EXPIRATION;
-import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_ID;
-import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_STATUS;
-import static tech.aroma.data.cassandra.Tables.Tokens.TOKEN_TYPE;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.aroma.data.cassandra.Tables.Tokens.*;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;

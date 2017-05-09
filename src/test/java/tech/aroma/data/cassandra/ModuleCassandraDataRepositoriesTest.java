@@ -16,36 +16,19 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+
+import com.datastax.driver.core.*;
+import com.google.inject.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import tech.aroma.data.ActivityRepository;
-import tech.aroma.data.ApplicationRepository;
-import tech.aroma.data.FollowerRepository;
-import tech.aroma.data.InboxRepository;
-import tech.aroma.data.MediaRepository;
-import tech.aroma.data.MessageRepository;
-import tech.aroma.data.OrganizationRepository;
-import tech.aroma.data.ReactionRepository;
-import tech.aroma.data.TokenRepository;
-import tech.aroma.data.UserPreferencesRepository;
-import tech.aroma.data.UserRepository;
-import tech.aroma.thrift.Application;
-import tech.aroma.thrift.Image;
+import tech.aroma.data.*;
+import tech.aroma.thrift.*;
 import tech.aroma.thrift.Message;
-import tech.aroma.thrift.Organization;
-import tech.aroma.thrift.User;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.channels.MobileDevice;
 import tech.aroma.thrift.events.Event;

@@ -18,6 +18,7 @@
 package tech.aroma.data;
 
 import java.util.Set;
+
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.User;
@@ -31,7 +32,7 @@ import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 import static tech.aroma.data.assertions.RequestAssertions.validMobileDevice;
 import static tech.aroma.data.assertions.RequestAssertions.validUserId;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.INTERFACE;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 
 
 /**

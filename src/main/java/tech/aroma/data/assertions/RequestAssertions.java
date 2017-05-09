@@ -8,15 +8,13 @@ import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.AuthenticationToken;
-import tech.aroma.thrift.channels.AndroidDevice;
-import tech.aroma.thrift.channels.IOSDevice;
-import tech.aroma.thrift.channels.MobileDevice;
+import tech.aroma.thrift.channels.*;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Optional;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
