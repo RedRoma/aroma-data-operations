@@ -39,6 +39,15 @@
 
     <!-- END OF POM METADATA -->
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
     <dependencies>
 
         <!--=======================-->
@@ -65,6 +74,22 @@
             <artifactId>alchemy-test</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.nhaarman</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.natpryce</groupId>
+            <artifactId>hamkrest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
         <!--=======================-->
         <!--ALCHEMY-->
@@ -77,6 +102,7 @@
         <dependency>
             <groupId>tech.sirwellington.alchemy</groupId>
             <artifactId>alchemy-arguments</artifactId>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -87,6 +113,11 @@
         <dependency>
             <groupId>tech.sirwellington.alchemy</groupId>
             <artifactId>alchemy-thrift</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>tech.sirwellington.alchemy</groupId>
+            <artifactId>alchemy-http</artifactId>
         </dependency>
 
 
@@ -205,6 +236,24 @@
     <build>
         <plugins>
             <!-- These are Defined in the Parent Pom. -->
+
+
+            <!--DOKKA JAVADOC PLUGIN-->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>0.9.13</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>dokka</goal>
+                            <goal>javadoc</goal>
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
     </build>
