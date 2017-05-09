@@ -10,10 +10,8 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.*
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -53,7 +51,7 @@ class SQLPlusTest
     @Test
     fun testHasColumnWithBadArgs()
     {
-        ThrowableAssertion.assertThrows {
+        assertThrows {
             results.hasColumn("")
         }
     }
