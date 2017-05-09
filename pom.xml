@@ -237,6 +237,8 @@
         <plugins>
             <!-- These are Defined in the Parent Pom. -->
 
+
+            <!--DOKKA JAVADOC PLUGIN-->
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
@@ -246,8 +248,8 @@
                         <phase>pre-site</phase>
                         <goals>
                             <goal>dokka</goal>
-                            <goal>dokka:javadoc</goal>
-                            <goal>dokka:javadocJar</goal>
+                            <goal>javadoc</goal>
+                            <goal>javadocJar</goal>
                         </goals>
                     </execution>
                 </executions>
