@@ -17,6 +17,7 @@
 package tech.aroma.data.sql
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
 import tech.aroma.data.assertions.RequestAssertions.validOrgId
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
@@ -32,7 +33,7 @@ import javax.inject.Inject
  *
  * @author SirWellington
  */
-internal class SQLOrganizationRepository: OrganizationRepository
+internal class SQLOrganizationRepository : OrganizationRepository
 {
     private val database: NamedParameterJdbcTemplate
     private val serializer: DatabaseSerializer<Organization>
@@ -58,6 +59,10 @@ internal class SQLOrganizationRepository: OrganizationRepository
     override fun getOrganization(organizationId: String?): Organization
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val query = SQLStatements.Queries.SELECT_ORGANIZATION
+
+        return Organization()
     }
 
     override fun deleteOrganization(organizationId: String?)
@@ -69,16 +74,21 @@ internal class SQLOrganizationRepository: OrganizationRepository
     {
         checkThat(organizationId).`is`(validOrgId())
 
+        return false
     }
 
     override fun searchByName(searchTerm: String?): MutableList<Organization>
     {
         checkThat(searchTerm).`is`(nonEmptyString())
+
+        return Lists.emptyList()
     }
 
     override fun getOrganizationOwners(organizationId: String?): MutableList<User>
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        return Lists.emptyList()
 
     }
 
@@ -91,11 +101,14 @@ internal class SQLOrganizationRepository: OrganizationRepository
     {
         checkThat(organizationId).`is`(validOrgId())
 
+        return false
     }
 
     override fun getOrganizationMembers(organizationId: String?): MutableList<User>
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        return Lists.emptyList()
     }
 
     override fun deleteMember(organizationId: String?, userId: String?)
