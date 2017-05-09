@@ -16,37 +16,29 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.data.InboxRepository;
 import tech.aroma.data.cassandra.Tables.Inbox;
-import tech.aroma.thrift.LengthOfTime;
+import tech.aroma.thrift.*;
 import tech.aroma.thrift.Message;
-import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.aroma.thrift.functions.TimeFunctions;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
-import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
-import static tech.aroma.data.assertions.RequestAssertions.validMessage;
-import static tech.aroma.data.assertions.RequestAssertions.validMessageId;
-import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.aroma.data.assertions.RequestAssertions.validUserId;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
+import static tech.aroma.data.assertions.RequestAssertions.*;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**

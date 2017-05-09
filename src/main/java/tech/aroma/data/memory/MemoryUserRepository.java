@@ -18,6 +18,7 @@ package tech.aroma.data.memory;
 
 import java.util.List;
 import java.util.Map;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ import tech.aroma.thrift.exceptions.UserDoesNotExistException;
 
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 

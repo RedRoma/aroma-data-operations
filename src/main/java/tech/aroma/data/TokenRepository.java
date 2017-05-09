@@ -18,6 +18,7 @@ package tech.aroma.data;
 
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.authentication.AuthenticationToken;
@@ -29,7 +30,7 @@ import tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern;
 
 import static tech.aroma.data.assertions.RequestAssertions.tokenContainingOwnerId;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.INTERFACE;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 

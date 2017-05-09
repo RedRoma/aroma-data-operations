@@ -18,27 +18,23 @@
 package tech.aroma.data.cassandra;
 
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.Date;
 import java.util.UUID;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aroma.data.CredentialRepository;
 import tech.aroma.data.cassandra.Tables.Credentials;
-import tech.aroma.thrift.exceptions.DoesNotExistException;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.*;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static tech.aroma.data.assertions.RequestAssertions.validUserId;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThan;

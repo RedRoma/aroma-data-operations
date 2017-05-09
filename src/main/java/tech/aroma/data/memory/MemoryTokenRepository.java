@@ -18,10 +18,9 @@ package tech.aroma.data.memory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 import net.jodah.expiringmap.ExpirationListener;
 import net.jodah.expiringmap.ExpiringMap;
 import org.apache.thrift.TException;
@@ -40,7 +39,7 @@ import static java.util.stream.Collectors.toList;
 import static tech.aroma.data.assertions.RequestAssertions.isNullOrEmpty;
 import static tech.aroma.thrift.assertions.AromaAssertions.legalToken;
 import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPattern.Role.CONCRETE_BEHAVIOR;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;

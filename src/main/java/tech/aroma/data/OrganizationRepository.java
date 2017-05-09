@@ -18,6 +18,7 @@
 package tech.aroma.data;
 
 import java.util.List;
+
 import org.apache.thrift.TException;
 import tech.aroma.thrift.Organization;
 import tech.aroma.thrift.User;

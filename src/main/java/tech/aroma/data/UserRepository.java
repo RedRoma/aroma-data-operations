@@ -18,6 +18,7 @@
 package tech.aroma.data;
 
 import java.util.List;
+
 import org.apache.thrift.TException;
 import tech.aroma.thrift.User;
 import tech.sirwellington.alchemy.annotations.arguments.Required;

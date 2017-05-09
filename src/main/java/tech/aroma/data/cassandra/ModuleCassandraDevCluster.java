@@ -16,19 +16,20 @@
 
 package tech.aroma.data.cassandra;
 
+import java.util.concurrent.TimeUnit;
+import javax.inject.Singleton;
+
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.policies.ExponentialReconnectionPolicy;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import java.util.concurrent.TimeUnit;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 
 /**

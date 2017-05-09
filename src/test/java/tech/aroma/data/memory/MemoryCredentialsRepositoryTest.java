@@ -21,17 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
-import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.test.junit.runners.*;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.HEXADECIMAL;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
+import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.*;
 
 /**
  *

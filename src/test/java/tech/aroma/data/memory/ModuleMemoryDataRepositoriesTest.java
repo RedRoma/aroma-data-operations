@@ -21,20 +21,11 @@ import com.google.inject.Injector;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import tech.aroma.data.ActivityRepository;
-import tech.aroma.data.ApplicationRepository;
-import tech.aroma.data.CredentialRepository;
-import tech.aroma.data.FollowerRepository;
-import tech.aroma.data.InboxRepository;
-import tech.aroma.data.MediaRepository;
-import tech.aroma.data.MessageRepository;
-import tech.aroma.data.ReactionRepository;
-import tech.aroma.data.UserPreferencesRepository;
-import tech.aroma.data.UserRepository;
+import tech.aroma.data.*;
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  *

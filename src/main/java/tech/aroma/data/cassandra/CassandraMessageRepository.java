@@ -16,15 +16,13 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import javax.inject.Inject;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,33 +31,15 @@ import tech.aroma.data.MessageRepository;
 import tech.aroma.data.cassandra.Tables.Messages;
 import tech.aroma.thrift.LengthOfTime;
 import tech.aroma.thrift.Message;
-import tech.aroma.thrift.exceptions.InvalidArgumentException;
-import tech.aroma.thrift.exceptions.MessageDoesNotExistException;
-import tech.aroma.thrift.exceptions.OperationFailedException;
+import tech.aroma.thrift.exceptions.*;
 import tech.aroma.thrift.functions.TimeFunctions;
 
-import static com.datastax.driver.core.querybuilder.QueryBuilder.desc;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
 import static java.lang.String.format;
-import static tech.aroma.data.cassandra.Tables.Messages.APP_ID;
-import static tech.aroma.data.cassandra.Tables.Messages.APP_NAME;
-import static tech.aroma.data.cassandra.Tables.Messages.BODY;
-import static tech.aroma.data.cassandra.Tables.Messages.DEVICE_NAME;
-import static tech.aroma.data.cassandra.Tables.Messages.HOSTNAME;
-import static tech.aroma.data.cassandra.Tables.Messages.MAC_ADDRESS;
-import static tech.aroma.data.cassandra.Tables.Messages.MESSAGE_ID;
-import static tech.aroma.data.cassandra.Tables.Messages.TIME_CREATED;
-import static tech.aroma.data.cassandra.Tables.Messages.TIME_RECEIVED;
-import static tech.aroma.data.cassandra.Tables.Messages.TITLE;
-import static tech.aroma.data.cassandra.Tables.Messages.TOTAL_MESSAGES;
-import static tech.aroma.data.cassandra.Tables.Messages.URGENCY;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.aroma.data.cassandra.Tables.Messages.*;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
  *

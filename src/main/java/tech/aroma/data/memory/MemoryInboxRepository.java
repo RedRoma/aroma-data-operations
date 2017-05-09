@@ -18,26 +18,25 @@
 package tech.aroma.data.memory;
 
 
-import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Objects;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sir.wellington.alchemy.collections.lists.Lists;
 import sir.wellington.alchemy.collections.maps.Maps;
 import tech.aroma.data.InboxRepository;
-import tech.aroma.thrift.LengthOfTime;
-import tech.aroma.thrift.Message;
-import tech.aroma.thrift.User;
+import tech.aroma.thrift.*;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static tech.aroma.data.assertions.RequestAssertions.validMessage;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
 /**

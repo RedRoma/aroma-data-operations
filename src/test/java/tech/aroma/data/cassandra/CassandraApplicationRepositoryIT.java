@@ -16,16 +16,14 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import org.apache.thrift.TException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,22 +34,16 @@ import tech.aroma.thrift.Application;
 import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.aroma.thrift.exceptions.OperationFailedException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.DontRepeat;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
-import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static java.util.stream.Collectors.toList;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**

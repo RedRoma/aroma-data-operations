@@ -8,7 +8,7 @@ import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
 
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  *

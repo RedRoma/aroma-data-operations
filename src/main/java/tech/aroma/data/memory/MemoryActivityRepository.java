@@ -18,9 +18,10 @@
 package tech.aroma.data.memory;
 
 
-import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.Objects;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
 
 import static java.util.stream.Collectors.toList;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;

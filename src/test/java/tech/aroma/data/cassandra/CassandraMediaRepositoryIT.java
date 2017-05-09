@@ -16,31 +16,25 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
 import java.util.List;
 import java.util.function.Function;
+
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import org.apache.thrift.TException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.Dimension;
 import tech.aroma.thrift.Image;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
-import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**

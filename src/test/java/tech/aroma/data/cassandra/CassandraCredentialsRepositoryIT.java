@@ -18,20 +18,15 @@ package tech.aroma.data.cassandra;
 
 import com.datastax.driver.core.Session;
 import org.apache.thrift.TException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import tech.aroma.thrift.exceptions.DoesNotExistException;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
-import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows;
+import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.HEXADECIMAL;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 

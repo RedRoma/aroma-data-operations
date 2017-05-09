@@ -16,35 +16,24 @@
 
 package tech.aroma.data.cassandra;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.utils.UUIDs;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
+import com.datastax.driver.core.utils.UUIDs;
 import org.apache.thrift.TException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.maps.Maps;
-import tech.aroma.thrift.LengthOfTime;
-import tech.aroma.thrift.Message;
-import tech.aroma.thrift.TimeUnit;
-import tech.aroma.thrift.User;
+import tech.aroma.thrift.*;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
 import tech.sirwellington.alchemy.generator.AlchemyGenerator;
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateList;
-import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo;
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString;
-import tech.sirwellington.alchemy.test.junit.runners.Repeat;
+import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static java.util.stream.Collectors.toList;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;

@@ -18,6 +18,7 @@
 package tech.aroma.data;
 
 import java.util.List;
+
 import org.apache.thrift.TException;
 import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.LengthOfTime;
@@ -27,7 +28,7 @@ import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import tech.aroma.thrift.service.AromaServiceConstants;
 import tech.sirwellington.alchemy.annotations.arguments.Required;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
+import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.nonEmptyList;
 
 

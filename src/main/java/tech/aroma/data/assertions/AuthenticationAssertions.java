@@ -16,18 +16,18 @@
 
 package tech.aroma.data.assertions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import tech.aroma.data.TokenRepository;
-import tech.aroma.thrift.authentication.AuthenticationToken;
-import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
-import tech.sirwellington.alchemy.annotations.arguments.Required;
-import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
-import tech.sirwellington.alchemy.arguments.FailedAssertionException;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import tech.aroma.data.TokenRepository;
+ import tech.aroma.thrift.authentication.AuthenticationToken;
+ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
+ import tech.sirwellington.alchemy.annotations.arguments.Required;
+ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
+ import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 
-import static tech.sirwellington.alchemy.arguments.Arguments.checkThat;
-import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+ import static tech.sirwellington.alchemy.arguments.Arguments.*;
+ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
+ import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
 
 /**
  *
