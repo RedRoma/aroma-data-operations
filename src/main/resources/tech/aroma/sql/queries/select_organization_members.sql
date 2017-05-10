@@ -2,6 +2,6 @@
 -- FIND AN ORGANIZATION'S MEMBERS
 ---------------------------------------
 
-SELECT *
+SELECT user_id
 FROM organization_members
 WHERE org_id = ?

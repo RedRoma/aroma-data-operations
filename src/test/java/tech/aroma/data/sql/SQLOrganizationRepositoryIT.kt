@@ -20,9 +20,8 @@ package tech.aroma.data.sql
  * @author SirWellington
  */
 
+import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.hasElement
-import com.natpryce.hamkrest.isEmpty
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
@@ -34,7 +33,6 @@ import tech.sirwellington.alchemy.generator.StringGenerators.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
-import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 import kotlin.test.*
 
 @RunWith(AlchemyTestRunner::class)
@@ -96,6 +94,8 @@ class SQLOrganizationRepositoryIT
         {
 
         }
+
+        try { instance.deleteAllMembers(orgId) } catch (ex: Exception) { }
     }
 
     @Test
@@ -171,6 +171,51 @@ class SQLOrganizationRepositoryIT
     {
         val result = instance.getOrganizationOwners(orgId)
 
+        assertThat(result, isEmpty)
+    }
+
+    @Test
+    fun testSaveMemberInOrg()
+    {
+        instance.saveOrganization(org)
+
+        val member = User().setUserId(userId)
+        instance.saveMemberInOrganization(orgId, member)
+
+        assertTrue { instance.isMemberInOrganization(orgId, userId) }
+    }
+
+    @Test
+    fun testIsMember()
+    {
+        assertFalse { instance.isMemberInOrganization(orgId, userId) }
+
+        instance.saveOrganization(org)
+        assertFalse { instance.isMemberInOrganization(orgId, userId) }
+
+        val user = User().setUserId(userId)
+        instance.saveMemberInOrganization(orgId, user)
+
+        assertTrue { instance.isMemberInOrganization(orgId, userId) }
+    }
+
+    @Test
+    fun testGetOrganizationMembers()
+    {
+        instance.saveOrganization(org)
+
+        val expected = userIds.map { User().setUserId(it) }
+
+        expected.forEach{ instance.saveMemberInOrganization(orgId, it) }
+
+        val results = instance.getOrganizationMembers(orgId)
+
+        assertThat(results, equalTo(expected))
+    }
+
+    fun testGetOrganizationMembersWhenNone()
+    {
+        val result = instance.getOrganizationMembers(orgId)
         assertThat(result, isEmpty)
     }
 }
