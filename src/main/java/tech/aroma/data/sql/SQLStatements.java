@@ -61,6 +61,7 @@ final class SQLStatements
         static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("/queries/select_messages_by_title.sql");
 
         static final String CHECK_ORGANIZATION = loadSQLFile("/queries/check_organization.sql");
+        static final String CHECK_ORGANIZATION_HAS_MEMBER = loadSQLFile("/queries/check_organization_has_member.sql");
         static final String SELECT_ORGANIZATION = loadSQLFile("/queries/select_organization.sql");
         static final String SELECT_ORGANIZATION_OWNERS = loadSQLFile("/queries/select_organization_owners.sql");
         static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("/queries/select_organization_members.sql");

@@ -21,6 +21,7 @@ import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
 import tech.aroma.data.assertions.RequestAssertions.validOrgId
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
+import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
@@ -60,7 +61,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkThat(organizationId).`is`(validOrgId())
 
-        val query = SQLStatements.Queries.SELECT_ORGANIZATION
+        val query = Queries.SELECT_ORGANIZATION
 
         return Organization()
     }
@@ -68,11 +69,19 @@ internal class SQLOrganizationRepository : OrganizationRepository
     override fun deleteOrganization(organizationId: String?)
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val statement = Deletes.ORGANIZATION
+        val statementToDeleteOwners = Deletes.ORGANIZATION_ALL_OWNERS
+        val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
+
+
     }
 
     override fun containsOrganization(organizationId: String?): Boolean
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val query = Queries.CHECK_ORGANIZATION
 
         return false
     }
@@ -81,12 +90,16 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkThat(searchTerm).`is`(nonEmptyString())
 
+        val query = Queries.SEARCH_ORGANIZATION_BY_NAME
+
         return Lists.emptyList()
     }
 
     override fun getOrganizationOwners(organizationId: String?): MutableList<User>
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val query = Queries.SELECT_ORGANIZATION_OWNERS
 
         return Lists.emptyList()
 
@@ -95,11 +108,15 @@ internal class SQLOrganizationRepository : OrganizationRepository
     override fun saveMemberInOrganization(organizationId: String?, user: User?)
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val statement = Inserts.ORGANIZATION_MEMBER
     }
 
     override fun isMemberInOrganization(organizationId: String?, userId: String?): Boolean
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
 
         return false
     }
@@ -108,17 +125,23 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkThat(organizationId).`is`(validOrgId())
 
+        val query = Queries.SELECT_ORGANIZATION_MEMBERS
+
         return Lists.emptyList()
     }
 
     override fun deleteMember(organizationId: String?, userId: String?)
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val statement = Deletes.ORGANIZATION_MEMBER
     }
 
     override fun deleteAllMembers(organizationId: String?)
     {
         checkThat(organizationId).`is`(validOrgId())
+
+        val statement = Deletes.ORGANIZATION_ALL_MEMBERS
     }
 
 }
