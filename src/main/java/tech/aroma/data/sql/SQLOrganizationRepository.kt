@@ -17,6 +17,8 @@
 package tech.aroma.data.sql
 
 import org.slf4j.LoggerFactory
+import org.springframework.jdbc.`object`.BatchSqlUpdate
+import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
@@ -30,6 +32,7 @@ import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import java.sql.PreparedStatement
 import javax.inject.Inject
 
 /**
@@ -76,19 +79,54 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkThat(organizationId).`is`(validOrgId())
 
+        val orgId = organizationId!!
         val query = Queries.SELECT_ORGANIZATION
 
-        return Organization()
+        try
+        {
+            return database.queryForObject(query, serializer, orgId)
+        }
+        catch (ex: Exception)
+        {
+            LOG.error("Failed to get organization with ID [{}]", orgId, ex)
+            throw OperationFailedException("Could not get org with ID [$orgId] | ${ex.message}")
+        }
+
     }
 
     override fun deleteOrganization(organizationId: String?)
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkThat(organizationId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validOrgId())
 
-        val statement = Deletes.ORGANIZATION
-        val statementToDeleteOwners = Deletes.ORGANIZATION_ALL_OWNERS
-        val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
+        val orgId = organizationId!!
 
+        //Save in case a roll-back is needed
+        val org = getOrganization(orgId)
+        val owners = getOrganizationOwners(orgId)
+        val members = getOrganizationMembers(orgId)
+
+        val deleteOrg = Deletes.ORGANIZATION
+        val deleteOrgOwners = Deletes.ORGANIZATION_ALL_OWNERS
+        val deleteOrgMembers = Deletes.ORGANIZATION_ALL_MEMBERS
+
+        try
+        {
+            database.update(deleteOrgMembers, orgId)
+            database.update(deleteOrgOwners, orgId)
+            database.update(deleteOrg, orgId)
+        }
+        catch(ex: Exception)
+        {
+            LOG.error("Failed to delete organization [{}]. Rolling back operation.", org, ex)
+
+            //Rollback
+            saveOrganization(org)
+            members.forEach { this.saveMemberInOrganization(orgId, it) }
+
+            throw OperationFailedException("Could not delete organization: $org | ${ex.message}")
+        }
 
     }
 

@@ -25,13 +25,14 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
 /**
@@ -57,6 +58,9 @@ class SQLOrganizationRepositoryTest
 
     @GenerateString(UUID)
     private lateinit var userId: String
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var alphabetic: String
 
     private lateinit var instance: SQLOrganizationRepository
 
@@ -106,6 +110,62 @@ class SQLOrganizationRepositoryTest
             val invalidOrg = organization.deepCopy().setOrganizationId("")
             instance.saveOrganization(invalidOrg)
         }.isInstanceOf(InvalidArgumentException::class.java).hasNoCause()
+    }
+
+    @Test
+    fun testDeleteOrganization()
+    {
+        val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
+        val statementToDeleteOwners = Deletes.ORGANIZATION_ALL_OWNERS
+        val statementToDeleteOrg = Deletes.ORGANIZATION
+
+        instance.deleteOrganization(orgId)
+
+        val inOrder = inOrder(database)
+
+        inOrder.verify(database).update(statementToDeleteMembers, orgId)
+        inOrder.verify(database).update(statementToDeleteOwners, orgId)
+        inOrder.verify(database).update(statementToDeleteOrg, orgId)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteOrganizationWhenDatabaseFails()
+    {
+
+        val getOrg = Queries.SELECT_ORGANIZATION
+        whenever(database.queryForObject(getOrg, serializer, orgId))
+                .thenReturn(organization)
+
+        Mockito.doThrow(RuntimeException())
+                .whenever(database)
+                .update(any(), eq(orgId))
+
+        assertThrows { instance.deleteOrganization(orgId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteOrganizationWithBadArgs()
+    {
+        assertThrows { instance.deleteOrganization(null) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows { instance.deleteOrganization("") }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows {
+            val emptyOrg = Organization()
+            instance.saveOrganization(emptyOrg)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidOrg = organization.deepCopy().setOrganizationId(alphabetic)
+            instance.saveOrganization(invalidOrg)
+        }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
 }
