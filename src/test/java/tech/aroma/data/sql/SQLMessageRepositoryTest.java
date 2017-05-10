@@ -232,7 +232,7 @@ public class SQLMessageRepositoryTest
         String query = SQLStatements.Queries.CHECK_MESSAGE;
         boolean expected = one(booleans());
 
-        when(database.queryForObject(query, Boolean.class, UUID.fromString(appId), UUID.fromString(messageId)))
+        when(database.queryForObject(eq(query), any(Class.class), eq(UUID.fromString(appId)), eq(UUID.fromString(messageId))))
                 .thenReturn(expected);
 
         boolean result = instance.containsMessage(appId, messageId);
@@ -416,7 +416,7 @@ public class SQLMessageRepositoryTest
         String query = SQLStatements.Queries.COUNT_MESSAGES;
         long count = one(positiveLongs());
 
-        when(database.queryForObject(query, Long.class, UUID.fromString(appId)))
+        when(database.queryForObject(eq(query), any(Class.class), eq(UUID.fromString(appId))))
                 .thenReturn(count);
 
         long result = instance.getCountByApplication(appId);
