@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 (
   org_id UUID,
   user_id UUID,
-  time_joined TIMESTAMP,
+  time_joined TIMESTAMP DEFAULT now(),
 
   PRIMARY KEY (org_id, user_id)
 );
