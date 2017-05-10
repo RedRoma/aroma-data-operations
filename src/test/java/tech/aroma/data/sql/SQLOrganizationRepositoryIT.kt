@@ -62,6 +62,9 @@ class SQLOrganizationRepositoryIT
     @GenerateString(UUID)
     private lateinit var userId: String
 
+    private val user: User
+        get() = User().setUserId(userId)
+
     private lateinit var userIds: List<String>
 
     private val users: List<User>
@@ -217,5 +220,47 @@ class SQLOrganizationRepositoryIT
     {
         val result = instance.getOrganizationMembers(orgId)
         assertThat(result, isEmpty)
+    }
+
+    @Test
+    fun testDeleteMember()
+    {
+        instance.saveOrganization(org)
+        instance.saveMemberInOrganization(orgId, user)
+
+        assertTrue { instance.isMemberInOrganization(orgId, userId) }
+
+        instance.deleteMember(orgId, userId)
+
+        assertFalse { instance.isMemberInOrganization(orgId, userId) }
+    }
+
+    fun testDeleteMemberWhenNone()
+    {
+        instance.deleteMember(orgId, userId)
+    }
+
+    @Test
+    fun testDeleteAllMembers()
+    {
+        users.forEach{ instance.saveMemberInOrganization(orgId, it) }
+
+        users.forEach {
+            assertTrue { instance.isMemberInOrganization(orgId, it.userId) }
+        }
+
+        instance.deleteAllMembers(orgId)
+
+        val members = instance.getOrganizationMembers(orgId)
+        assertThat(members, isEmpty)
+
+        users.forEach {
+            assertFalse { instance.isMemberInOrganization(orgId, it.userId) }
+        }
+    }
+
+    fun testDeleteAllMembersWhenNone()
+    {
+        instance.deleteAllMembers(orgId)
     }
 }
