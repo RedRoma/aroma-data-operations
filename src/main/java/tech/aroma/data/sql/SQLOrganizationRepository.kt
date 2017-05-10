@@ -17,8 +17,6 @@
 package tech.aroma.data.sql
 
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.`object`.BatchSqlUpdate
-import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
@@ -32,7 +30,6 @@ import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import java.sql.PreparedStatement
 import javax.inject.Inject
 
 /**
@@ -177,12 +174,25 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun getOrganizationOwners(organizationId: String?): MutableList<User>
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkThat(organizationId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validOrgId())
 
+        val orgId = organizationId!!
         val query = Queries.SELECT_ORGANIZATION_OWNERS
 
-        return Lists.emptyList()
-
+        try
+        {
+            return database
+                    .queryForList(query, String::class.java, orgId)
+                    .map { User().setUserId(it) }
+                    .toMutableList()
+        }
+        catch (ex: Exception)
+        {
+            LOG.warn("Failed to get a list of owners for org $orgId", ex)
+            return mutableListOf()
+        }
     }
 
     override fun saveMemberInOrganization(organizationId: String?, user: User?)

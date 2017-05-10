@@ -17,6 +17,7 @@
 package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Assert.assertEquals
@@ -35,6 +36,7 @@ import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
+import tech.sirwellington.alchemy.generator.StringGenerators.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
@@ -65,6 +67,8 @@ class SQLOrganizationRepositoryTest
     @GenerateString(UUID)
     private lateinit var userId: String
 
+    private lateinit var userIds: List<String>
+
     @GenerateString(ALPHABETIC)
     private lateinit var alphabetic: String
 
@@ -75,6 +79,8 @@ class SQLOrganizationRepositoryTest
     {
         organization.organizationId = orgId
         organization.owners?.clear()
+
+        userIds = CollectionGenerators.listOf(uuids, 4)
 
         instance = SQLOrganizationRepository(database = database, serializer = serializer)
     }
@@ -235,8 +241,8 @@ class SQLOrganizationRepositoryTest
                 .thenReturn(orgs)
 
         val result = instance.searchByName(name)
-        assertEquals(orgs, result)
-
+//        assertEquals(orgs, result)
+        assertThat(result, equalTo(orgs))
     }
 
     @DontRepeat
@@ -266,4 +272,48 @@ class SQLOrganizationRepositoryTest
         assertThat(result, isEmpty)
     }
 
+    @Test
+    fun testGetOrganizationOwners()
+    {
+        val query = Queries.SELECT_ORGANIZATION_OWNERS
+
+        whenever(database.queryForList(query, String::class.java, orgId))
+                .thenReturn(userIds)
+
+        val expected = userIds.map { User().setUserId(it) }
+
+        val result = instance.getOrganizationOwners(orgId)
+
+        assertThat(result, equalTo(expected))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetOrganizationOwnersWithBadArgs()
+    {
+        assertThrows { instance.getOrganizationOwners(null) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows { instance.getOrganizationOwners("") }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows { instance.getOrganizationOwners(alphabetic) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetOrganizationOwnersWhenDatabaseFails()
+    {
+        val query = Queries.SELECT_ORGANIZATION_OWNERS
+
+        whenever(database.queryForList(query, String::javaClass, orgId))
+                .thenThrow(RuntimeException())
+
+        val result = instance.getOrganizationOwners(orgId)
+        assertThat(result, isEmpty)
+    }
 }
