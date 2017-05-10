@@ -16,7 +16,8 @@
 
 package tech.aroma.data.sql
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.slf4j.LoggerFactory
+import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
 import tech.aroma.data.assertions.RequestAssertions.validOrgId
@@ -25,6 +26,7 @@ import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
@@ -36,11 +38,13 @@ import javax.inject.Inject
  */
 internal class SQLOrganizationRepository : OrganizationRepository
 {
-    private val database: NamedParameterJdbcTemplate
+    private val LOG = LoggerFactory.getLogger(this.javaClass)
+
+    private val database: JdbcOperations
     private val serializer: DatabaseSerializer<Organization>
 
     @Inject
-    constructor(database: NamedParameterJdbcTemplate, serializer: DatabaseSerializer<Organization>)
+    constructor(database: JdbcOperations, serializer: DatabaseSerializer<Organization>)
     {
         this.database = database
         this.serializer = serializer
@@ -54,6 +58,17 @@ internal class SQLOrganizationRepository : OrganizationRepository
                 .`is`(validOrganization())
 
         val organization = organization!!
+        val statement = Inserts.ORGANIZATION
+
+        try
+        {
+            serializer.save(organization, null, statement, database)
+        }
+        catch(ex: Exception)
+        {
+            LOG.error("Failed to save organization to database: [{}]", organization, ex)
+            throw OperationFailedException(ex.message)
+        }
 
     }
 
