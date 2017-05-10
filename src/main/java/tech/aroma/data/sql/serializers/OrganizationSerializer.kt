@@ -47,11 +47,13 @@ class OrganizationSerializer : DatabaseSerializer<Organization>
         checkThat(statement)
                 .`is`(nonEmptyString())
 
+        val owners = org.owners?.joinToString(separator = ",")
+
 
         database?.update(statement,
                          org.organizationId.asUUID(),
                          org.organizationName,
-                         org.owners?.toTypedArray(),
+                         owners,
                          org.logoLink,
                          org.industry?.toString(),
                          org.organizationEmail,

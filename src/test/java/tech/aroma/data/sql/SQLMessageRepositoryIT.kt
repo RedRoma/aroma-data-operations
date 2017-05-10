@@ -48,7 +48,7 @@ class SQLMessageRepositoryIT
     @GenerateString(GenerateString.Type.UUID)
     private lateinit var messageId: String
 
-    private val serializer = Resources.getMessageSerializer()
+    private val serializer = TestingResources.getMessageSerializer()
 
     @Before
     fun setup()
@@ -199,7 +199,7 @@ class SQLMessageRepositoryIT
         @Throws(Exception::class)
         fun setUp()
         {
-            database = Resources.connectToDatabase()
+            database = TestingResources.connectToDatabase()
         }
     }
 

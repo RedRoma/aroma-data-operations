@@ -28,10 +28,10 @@ import tech.aroma.thrift.Message;
  * @author SirWellington
  */
 
-public class Resources
+public class TestingResources
 {
 
-    public static Logger LOG = LoggerFactory.getLogger(Resources.class);
+    public static Logger LOG = LoggerFactory.getLogger(TestingResources.class);
 
     private static final Injector injector = Guice.createInjector(new ModuleTesting(),
                                                                   new ModuleSerializers());

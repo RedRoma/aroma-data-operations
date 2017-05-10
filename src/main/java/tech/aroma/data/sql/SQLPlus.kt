@@ -4,6 +4,7 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.*
 import java.util.*
+import javax.sql.DataSource
 
 /**
  *
@@ -48,4 +49,11 @@ public fun String.asUUID(): UUID?
     {
         return null
     }
+}
+
+fun List<String>.asSQLArray(dataSource: DataSource): java.sql.Array?
+{
+    val connection = try { dataSource.connection } catch (ex: SQLException) { return null }
+
+    return connection.createArrayOf("text", this.toTypedArray())
 }

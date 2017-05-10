@@ -3,7 +3,6 @@ package tech.aroma.data.sql.serializers
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Assert.assertArrayEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -95,7 +94,7 @@ class OrganizationSerializerTest
 
         assertEquals(orgId.asUUID(), arguments[0])
         assertEquals(org.organizationName, arguments[1])
-        assertArrayEquals(org.owners.toTypedArray(), arguments[2] as kotlin.Array<*>)
+        assertEquals(org.owners.joinToString(separator = ","), arguments[2])
         assertEquals(org.logoLink, arguments[3])
         assertEquals(org.industry.toString(), arguments[4])
         assertEquals(org.organizationEmail, arguments[5])
