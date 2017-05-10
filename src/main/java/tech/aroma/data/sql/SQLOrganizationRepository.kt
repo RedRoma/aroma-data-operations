@@ -74,7 +74,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun getOrganization(organizationId: String?): Organization
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val orgId = organizationId!!
         val query = Queries.SELECT_ORGANIZATION
@@ -93,9 +93,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun deleteOrganization(organizationId: String?)
     {
-        checkThat(organizationId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val orgId = organizationId!!
 
@@ -129,9 +127,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun containsOrganization(organizationId: String?): Boolean
     {
-        checkThat(organizationId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val orgId = organizationId!!
         val query = Queries.CHECK_ORGANIZATION
@@ -174,9 +170,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun getOrganizationOwners(organizationId: String?): MutableList<User>
     {
-        checkThat(organizationId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val orgId = organizationId!!
         val query = Queries.SELECT_ORGANIZATION_OWNERS
@@ -197,14 +191,14 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun saveMemberInOrganization(organizationId: String?, user: User?)
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val statement = Inserts.ORGANIZATION_MEMBER
     }
 
     override fun isMemberInOrganization(organizationId: String?, userId: String?): Boolean
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
 
@@ -213,7 +207,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun getOrganizationMembers(organizationId: String?): MutableList<User>
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val query = Queries.SELECT_ORGANIZATION_MEMBERS
 
@@ -222,16 +216,23 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun deleteMember(organizationId: String?, userId: String?)
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val statement = Deletes.ORGANIZATION_MEMBER
     }
 
     override fun deleteAllMembers(organizationId: String?)
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkOrgID(organizationId)
 
         val statement = Deletes.ORGANIZATION_ALL_MEMBERS
+    }
+
+    private fun checkOrgID(orgId: String?)
+    {
+        checkThat(orgId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validOrgId())
     }
 
 }
