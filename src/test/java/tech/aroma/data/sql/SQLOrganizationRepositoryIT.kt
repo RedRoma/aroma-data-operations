@@ -109,7 +109,6 @@ class SQLOrganizationRepositoryIT
         instance.saveOrganization(org)
     }
 
-
     @Test
     fun testGet()
     {

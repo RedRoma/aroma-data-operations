@@ -197,11 +197,10 @@ internal class SQLOrganizationRepository : OrganizationRepository
         val statement = Inserts.ORGANIZATION_MEMBER
         val orgId = organizationId!!.asUUID()
         val userId = user!!.userId!!.asUUID()
-        val timestamp = Timestamp.from(Instant.now())
 
         try
         {
-            database.update(statement, orgId, userId, timestamp)
+            database.update(statement, orgId, userId)
         }
         catch (ex: Exception)
         {
