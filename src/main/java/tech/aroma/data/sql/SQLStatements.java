@@ -71,7 +71,7 @@ final class SQLStatements
     static String loadSQLFile(String name)
     {
         final String path = "tech/aroma/sql";
-        final String fullPath = path + "/" + name;
+        final String fullPath = path + name;
 
         URL url = Resources.getResource(fullPath);
 
