@@ -1,7 +1,7 @@
 package tech.aroma.data.sql.serializers
 
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.data.sql.*
 import tech.aroma.thrift.Message
@@ -28,7 +28,7 @@ class MessageSerializer : DatabaseSerializer<Message>
     }
 
     @Throws(SQLException::class)
-    override fun save(message: Message, timeToLive: Duration?, statement: String, database: JdbcTemplate)
+    override fun save(message: Message, timeToLive: Duration?, statement: String, database: JdbcOperations)
     {
         checkThat(message).`is`(validMessage())
         checkThat(database).`is`(notNull())

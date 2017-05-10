@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 
 import org.apache.thrift.TBase;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import tech.sirwellington.alchemy.annotations.arguments.*;
 
@@ -28,7 +28,7 @@ public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
     void save(@Required T object,
               @Optional Duration timeToLive,
               @Required @NonEmpty String statement,
-              @Required JdbcTemplate database) throws SQLException;
+              @Required JdbcOperations database) throws SQLException;
 
 
     /**
