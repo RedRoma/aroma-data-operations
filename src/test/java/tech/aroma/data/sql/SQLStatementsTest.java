@@ -42,7 +42,6 @@ public class SQLStatementsTest
 
         assertThat(SQLStatements.Inserts.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Inserts.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Inserts.ORGANIZATION_OWNER, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -60,7 +59,6 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.CHECK_ORGANIZATION_HAS_MEMBER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_ORGANIZATION_MEMBERS, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Queries.SELECT_ORGANIZATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SEARCH_ORGANIZATION_BY_NAME, not(isEmptyOrNullString()));
     }
 
