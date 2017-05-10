@@ -4,7 +4,6 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.*
 import java.util.*
-import javax.sql.DataSource
 
 /**
  *

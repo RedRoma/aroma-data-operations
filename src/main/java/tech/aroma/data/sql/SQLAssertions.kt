@@ -26,7 +26,7 @@ class SQLAssertions
             checkThat(column).`is`(nonEmptyString())
 
             return AlchemyAssertion { results ->
-                
+
                 checkThat(results).`is`(notNull())
 
                 if (!results.hasColumn(column))
