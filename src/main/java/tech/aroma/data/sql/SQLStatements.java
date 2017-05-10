@@ -21,6 +21,8 @@ import java.net.URL;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 
 /**
@@ -31,6 +33,8 @@ import tech.sirwellington.alchemy.annotations.access.Internal;
 @Internal
 final class SQLStatements
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SQLStatements.class);
 
     static class Deletes
     {
@@ -81,6 +85,7 @@ final class SQLStatements
         }
         catch (IOException ex)
         {
+            LOG.error("Failed to load file: {}", name, ex);
             throw new RuntimeException("Failed to load file: " + name, ex);
         }
     }
