@@ -81,7 +81,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            return database.queryForObject(query, serializer, orgId)
+            return database.queryForObject(query, serializer, orgId.asUUID())
         }
         catch (ex: Exception)
         {
@@ -108,9 +108,9 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            database.update(deleteOrgMembers, orgId)
-            database.update(deleteOrgOwners, orgId)
-            database.update(deleteOrg, orgId)
+            database.update(deleteOrgMembers, orgId.asUUID())
+            database.update(deleteOrgOwners, orgId.asUUID())
+            database.update(deleteOrg, orgId.asUUID())
         }
         catch(ex: Exception)
         {
@@ -134,7 +134,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            return database.queryForObject(query, Boolean::class.java, orgId)
+            return database.queryForObject(query, Boolean::class.java, orgId.asUUID())
         }
         catch(ex: Exception)
         {
@@ -178,7 +178,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         try
         {
             return database
-                    .queryForList(query, String::class.java, orgId)
+                    .queryForList(query, String::class.java, orgId.asUUID())
                     .map { User().setUserId(it) }
                     .toMutableList()
         }
