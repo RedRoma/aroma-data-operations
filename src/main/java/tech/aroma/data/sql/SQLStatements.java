@@ -45,6 +45,10 @@ final class SQLStatements
     static class Inserts
     {
         static final String MESSAGE = loadSQLFile("/inserts/insert_message.sql");
+
+        static final String ORGANIZATION = loadSQLFile("/inserts/insert_organization.sql");
+        static final String ORGANIZATION_MEMBER = loadSQLFile("/inserts/insert_organization_member.sql");
+        static final String ORGANIZATION_OWNER = loadSQLFile("/inserts/insert_organization_owner.sql");
     }
 
     static class Queries
@@ -58,6 +62,9 @@ final class SQLStatements
 
         static final String CHECK_ORGANIZATION = loadSQLFile("/queries/check_organization.sql");
         static final String SELECT_ORGANIZATION = loadSQLFile("/queries/select_organization.sql");
+        static final String SELECT_ORGANIZATION_OWNERS = loadSQLFile("/queries/select_organization_owners.sql");
+        static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("/queries/select_organization_members.sql");
+        static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("/queries/search_organization_by_name.sql");
     }
 
     static String loadSQLFile(String name)
