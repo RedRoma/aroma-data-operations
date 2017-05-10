@@ -20,7 +20,6 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
-import org.hamcrest.core.Is
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -197,7 +196,7 @@ class SQLOrganizationRepositoryTest
         whenever(database.queryForObject(query, Boolean::class.java, orgId.asUUID()))
                 .thenReturn(expected)
 
-        val result = instance.containsOrganization(orgId)!!
+        val result = instance.containsOrganization(orgId)
 
         assertEquals(expected, result)
     }
