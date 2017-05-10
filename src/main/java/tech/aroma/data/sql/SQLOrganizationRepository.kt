@@ -152,11 +152,27 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun searchByName(searchTerm: String?): MutableList<Organization>
     {
-        checkThat(searchTerm).`is`(nonEmptyString())
+        checkThat(searchTerm)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(nonEmptyString())
+
+        var searchTerm = searchTerm!!
+        searchTerm = "%$searchTerm%"
 
         val query = Queries.SEARCH_ORGANIZATION_BY_NAME
 
-        return Lists.emptyList()
+        var result = mutableListOf<Organization>()
+
+        try
+        {
+            result = database.query(query, serializer, searchTerm)
+        }
+        catch(ex: Exception)
+        {
+            LOG.warn("Could not find Organizations with name [{}].", searchTerm, ex)
+        }
+
+        return result
     }
 
     override fun getOrganizationOwners(organizationId: String?): MutableList<User>

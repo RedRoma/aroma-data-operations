@@ -16,6 +16,8 @@
 
 package tech.aroma.data.sql
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -31,6 +33,8 @@ import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
@@ -216,6 +220,50 @@ class SQLOrganizationRepositoryTest
 
         assertThrows { instance.containsOrganization(orgId) }
                 .isInstanceOf(OperationFailedException::class.java)
+    }
+
+
+    @Test
+    fun testSearchByName()
+    {
+        val query = Queries.SEARCH_ORGANIZATION_BY_NAME
+        val name = alphabetic
+        val searchTerm = "%$name%"
+        val orgs = CollectionGenerators.listOf(pojos(Organization::class.java))
+
+        whenever(database.query(query, serializer, searchTerm))
+                .thenReturn(orgs)
+
+        val result = instance.searchByName(name)
+        assertEquals(orgs, result)
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testSearchByNameWithBadArgs()
+    {
+        assertThrows { instance.searchByName(null) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows { instance.searchByName("") }
+                .isInstanceOf(InvalidArgumentException::class.java)
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testSearchByNameWhenDatabaseFails()
+    {
+        val query = Queries.SEARCH_ORGANIZATION_BY_NAME
+        val name = alphabetic
+
+        whenever(database.query(query, serializer, name))
+                .thenThrow(RuntimeException())
+
+        val result = instance.searchByName(name)
+
+        assertThat(result, isEmpty)
     }
 
 }
