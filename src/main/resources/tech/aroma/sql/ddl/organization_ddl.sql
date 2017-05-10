@@ -43,11 +43,6 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 (
   org_id UUID,
   user_id UUID,
-  org_name TEXT,
-  user_first_name TEXT,
-  user_middle_name TEXT,
-  user_last_name TEXT,
-  user_email TEXT,
 
   PRIMARY KEY (org_id, user_id)
 );
