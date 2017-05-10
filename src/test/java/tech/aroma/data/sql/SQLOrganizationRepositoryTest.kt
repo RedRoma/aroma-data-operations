@@ -20,18 +20,20 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
+import org.hamcrest.core.Is
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
+import tech.sirwellington.alchemy.arguments.Arguments.checkThat
+import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
@@ -42,6 +44,7 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import java.sql.Timestamp
 
 /**
  * @author SirWellington
@@ -320,12 +323,25 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testSaveMemberInOrg()
     {
-        val query = Inserts.ORGANIZATION_MEMBER
+        val statement = Inserts.ORGANIZATION_MEMBER
         val user = pojos(User::class.java).get().setUserId(userId)
 
         instance.saveMemberInOrganization(orgId, user)
 
-        verify(database).update(query, orgId.asUUID(), userId.asUUID())
+        val argumentsCaptor = ArgumentCaptor.forClass(Any::class.java)
+
+        verify(database).update(eq(statement), argumentsCaptor.capture())
+
+        val arguments = argumentsCaptor.allValues
+
+        assertEquals(orgId.asUUID(), arguments[0])
+        assertEquals(userId.asUUID(), arguments[1])
+        assertThat(arguments[2], com.natpryce.hamkrest.isA<Timestamp>())
+
+        val timestamp = arguments[2] as Timestamp
+
+        checkThat(timestamp.toInstant())
+                .`is`(TimeAssertions.nowWithinDelta(500))
     }
 
     @DontRepeat
@@ -352,7 +368,7 @@ class SQLOrganizationRepositoryTest
         val statement = Inserts.ORGANIZATION_MEMBER
         val user = User().setUserId(userId)
 
-        whenever(database.update(statement, orgId.asUUID(), userId.asUUID()))
+        whenever(database.update(eq(statement), eq(orgId.asUUID()), eq(userId.asUUID()), any<Timestamp>()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.saveMemberInOrganization(orgId, user) }

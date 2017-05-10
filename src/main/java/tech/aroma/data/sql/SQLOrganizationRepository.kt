@@ -29,6 +29,8 @@ import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import java.sql.Timestamp
+import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -199,10 +201,11 @@ internal class SQLOrganizationRepository : OrganizationRepository
         val statement = Inserts.ORGANIZATION_MEMBER
         val orgId = organizationId!!.asUUID()
         val userId = user!!.userId!!.asUUID()
+        val timestamp = Timestamp.from(Instant.now())
 
         try
         {
-            database.update(statement, orgId, userId)
+            database.update(statement, orgId, userId, timestamp)
         }
         catch (ex: Exception)
         {
