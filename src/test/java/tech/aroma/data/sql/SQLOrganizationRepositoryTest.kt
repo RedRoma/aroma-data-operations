@@ -408,7 +408,7 @@ class SQLOrganizationRepositoryTest
         whenever(database.queryForList(query, String::class.java, orgId.asUUID()))
                 .thenReturn(members)
 
-        val result = instance.getOrganizationOwners(orgId)
+        val result = instance.getOrganizationMembers(orgId)
         assertThat(result.map { it.userId }, equalTo(members))
     }
 

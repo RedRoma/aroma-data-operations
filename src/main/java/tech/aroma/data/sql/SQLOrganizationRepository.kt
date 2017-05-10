@@ -16,12 +16,12 @@
 
 package tech.aroma.data.sql
 
+import com.sun.corba.se.spi.orb.Operation
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
-import tech.aroma.data.assertions.RequestAssertions.validOrgId
-import tech.aroma.data.assertions.RequestAssertions.validOrganization
+import tech.aroma.data.assertions.RequestAssertions.*
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
@@ -193,16 +193,46 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkOrgID(organizationId)
 
+        checkThat(user?.userId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validUserId())
+
         val statement = Inserts.ORGANIZATION_MEMBER
+        val orgId = organizationId!!
+        val userId = user!!.userId!!
+
+        try
+        {
+            database.update(statement, orgId.asUUID(), userId.asUUID())
+        }
+        catch (ex: Exception)
+        {
+            LOG.error("Failed to save member [{}] in Org [{}]", userId, orgId, ex)
+            throw OperationFailedException("Failed to save user $userId in Org [$orgId] | ${ex.message}")
+        }
     }
+
 
     override fun isMemberInOrganization(organizationId: String?, userId: String?): Boolean
     {
         checkOrgID(organizationId)
+        checkThat(userId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validUserId())
 
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
+        val orgId = organizationId!!
+        val userId = userId!!
 
-        return false
+        try
+        {
+            return database.queryForObject(query, Boolean::class.java, orgId.asUUID(), userId.asUUID())
+        }
+        catch (ex: Exception)
+        {
+            LOG.error("Failed to check if [{}] is a member of Org [{}]", userId, orgId, ex)
+            throw OperationFailedException("Failed to check if [$userId] is a member of [$orgId] | ${ex.message}")
+        }
     }
 
     override fun getOrganizationMembers(organizationId: String?): MutableList<User>
@@ -210,15 +240,42 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
 
         val query = Queries.SELECT_ORGANIZATION_MEMBERS
+        val orgId = organizationId!!
 
-        return Lists.emptyList()
+        try
+        {
+            return database
+                    .queryForList(query, String::class.java, orgId.asUUID())
+                    .map { User().setUserId(it) }
+                    .toMutableList()
+        }
+        catch (ex: Exception)
+        {
+            LOG.error("Failed to retrieve organizations member: [{}]", orgId, ex)
+            return Lists.emptyList()
+        }
     }
 
     override fun deleteMember(organizationId: String?, userId: String?)
     {
         checkOrgID(organizationId)
+        checkThat(userId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validUserId())
 
         val statement = Deletes.ORGANIZATION_MEMBER
+        val orgId = organizationId!!
+        val userId = userId!!
+
+        try
+        {
+            database.update(statement, orgId.asUUID(), userId.asUUID())
+        }
+        catch (ex: Exception)
+        {
+            LOG.error("Failed to delete member from Org [{}] -> [{}]", orgId, userId, ex)
+            throw OperationFailedException("Failed to remove member $userId from $organizationId | ${ex.message}")
+        }
     }
 
     override fun deleteAllMembers(organizationId: String?)
@@ -226,6 +283,17 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
 
         val statement = Deletes.ORGANIZATION_ALL_MEMBERS
+        val orgId = organizationId!!
+
+        try
+        {
+            database.update(statement, orgId.asUUID())
+        }
+        catch(ex: Exception)
+        {
+            LOG.error("Failed to delete all members for org: {}", orgId)
+            throw OperationFailedException("Failed to remove all members for Org: [$orgId] | ${ex.message}")
+        }
     }
 
     private fun checkOrgID(orgId: String?)
