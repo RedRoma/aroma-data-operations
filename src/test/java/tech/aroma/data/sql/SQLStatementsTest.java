@@ -30,9 +30,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Deletes.ORGANIZATION_OWNER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_ALL_MEMBERS, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Deletes.ORGANIZATION_ALL_OWNERS, not(isEmptyOrNullString()));
     }
 
     @Test

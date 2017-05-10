@@ -137,7 +137,6 @@ class SQLOrganizationRepositoryTest
                 .thenReturn(organization)
 
         val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
-        val statementToDeleteOwners = Deletes.ORGANIZATION_ALL_OWNERS
         val statementToDeleteOrg = Deletes.ORGANIZATION
 
         instance.deleteOrganization(orgId)
@@ -145,7 +144,6 @@ class SQLOrganizationRepositoryTest
         val inOrder = inOrder(database)
 
         inOrder.verify(database).update(statementToDeleteMembers, orgId.asUUID())
-        inOrder.verify(database).update(statementToDeleteOwners, orgId.asUUID())
         inOrder.verify(database).update(statementToDeleteOrg, orgId.asUUID())
     }
 
@@ -337,12 +335,6 @@ class SQLOrganizationRepositoryTest
 
         assertEquals(orgId.asUUID(), arguments[0])
         assertEquals(userId.asUUID(), arguments[1])
-        assertThat(arguments[2], com.natpryce.hamkrest.isA<Timestamp>())
-
-        val timestamp = arguments[2] as Timestamp
-
-        checkThat(timestamp.toInstant())
-                .`is`(TimeAssertions.nowWithinDelta(500))
     }
 
     @DontRepeat
@@ -369,7 +361,7 @@ class SQLOrganizationRepositoryTest
         val statement = Inserts.ORGANIZATION_MEMBER
         val user = User().setUserId(userId)
 
-        whenever(database.update(eq(statement), eq(orgId.asUUID()), eq(userId.asUUID()), any<Timestamp>()))
+        whenever(database.update(eq(statement), eq(orgId.asUUID()), eq(userId.asUUID())))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.saveMemberInOrganization(orgId, user) }

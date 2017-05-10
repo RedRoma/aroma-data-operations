@@ -41,9 +41,7 @@ final class SQLStatements
         static final String MESSAGE = loadSQLFile("/deletes/delete_message.sql");
         static final String ORGANIZATION = loadSQLFile("/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("/deletes/delete_organization_member.sql");
-        static final String ORGANIZATION_OWNER = loadSQLFile("/deletes/delete_organization_owner.sql");
         static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("/deletes/delete_organization_all_members.sql");
-        static final String ORGANIZATION_ALL_OWNERS = loadSQLFile("/deletes/delete_organization_all_owners.sql");
     }
 
     static class Inserts

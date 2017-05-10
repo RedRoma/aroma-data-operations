@@ -100,17 +100,14 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         //Save in case a roll-back is needed
         val org = getOrganization(orgId)
-        val owners = getOrganizationOwners(orgId)
         val members = getOrganizationMembers(orgId)
 
         val deleteOrg = Deletes.ORGANIZATION
-        val deleteOrgOwners = Deletes.ORGANIZATION_ALL_OWNERS
         val deleteOrgMembers = Deletes.ORGANIZATION_ALL_MEMBERS
 
         try
         {
             database.update(deleteOrgMembers, orgId.asUUID())
-            database.update(deleteOrgOwners, orgId.asUUID())
             database.update(deleteOrg, orgId.asUUID())
         }
         catch(ex: Exception)
