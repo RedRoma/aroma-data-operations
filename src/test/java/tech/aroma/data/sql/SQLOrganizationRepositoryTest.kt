@@ -17,9 +17,8 @@
 package tech.aroma.data.sql
 
 import com.nhaarman.mockito_kotlin.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -30,6 +29,8 @@ import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
+import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
@@ -39,6 +40,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
  * @author SirWellington
  */
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLOrganizationRepositoryTest
 {
     @Mock
@@ -115,6 +117,10 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteOrganization()
     {
+        val getOrg = Queries.SELECT_ORGANIZATION
+        whenever(database.queryForObject(getOrg, serializer, orgId))
+                .thenReturn(organization)
+
         val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
         val statementToDeleteOwners = Deletes.ORGANIZATION_ALL_OWNERS
         val statementToDeleteOrg = Deletes.ORGANIZATION
@@ -166,6 +172,50 @@ class SQLOrganizationRepositoryTest
             val invalidOrg = organization.deepCopy().setOrganizationId(alphabetic)
             instance.saveOrganization(invalidOrg)
         }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @Test
+    fun testContainsOrganization()
+    {
+        val expected = one(booleans())!!
+        val query = Queries.CHECK_ORGANIZATION
+
+        whenever(database.queryForObject(query, Boolean::class.java, orgId))
+                .thenReturn(expected)
+
+        val result = instance.containsOrganization(orgId)!!
+
+        assertEquals(expected, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testContainsOrganizationWithBadArgs()
+    {
+        assertThrows { instance.containsOrganization(null) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows { instance.containsOrganization("") }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+
+        assertThrows { instance.containsOrganization(alphabetic) }
+                .isInstanceOf(InvalidArgumentException::class.java)
+                .hasNoCause()
+    }
+
+    @Test
+    fun testContainsOrganizationWhenDatabaseFails()
+    {
+        val query = Queries.CHECK_ORGANIZATION
+
+        Mockito.doThrow(RuntimeException())
+                .whenever(database)
+                .queryForObject(query, Boolean::class.java, orgId)
+
+        assertThrows { instance.containsOrganization(orgId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
 }

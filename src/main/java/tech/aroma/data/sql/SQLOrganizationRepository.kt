@@ -132,11 +132,22 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
     override fun containsOrganization(organizationId: String?): Boolean
     {
-        checkThat(organizationId).`is`(validOrgId())
+        checkThat(organizationId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validOrgId())
 
+        val orgId = organizationId!!
         val query = Queries.CHECK_ORGANIZATION
 
-        return false
+        try
+        {
+            return database.queryForObject(query, Boolean::class.java, orgId)
+        }
+        catch(ex: Exception)
+        {
+            LOG.error("Failed to check if org [{}] exists.", orgId, ex)
+            throw OperationFailedException("Failed to check if $orgId exists | ${ex.message}")
+        }
     }
 
     override fun searchByName(searchTerm: String?): MutableList<Organization>
