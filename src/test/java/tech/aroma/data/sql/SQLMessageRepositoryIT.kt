@@ -24,6 +24,7 @@ import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import java.time.Instant
@@ -33,6 +34,7 @@ import kotlin.test.assertTrue
 /**
  * @author SirWellington
  */
+@IntegrationTest
 @RunWith(AlchemyTestRunner::class)
 class SQLMessageRepositoryIT
 {

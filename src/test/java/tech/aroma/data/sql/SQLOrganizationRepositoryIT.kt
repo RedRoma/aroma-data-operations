@@ -1,5 +1,3 @@
-package tech.aroma.data.sql
-
 /*
  * Copyright 2017 RedRoma, Inc.
  *
@@ -16,9 +14,8 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-/**
- * @author SirWellington
- */
+package tech.aroma.data.sql
+
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
@@ -28,6 +25,7 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.OrganizationSerializer
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
+import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
@@ -35,6 +33,10 @@ import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import kotlin.test.*
 
+/**
+ * @author SirWellington
+ */
+@IntegrationTest
 @RunWith(AlchemyTestRunner::class)
 class SQLOrganizationRepositoryIT
 {
