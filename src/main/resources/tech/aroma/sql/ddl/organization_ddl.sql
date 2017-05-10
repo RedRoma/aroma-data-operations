@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS Organization_Owners
 (
   org_id UUID,
   user_id UUID,
+  time_joined TIMESTAMP,
 
   PRIMARY KEY (org_id, user_id)
 );
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS Organization_Members
 (
   org_id UUID,
   user_id UUID,
+  time_joined TIMESTAMP,
 
   PRIMARY KEY (org_id, user_id)
 );
