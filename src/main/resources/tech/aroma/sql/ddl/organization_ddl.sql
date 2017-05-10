@@ -26,18 +26,6 @@ CREATE INDEX IF NOT EXISTS Organizations_By_Tier ON Organizations(tier);
 
 CREATE INDEX IF NOT EXISTS Organizations_By_Industry ON Organizations(industry);
 
--- Stores Information about an Organization's owners
-CREATE TABLE IF NOT EXISTS Organization_Owners
-(
-  org_id UUID,
-  user_id UUID,
-  time_joined TIMESTAMP,
-
-  PRIMARY KEY (org_id, user_id)
-);
-
-CREATE INDEX IF NOT EXISTS Organization_Owners_By_User ON Organization_Owners(user_id);
-
 
 -- Stores Information relating to an Organization's members
 CREATE TABLE IF NOT EXISTS Organization_Members
