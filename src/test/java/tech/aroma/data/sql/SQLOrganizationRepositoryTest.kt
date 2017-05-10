@@ -411,4 +411,58 @@ class SQLOrganizationRepositoryTest
         val result = instance.getOrganizationOwners(orgId)
         assertThat(result.map { it.userId }, equalTo(members))
     }
+
+    @DontRepeat
+    @Test
+    fun testGetOrganizationMembersWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetOrganizationMembersWhenDatabaseFails()
+    {
+
+    }
+
+    @Test
+    fun testDeleteMember()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteMemberWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteMemberWhenDatabaseFails()
+    {
+
+    }
+
+    @Test
+    fun testDeleteAllMembers()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteAllMembersWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteAllMembersWhenDatabaseFails()
+    {
+
+    }
 }
