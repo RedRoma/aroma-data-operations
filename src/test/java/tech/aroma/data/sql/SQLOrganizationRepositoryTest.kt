@@ -416,46 +416,77 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationMembersWithBadArgs()
     {
-
+        assertThrows { instance.getOrganizationMembers(null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getOrganizationMembers("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getOrganizationMembers(alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @DontRepeat
     @Test
     fun testGetOrganizationMembersWhenDatabaseFails()
     {
+        val query = Queries.SELECT_ORGANIZATION_MEMBERS
 
+        whenever(database.queryForList(query, String::class.java, orgId.asUUID()))
+                .thenThrow(RuntimeException())
+
+        val results = instance.getOrganizationMembers(orgId)
+        assertThat(results, isEmpty)
     }
 
     @Test
     fun testDeleteMember()
     {
+        val query = Deletes.ORGANIZATION_MEMBER
 
+        instance.deleteMember(orgId, userId)
+
+        verify(database).update(query, orgId.asUUID(), userId.asUUID())
     }
 
     @DontRepeat
     @Test
     fun testDeleteMemberWithBadArgs()
     {
+        assertThrows { instance.deleteMember(null, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember("", "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember(alphabetic, "") }.isInstanceOf(InvalidArgumentException::class.java)
 
+        assertThrows { instance.deleteMember(orgId, null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember(orgId, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember(orgId, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @DontRepeat
     @Test
     fun testDeleteMemberWhenDatabaseFails()
     {
+        val statement = Deletes.ORGANIZATION_MEMBER
 
+        whenever(database.update(statement, orgId.asUUID(), userId.asUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteMember(orgId, userId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
     @Test
     fun testDeleteAllMembers()
     {
+        val statement = Deletes.ORGANIZATION_ALL_MEMBERS
 
+        instance.deleteAllMembers(orgId)
+
+        verify(database).update(statement, orgId.asUUID())
     }
 
     @DontRepeat
     @Test
     fun testDeleteAllMembersWithBadArgs()
     {
+        assertThrows { instance.deleteAllMembers(null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteAllMembers("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteAllMembers(alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
 
     }
 
@@ -463,6 +494,12 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteAllMembersWhenDatabaseFails()
     {
+        val statement = Deletes.ORGANIZATION_ALL_MEMBERS
 
+        whenever(database.update(statement, orgId.asUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteAllMembers(orgId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 }
