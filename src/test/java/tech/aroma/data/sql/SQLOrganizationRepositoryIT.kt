@@ -20,6 +20,9 @@ package tech.aroma.data.sql
  * @author SirWellington
  */
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.isEmpty
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
@@ -31,7 +34,8 @@ import tech.sirwellington.alchemy.generator.StringGenerators.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
-import kotlin.test.assertEquals
+import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
+import kotlin.test.*
 
 @RunWith(AlchemyTestRunner::class)
 class SQLOrganizationRepositoryIT
@@ -84,7 +88,14 @@ class SQLOrganizationRepositoryIT
     @After
     fun destroy()
     {
-        instance.deleteOrganization(orgId)
+        try
+        {
+            instance.deleteOrganization(orgId)
+        }
+        catch (ex: Exception)
+        {
+
+        }
     }
 
     @Test
@@ -106,5 +117,60 @@ class SQLOrganizationRepositoryIT
         val result = instance.getOrganization(orgId)
 
         assertEquals(org, result)
+    }
+
+    @Test
+    fun testDeleteOrg()
+    {
+        assertThrows { instance.deleteOrganization(orgId) }
+    }
+
+    @Test
+    fun testContainsOrg()
+    {
+        assertFalse { instance.containsOrganization(orgId) }
+
+        instance.saveOrganization(org)
+
+        assertTrue { instance.containsOrganization(orgId) }
+    }
+
+    @Test
+    fun testSearchByName()
+    {
+        val name = org.organizationName
+        val subName = name.subSequence(1..5).toString()
+
+        instance.saveOrganization(org)
+
+        val results = instance.searchByName(subName)
+        assertThat(results, hasElement(org))
+    }
+
+    @Test
+    fun testSearchByNameWhenNone()
+    {
+        val name = org.organizationName
+        val subName = name.subSequence(1..5).toString()
+
+        val results = instance.searchByName(subName)
+        assertThat(results, isEmpty)
+    }
+
+    @Test
+    fun testGetOrganizationOwners()
+    {
+        instance.saveOrganization(org)
+
+        val result = instance.getOrganizationOwners(orgId)
+
+        assertEquals(users, result)
+    }
+
+    fun testGetOrganizationOwnersWhenNone()
+    {
+        val result = instance.getOrganizationOwners(orgId)
+
+        assertThat(result, isEmpty)
     }
 }

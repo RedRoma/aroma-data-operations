@@ -81,7 +81,9 @@ class SQLOrganizationRepositoryTest
     fun setUp()
     {
         organization.organizationId = orgId
-        organization.owners?.clear()
+
+        userIds = CollectionGenerators.listOf(uuids, 10)
+        organization.owners = userIds
 
         userIds = CollectionGenerators.listOf(uuids, 4)
 
@@ -277,12 +279,12 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationOwners()
     {
-        val query = Queries.SELECT_ORGANIZATION_OWNERS
+        val query = Queries.SELECT_ORGANIZATION
 
-        whenever(database.queryForList(query, String::class.java, orgId.asUUID()))
-                .thenReturn(userIds)
+        whenever(database.queryForObject(query, serializer, orgId.asUUID()))
+                .thenReturn(organization)
 
-        val expected = userIds.map { User().setUserId(it) }
+        val expected = organization.owners.map { User().setUserId(it) }
 
         val result = instance.getOrganizationOwners(orgId)
 
@@ -310,9 +312,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationOwnersWhenDatabaseFails()
     {
-        val query = Queries.SELECT_ORGANIZATION_OWNERS
+        val query = Queries.SELECT_ORGANIZATION
 
-        whenever(database.queryForList(query, String::javaClass, orgId.asUUID()))
+        whenever(database.queryForList(query, serializer, orgId.asUUID()))
                 .thenThrow(RuntimeException())
 
         val result = instance.getOrganizationOwners(orgId)

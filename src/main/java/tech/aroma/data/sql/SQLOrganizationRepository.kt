@@ -173,19 +173,15 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkOrgID(organizationId)
 
-        val orgId = organizationId!!.asUUID()
-        val query = Queries.SELECT_ORGANIZATION_OWNERS
-
-        try
+        return try
         {
-            return database
-                    .queryForList(query, String::class.java, orgId)
+            this.getOrganization(organizationId)
+                    .owners
                     .map { User().setUserId(it) }
                     .toMutableList()
         }
         catch (ex: Exception)
         {
-            LOG.warn("Failed to get a list of owners for org $orgId", ex)
             return mutableListOf()
         }
     }
