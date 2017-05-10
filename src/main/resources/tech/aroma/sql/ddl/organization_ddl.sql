@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS Organizations
   tier TEXT,
   description TEXT,
   website TEXT,
+  time_created TIMESTAMP DEFAULT now(),
 
   PRIMARY KEY (org_id)
 );
