@@ -11,9 +11,8 @@ CREATE TABLE IF NOT EXISTS Tokens
     owner_id           UUID,
     organization_id    UUID,
     owner_name         TEXT,
-    features           TEXT [],
-    time_of_expiration TIMESTAMP,
     time_of_creation   TIMESTAMP DEFAULT now(),
+    time_of_expiration TIMESTAMP,
     token_type         TEXT,
     token_staus        TEXT,
 
