@@ -5,9 +5,10 @@
 CREATE TABLE IF NOT EXISTS Applications
 (
     app_id                   UUID,
-    name                     TEXT,
+    app_name                 TEXT,
     app_description          TEXT,
     organization_id          UUID,
+    owners                   UUID[],
     programming_language     TEXT,
     time_provisioned         TIMESTAMP DEFAULT now(),
     time_last_updated        TIMESTAMP DEFAULT now(),
