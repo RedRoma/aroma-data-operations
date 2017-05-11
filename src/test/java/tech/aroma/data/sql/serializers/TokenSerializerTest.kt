@@ -16,11 +16,14 @@ package tech.aroma.data.sql.serializers
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.springframework.dao.DataAccessException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.asUUID
 import tech.aroma.data.sql.toTimestamp
@@ -79,6 +82,17 @@ class TokenSerializerTest
                                 token.timeOfExpiration.toTimestamp(),
                                 token.tokenType.toString(),
                                 token.status.toString())
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveWhenDatabaseFails()
+    {
+        whenever(database.update(any(), Mockito.anyVararg<Any>()))
+                .thenThrow(EmptyResultDataAccessException::class.java)
+
+        assertThrows { instance.save(token, null, statement, database) }
+                .isInstanceOf(DataAccessException::class.java)
     }
 
     @DontRepeat
