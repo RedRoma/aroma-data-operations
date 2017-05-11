@@ -16,6 +16,8 @@ package tech.aroma.data.sql.serializers
  * limitations under the License.
  */
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
@@ -26,18 +28,25 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.asUUID
+import tech.aroma.data.sql.serializers.Tables.Tokens
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import java.lang.IllegalArgumentException
+import java.sql.ResultSet
+import java.sql.SQLException
+import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
 class TokenSerializerTest
 {
     @Mock
     private lateinit var database: JdbcOperations
+
+    @Mock
+    private lateinit var results: ResultSet
 
     private lateinit var instance: TokenSerializer
 
@@ -63,6 +72,8 @@ class TokenSerializerTest
         token.tokenId = tokenId
         token.ownerId = ownerId
         token.organizationId = orgId
+
+        results.prepareWith(token)
 
         instance = TokenSerializer()
     }
@@ -99,16 +110,8 @@ class TokenSerializerTest
     @Test
     fun testSaveWithBadArgs()
     {
-        assertThrows { instance.save(null, null, statement, database) }
-                .isInstanceOf(IllegalArgumentException::class.java)
-
-        assertThrows { instance.save(token, null, null, database) }
-                .isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows { instance.save(token, null, "", database) }
-                .isInstanceOf(IllegalArgumentException::class.java)
-
-        assertThrows { instance.save(token, null, statement, null) }
                 .isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
@@ -116,5 +119,36 @@ class TokenSerializerTest
             instance.save(invalidToken, null, statement, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
+    }
+
+    @Test
+    fun testDeserialize()
+    {
+        val result = instance.deserialize(results)
+        assertEquals(token, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeserializeWhenColumnNoPresent()
+    {
+        whenever(results.getString(any<String>()))
+                .thenThrow(SQLException())
+
+        assertThrows { instance.deserialize(results) }
+                .isInstanceOf(SQLException::class.java)
+    }
+
+    private fun ResultSet.prepareWith(token: AuthenticationToken)
+    {
+        whenever(this.getString(Tokens.TOKEN_ID)).thenReturn(tokenId)
+        whenever(this.getString(Tokens.OWNER_ID)).thenReturn(ownerId)
+        whenever(this.getString(Tokens.ORG_ID)).thenReturn(orgId)
+        whenever(this.getString(Tokens.ORG_NAME)).thenReturn(token.organizationName)
+        whenever(this.getString(Tokens.OWNER_NAME)).thenReturn(token.ownerName)
+        whenever(this.getTimestamp(Tokens.TIME_OF_CREATION)).thenReturn(token.timeOfCreation.toTimestamp())
+        whenever(this.getTimestamp(Tokens.TIME_OF_EXPIRATION)).thenReturn(token.timeOfExpiration.toTimestamp())
+        whenever(this.getString(Tokens.TOKEN_TYPE)).thenReturn(token.tokenType.toString())
+        whenever(this.getString(Tokens.TOKEN_STATUS)).thenReturn(token.status.toString())
     }
 }

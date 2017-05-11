@@ -19,11 +19,9 @@ package tech.aroma.data.sql.serializers
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Tables.Tokens
-import tech.aroma.thrift.assertions.AromaAssertions
 import tech.aroma.thrift.assertions.AromaAssertions.legalToken
 import tech.aroma.thrift.authentication.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
 import java.sql.ResultSet
@@ -36,16 +34,13 @@ import java.time.Duration
  */
 class TokenSerializer : DatabaseSerializer<AuthenticationToken>
 {
-    override fun save(`object`: AuthenticationToken?, timeToLive: Duration?, statement: String?, database: JdbcOperations?)
+    override fun save(`object`: AuthenticationToken, timeToLive: Duration?, statement: String, database: JdbcOperations)
     {
-        checkThat(`object`, database).are(notNull())
         checkThat(statement).`is`(nonEmptyString())
         checkThat(`object`).`is`(legalToken())
-        checkThat(`object`?.tokenId).`is`(validUUID())
+        checkThat(`object`.tokenId).`is`(validUUID())
 
-        val token = `object`!!
-        val statement = statement!!
-        val database = database!!
+        val token = `object`
 
         database.update(statement,
                         token.tokenId.asUUID(),
@@ -67,6 +62,7 @@ class TokenSerializer : DatabaseSerializer<AuthenticationToken>
         val ownerId = results.getString(Tokens.OWNER_ID)
         val orgId = results.getString(Tokens.ORG_ID)
         val ownerName = results.getString(Tokens.OWNER_NAME)
+        val orgName = results.getString(Tokens.ORG_NAME)
         val timeOfCreation = results.getTimestamp(Tokens.TIME_OF_CREATION)?.time
         val timeOfExpiration = results.getTimestamp(Tokens.TIME_OF_EXPIRATION)?.time
         val tokenType = results.getString(Tokens.TOKEN_TYPE)?.asTokenType()
@@ -75,6 +71,7 @@ class TokenSerializer : DatabaseSerializer<AuthenticationToken>
         token.setTokenId(tokenId)
              .setOwnerId(ownerId)
              .setOrganizationId(orgId)
+             .setOrganizationName(orgName)
              .setOwnerName(ownerName)
              .setTokenType(tokenType)
              .setStatus(tokenStatus)

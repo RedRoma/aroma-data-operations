@@ -1,5 +1,6 @@
 package tech.aroma.data.sql.serializers;
 
+import tech.aroma.thrift.Organization;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
@@ -77,10 +78,10 @@ final class Tables
         static final String TOKEN_ID = "token_id";
         static final String OWNER_ID = "owner_id";
         static final String OWNER_NAME = "owner_name";
-        static final String FEATURES = "features";
         static final String TIME_OF_EXPIRATION = "time_of_expiration";
         static final String TIME_OF_CREATION = "time_of_creation";
-        static final String ORG_ID = "organization_id";
+        static final String ORG_ID = Organizations.ORG_ID;
+        static final String ORG_NAME = Organizations.ORG_NAME;
         static final String TOKEN_TYPE = "token_type";
         static final String TOKEN_STATUS = "token_status";
     }
