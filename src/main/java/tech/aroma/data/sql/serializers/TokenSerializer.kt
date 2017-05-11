@@ -17,11 +17,15 @@
 package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.data.sql.*
+import tech.aroma.data.sql.serializers.Tables.Tokens
+import tech.aroma.thrift.assertions.AromaAssertions
+import tech.aroma.thrift.assertions.AromaAssertions.legalToken
+import tech.aroma.thrift.authentication.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
 import java.sql.ResultSet
 import java.time.Duration
 
@@ -30,23 +34,86 @@ import java.time.Duration
  *
  * @author SirWellington
  */
-class TokenSerializer: DatabaseSerializer<AuthenticationToken>
+class TokenSerializer : DatabaseSerializer<AuthenticationToken>
 {
     override fun save(`object`: AuthenticationToken?, timeToLive: Duration?, statement: String?, database: JdbcOperations?)
     {
         checkThat(`object`, database).are(notNull())
         checkThat(statement).`is`(nonEmptyString())
+        checkThat(`object`).`is`(legalToken())
+        checkThat(`object`?.tokenId).`is`(validUUID())
 
         val token = `object`!!
         val statement = statement!!
         val database = database!!
 
-
+        database.update(statement,
+                        token.tokenId.asUUID(),
+                        token.ownerId.asUUID(),
+                        token.organizationId.asUUID(),
+                        token.ownerName,
+                        token.timeOfCreation.toTimestamp(),
+                        token.timeOfExpiration.toTimestamp(),
+                        token.tokenType?.toString(),
+                        token.status?.toString())
     }
 
-    override fun deserialize(resultSet: ResultSet?): AuthenticationToken
+    override fun deserialize(resultSet: ResultSet): AuthenticationToken
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val token = AuthenticationToken()
+        val results = resultSet
+
+        val tokenId = results.getString(Tokens.TOKEN_ID)
+        val ownerId = results.getString(Tokens.OWNER_ID)
+        val orgId = results.getString(Tokens.ORG_ID)
+        val ownerName = results.getString(Tokens.OWNER_NAME)
+        val timeOfCreation = results.getTimestamp(Tokens.TIME_OF_CREATION)?.time
+        val timeOfExpiration = results.getTimestamp(Tokens.TIME_OF_EXPIRATION)?.time
+        val tokenType = results.getString(Tokens.TOKEN_TYPE)?.asTokenType()
+        val tokenStatus = results.getString(Tokens.TOKEN_STATUS)?.asStatus()
+
+        token.setTokenId(tokenId)
+             .setOwnerId(ownerId)
+             .setOrganizationId(orgId)
+             .setOwnerName(ownerName)
+             .setTokenType(tokenType)
+             .setStatus(tokenStatus)
+
+        if (timeOfCreation != null)
+        {
+            token.setTimeOfCreation(timeOfCreation)
+        }
+
+        if (timeOfExpiration != null)
+        {
+            token.setTimeOfExpiration(timeOfExpiration)
+        }
+
+        return token
+    }
+
+    private fun String.asTokenType(): TokenType?
+    {
+        return try
+        {
+            TokenType.valueOf(this)
+        }
+        catch (ex: Exception)
+        {
+            return null
+        }
+    }
+
+    private fun String.asStatus(): TokenStatus?
+    {
+        return try
+        {
+            TokenStatus.valueOf(this)
+        }
+        catch (ex: Exception)
+        {
+            return null
+        }
     }
 
 }
