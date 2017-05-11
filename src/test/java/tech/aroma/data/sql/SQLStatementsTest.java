@@ -28,12 +28,18 @@ public class SQLStatementsTest
     public void testDeletes() throws Exception
     {
         assertThat(SQLStatements.Deletes.MESSAGE, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ORGANIZATION_ALL_MEMBERS, not(isEmptyOrNullString()));
     }
 
     @Test
     public void testInserts() throws Exception
     {
         assertThat(SQLStatements.Inserts.MESSAGE, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.ORGANIZATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -46,6 +52,12 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.CHECK_ORGANIZATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.CHECK_ORGANIZATION_HAS_MEMBER, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_ORGANIZATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_ORGANIZATION_MEMBERS, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SEARCH_ORGANIZATION_BY_NAME, not(isEmptyOrNullString()));
     }
 
 }

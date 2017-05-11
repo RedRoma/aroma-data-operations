@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.thrift.Message
+import tech.aroma.thrift.Organization
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 
 @RunWith(AlchemyTestRunner::class)
@@ -33,6 +34,15 @@ class ModuleSerializersTest
     fun testHasMessageSerializer()
     {
         val literal = object: TypeLiteral<DatabaseSerializer<Message>>() {}
+
+        val result = injector.getInstance(Key.get(literal))
+        assertThat(result, notNullValue())
+    }
+
+    @Test
+    fun testHasOrganizationSerializer()
+    {
+        val literal = object: TypeLiteral<DatabaseSerializer<Organization>>() {}
 
         val result = injector.getInstance(Key.get(literal))
         assertThat(result, notNullValue())

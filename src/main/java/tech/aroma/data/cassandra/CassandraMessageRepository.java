@@ -42,7 +42,6 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
- *
  * @author SirWellington
  */
 final class CassandraMessageRepository implements MessageRepository
@@ -54,11 +53,11 @@ final class CassandraMessageRepository implements MessageRepository
     private final Function<Row, Message> messageMapper;
 
     @Inject
-    CassandraMessageRepository(Session cassandra, 
+    CassandraMessageRepository(Session cassandra,
                                Function<Row, Message> messageMapper)
     {
         checkThat(cassandra, messageMapper)
-            .are(notNull());
+                .are(notNull());
 
         this.cassandra = cassandra;
         this.messageMapper = messageMapper;
@@ -68,13 +67,13 @@ final class CassandraMessageRepository implements MessageRepository
     public void saveMessage(Message message, LengthOfTime lifetime) throws TException
     {
         checkThat(message, lifetime)
-            .throwing(InvalidArgumentException.class)
-            .is(notNull());
+                .throwing(InvalidArgumentException.class)
+                .is(notNull());
 
         Statement insertStatement = createInsertForMessage(message, lifetime);
         Statement updateTotalMessagesByApp = createUpdateForMessageByApp(message);
         Statement updateTotalMessageByTitle = createUpdateForMessageCounterByTitle(message);
-        
+
         try
         {
             cassandra.execute(insertStatement);
@@ -103,10 +102,10 @@ final class CassandraMessageRepository implements MessageRepository
 
         Row row = results.one();
         checkThat(row)
-            .throwing(MessageDoesNotExistException.class)
-            .usingMessage(format("No Message with App ID [%s] and Msg ID [%s]", applicationId, messageId))
-            .is(notNull());
-        
+                .throwing(MessageDoesNotExistException.class)
+                .usingMessage(format("No Message with App ID [%s] and Msg ID [%s]", applicationId, messageId))
+                .is(notNull());
+
         Message message = createMessageFromRow(row);
 
         return message;
@@ -119,7 +118,7 @@ final class CassandraMessageRepository implements MessageRepository
         checkMessageId(messageId);
 
         Statement deleteStatement = createDeleteStatementFor(applicationId, messageId);
-        
+
         tryToExecute(deleteStatement, "Failed to delete message with ID: " + messageId);
     }
 
@@ -144,10 +143,10 @@ final class CassandraMessageRepository implements MessageRepository
     public List<Message> getByHostname(String hostname) throws TException
     {
         checkThat(hostname)
-            .usingMessage("missing hostname")
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString())
-            .is(stringWithLengthGreaterThanOrEqualTo(1));
+                .usingMessage("missing hostname")
+                .throwing(InvalidArgumentException.class)
+                .is(nonEmptyString())
+                .is(stringWithLengthGreaterThanOrEqualTo(1));
 
         Statement query = createQueryToFindMessageByHostname(hostname);
 
@@ -172,7 +171,7 @@ final class CassandraMessageRepository implements MessageRepository
         checkAppId(applicationId);
 
         Statement query = createQueryToFindMessagesByApplication(applicationId);
-        
+
         ResultSet results = tryToExecute(query, "Could not query for messages by App: " + applicationId);
 
         List<Message> messages = Lists.create();
@@ -230,43 +229,43 @@ final class CassandraMessageRepository implements MessageRepository
     public void deleteAllMessages(String applicationId) throws TException
     {
         checkAppId(applicationId);
-        
+
         Statement deleteStatement = createStatementToDeleteAllMessagesFor(applicationId);
-        
+
         tryToExecute(deleteStatement, "Failed to delete All Messages for App: " + applicationId);
     }
-    
-    
+
+
     private Statement createInsertForMessage(Message message, LengthOfTime lifetime) throws InvalidArgumentException
     {
         checkThat(message.messageId, message.applicationId)
-            .throwing(InvalidArgumentException.class)
-            .are(nonEmptyString())
-            .are(validUUID());
+                .throwing(InvalidArgumentException.class)
+                .are(nonEmptyString())
+                .are(validUUID());
 
         //UUIDs
         UUID msgId = UUID.fromString(message.messageId);
         UUID appId = UUID.fromString(message.applicationId);
-        
+
         //Urgency
         String urgency = message.urgency != null ? message.urgency.toString() : null;
 
         Long timeToLive = TimeFunctions.toSeconds(lifetime);
 
         return QueryBuilder
-            .insertInto(Messages.TABLE_NAME)
-            .value(MESSAGE_ID, msgId)
-            .value(APP_ID, appId)
-            .value(APP_NAME, message.applicationName)
-            .value(BODY, message.body)
-            .value(DEVICE_NAME, message.deviceName)
-            .value(HOSTNAME, message.hostname)
-            .value(MAC_ADDRESS, message.macAddress)
-            .value(TITLE, message.title)
-            .value(URGENCY, urgency)
-            .value(TIME_CREATED, message.timeOfCreation)
-            .value(TIME_RECEIVED, message.timeMessageReceived)
-            .using(ttl(timeToLive.intValue()));
+                .insertInto(Messages.TABLE_NAME)
+                .value(MESSAGE_ID, msgId)
+                .value(APP_ID, appId)
+                .value(APP_NAME, message.applicationName)
+                .value(BODY, message.body)
+                .value(DEVICE_NAME, message.deviceName)
+                .value(HOSTNAME, message.hostname)
+                .value(MAC_ADDRESS, message.macAddress)
+                .value(TITLE, message.title)
+                .value(URGENCY, urgency)
+                .value(TIME_CREATED, message.timeOfCreation)
+                .value(TIME_RECEIVED, message.timeMessageReceived)
+                .using(ttl(timeToLive.intValue()));
     }
 
     private Statement createUpdateForMessageByApp(Message message)
@@ -274,9 +273,9 @@ final class CassandraMessageRepository implements MessageRepository
         UUID appId = UUID.fromString(message.applicationId);
 
         return QueryBuilder
-            .update(Messages.TABLE_NAME_TOTALS_BY_APP)
-            .where(eq(APP_ID, appId))
-            .with(incr(TOTAL_MESSAGES, 1));
+                .update(Messages.TABLE_NAME_TOTALS_BY_APP)
+                .where(eq(APP_ID, appId))
+                .with(incr(TOTAL_MESSAGES, 1));
     }
 
     private Statement createUpdateForMessageCounterByTitle(Message message)
@@ -284,42 +283,42 @@ final class CassandraMessageRepository implements MessageRepository
         UUID appId = UUID.fromString(message.applicationId);
 
         return QueryBuilder
-            .update(Messages.TABLE_NAME_TOTALS_BY_TITLE)
-            .where(eq(APP_ID, appId))
-            .and(eq(TITLE, message.title))
-            .with(incr(TOTAL_MESSAGES, 1));
+                .update(Messages.TABLE_NAME_TOTALS_BY_TITLE)
+                .where(eq(APP_ID, appId))
+                .and(eq(TITLE, message.title))
+                .with(incr(TOTAL_MESSAGES, 1));
     }
 
     private void checkMessageId(String messageId) throws InvalidArgumentException
     {
         checkThat(messageId)
-            .usingMessage("missing messageId")
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString())
-            .usingMessage("messageId must be a UUID")
-            .is(validUUID());
+                .usingMessage("missing messageId")
+                .throwing(InvalidArgumentException.class)
+                .is(nonEmptyString())
+                .usingMessage("messageId must be a UUID")
+                .is(validUUID());
     }
-    
+
     private Statement createQueryForMessageWithId(String applicationId, String messageId)
     {
         UUID appId = UUID.fromString(applicationId);
         UUID msgId = UUID.fromString(messageId);
 
         return QueryBuilder
-            .select()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(MESSAGE_ID, msgId))
-            .and(eq(APP_ID, appId))
-            .limit(2);
+                .select()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(MESSAGE_ID, msgId))
+                .and(eq(APP_ID, appId))
+                .limit(2);
     }
 
     private void checkRowIsPresent(Row row) throws OperationFailedException
     {
         checkThat(row)
-            .usingMessage("query produced no rows")
-            .throwing(OperationFailedException.class)
-            .is(notNull());
+                .usingMessage("query produced no rows")
+                .throwing(OperationFailedException.class)
+                .is(notNull());
     }
 
     private Message createMessageFromRow(Row row) throws OperationFailedException
@@ -331,14 +330,14 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID msgId = UUID.fromString(messageId);
         UUID appId = UUID.fromString(applicationId);
-        
+
         Statement deleteFromMainTable = QueryBuilder
-            .delete()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(APP_ID, appId))
-            .and(eq(MESSAGE_ID, msgId));
-        
+                .delete()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(APP_ID, appId))
+                .and(eq(MESSAGE_ID, msgId));
+
         return deleteFromMainTable;
     }
 
@@ -346,85 +345,85 @@ final class CassandraMessageRepository implements MessageRepository
     {
         UUID msgId = UUID.fromString(messageId);
         UUID appId = UUID.fromString(applicationId);
-        
+
         return QueryBuilder
-            .select()
-            .countAll()
-            .from(Messages.TABLE_NAME)
-            .where(eq(APP_ID, appId))
-            .and(eq(MESSAGE_ID, msgId));
+                .select()
+                .countAll()
+                .from(Messages.TABLE_NAME)
+                .where(eq(APP_ID, appId))
+                .and(eq(MESSAGE_ID, msgId));
     }
 
     private Statement createQueryToFindMessageByHostname(String hostname)
     {
         return QueryBuilder
-            .select()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(HOSTNAME, hostname));
+                .select()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(HOSTNAME, hostname));
     }
 
     private void checkTitle(String title) throws InvalidArgumentException
     {
         checkThat(title)
-            .throwing(InvalidArgumentException.class)
-            .is(nonEmptyString())
-            .is(stringWithLengthGreaterThanOrEqualTo(2));
+                .throwing(InvalidArgumentException.class)
+                .is(nonEmptyString())
+                .is(stringWithLengthGreaterThanOrEqualTo(2));
     }
 
     private Statement createQueryToFindMessagesByApplication(String applicationId)
     {
         UUID appId = UUID.fromString(applicationId);
-        
+
         return QueryBuilder
-            .select()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(APP_ID, appId))
-            .orderBy(desc(MESSAGE_ID))
-            .limit(3000);
+                .select()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(APP_ID, appId))
+                .orderBy(desc(MESSAGE_ID))
+                .limit(3000);
     }
 
     private Statement createQueryToCountMessagesByApplication(String applicationId)
     {
         UUID appId = UUID.fromString(applicationId);
-        
+
         return QueryBuilder
-            .select()
-            .countAll()
-            .from(Messages.TABLE_NAME)
-            .where(eq(APP_ID, appId));
+                .select()
+                .countAll()
+                .from(Messages.TABLE_NAME)
+                .where(eq(APP_ID, appId));
     }
 
     private Statement createQueryToFindMessagesByTitle(String title)
     {
         return QueryBuilder
-            .select()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(TITLE, title));
+                .select()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(TITLE, title));
     }
 
     private void checkAppId(String applicationId) throws InvalidArgumentException
     {
         checkThat(applicationId)
-            .throwing(InvalidArgumentException.class)
-            .usingMessage("missing appId")
-            .is(nonEmptyString())
-            .usingMessage("appId must be a UUID Type")
-            .is(validUUID());
+                .throwing(InvalidArgumentException.class)
+                .usingMessage("missing appId")
+                .is(nonEmptyString())
+                .usingMessage("appId must be a UUID Type")
+                .is(validUUID());
     }
 
     private Statement createStatementToDeleteAllMessagesFor(String applicationId)
     {
         UUID appId = UUID.fromString(applicationId);
-        
+
         Statement deleteFromMainTable = QueryBuilder
-            .delete()
-            .all()
-            .from(Messages.TABLE_NAME)
-            .where(eq(APP_ID, appId));
-            
+                .delete()
+                .all()
+                .from(Messages.TABLE_NAME)
+                .where(eq(APP_ID, appId));
+
         return deleteFromMainTable;
     }
 
@@ -435,17 +434,17 @@ final class CassandraMessageRepository implements MessageRepository
         {
             results = cassandra.execute(statement);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LOG.error("Failed to execute Cassandra statement: {}", statement, ex);
             throw new OperationFailedException(errorMessage + " | " + ex.getMessage());
-        }            
-        
+        }
+
         checkThat(results)
-            .throwing(OperationFailedException.class)
-            .usingMessage("Cassandra returned null response")
-            .is(notNull());
-        
+                .throwing(OperationFailedException.class)
+                .usingMessage("Cassandra returned null response")
+                .is(notNull());
+
         return results;
     }
 
