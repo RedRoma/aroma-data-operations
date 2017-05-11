@@ -4,5 +4,5 @@
 
 SELECT count(*) > 0
 FROM organization_members
-WHERE org_id = ?
+WHERE organization_id = ?
 AND user_id = ?
