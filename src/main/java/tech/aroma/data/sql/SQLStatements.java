@@ -38,50 +38,47 @@ final class SQLStatements
 
     static class Deletes
     {
-        static final String MESSAGE = loadSQLFile("/deletes/delete_message.sql");
-        static final String ORGANIZATION = loadSQLFile("/deletes/delete_organization.sql");
-        static final String ORGANIZATION_MEMBER = loadSQLFile("/deletes/delete_organization_member.sql");
-        static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("/deletes/delete_organization_all_members.sql");
-        static final String TOKEN = loadSQLFile("/deletes/delete_token.sql");
+        static final String MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_message.sql");
+        static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
+        static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
+        static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("tech/aroma/sql/deletes/delete_organization_all_members.sql");
+        static final String TOKEN = loadSQLFile("tech/aroma/sql/deletes/delete_token.sql");
     }
 
     static class Inserts
     {
-        static final String MESSAGE = loadSQLFile("/inserts/insert_message.sql");
+        static final String MESSAGE = loadSQLFile("tech/aroma/sql/inserts/insert_message.sql");
 
-        static final String ORGANIZATION = loadSQLFile("/inserts/insert_organization.sql");
-        static final String ORGANIZATION_MEMBER = loadSQLFile("/inserts/insert_organization_member.sql");
+        static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/inserts/insert_organization.sql");
+        static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/inserts/insert_organization_member.sql");
 
-        static final String TOKEN = loadSQLFile("/inserts/insert_token.sql");
+        static final String TOKEN = loadSQLFile("tech/aroma/sql/inserts/insert_token.sql");
     }
 
     static class Queries
     {
-        static final String CHECK_MESSAGE = loadSQLFile("/queries/check_message.sql");
-        static final String COUNT_MESSAGES = loadSQLFile("/queries/count_messages.sql");
-        static final String SELECT_MESSAGE = loadSQLFile("/queries/select_message.sql");
-        static final String SELECT_MESSAGES_BY_APPLICATION = loadSQLFile("/queries/select_app_messages.sql");
-        static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("/queries/select_messages_by_hostname.sql");
-        static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("/queries/select_messages_by_title.sql");
+        static final String CHECK_MESSAGE = loadSQLFile("tech/aroma/sql/queries/check_message.sql");
+        static final String COUNT_MESSAGES = loadSQLFile("tech/aroma/sql/queries/count_messages.sql");
+        static final String SELECT_MESSAGE = loadSQLFile("tech/aroma/sql/queries/select_message.sql");
+        static final String SELECT_MESSAGES_BY_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_app_messages.sql");
+        static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("tech/aroma/sql/queries/select_messages_by_hostname.sql");
+        static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("tech/aroma/sql/queries/select_messages_by_title.sql");
 
-        static final String CHECK_ORGANIZATION = loadSQLFile("/queries/check_organization.sql");
-        static final String CHECK_ORGANIZATION_HAS_MEMBER = loadSQLFile("/queries/check_organization_has_member.sql");
-        static final String SELECT_ORGANIZATION = loadSQLFile("/queries/select_organization.sql");
-        static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("/queries/select_organization_members.sql");
-        static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("/queries/search_organization_by_name.sql");
+        static final String CHECK_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/check_organization.sql");
+        static final String CHECK_ORGANIZATION_HAS_MEMBER = loadSQLFile("tech/aroma/sql/queries/check_organization_has_member.sql");
+        static final String SELECT_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_organization.sql");
+        static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("tech/aroma/sql/queries/select_organization_members.sql");
+        static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("tech/aroma/sql/queries/search_organization_by_name.sql");
 
-        static final String CHECK_TOKEN = loadSQLFile("/queries/check_token.sql");
-        static final String SELECT_TOKEN = loadSQLFile("/queries/select_token.sql");
+        static final String CHECK_TOKEN = loadSQLFile("tech/aroma/sql/queries/check_token.sql");
+        static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
 
-        static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("/queries/select_tokens_for_owner.sql");
+        static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");
     }
 
-    static String loadSQLFile(String name)
+    static String loadSQLFile(String path)
     {
-        final String path = "tech/aroma/sql";
-        final String fullPath = path + name;
-
-        URL url = Resources.getResource(fullPath);
+        URL url = Resources.getResource(path);
 
         try
         {
@@ -89,8 +86,8 @@ final class SQLStatements
         }
         catch (IOException ex)
         {
-            LOG.error("Failed to load file: {}", name, ex);
-            throw new RuntimeException("Failed to load file: " + name, ex);
+            LOG.error("Failed to load file: {}", path, ex);
+            throw new RuntimeException("Failed to load file: " + path, ex);
         }
     }
 }
