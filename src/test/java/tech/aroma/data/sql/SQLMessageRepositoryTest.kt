@@ -108,7 +108,7 @@ class SQLMessageRepositoryTest
     {
         doThrow(RuntimeException())
                 .whenever(serializer)
-                .save(any<Message>(), any<Duration>(), any<String>(), any<JdbcTemplate>())
+                .save(any(), any(), any(), any())
 
         assertThrows { instance.saveMessage(message) }
                 .isInstanceOf(OperationFailedException::class.java)
@@ -121,7 +121,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
                 .thenReturn(message)
 
         val result = instance.getMessage(appId, messageId)
@@ -135,7 +135,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getMessage(appId, messageId) }
@@ -150,7 +150,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, UUID.fromString(appId), UUID.fromString(messageId)))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
                 .thenReturn(null)
 
         assertThrows { instance.getMessage(appId, messageId) }
@@ -181,7 +181,7 @@ class SQLMessageRepositoryTest
 
         instance.deleteMessage(appId, messageId)
 
-        verify<JdbcTemplate>(database).update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId))
+        verify<JdbcTemplate>(database).update(expectedStatement, appId.asUUID(), messageId.asUUID())
     }
 
     @DontRepeat
@@ -218,7 +218,7 @@ class SQLMessageRepositoryTest
     {
         val expectedStatement = SQLStatements.Deletes.MESSAGE
 
-        whenever(database.update(expectedStatement, UUID.fromString(appId), UUID.fromString(messageId)))
+        whenever(database.update(expectedStatement, appId.asUUID(), messageId.asUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMessage(appId, messageId) }
@@ -319,7 +319,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
         val messages = listOf(pojos(Message::class.java))
 
-        whenever(database.query(query, serializer, UUID.fromString(appId)))
+        whenever(database.query(query, serializer, appId.asUUID()))
                 .thenReturn(messages)
 
         val results = instance.getByApplication(appId)
@@ -333,7 +333,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
-        whenever(database.query(query, serializer, UUID.fromString(appId)))
+        whenever(database.query(query, serializer, appId.asUUID()))
                 .thenReturn(Lists.emptyList<Message>())
 
         val results = instance.getByApplication(appId)
@@ -348,7 +348,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
-        whenever(database.query(query, serializer, UUID.fromString(appId)))
+        whenever(database.query(query, serializer, appId.asUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByApplication(appId) }
@@ -373,7 +373,7 @@ class SQLMessageRepositoryTest
         val title = alphabetic
         val messages = listOf(pojos(Message::class.java))
 
-        whenever(database.query(query, serializer, UUID.fromString(appId), title))
+        whenever(database.query(query, serializer, appId.asUUID(), title))
                 .thenReturn(messages)
 
         val results = instance.getByTitle(appId, title)
@@ -388,8 +388,8 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
         val title = alphabetic
 
-        whenever(database.query(query, serializer, UUID.fromString(appId), title))
-                .thenReturn(Lists.emptyList<Message>())
+        whenever(database.query(query, serializer, appId.asUUID(), title))
+                .thenReturn(Lists.emptyList())
 
         val results = instance.getByTitle(appId, title)
         assertThat(results, notNullValue())
@@ -404,7 +404,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
         val title = alphabetic
 
-        whenever(database.query(query, serializer, UUID.fromString(appId), title))
+        whenever(database.query(query, serializer, appId.asUUID(), title))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByTitle(appId, title) }
@@ -446,7 +446,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.COUNT_MESSAGES
 
-        whenever(database.queryForObject(query, Long::class.java, UUID.fromString(appId)))
+        whenever(database.queryForObject(query, Long::class.java, appId.asUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getCountByApplication(appId) }
