@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS Applications
     organization_id          UUID,
     organization_name        TEXT,
     programming_language     TEXT,
-    time_provisioned         TIMESTAMP,
+    time_provisioned         TIMESTAMP DEFAULT now(),
+    time_last_updated        TIMESTAMP DEFAULT now(),
     tier                     TEXT,
     time_of_token_expiration TIMESTAMP,
     app_icon_media_id        UUID,
@@ -22,7 +23,7 @@ CREATE INDEX IF NOT EXISTS Applications_By_Organization
     ON Applications (organization_id);
 
 -- USED FOR REMEMBERING AN Application's Owners
-CREATE TABLE IF NOT EXISTS ApplicationOwners
+CREATE TABLE IF NOT EXISTS Application_Owners
 (
     app_id   UUID,
     owner_id UUID,
