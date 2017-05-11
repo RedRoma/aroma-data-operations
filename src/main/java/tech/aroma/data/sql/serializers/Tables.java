@@ -1,6 +1,5 @@
 package tech.aroma.data.sql.serializers;
 
-import tech.aroma.thrift.Organization;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 
@@ -18,8 +17,18 @@ final class Tables
     @NonInstantiable
     static final class Applications
     {
-        final static String APP_ID = "app_id";
-        final static String APP_NAME = "app_name";
+        static final String APP_ID = "app_id";
+        static final String APP_NAME = "app_name";
+
+        static final String APP_DESCRIPTION = "app_description";
+        static final String ORG_ID = "organization_id";
+        static final String OWNERS = "owners";
+        static final String PROGRAMMING_LANGUAGE = "programming_language";
+        static final String TIER = "tier";
+        static final String TIME_PROVISIONED = "time_provisioned";
+        static final String TIME_LAST_UPDATED = "time_last_updated";
+        static final String TIME_OF_TOKEN_EXPIRATION = "time_of_token_expiration";
+        static final String ICON_MEDIA_ID = "app_icon_media_id";
     }
 
     @NonInstantiable
