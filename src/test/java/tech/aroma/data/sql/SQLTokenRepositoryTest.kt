@@ -38,6 +38,7 @@ import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLTokenRepositoryTest
 {
     @Mock
