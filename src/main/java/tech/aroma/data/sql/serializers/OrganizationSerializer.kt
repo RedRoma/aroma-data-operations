@@ -19,7 +19,7 @@ package tech.aroma.data.sql.serializers
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.data.sql.Tables.Organizations
+import tech.aroma.data.sql.serializers.Tables.Organizations
 import tech.aroma.data.sql.asUUID
 import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
@@ -33,7 +33,7 @@ import java.time.Duration
  * Responsible for the serialization of [Organizations][Organization]
  * @author SirWellington
  */
-class OrganizationSerializer : DatabaseSerializer<Organization>
+internal class OrganizationSerializer : DatabaseSerializer<Organization>
 {
     override fun save(`object`: Organization?, timeToLive: Duration?, statement: String?, database: JdbcOperations?)
     {

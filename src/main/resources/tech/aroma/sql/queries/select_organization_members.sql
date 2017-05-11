@@ -4,4 +4,4 @@
 
 SELECT user_id
 FROM organization_members
-WHERE org_id = ?
+WHERE organization_id = ?
