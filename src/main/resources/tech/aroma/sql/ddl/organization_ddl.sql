@@ -7,7 +7,7 @@
 
 CREATE TABLE IF NOT EXISTS Organizations
 (
-  org_id UUID,
+  organization_id UUID,
   org_name TEXT,
   owners TEXT[],
   icon_link TEXT,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Organizations
   website TEXT,
   time_created TIMESTAMP DEFAULT now(),
 
-  PRIMARY KEY (org_id)
+  PRIMARY KEY (organization_id)
 );
 
 CREATE INDEX IF NOT EXISTS Organizations_By_Tier ON Organizations(tier);
@@ -31,12 +31,11 @@ CREATE INDEX IF NOT EXISTS Organizations_By_Industry ON Organizations(industry);
 -- Stores Information relating to an Organization's members
 CREATE TABLE IF NOT EXISTS Organization_Members
 (
-  org_id UUID,
+  organization_id UUID,
   user_id UUID,
   time_joined TIMESTAMP DEFAULT now(),
 
-  PRIMARY KEY (org_id, user_id)
+  PRIMARY KEY (organization_id, user_id)
 );
 
-CREATE INDEX IF NOT EXISTS Organization_Members_By_Email ON Organization_Members(user_email);
 CREATE INDEX IF NOT EXISTS Organization_Members_By_User ON Organization_Members(user_id);

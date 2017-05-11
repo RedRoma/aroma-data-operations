@@ -2,5 +2,5 @@
 -- INSERTS A NEW MEMBER FOR AN ORGANIZATION
 ------------------------------------------------------------------------------
 
-INSERT INTO organization_members (org_id, user_id)
+INSERT INTO organization_members (organization_id, user_id)
 VALUES (?, ?)
