@@ -16,8 +16,6 @@ package tech.aroma.data.sql.serializers
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
@@ -27,13 +25,13 @@ import org.mockito.Mockito
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.AromaGenerators
 import tech.aroma.data.sql.asUUID
 import tech.aroma.data.sql.serializers.Tables.Tokens
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import java.lang.IllegalArgumentException
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -50,16 +48,9 @@ class TokenSerializerTest
 
     private lateinit var instance: TokenSerializer
 
-    @GeneratePojo
     private lateinit var token: AuthenticationToken
-
-    @GenerateString(UUID)
     private lateinit var tokenId: String
-
-    @GenerateString(UUID)
     private lateinit var ownerId: String
-
-    @GenerateString(UUID)
     private lateinit var orgId: String
 
     @GenerateString
@@ -69,9 +60,10 @@ class TokenSerializerTest
     @Before
     fun setUp()
     {
-        token.tokenId = tokenId
-        token.ownerId = ownerId
-        token.organizationId = orgId
+        token = AromaGenerators.token
+        tokenId = token.tokenId
+        ownerId = token.ownerId
+        orgId = token.organizationId
 
         results.prepareWith(token)
 
@@ -144,7 +136,6 @@ class TokenSerializerTest
         whenever(this.getString(Tokens.TOKEN_ID)).thenReturn(tokenId)
         whenever(this.getString(Tokens.OWNER_ID)).thenReturn(ownerId)
         whenever(this.getString(Tokens.ORG_ID)).thenReturn(orgId)
-        whenever(this.getString(Tokens.ORG_NAME)).thenReturn(token.organizationName)
         whenever(this.getString(Tokens.OWNER_NAME)).thenReturn(token.ownerName)
         whenever(this.getTimestamp(Tokens.TIME_OF_CREATION)).thenReturn(token.timeOfCreation.toTimestamp())
         whenever(this.getTimestamp(Tokens.TIME_OF_EXPIRATION)).thenReturn(token.timeOfExpiration.toTimestamp())

@@ -32,7 +32,7 @@ import java.time.Duration
  *
  * @author SirWellington
  */
-class TokenSerializer : DatabaseSerializer<AuthenticationToken>
+internal class TokenSerializer : DatabaseSerializer<AuthenticationToken>
 {
     override fun save(`object`: AuthenticationToken, timeToLive: Duration?, statement: String, database: JdbcOperations)
     {
@@ -62,7 +62,6 @@ class TokenSerializer : DatabaseSerializer<AuthenticationToken>
         val ownerId = results.getString(Tokens.OWNER_ID)
         val orgId = results.getString(Tokens.ORG_ID)
         val ownerName = results.getString(Tokens.OWNER_NAME)
-        val orgName = results.getString(Tokens.ORG_NAME)
         val timeOfCreation = results.getTimestamp(Tokens.TIME_OF_CREATION)?.time
         val timeOfExpiration = results.getTimestamp(Tokens.TIME_OF_EXPIRATION)?.time
         val tokenType = results.getString(Tokens.TOKEN_TYPE)?.asTokenType()
@@ -71,7 +70,6 @@ class TokenSerializer : DatabaseSerializer<AuthenticationToken>
         token.setTokenId(tokenId)
              .setOwnerId(ownerId)
              .setOrganizationId(orgId)
-             .setOrganizationName(orgName)
              .setOwnerName(ownerName)
              .setTokenType(tokenType)
              .setStatus(tokenStatus)

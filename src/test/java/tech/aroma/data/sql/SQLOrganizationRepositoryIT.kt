@@ -41,7 +41,7 @@ import kotlin.test.*
 class SQLOrganizationRepositoryIT
 {
 
-    companion object
+    private companion object
     {
 
         private lateinit var database: JdbcOperations
