@@ -42,6 +42,7 @@ final class SQLStatements
         static final String ORGANIZATION = loadSQLFile("/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("/deletes/delete_organization_member.sql");
         static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("/deletes/delete_organization_all_members.sql");
+        static final String TOKEN = loadSQLFile("");
     }
 
     static class Inserts
@@ -50,6 +51,8 @@ final class SQLStatements
 
         static final String ORGANIZATION = loadSQLFile("/inserts/insert_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("/inserts/insert_organization_member.sql");
+
+        static final String TOKEN = loadSQLFile("");
     }
 
     static class Queries
@@ -66,6 +69,11 @@ final class SQLStatements
         static final String SELECT_ORGANIZATION = loadSQLFile("/queries/select_organization.sql");
         static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("/queries/select_organization_members.sql");
         static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("/queries/search_organization_by_name.sql");
+
+        static final String CHECK_TOKEN = loadSQLFile("");
+        static final String SELECT_TOKEN = loadSQLFile("");
+
+        static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("");
     }
 
     static String loadSQLFile(String name)
