@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS Applications
     name                     TEXT,
     app_description          TEXT,
     organization_id          UUID,
-    organization_name        TEXT,
     programming_language     TEXT,
     time_provisioned         TIMESTAMP DEFAULT now(),
     time_last_updated        TIMESTAMP DEFAULT now(),
