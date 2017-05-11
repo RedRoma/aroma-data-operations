@@ -52,7 +52,7 @@ class SQLTokenRepository
 
         return try
         {
-            database.queryForObject(query, Boolean::class.java, tokenId)
+            database.queryForObject(query, Boolean::class.java, tokenId.asUUID())
         }
         catch (ex: Exception)
         {
@@ -110,7 +110,7 @@ class SQLTokenRepository
 
         return try
         {
-            database.query(query, serializer, ownerId)
+            database.query(query, serializer, ownerId.asUUID())
         }
         catch (ex: Exception)
         {
@@ -125,13 +125,15 @@ class SQLTokenRepository
 
         try
         {
-            database.update(statement, tokenId)
+            database.update(statement, tokenId.asUUID())
         }
         catch (ex: Exception)
         {
             handleErrorFor(tokenId)(ex)
         }
     }
+
+
 
     private fun checkTokenId(tokenId: String?): String
     {
