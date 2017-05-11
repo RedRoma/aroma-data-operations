@@ -16,18 +16,19 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
@@ -99,6 +100,16 @@ class SQLTokenRepositoryTest
     }
 
     @Test
+    fun testContainsTokenWhenDatabaseFails()
+    {
+        whenever(database.queryForObject(any<String>(), eq(Boolean::class.java), eq(tokenUuid)))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.containsToken(tokenId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @Test
     fun testGetToken()
     {
         val query = Queries.SELECT_TOKEN
@@ -118,6 +129,18 @@ class SQLTokenRepositoryTest
         assertThrows { instance.getToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.getToken("") }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.getToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @Test
+    fun testGetTokenWhenDatabaseFails()
+    {
+        val query = Queries.SELECT_TOKEN
+
+        whenever(database.queryForObject(query, serializer, tokenUuid))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.getToken(tokenId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
     @Test
@@ -148,6 +171,20 @@ class SQLTokenRepositoryTest
         }
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveTokenWhenDatabaseFails()
+    {
+        val sql = Inserts.TOKEN
+
+        doThrow(UncategorizedSQLException::class)
+                .whenever(serializer)
+                .save(token, null, sql, database)
+
+        assertThrows { instance.saveToken(token) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetTokensBelongingTo()
     {
@@ -171,6 +208,19 @@ class SQLTokenRepositoryTest
         assertThrows { instance.getToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testGetTokensBelongingToWhenDatabaseFails()
+    {
+        val query = Queries.SELECT_TOKENS_FOR_OWNER
+
+        whenever(database.query(query, serializer, ownerId.asUUID()))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.getTokensBelongingTo(ownerId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testDeleteToken()
     {
@@ -190,6 +240,20 @@ class SQLTokenRepositoryTest
         assertThrows { instance.deleteToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteTokenWhenDatabaseFails()
+    {
+        val sql = Deletes.TOKEN
+
+        whenever(database.update(sql, tokenUuid))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.deleteToken(tokenId) }
+                .isInstanceOf(OperationFailedException::class.java)
+
+    }
+
     @Test
     fun testDeleteTokensBelongingTo()
     {
@@ -202,6 +266,19 @@ class SQLTokenRepositoryTest
 
         val statementToDelete = Deletes.TOKEN
         verify(database).update(statementToDelete, tokenUuid)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteTokensBelongingToWhenDatabaseFails()
+    {
+        val query = Queries.SELECT_TOKENS_FOR_OWNER
+
+        whenever(database.query(query, serializer, ownerId.asUUID()))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.deleteTokensBelongingTo(ownerId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
 }
