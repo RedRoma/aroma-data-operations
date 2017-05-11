@@ -33,7 +33,7 @@ import java.time.Duration
  * Responsible for the serialization of [Organizations][Organization]
  * @author SirWellington
  */
-class OrganizationSerializer : DatabaseSerializer<Organization>
+internal class OrganizationSerializer : DatabaseSerializer<Organization>
 {
     override fun save(`object`: Organization?, timeToLive: Duration?, statement: String?, database: JdbcOperations?)
     {
