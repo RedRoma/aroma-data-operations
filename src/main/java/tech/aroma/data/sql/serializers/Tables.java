@@ -50,7 +50,7 @@ final class Tables
         static final String TABLE_NAME = "Organizations";
         static final String TABLE_NAME_MEMBERS = "Organizations_Members";
 
-        static final String ORG_ID = "org_id";
+        static final String ORG_ID = "organization_id";
         static final String ORG_NAME = "org_name";
         static final String OWNERS = "owners";
         static final String ICON_LINK = "icon_link";
@@ -81,7 +81,6 @@ final class Tables
         static final String TIME_OF_EXPIRATION = "time_of_expiration";
         static final String TIME_OF_CREATION = "time_of_creation";
         static final String ORG_ID = Organizations.ORG_ID;
-        static final String ORG_NAME = Organizations.ORG_NAME;
         static final String TOKEN_TYPE = "token_type";
         static final String TOKEN_STATUS = "token_status";
     }
