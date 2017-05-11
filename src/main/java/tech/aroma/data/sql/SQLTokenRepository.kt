@@ -138,7 +138,7 @@ class SQLTokenRepository
     private fun checkTokenId(tokenId: String?): String
     {
         checkThat(tokenId)
-                .throwing(InvalidTokenException::class.java)
+                .throwing(InvalidArgumentException::class.java)
                 .`is`(nonEmptyString())
                 .`is`(validUUID())
 
