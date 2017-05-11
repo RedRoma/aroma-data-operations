@@ -69,10 +69,10 @@ final class Tables
         static final String USER_EMAIL = "user_email";
     }
 
+    @NonInstantiable
     static class Tokens
     {
         static final String TABLE_NAME = "Tokens";
-        static final String TABLE_NAME_BY_OWNER = "Tokens_By_Owner";
 
         static final String TOKEN_ID = "token_id";
         static final String OWNER_ID = "owner_id";
