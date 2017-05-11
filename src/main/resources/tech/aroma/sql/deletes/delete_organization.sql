@@ -3,4 +3,4 @@
 ---------------------------------------
 DELETE
 FROM Organizations
-WHERE org_id = ?
+WHERE organization_id = ?

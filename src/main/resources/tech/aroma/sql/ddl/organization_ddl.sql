@@ -8,7 +8,7 @@
 CREATE TABLE IF NOT EXISTS Organizations
 (
   organization_id UUID,
-  org_name TEXT,
+  organization_name TEXT,
   owners TEXT[],
   icon_link TEXT,
   industry TEXT,

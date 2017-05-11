@@ -51,7 +51,7 @@ final class Tables
         static final String TABLE_NAME_MEMBERS = "Organizations_Members";
 
         static final String ORG_ID = "organization_id";
-        static final String ORG_NAME = "org_name";
+        static final String ORG_NAME = "organization_name";
         static final String OWNERS = "owners";
         static final String ICON_LINK = "icon_link";
         static final String INDUSTRY = "industry";
@@ -62,12 +62,6 @@ final class Tables
         static final String DESCRIPTION = "description";
         static final String WEBSITE = "website";
 
-        static final String USER_ID = "user_id";
-        static final String USER_FIRST_NAME = "user_first_name";
-        static final String USER_MIDDLE_NAME = "user_middle_name";
-        static final String USER_LAST_NAME = "user_last_name";
-        static final String USER_ROLES = "user_roles";
-        static final String USER_EMAIL = "user_email";
     }
 
     @NonInstantiable
