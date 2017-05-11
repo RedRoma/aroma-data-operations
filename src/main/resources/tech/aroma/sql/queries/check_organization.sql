@@ -4,4 +4,4 @@
 
 SELECT count(*) > 0
 FROM organizations
-WHERE org_id = ?
+WHERE organization_id = ?

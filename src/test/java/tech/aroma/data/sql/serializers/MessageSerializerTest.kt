@@ -9,7 +9,6 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
-import tech.aroma.data.sql.Tables
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Message
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat

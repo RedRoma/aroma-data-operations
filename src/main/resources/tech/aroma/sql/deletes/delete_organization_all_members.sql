@@ -2,5 +2,6 @@
 -- REMOVES ALL OF AN ORGANIZATIONS MEMBERS
 ---------------------------------------
 
-DELETE FROM Organization_Members
-WHERE org_id = ?
+DELETE
+FROM Organization_Members
+WHERE organization_id = ?

@@ -1,6 +1,7 @@
 ---------------------------------------
--- DELETES AN ORGANIZATION
+-- REMOVES A TOKEN PERMANENTLY
 ---------------------------------------
+
 DELETE
-FROM Organizations
-WHERE organization_id = ?
+FROM tokens
+WHERE token_id = ?

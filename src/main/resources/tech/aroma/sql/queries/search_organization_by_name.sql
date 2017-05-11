@@ -4,4 +4,4 @@
 
 SELECT *
 FROM organizations
-WHERE org_name LIKE ?
+WHERE organization_name LIKE ?

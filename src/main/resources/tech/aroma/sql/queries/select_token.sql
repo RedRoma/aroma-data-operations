@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------
--- CHECKS WHETHER A USER BELONGS TO AN ORGANIZATION OR NOT
+-- FINDS A TOKEN
 ------------------------------------------------------------------------------
 
-SELECT count(*) > 0
-FROM organization_members
-WHERE organization_id = ?
-AND user_id = ?
+SELECT *
+FROM tokens
+WHERE token_id = ?

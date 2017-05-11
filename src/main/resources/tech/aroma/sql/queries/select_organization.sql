@@ -4,4 +4,4 @@
 
 SELECT *
 FROM organizations
-WHERE org_id = ?
+WHERE organization_id = ?

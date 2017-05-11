@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------
--- CHECKS WHETHER A USER BELONGS TO AN ORGANIZATION OR NOT
+-- FINDS ALL OF THE TOKENS BELONGING TO A USER OR APP
 ------------------------------------------------------------------------------
 
-SELECT count(*) > 0
-FROM organization_members
-WHERE organization_id = ?
-AND user_id = ?
+SELECT *
+FROM tokens
+WHERE owner_id = ?

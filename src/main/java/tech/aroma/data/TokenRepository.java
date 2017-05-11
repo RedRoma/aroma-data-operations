@@ -33,6 +33,7 @@ import static tech.sirwellington.alchemy.annotations.designs.patterns.StrategyPa
 import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
 
 /**
  * This interface is responsible for the storage and retrieval of Tokens.
@@ -101,6 +102,7 @@ public interface TokenRepository
     {
         checkThat(ownerId)
             .throwing(InvalidArgumentException.class)
+            .is(validUUID())
             .is(nonEmptyString());
         
         List<TException> exceptions = Lists.create();

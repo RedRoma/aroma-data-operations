@@ -19,7 +19,7 @@ import java.util.*
  *
  * @author SirWellington
  */
-class MessageSerializer : DatabaseSerializer<Message>
+internal class MessageSerializer : DatabaseSerializer<Message>
 {
 
     companion object

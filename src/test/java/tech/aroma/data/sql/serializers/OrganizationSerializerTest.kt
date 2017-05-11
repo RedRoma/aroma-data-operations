@@ -8,7 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.Tables.Organizations
+import tech.aroma.data.sql.serializers.Tables.Organizations
 import tech.aroma.data.sql.asUUID
 import tech.aroma.thrift.Organization
 import tech.sirwellington.alchemy.generator.CollectionGenerators
