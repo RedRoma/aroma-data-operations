@@ -17,6 +17,7 @@ package tech.aroma.data.sql
  */
 
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.hasElement
 import com.natpryce.hamkrest.isEmpty
 import org.junit.*
 import org.junit.runner.RunWith
@@ -24,6 +25,7 @@ import tech.sirwellington.alchemy.test.junit.runners.*
 
 import org.junit.Assert.*
 import org.springframework.jdbc.core.JdbcOperations
+import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.serializers.ApplicationSerializer
 import tech.aroma.thrift.Application
@@ -54,6 +56,9 @@ class SQLApplicationRepositoryIT
     @GenerateString(UUID)
     private lateinit var ownerId: String
 
+    @GenerateString(UUID)
+    private lateinit var orgId: String
+
     private lateinit var app: Application
     private lateinit var appId: String
     private lateinit var apps: List<Application>
@@ -69,6 +74,7 @@ class SQLApplicationRepositoryIT
         app = Applications.application
         appId = app.applicationId
         app.owners.add(ownerId)
+        app.organizationId = orgId
 
         app.totalMessagesSent = 0
         app.unsetTotalMessagesSent()
@@ -76,6 +82,10 @@ class SQLApplicationRepositoryIT
 
         apps = CollectionGenerators.listOf({ Applications.application }, 5)
         apps.forEach { it.owners.add(ownerId) }
+        apps.forEach { it.organizationId = orgId }
+        apps.forEach { it.timeOfProvisioning = 0L}
+        apps.forEach { it.followers = mutableSetOf() }
+        apps.forEach { it.totalMessagesSent = 0L }
     }
 
     @After
@@ -159,9 +169,7 @@ class SQLApplicationRepositoryIT
     fun testGetAppsOwnedBy()
     {
         apps.forEach(instance::saveApplication)
-        apps.forEach { it.timeOfProvisioning = 0L}
-        apps.forEach { it.followers = mutableSetOf() }
-        apps.forEach { it.totalMessagesSent = 0L }
+
 
         val results = instance.getApplicationsOwnedBy(ownerId)
         results.forEach { it.timeOfProvisioning = 0L }
@@ -174,5 +182,64 @@ class SQLApplicationRepositoryIT
     {
         val result = instance.getApplicationsOwnedBy(ownerId)
         assertThat(result, isEmpty)
+    }
+
+    @Test
+    fun testGetAppsByOrg()
+    {
+        apps.forEach(instance::saveApplication)
+
+        val results = instance.getApplicationsByOrg(orgId)
+        results.forEach { it.timeOfProvisioning = 0L }
+        results.forEach { it.followers = emptySet() }
+
+        assertEquals(apps.toSet(), results.toSet())
+    }
+
+    fun testGetAppsByOrgWhenEmpty()
+    {
+        val results = instance.getApplicationsByOrg(orgId)
+
+        assertThat(results, isEmpty)
+    }
+
+    @Test
+    fun testSearchByName()
+    {
+        apps.forEach(instance::saveApplication)
+        val app = Lists.oneOf(apps)
+        val name = app.name.substring(2..6)
+
+        val results = instance.searchByName(name)
+        results.forEach { it.timeOfProvisioning = 0L }
+        results.forEach { it.followers = emptySet() }
+
+        assertThat(results, hasElement(app))
+
+    }
+
+    @Test
+    fun testRecentlyCreated()
+    {
+        apps.forEach(instance::saveApplication)
+
+        Thread.sleep(50)
+
+        val recent = instance.recentlyCreated
+
+        assertEquals(apps.size, recent.size)
+
+        recent.forEach { it.timeOfProvisioning = 0L }
+        recent.forEach { it.followers = emptySet() }
+
+        assertEquals(apps.toSet(), recent.toSet())
+
+    }
+
+    @Test
+    fun testRecentlyCreatedAppsWhenNone()
+    {
+        val results = instance.recentlyCreated
+        assertThat(results, isEmpty)
     }
 }

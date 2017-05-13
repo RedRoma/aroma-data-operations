@@ -4,4 +4,4 @@
 
 SELECT *
 FROM applications
-WHERE name LIKE ?
+WHERE app_name LIKE ?
