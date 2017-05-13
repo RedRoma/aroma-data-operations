@@ -60,7 +60,7 @@ class TokenSerializerTest
     @Before
     fun setUp()
     {
-        token = AromaGenerators.token
+        token = AromaGenerators.Tokens.token
         tokenId = token.tokenId
         ownerId = token.ownerId
         orgId = token.organizationId
