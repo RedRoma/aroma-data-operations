@@ -20,6 +20,9 @@ import com.nhaarman.mockito_kotlin.*
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.springframework.dao.DataAccessException
+import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
@@ -33,6 +36,7 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import java.lang.IllegalArgumentException
 import java.sql.ResultSet
+import java.sql.SQLException
 import java.util.*
 
 @RunWith(AlchemyTestRunner::class)
@@ -77,7 +81,7 @@ class ApplicationSerializerTest
 
 
     @Test
-    fun testSave()
+    fun `Test - save`()
     {
         instance.save(app, null, query, database)
 
@@ -95,8 +99,20 @@ class ApplicationSerializerTest
                                 owners)
     }
 
+    @DontRepeat
     @Test
-    fun `test save with bad args`()
+    fun `Test - save when database fails`()
+    {
+        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows {
+            instance.save(app, null, query, database)
+        }.isInstanceOf(DataAccessException::class.java)
+    }
+
+    @Test
+    fun `Test - save with bad args`()
     {
         assertThrows {
             val emptyApp = Application()
@@ -129,13 +145,25 @@ class ApplicationSerializerTest
     }
 
     @Test
-    fun testDeserialize()
+    fun `Test - deserialize`()
     {
         results.prepareFor(app)
 
         val result = instance.deserialize(results)
 
         Assert.assertEquals(app, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun `Test - deserialize when database fails`()
+    {
+        whenever(results.getString(any<String>()))
+                .thenThrow(SQLException())
+
+        assertThrows {
+            instance.deserialize(results)
+        }.isInstanceOf(SQLException::class.java)
     }
 
     private fun ResultSet.prepareFor(app: Application)
