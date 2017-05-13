@@ -16,17 +16,15 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.apache.thrift.TException
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
-import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.AromaGenerators.Applications.owner
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.InvalidArgumentException
@@ -34,8 +32,8 @@ import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
-import java.sql.SQLException
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
 
 @RunWith(AlchemyTestRunner::class)
 class SQLApplicationRepositoryTest
@@ -49,9 +47,6 @@ class SQLApplicationRepositoryTest
     private lateinit var app: Application
     private lateinit var appId: String
     private lateinit var orgId: String
-
-    @GenerateString
-    private lateinit var sql: String
 
     private lateinit var instance: SQLApplicationRepository
 
@@ -76,7 +71,7 @@ class SQLApplicationRepositoryTest
 
         app.owners.forEach { owner ->
             val insertOwner = Inserts.APPLICATION_OWNER
-            verify(database).update(insertOwner, appId, owner)
+            verify(database).update(insertOwner, appId.asUUID(), owner.asUUID())
         }
     }
 
@@ -99,8 +94,9 @@ class SQLApplicationRepositoryTest
     {
         val owners = app.owners.toMutableList()
         val failingOwner = owners.removeAt(0)
+        val statement = Inserts.APPLICATION_OWNER
 
-        whenever(database.update(eq(failingOwner), Mockito.anyVararg<Any>()))
+        whenever(database.update(statement, appId.asUUID(), failingOwner.asUUID()))
                 .thenThrow(RuntimeException())
 
         instance.saveApplication(app)
@@ -111,7 +107,7 @@ class SQLApplicationRepositoryTest
         owners.forEach { owner ->
             val sql = Inserts.APPLICATION_OWNER
 
-            verify(database).update(sql, appId, owner)
+            verify(database).update(sql, appId.asUUID(), owner.asUUID())
         }
     }
 

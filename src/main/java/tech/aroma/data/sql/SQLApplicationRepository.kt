@@ -72,7 +72,7 @@ internal class SQLApplicationRepository
 
         try
         {
-            database.update(insertOwner, appId, owner)
+            database.update(insertOwner, appId.asUUID(), owner.asUUID())
         }
         catch(ex: Exception)
         {
