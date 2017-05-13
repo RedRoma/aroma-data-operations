@@ -23,6 +23,7 @@ import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Tables.Applications
 import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
+import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.ResultSet
 import java.time.Duration
 import java.util.*
@@ -39,6 +40,7 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
     override fun save(app: Application, timeToLive: Duration?, statement: String, database: JdbcOperations)
     {
         checkThat(app).`is`(validApplication())
+        checkThat(statement).`is`(nonEmptyString())
 
         val appId = app.applicationId.asUUID()
         val owners = app.owners.map(UUID::fromString).filterNotNull()
