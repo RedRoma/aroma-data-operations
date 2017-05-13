@@ -16,21 +16,23 @@ package tech.aroma.data.sql.serializers
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
-import tech.aroma.data.AromaGenerators.Applications
+import tech.aroma.data.AromaGenerators
 import tech.aroma.data.sql.asUUID
+import tech.aroma.data.sql.serializers.Tables.Applications
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Application
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import java.sql.ResultSet
 import java.util.*
+import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
 class ApplicationSerializerTest
@@ -58,7 +60,7 @@ class ApplicationSerializerTest
     {
         instance = ApplicationSerializer()
 
-        app = Applications.application
+        app = AromaGenerators.Applications.application
         appId = app.applicationId
         orgId = app.organizationId
         owners = app.owners
@@ -84,5 +86,33 @@ class ApplicationSerializerTest
                                 app.timeOfTokenExpiration.toTimestamp(),
                                 app.applicationIconMediaId.asUUID(),
                                 owners)
+    }
+
+    @Test
+    fun testDeserialize()
+    {
+        results.prepareFor(app)
+
+        val result = instance.deserialize(results)
+
+        assertEquals(app, result)
+    }
+
+    private fun ResultSet.prepareFor(app: Application)
+    {
+        whenever(this.getString(Applications.APP_ID)).thenReturn(appId)
+        whenever(this.getString(Applications.ORG_ID)).thenReturn(orgId)
+        whenever(this.getString(Applications.ICON_MEDIA_ID)).thenReturn(app.applicationIconMediaId)
+        whenever(this.getString(Applications.APP_NAME)).thenReturn(app.name)
+        whenever(this.getString(Applications.APP_DESCRIPTION)).thenReturn(app.applicationDescription)
+        whenever(this.getString(Applications.TIER)).thenReturn(app.tier.toString())
+        whenever(this.getString(Applications.PROGRAMMING_LANGUAGE)).thenReturn(app.programmingLanguage.toString())
+        whenever(this.getTimestamp(Applications.TIME_OF_TOKEN_EXPIRATION)).thenReturn(app.timeOfTokenExpiration.toTimestamp())
+        whenever(this.getTimestamp(Applications.TIME_PROVISIONED)).thenReturn(app.timeOfProvisioning.toTimestamp())
+
+        val array = mock<java.sql.Array> {
+            on { array }.thenReturn(owners.toTypedArray())
+        }
+        whenever(this.getArray(Applications.OWNERS)).thenReturn(array)
     }
 }

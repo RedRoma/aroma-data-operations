@@ -62,6 +62,7 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         val app = Application()
 
         val appId = row.getString(Applications.APP_ID)
+        val orgId = row.getString(Applications.ORG_ID)
         val appName = row.getString(Applications.APP_NAME)
         val appDescription = row.getString(Applications.APP_DESCRIPTION)
         val programmingLanguage = row.getString(Applications.PROGRAMMING_LANGUAGE).toProgrammingLanguage()
@@ -70,8 +71,10 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         val timeOfTokenExpiration = row.getTimestamp(Applications.TIME_OF_TOKEN_EXPIRATION)
         val tier = row.getString(Applications.TIER).toTier()
         val appIconId = row.getString(Applications.ICON_MEDIA_ID)
+        val owners = row.getArray(Applications.OWNERS)?.array
 
         app.setApplicationId(appId)
+                .setOrganizationId(orgId)
                 .setName(appName)
                 .setApplicationDescription(appDescription)
                 .setProgrammingLanguage(programmingLanguage)
@@ -87,6 +90,13 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         if (timeOfTokenExpiration != null)
         {
             app.setTimeOfTokenExpiration(timeOfTokenExpiration.time)
+        }
+
+        if (owners != null && owners is Array<*>)
+        {
+            app.owners = owners.filterNotNull()
+                               .map { "$it" }
+                               .toSet()
         }
 
         return app
