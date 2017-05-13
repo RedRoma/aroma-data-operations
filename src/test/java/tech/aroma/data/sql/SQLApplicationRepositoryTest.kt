@@ -42,6 +42,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABE
 import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLApplicationRepositoryTest
 {
     @Mock
