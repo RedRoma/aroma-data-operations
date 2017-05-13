@@ -38,7 +38,7 @@ public fun Long.toTimestamp(): Timestamp
     return Timestamp(this)
 }
 
-public fun String.asUUID(): UUID?
+public fun String.toUUID(): UUID?
 {
     return try
     {

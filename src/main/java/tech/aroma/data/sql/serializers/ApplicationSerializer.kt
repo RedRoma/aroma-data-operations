@@ -42,18 +42,18 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         checkThat(app).`is`(validApplication())
         checkThat(statement).`is`(nonEmptyString())
 
-        val appId = app.applicationId.asUUID()
+        val appId = app.applicationId.toUUID()
         val owners = app.owners.map(UUID::fromString).filterNotNull()
 
         database.update(statement,
                         appId,
                         app.name,
                         app.applicationDescription,
-                        app.organizationId.asUUID(),
+                        app.organizationId.toUUID(),
                         app.programmingLanguage.toString(),
                         app.tier.toString(),
                         app.timeOfTokenExpiration.toTimestamp(),
-                        app.applicationIconMediaId.asUUID(),
+                        app.applicationIconMediaId.toUUID(),
                         owners)
     }
 

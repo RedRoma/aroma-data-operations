@@ -72,7 +72,7 @@ internal class SQLApplicationRepository
 
         try
         {
-            database.update(insertOwner, appId.asUUID(), owner.asUUID())
+            database.update(insertOwner, appId.toUUID(), owner.toUUID())
         }
         catch(ex: Exception)
         {
@@ -84,6 +84,7 @@ internal class SQLApplicationRepository
     override fun deleteApplication(applicationId: String)
     {
         checkAppId(applicationId)
+
     }
 
     override fun getById(applicationId: String): Application

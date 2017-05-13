@@ -22,8 +22,6 @@ import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
-import java.time.Duration
-import java.util.*
 
 /**
  * @author SirWellington
@@ -121,7 +119,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.toUUID(), messageId.toUUID()))
                 .thenReturn(message)
 
         val result = instance.getMessage(appId, messageId)
@@ -135,7 +133,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.toUUID(), messageId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getMessage(appId, messageId) }
@@ -150,7 +148,7 @@ class SQLMessageRepositoryTest
     {
         val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
 
-        whenever(database.queryForObject(expectedQuery, serializer, appId.asUUID(), messageId.asUUID()))
+        whenever(database.queryForObject(expectedQuery, serializer, appId.toUUID(), messageId.toUUID()))
                 .thenReturn(null)
 
         assertThrows { instance.getMessage(appId, messageId) }
@@ -181,7 +179,7 @@ class SQLMessageRepositoryTest
 
         instance.deleteMessage(appId, messageId)
 
-        verify<JdbcTemplate>(database).update(expectedStatement, appId.asUUID(), messageId.asUUID())
+        verify<JdbcTemplate>(database).update(expectedStatement, appId.toUUID(), messageId.toUUID())
     }
 
     @DontRepeat
@@ -218,7 +216,7 @@ class SQLMessageRepositoryTest
     {
         val expectedStatement = SQLStatements.Deletes.MESSAGE
 
-        whenever(database.update(expectedStatement, appId.asUUID(), messageId.asUUID()))
+        whenever(database.update(expectedStatement, appId.toUUID(), messageId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMessage(appId, messageId) }
@@ -234,7 +232,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.CHECK_MESSAGE
         val expected = one(booleans())
 
-        whenever(database.queryForObject(query, Boolean::class.java, appId.asUUID(), messageId.asUUID()))
+        whenever(database.queryForObject(query, Boolean::class.java, appId.toUUID(), messageId.toUUID()))
                 .thenReturn(expected)
 
         val result = instance.containsMessage(appId, messageId)
@@ -319,7 +317,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
         val messages = listOf(pojos(Message::class.java))
 
-        whenever(database.query(query, serializer, appId.asUUID()))
+        whenever(database.query(query, serializer, appId.toUUID()))
                 .thenReturn(messages)
 
         val results = instance.getByApplication(appId)
@@ -333,7 +331,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
-        whenever(database.query(query, serializer, appId.asUUID()))
+        whenever(database.query(query, serializer, appId.toUUID()))
                 .thenReturn(Lists.emptyList<Message>())
 
         val results = instance.getByApplication(appId)
@@ -348,7 +346,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
-        whenever(database.query(query, serializer, appId.asUUID()))
+        whenever(database.query(query, serializer, appId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByApplication(appId) }
@@ -373,7 +371,7 @@ class SQLMessageRepositoryTest
         val title = alphabetic
         val messages = listOf(pojos(Message::class.java))
 
-        whenever(database.query(query, serializer, appId.asUUID(), title))
+        whenever(database.query(query, serializer, appId.toUUID(), title))
                 .thenReturn(messages)
 
         val results = instance.getByTitle(appId, title)
@@ -388,7 +386,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
         val title = alphabetic
 
-        whenever(database.query(query, serializer, appId.asUUID(), title))
+        whenever(database.query(query, serializer, appId.toUUID(), title))
                 .thenReturn(Lists.emptyList())
 
         val results = instance.getByTitle(appId, title)
@@ -404,7 +402,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
         val title = alphabetic
 
-        whenever(database.query(query, serializer, appId.asUUID(), title))
+        whenever(database.query(query, serializer, appId.toUUID(), title))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByTitle(appId, title) }
@@ -432,7 +430,7 @@ class SQLMessageRepositoryTest
         val query = SQLStatements.Queries.COUNT_MESSAGES
         val count = one(positiveLongs())
 
-        whenever(database.queryForObject(query, Long::class.java, appId.asUUID()))
+        whenever(database.queryForObject(query, Long::class.java, appId.toUUID()))
                 .thenReturn(count)
 
         val result = instance.getCountByApplication(appId)
@@ -446,7 +444,7 @@ class SQLMessageRepositoryTest
     {
         val query = SQLStatements.Queries.COUNT_MESSAGES
 
-        whenever(database.queryForObject(query, Long::class.java, appId.asUUID()))
+        whenever(database.queryForObject(query, Long::class.java, appId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getCountByApplication(appId) }

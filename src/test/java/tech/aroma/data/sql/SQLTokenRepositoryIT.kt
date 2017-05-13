@@ -55,7 +55,7 @@ class SQLTokenRepositoryIT
     private lateinit var token: AuthenticationToken
 
     private lateinit var tokenId: String
-    private val tokenUuid get() = tokenId.asUUID()
+    private val tokenUuid get() = tokenId.toUUID()
     private lateinit var ownerId: String
     private lateinit var orgId: String
 

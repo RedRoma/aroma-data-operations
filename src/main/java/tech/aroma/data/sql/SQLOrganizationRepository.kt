@@ -29,8 +29,6 @@ import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import java.sql.Timestamp
-import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -77,7 +75,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkOrgID(organizationId)
 
-        val orgId = organizationId!!.asUUID()!!
+        val orgId = organizationId!!.toUUID()!!
         val query = Queries.SELECT_ORGANIZATION
 
         try
@@ -107,8 +105,8 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            database.update(deleteOrgMembers, orgId.asUUID())
-            database.update(deleteOrg, orgId.asUUID())
+            database.update(deleteOrgMembers, orgId.toUUID())
+            database.update(deleteOrg, orgId.toUUID())
         }
         catch(ex: Exception)
         {
@@ -127,7 +125,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkOrgID(organizationId)
 
-        val orgId = organizationId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
         val query = Queries.CHECK_ORGANIZATION
 
         try
@@ -192,8 +190,8 @@ internal class SQLOrganizationRepository : OrganizationRepository
                 .`is`(validUserId())
 
         val statement = Inserts.ORGANIZATION_MEMBER
-        val orgId = organizationId!!.asUUID()
-        val userId = user!!.userId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
+        val userId = user!!.userId!!.toUUID()
 
         try
         {
@@ -215,8 +213,8 @@ internal class SQLOrganizationRepository : OrganizationRepository
                 .`is`(validUserId())
 
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
-        val orgId = organizationId!!.asUUID()
-        val userId = userId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
+        val userId = userId!!.toUUID()
 
         try
         {
@@ -234,7 +232,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
 
         val query = Queries.SELECT_ORGANIZATION_MEMBERS
-        val orgId = organizationId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
 
         try
         {
@@ -258,8 +256,8 @@ internal class SQLOrganizationRepository : OrganizationRepository
                 .`is`(validUserId())
 
         val statement = Deletes.ORGANIZATION_MEMBER
-        val orgId = organizationId!!.asUUID()
-        val userId = userId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
+        val userId = userId!!.toUUID()
 
         try
         {
@@ -277,7 +275,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
 
         val statement = Deletes.ORGANIZATION_ALL_MEMBERS
-        val orgId = organizationId!!.asUUID()
+        val orgId = organizationId!!.toUUID()
 
         try
         {

@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.Tables.Organizations
-import tech.aroma.data.sql.asUUID
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Organization
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
@@ -92,7 +92,7 @@ class OrganizationSerializerTest
         val arguments = captor.allValues
         assertThat(arguments, !isEmpty)
 
-        assertEquals(orgId.asUUID(), arguments[0])
+        assertEquals(orgId.toUUID(), arguments[0])
         assertEquals(org.organizationName, arguments[1])
         assertEquals(org.owners.joinToString(separator = ","), arguments[2])
         assertEquals(org.logoLink, arguments[3])

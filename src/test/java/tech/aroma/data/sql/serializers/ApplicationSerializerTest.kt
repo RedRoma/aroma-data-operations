@@ -26,7 +26,7 @@ import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.asUUID
+import tech.aroma.data.sql.toUUID
 import tech.aroma.data.sql.serializers.Tables.Applications
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Application
@@ -88,14 +88,14 @@ class ApplicationSerializerTest
         val owners = this.owners.map(UUID::fromString)
 
         verify(database).update(query,
-                                appId.asUUID(),
+                                appId.toUUID(),
                                 app.name,
                                 app.applicationDescription,
-                                orgId.asUUID(),
+                                orgId.toUUID(),
                                 app.programmingLanguage.toString(),
                                 app.tier.toString(),
                                 app.timeOfTokenExpiration.toTimestamp(),
-                                app.applicationIconMediaId.asUUID(),
+                                app.applicationIconMediaId.toUUID(),
                                 owners)
     }
 

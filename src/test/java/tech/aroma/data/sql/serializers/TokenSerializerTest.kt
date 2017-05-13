@@ -26,7 +26,7 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.asUUID
+import tech.aroma.data.sql.toUUID
 import tech.aroma.data.sql.serializers.Tables.Tokens
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.authentication.AuthenticationToken
@@ -77,9 +77,9 @@ class TokenSerializerTest
         instance.save(token, null, statement, database)
 
         verify(database).update(statement,
-                                tokenId.asUUID(),
-                                ownerId.asUUID(),
-                                orgId.asUUID(),
+                                tokenId.toUUID(),
+                                ownerId.toUUID(),
+                                orgId.toUUID(),
                                 token.ownerName,
                                 token.timeOfCreation.toTimestamp(),
                                 token.timeOfExpiration.toTimestamp(),

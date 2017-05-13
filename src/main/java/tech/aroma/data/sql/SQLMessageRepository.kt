@@ -5,7 +5,6 @@ import java.util.*
 import javax.inject.Inject
 
 import org.apache.thrift.TException
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
@@ -81,8 +80,8 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.asUUID()
-        val msgId = messageId!!.asUUID()
+        val appId = applicationId!!.toUUID()
+        val msgId = messageId!!.toUUID()
         val statement = SQLStatements.Queries.SELECT_MESSAGE
 
         val message: Message?
@@ -117,8 +116,8 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.asUUID()
-        val msgId = messageId!!.asUUID()
+        val appId = applicationId!!.toUUID()
+        val msgId = messageId!!.toUUID()
         val statement = SQLStatements.Deletes.MESSAGE
 
         try
@@ -142,8 +141,8 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.asUUID()
-        val msgId = messageId!!.asUUID()
+        val appId = applicationId!!.toUUID()
+        val msgId = messageId!!.toUUID()
         val statement = SQLStatements.Queries.CHECK_MESSAGE
 
         try
@@ -186,7 +185,7 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .throwing(InvalidArgumentException::class.java)
                 .`is`(validUUID())
 
-        val appId = applicationId!!.asUUID()
+        val appId = applicationId!!.toUUID()
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
         try
@@ -213,7 +212,7 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .throwing(InvalidArgumentException::class.java)
                 .`is`(validUUID())
 
-        val appId = applicationId!!.asUUID()
+        val appId = applicationId!!.toUUID()
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
 
         try
@@ -236,7 +235,7 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .`is`(nonEmptyString())
                 .`is`(validUUID())
 
-        val appId = applicationId!!.asUUID()
+        val appId = applicationId!!.toUUID()
         val query = SQLStatements.Queries.COUNT_MESSAGES
 
 

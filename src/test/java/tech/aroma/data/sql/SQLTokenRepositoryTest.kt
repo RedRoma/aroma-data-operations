@@ -53,7 +53,7 @@ class SQLTokenRepositoryTest
     @GenerateString(UUID)
     private lateinit var tokenId: String
 
-    private val tokenUuid get() = tokenId.asUUID()
+    private val tokenUuid get() = tokenId.toUUID()
 
     @GenerateString(UUID)
     private lateinit var ownerId: String
@@ -192,7 +192,7 @@ class SQLTokenRepositoryTest
         val query = Queries.SELECT_TOKENS_FOR_OWNER
         val tokens = listOf(pojos(AuthenticationToken::class.java))
 
-        whenever(database.query(query, serializer, ownerId.asUUID()))
+        whenever(database.query(query, serializer, ownerId.toUUID()))
                 .thenReturn(tokens)
 
         val result = instance.getTokensBelongingTo(ownerId)
@@ -215,7 +215,7 @@ class SQLTokenRepositoryTest
     {
         val query = Queries.SELECT_TOKENS_FOR_OWNER
 
-        whenever(database.query(query, serializer, ownerId.asUUID()))
+        whenever(database.query(query, serializer, ownerId.toUUID()))
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.getTokensBelongingTo(ownerId) }
@@ -260,7 +260,7 @@ class SQLTokenRepositoryTest
     {
         val query = Queries.SELECT_TOKENS_FOR_OWNER
 
-        whenever(database.query(query, serializer, ownerId.asUUID()))
+        whenever(database.query(query, serializer, ownerId.toUUID()))
                 .thenReturn(Lists.createFrom(token))
 
         instance.deleteTokensBelongingTo(ownerId)
@@ -275,7 +275,7 @@ class SQLTokenRepositoryTest
     {
         val query = Queries.SELECT_TOKENS_FOR_OWNER
 
-        whenever(database.query(query, serializer, ownerId.asUUID()))
+        whenever(database.query(query, serializer, ownerId.toUUID()))
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.deleteTokensBelongingTo(ownerId) }

@@ -71,7 +71,7 @@ class SQLApplicationRepositoryTest
 
         app.owners.forEach { owner ->
             val insertOwner = Inserts.APPLICATION_OWNER
-            verify(database).update(insertOwner, appId.asUUID(), owner.asUUID())
+            verify(database).update(insertOwner, appId.toUUID(), owner.toUUID())
         }
     }
 
@@ -96,7 +96,7 @@ class SQLApplicationRepositoryTest
         val failingOwner = owners.removeAt(0)
         val statement = Inserts.APPLICATION_OWNER
 
-        whenever(database.update(statement, appId.asUUID(), failingOwner.asUUID()))
+        whenever(database.update(statement, appId.toUUID(), failingOwner.toUUID()))
                 .thenThrow(RuntimeException())
 
         instance.saveApplication(app)
@@ -107,7 +107,7 @@ class SQLApplicationRepositoryTest
         owners.forEach { owner ->
             val sql = Inserts.APPLICATION_OWNER
 
-            verify(database).update(sql, appId.asUUID(), owner.asUUID())
+            verify(database).update(sql, appId.toUUID(), owner.toUUID())
         }
     }
 
