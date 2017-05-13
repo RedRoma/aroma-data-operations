@@ -44,8 +44,6 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
                         app.applicationDescription,
                         app.organizationId.asUUID(),
                         app.programmingLanguage,
-                        null,
-                        null,
                         app.tier.toString(),
                         app.timeOfTokenExpiration.toTimestamp(),
                         app.applicationIconMediaId.asUUID())

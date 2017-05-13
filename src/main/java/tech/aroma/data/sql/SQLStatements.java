@@ -62,6 +62,13 @@ final class SQLStatements
 
     static class Queries
     {
+        static final String CHECK_APPLICATION = loadSQLFile("tech/aroma/sql/queries/check_application.sql");
+        static final String SEARCH_APPLICATION_BY_NAME = loadSQLFile("");
+        static final String SELECT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_application.sql");
+        static final String SELECT_APPLICATION_BY_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
+        static final String SELECT_APPLICATION_BY_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_application_by_organization.sql");
+        static final String SELECT_APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_owners.sql");
+        
         static final String CHECK_MESSAGE = loadSQLFile("tech/aroma/sql/queries/check_message.sql");
         static final String COUNT_MESSAGES = loadSQLFile("tech/aroma/sql/queries/count_messages.sql");
         static final String SELECT_MESSAGE = loadSQLFile("tech/aroma/sql/queries/select_message.sql");
@@ -78,13 +85,6 @@ final class SQLStatements
 
         static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
         static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");
-
-        static final String CHECK_APPLICATION = loadSQLFile("tech/aroma/sql/queries/check_application.sql");
-        static final String SEARCH_APPLICATION_BY_NAME = loadSQLFile("");
-        static final String SELECT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_application.sql");
-        static final String SELECT_APPLICATION_BY_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
-        static final String SELECT_APPLICATION_BY_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_application_by_organization.sql");
-        static final String SELECT_APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_owners.sql");
     }
 
     private static String loadSQLFile(String path)
