@@ -38,6 +38,8 @@ final class SQLStatements
 
     static class Deletes
     {
+        static final String APPLICATION = loadSQLFile("tech/aroma/sql/deletes/delete_application.sql");
+        static final String APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners.sql");
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_message.sql");
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
@@ -47,6 +49,9 @@ final class SQLStatements
 
     static class Inserts
     {
+        static final String APPLICATION = loadSQLFile("tech/aroma/sql/inserts/insert_application.sql");
+        static final String APPLICATION_OWNER = loadSQLFile("tech/aroma/sql/inserts/insert_application_owner.sql");
+
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/inserts/insert_message.sql");
 
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/inserts/insert_organization.sql");
@@ -63,20 +68,26 @@ final class SQLStatements
         static final String SELECT_MESSAGES_BY_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_app_messages.sql");
         static final String SELECT_MESSAGES_BY_HOSTNAME = loadSQLFile("tech/aroma/sql/queries/select_messages_by_hostname.sql");
         static final String SELECT_MESSAGES_BY_TITLE = loadSQLFile("tech/aroma/sql/queries/select_messages_by_title.sql");
-
         static final String CHECK_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/check_organization.sql");
+
         static final String CHECK_ORGANIZATION_HAS_MEMBER = loadSQLFile("tech/aroma/sql/queries/check_organization_has_member.sql");
         static final String SELECT_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_organization.sql");
         static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("tech/aroma/sql/queries/select_organization_members.sql");
         static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("tech/aroma/sql/queries/search_organization_by_name.sql");
-
         static final String CHECK_TOKEN = loadSQLFile("tech/aroma/sql/queries/check_token.sql");
-        static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
 
+        static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
         static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");
+
+        static final String CHECK_APPLICATION = loadSQLFile("tech/aroma/sql/queries/check_application.sql");
+        static final String SEARCH_APPLICATION_BY_NAME = loadSQLFile("");
+        static final String SELECT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_application.sql");
+        static final String SELECT_APPLICATION_BY_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
+        static final String SELECT_APPLICATION_BY_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_application_by_organization.sql");
+        static final String SELECT_APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_owners.sql");
     }
 
-    static String loadSQLFile(String path)
+    private static String loadSQLFile(String path)
     {
         URL url = Resources.getResource(path);
 

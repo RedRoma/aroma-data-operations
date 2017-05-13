@@ -27,6 +27,8 @@ public class SQLStatementsTest
     @Test
     public void testDeletes() throws Exception
     {
+        assertThat(SQLStatements.Deletes.APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.APPLICATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
@@ -37,6 +39,9 @@ public class SQLStatementsTest
     @Test
     public void testInserts() throws Exception
     {
+        assertThat(SQLStatements.Inserts.APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.APPLICATION_OWNER, not(isEmptyOrNullString()));
+
         assertThat(SQLStatements.Inserts.MESSAGE, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.ORGANIZATION, not(isEmptyOrNullString()));
@@ -48,6 +53,14 @@ public class SQLStatementsTest
     @Test
     public void testQueries() throws Exception
     {
+        assertThat(SQLStatements.Queries.CHECK_APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SEARCH_APPLICATION_BY_NAME, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION_OWNERS, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_ORGANIZATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_OWNERS, not(isEmptyOrNullString()));
+
         assertThat(SQLStatements.Queries.CHECK_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.COUNT_MESSAGES, not(isEmptyOrNullString()));
 
