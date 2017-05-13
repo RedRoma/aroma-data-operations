@@ -201,7 +201,7 @@ internal class SQLApplicationRepository
         checkSearchTerm(searchTerm)
 
         val query = Queries.SEARCH_APPLICATION_BY_NAME
-        val token = "&$searchTerm%"
+        val token = "%$searchTerm%"
 
         return try
         {

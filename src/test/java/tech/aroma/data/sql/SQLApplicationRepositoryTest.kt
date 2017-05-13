@@ -16,6 +16,7 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
+import com.apple.eawt.QuitResponse
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.apache.thrift.TException
@@ -24,16 +25,20 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
+import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.AromaGenerators.Applications
+import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
 class SQLApplicationRepositoryTest
@@ -140,5 +145,105 @@ class SQLApplicationRepositoryTest
 
             instance.saveApplication(appWithInvalidOwners)
         }
+    }
+
+    @Test
+    fun testDeleteApplication()
+    {
+        val deleteAppSQL = Deletes.APPLICATION
+        val deleteOwnersSQL = Deletes.APPLICATION_OWNERS
+        val selectAppSQL = Queries.SELECT_APPLICATION
+
+        whenever(database.queryForObject(selectAppSQL, serializer, appId.toUUID()))
+                .thenReturn(app)
+
+        instance.deleteApplication(appId)
+
+        verify(database).update(deleteAppSQL, appId.toUUID())
+        verify(database).update(deleteOwnersSQL, appId.toUUID())
+    }
+
+    @Test
+    fun testGetById()
+    {
+        val query = Queries.SELECT_APPLICATION
+
+        whenever(database.queryForObject(query, serializer, appId.toUUID()))
+                .thenReturn(app)
+
+        val result = instance.getById(appId)
+
+        assertEquals(app, result)
+    }
+
+    @Test
+    fun testContainsApp()
+    {
+        val query = Queries.CHECK_APPLICATION
+        val exists = one(booleans())
+
+        whenever(database.queryForObject(query, Boolean::class.java, appId.toUUID()))
+                .thenReturn(exists)
+
+        val result = instance.containsApplication(appId)
+
+        assertEquals(exists, result)
+    }
+
+    @Test
+    fun testGetApplicationsOwnedBy()
+    {
+        val query = Queries.SELECT_APPLICATION_BY_OWNER
+        val apps = CollectionGenerators.listOf { Applications.application }
+        val owner = Lists.oneOf(app.owners.toList())
+
+        whenever(database.query(query, serializer, owner.toUUID()))
+                .thenReturn(apps)
+
+        val result = instance.getApplicationsOwnedBy(owner)
+
+        assertEquals(apps, result)
+    }
+
+    @Test
+    fun testGetApplicationsByOrg()
+    {
+        val query = Queries.SELECT_APPLICATION_BY_ORGANIZATION
+        val apps = CollectionGenerators.listOf { Applications.application }
+
+        whenever(database.query(query, serializer, orgId.toUUID()))
+                .thenReturn(apps)
+
+        val result = instance.getApplicationsByOrg(orgId)
+        assertEquals(apps, result)
+    }
+
+    @Test
+    fun testSearchByName()
+    {
+        val query = Queries.SEARCH_APPLICATION_BY_NAME
+        val apps = CollectionGenerators.listOf { Applications.application }
+
+        val searchTerm = one(alphabeticString())
+
+        whenever(database.query(query, serializer, "%$searchTerm%"))
+                .thenReturn(apps)
+
+        val result = instance.searchByName(searchTerm)
+        assertEquals(apps, result)
+    }
+
+    @Test
+    fun testGetRecentlyCreated()
+    {
+        val query = Queries.SELECT_RECENT_APPLICATION
+        val apps = CollectionGenerators.listOf { Applications.application }
+
+        whenever(database.query(query, serializer))
+                .thenReturn(apps)
+
+        val result = instance.recentlyCreated
+
+        assertEquals(apps, result)
     }
 }
