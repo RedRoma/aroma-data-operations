@@ -43,7 +43,10 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         checkThat(statement).`is`(nonEmptyString())
 
         val appId = app.applicationId.toUUID()
-        val owners = app.owners.map(UUID::fromString).filterNotNull()
+        val owners = app.owners
+                .map(UUID::fromString)
+                .filterNotNull()
+                .joinToString(separator = ",")
 
         database.update(statement,
                         appId,

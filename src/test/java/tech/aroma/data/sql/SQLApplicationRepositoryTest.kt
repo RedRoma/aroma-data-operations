@@ -152,7 +152,7 @@ class SQLApplicationRepositoryTest
             appWithInvalidOwners.owners = CollectionGenerators.listOf { alphabeticString().get() }.toSet()
 
             instance.saveApplication(appWithInvalidOwners)
-        }
+        }//24139ms 28546ms
     }
 
     @Test
