@@ -35,8 +35,8 @@ import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
@@ -51,6 +51,9 @@ class SQLApplicationRepositoryTest
     private lateinit var app: Application
     private lateinit var appId: String
     private lateinit var orgId: String
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var badId: String
 
     private lateinit var instance: SQLApplicationRepository
 
@@ -162,6 +165,19 @@ class SQLApplicationRepositoryTest
         verify(database).update(deleteOwnersSQL, appId.toUUID())
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteAppWithBadArgs()
+    {
+        assertThrows {
+            instance.deleteApplication("")
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            instance.deleteApplication(badId)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun `get application by ID`()
     {
@@ -173,6 +189,14 @@ class SQLApplicationRepositoryTest
         val result = instance.getById(appId)
 
         assertEquals(app, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetByIdWithBadArgs()
+    {
+        assertThrows { instance.getById("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getById(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
@@ -187,6 +211,14 @@ class SQLApplicationRepositoryTest
         val result = instance.containsApplication(appId)
 
         assertEquals(exists, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testContainsAppWithBadArgs()
+    {
+        assertThrows { instance.containsApplication("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsApplication(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
@@ -204,6 +236,14 @@ class SQLApplicationRepositoryTest
         assertEquals(apps, result)
     }
 
+    @DontRepeat
+    @Test
+    fun testGetApplicationsOwnedByWithBadArgs()
+    {
+        assertThrows { instance.getApplicationsOwnedBy("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getApplicationsOwnedBy(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun `get applications by org`()
     {
@@ -215,6 +255,14 @@ class SQLApplicationRepositoryTest
 
         val result = instance.getApplicationsByOrg(orgId)
         assertEquals(apps, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetApplicationsByOrgWithBadArgs()
+    {
+        assertThrows { instance.getApplicationsByOrg("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getApplicationsByOrg(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
@@ -230,6 +278,13 @@ class SQLApplicationRepositoryTest
 
         val result = instance.searchByName(searchTerm)
         assertEquals(apps, result)
+    }
+
+    @Test
+    fun testSearchByNameWithBadArgs()
+    {
+        assertThrows { instance.searchByName("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.searchByName("2") }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test

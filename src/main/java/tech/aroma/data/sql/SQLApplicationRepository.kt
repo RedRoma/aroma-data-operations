@@ -241,7 +241,9 @@ internal class SQLApplicationRepository
     private fun checkOrgId(orgId: String)
     {
         checkThat(orgId)
+                .throwing(InvalidArgumentException::class.java)
                 .usingMessage("Invalid Org ID: " + orgId)
+                .`is`(nonEmptyString())
                 .`is`(StringAssertions.validUUID())
     }
 
