@@ -19,12 +19,15 @@ package tech.aroma.data.sql
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.ApplicationRepository
-import tech.aroma.data.assertions.RequestAssertions.validApplication
+import tech.aroma.data.assertions.RequestAssertions.*
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
+import tech.sirwellington.alchemy.arguments.assertions.StringAssertions
+import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo
 import javax.inject.Inject
 
 
@@ -58,42 +61,101 @@ internal class SQLApplicationRepository
             throw OperationFailedException("$message | ${ex.message}")
         }
 
+        val appId = application.applicationId
+        application.owners.forEach { this.insertOwner(appId, it) }
 
+    }
+
+    private fun insertOwner(appId: String, owner: String)
+    {
+        val insertOwner = Inserts.APPLICATION_OWNER
+
+        try
+        {
+            database.update(insertOwner, appId, owner)
+        }
+        catch(ex: Exception)
+        {
+            val message = "Failed to save Owner [$owner] for App [$appId]"
+            LOG.warn(message, ex)
+        }
     }
 
     override fun deleteApplication(applicationId: String)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkAppId(applicationId)
     }
 
     override fun getById(applicationId: String): Application
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkAppId(applicationId)
+
+        return Application()
     }
 
     override fun containsApplication(applicationId: String): Boolean
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkAppId(applicationId)
+
+        return false
     }
 
     override fun getApplicationsOwnedBy(userId: String): MutableList<Application>
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkUserId(userId)
+
+        return mutableListOf()
     }
+
 
     override fun getApplicationsByOrg(orgId: String): MutableList<Application>
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkOrgId(orgId)
+
+        return mutableListOf()
     }
+
 
     override fun searchByName(searchTerm: String): MutableList<Application>
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkSearchTerm(searchTerm)
+
+        return mutableListOf()
     }
 
     override fun getRecentlyCreated(): MutableList<Application>
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return mutableListOf()
     }
 
+    private fun checkAppId(appId: String)
+    {
+        checkThat(appId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validApplicationId())
+    }
+
+    private fun checkOrgId(orgId: String)
+    {
+        checkThat(orgId)
+                .usingMessage("Invalid Org ID: " + orgId)
+                .`is`(StringAssertions.validUUID())
+    }
+
+    private fun checkSearchTerm(searchTerm: String)
+    {
+        checkThat(searchTerm)
+                .throwing(InvalidArgumentException::class.java)
+                .usingMessage("Search term cannot be empty")
+                .`is`(nonEmptyString())
+                .usingMessage("Search term must have at least 2 characters")
+                .`is`(stringWithLengthGreaterThanOrEqualTo(2))
+    }
+
+    private fun checkUserId(userId: String)
+    {
+        checkThat(userId)
+                .throwing(InvalidArgumentException::class.java)
+                .`is`(validUserId())
+    }
 }
