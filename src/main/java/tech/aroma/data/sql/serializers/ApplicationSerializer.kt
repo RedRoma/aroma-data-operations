@@ -16,13 +16,16 @@
 
 package tech.aroma.data.sql.serializers
 
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validApplication
 import tech.aroma.data.sql.*
-import tech.aroma.thrift.Application
+import tech.aroma.data.sql.serializers.Tables.Applications
+import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import java.sql.ResultSet
 import java.time.Duration
+import java.util.*
 
 
 /**
@@ -31,30 +34,98 @@ import java.time.Duration
  */
 internal class ApplicationSerializer : DatabaseSerializer<Application>
 {
+    private val LOG = LoggerFactory.getLogger(this.javaClass)
+
     override fun save(app: Application, timeToLive: Duration?, statement: String, database: JdbcOperations)
     {
         checkThat(app).`is`(validApplication())
 
         val appId = app.applicationId.asUUID()
-
+        val owners = app.owners.map(UUID::fromString).filterNotNull()
 
         database.update(statement,
                         appId,
                         app.name,
                         app.applicationDescription,
                         app.organizationId.asUUID(),
-                        app.programmingLanguage,
+                        app.programmingLanguage.toString(),
                         app.tier.toString(),
                         app.timeOfTokenExpiration.toTimestamp(),
-                        app.applicationIconMediaId.asUUID())
+                        app.applicationIconMediaId.asUUID(),
+                        owners)
     }
 
     override fun deserialize(resultSet: ResultSet): Application
     {
+        val row = resultSet
+
         val app = Application()
 
+        val appId = row.getString(Applications.APP_ID)
+        val appName = row.getString(Applications.APP_NAME)
+        val appDescription = row.getString(Applications.APP_DESCRIPTION)
+        val programmingLanguage = row.getString(Applications.PROGRAMMING_LANGUAGE).toProgrammingLanguage()
+        val timeProvisioned = row.getTimestamp(Applications.TIME_PROVISIONED)
+        val timeLastUpdated = row.getTimestamp(Applications.TIME_LAST_UPDATED)
+        val timeOfTokenExpiration = row.getTimestamp(Applications.TIME_OF_TOKEN_EXPIRATION)
+        val tier = row.getString(Applications.TIER).toTier()
+        val appIconId = row.getString(Applications.ICON_MEDIA_ID)
+
+        app.setApplicationId(appId)
+                .setName(appName)
+                .setApplicationDescription(appDescription)
+                .setProgrammingLanguage(programmingLanguage)
+                .setTier(tier)
+                .setApplicationIconMediaId(appIconId)
+
+
+        if (timeProvisioned != null)
+        {
+            app.setTimeOfProvisioning(timeProvisioned.time)
+        }
+
+        if (timeOfTokenExpiration != null)
+        {
+            app.setTimeOfTokenExpiration(timeOfTokenExpiration.time)
+        }
 
         return app
+    }
+
+    private fun String?.toTier(): Tier?
+    {
+        if (this == null)
+        {
+            return null
+        }
+
+        return try
+        {
+            Tier.valueOf(this)
+        }
+        catch (ex: RuntimeException)
+        {
+            LOG.error("Failed to extract Tier from [$this]")
+            return null
+        }
+    }
+
+    private fun String?.toProgrammingLanguage(): ProgrammingLanguage?
+    {
+        if (this == null)
+        {
+            return null
+        }
+
+        return try
+        {
+            ProgrammingLanguage.valueOf(this)
+        }
+        catch(ex: RuntimeException)
+        {
+            LOG.error("Failed to ascertain Programming Language from [$this]")
+            return null
+        }
     }
 
 }
