@@ -147,7 +147,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testDeleteApplication()
+    fun `delete application`()
     {
         val deleteAppSQL = Deletes.APPLICATION
         val deleteOwnersSQL = Deletes.APPLICATION_OWNERS
@@ -163,7 +163,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testGetById()
+    fun `get application by ID`()
     {
         val query = Queries.SELECT_APPLICATION
 
@@ -176,7 +176,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testContainsApp()
+    fun `contains app`()
     {
         val query = Queries.CHECK_APPLICATION
         val exists = one(booleans())
@@ -190,7 +190,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testGetApplicationsOwnedBy()
+    fun `get applications owned by`()
     {
         val query = Queries.SELECT_APPLICATION_BY_OWNER
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -205,7 +205,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testGetApplicationsByOrg()
+    fun `get applications by org`()
     {
         val query = Queries.SELECT_APPLICATION_BY_ORGANIZATION
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -218,7 +218,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testSearchByName()
+    fun `search by name`()
     {
         val query = Queries.SEARCH_APPLICATION_BY_NAME
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -233,7 +233,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun testGetRecentlyCreated()
+    fun `get recently created`()
     {
         val query = Queries.SELECT_RECENT_APPLICATION
         val apps = CollectionGenerators.listOf { Applications.application }
