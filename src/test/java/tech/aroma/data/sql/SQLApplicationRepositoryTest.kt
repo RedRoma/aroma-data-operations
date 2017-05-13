@@ -68,7 +68,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `save application`()
+    fun testSaveApp()
     {
         val statement = Inserts.APPLICATION
 
@@ -84,7 +84,7 @@ class SQLApplicationRepositoryTest
 
     @DontRepeat
     @Test
-    fun `save application when database fails`()
+    fun testSaveAppWhenDatabaseFails()
     {
         val statement = Inserts.APPLICATION
 
@@ -97,7 +97,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `save application owner when database fails`()
+    fun testSaveAppOwnerWhenDatabaseFails()
     {
         val owners = app.owners.toMutableList()
         val failingOwner = owners.removeAt(0)
@@ -120,7 +120,7 @@ class SQLApplicationRepositoryTest
 
     @DontRepeat
     @Test
-    fun `save application with bad args`()
+    fun testSaveAppWithBadArgs()
     {
         assertThrows {
             val emptyApp = Application()
@@ -150,7 +150,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `delete application`()
+    fun testDeleteApp()
     {
         val deleteAppSQL = Deletes.APPLICATION
         val deleteOwnersSQL = Deletes.APPLICATION_OWNERS
@@ -179,7 +179,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `get application by ID`()
+    fun testGetAppById()
     {
         val query = Queries.SELECT_APPLICATION
 
@@ -200,7 +200,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `contains app`()
+    fun testContainsApp()
     {
         val query = Queries.CHECK_APPLICATION
         val exists = one(booleans())
@@ -222,7 +222,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `get applications owned by`()
+    fun testGetAppsOwnedBy()
     {
         val query = Queries.SELECT_APPLICATION_BY_OWNER
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -245,7 +245,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `get applications by org`()
+    fun testGetAppsByOrg()
     {
         val query = Queries.SELECT_APPLICATION_BY_ORGANIZATION
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -266,7 +266,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `search by name`()
+    fun testSearchByName()
     {
         val query = Queries.SEARCH_APPLICATION_BY_NAME
         val apps = CollectionGenerators.listOf { Applications.application }
@@ -288,7 +288,7 @@ class SQLApplicationRepositoryTest
     }
 
     @Test
-    fun `get recently created`()
+    fun testGetRecentlyCreated()
     {
         val query = Queries.SELECT_RECENT_APPLICATION
         val apps = CollectionGenerators.listOf { Applications.application }
