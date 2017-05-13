@@ -27,13 +27,16 @@ import tech.aroma.data.sql.asUUID
 import tech.aroma.data.sql.serializers.Tables.Applications
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.thrift.Application
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.*
+import java.lang.IllegalArgumentException
 import java.sql.ResultSet
 import java.util.*
-import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class ApplicationSerializerTest
 {
 
@@ -90,6 +93,39 @@ class ApplicationSerializerTest
                                 app.timeOfTokenExpiration.toTimestamp(),
                                 app.applicationIconMediaId.asUUID(),
                                 owners)
+    }
+
+    @Test
+    fun `test save with bad args`()
+    {
+        assertThrows {
+            val emptyApp = Application()
+            instance.save(emptyApp, null, query, database)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+
+        assertThrows {
+            val emptySQL = ""
+            instance.save(app, null, emptySQL, database)
+        }
+
+        assertThrows {
+            val appWithoutId = app.deepCopy()
+            appWithoutId.unsetApplicationId()
+            instance.save(appWithoutId, null, query, database)
+        }
+
+        assertThrows {
+            val appWithNoOwners = app.deepCopy().setOwners(emptySet())
+            instance.save(appWithNoOwners, null, query, database)
+        }
+
+        assertThrows {
+            val appWithInvalidOwners = app.deepCopy()
+            val owners = CollectionGenerators.listOf(alphabeticString(), 10)
+            appWithInvalidOwners.owners = owners.toMutableSet()
+
+            instance.save(appWithInvalidOwners, null, query, database)
+        }
     }
 
     @Test

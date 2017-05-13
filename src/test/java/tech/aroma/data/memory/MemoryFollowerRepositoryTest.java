@@ -30,71 +30,70 @@ import tech.sirwellington.alchemy.test.junit.runners.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
+import static tech.aroma.thrift.generators.UserGenerators.users;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
 /**
- *
  * @author SirWellington
  */
 @Repeat(100)
 @RunWith(AlchemyTestRunner.class)
-public class MemoryFollowerRepositoryTest 
+public class MemoryFollowerRepositoryTest
 {
 
     @GeneratePojo
     private Application application;
-    
+
     @GenerateString(UUID)
     private String applicationId;
-    
-    @GenerateList(Application.class)
+
     private List<Application> appsFollowed;
-    
+
     @GeneratePojo
     private User user;
-    
+
     @GenerateString(UUID)
     private String userId;
-    
-    @GenerateList(User.class)
+
     private List<User> followers;
-    
+
     private MemoryFollowerRepository instance;
-    
+
     @Before
     public void setUp()
     {
         application = one(applications());
         applicationId = application.applicationId;
         application.unsetOrganizationId();
-        
+
         user.userId = userId;
-        
-        appsFollowed.forEach((Application app) -> app.setApplicationId(one(uuids)));
+
+        appsFollowed = listOf(applications(), 10);
         appsFollowed.forEach(Application::unsetOrganizationId);
-        
-        followers.forEach((User user) -> user.setUserId(one(uuids)));
-        
+
+        followers = listOf(users(), 20);
+
         instance = new MemoryFollowerRepository();
     }
 
     @Test
     public void testSaveFollowing() throws Exception
     {
-        
+
         instance.saveFollowing(user, application);
-        
+
         assertThat(instance.followingExists(userId, applicationId), is(true));
-        
+
         List<Application> appsFollowed = instance.getApplicationsFollowedBy(userId);
         assertThat(appsFollowed, contains(application));
-        
+
         List<User> applicationFollowers = instance.getApplicationFollowers(applicationId);
         assertThat(applicationFollowers, contains(user));
-        
+
     }
 
     @Test
@@ -102,11 +101,11 @@ public class MemoryFollowerRepositoryTest
     {
         instance.saveFollowing(user, application);
         assertThat(instance.followingExists(userId, applicationId), is(true));
-        
+
         instance.deleteFollowing(userId, applicationId);
         assertThat(instance.followingExists(userId, applicationId), is(false));
     }
-    
+
     @DontRepeat
     @Test
     public void testDeleteFollowingWhenNone() throws Exception
@@ -119,7 +118,7 @@ public class MemoryFollowerRepositoryTest
     {
         boolean result = instance.followingExists(userId, applicationId);
         assertThat(result, is(false));
-        
+
         instance.saveFollowing(user, application);
         result = instance.followingExists(userId, applicationId);
         assertThat(result, is(true));
@@ -128,11 +127,11 @@ public class MemoryFollowerRepositoryTest
     @Test
     public void testGetApplicationsFollowedBy() throws Exception
     {
-        for(Application app : this.appsFollowed)
+        for (Application app : this.appsFollowed)
         {
             instance.saveFollowing(user, app);
         }
-        
+
         List<Application> result = instance.getApplicationsFollowedBy(userId);
         assertThat(result, notNullValue());
         assertThat(Sets.containTheSameElements(result, appsFollowed), is(true));
@@ -141,11 +140,11 @@ public class MemoryFollowerRepositoryTest
     @Test
     public void testGetApplicationFollowers() throws Exception
     {
-        for(User follower : this.followers)
+        for (User follower : this.followers)
         {
             instance.saveFollowing(follower, application);
         }
-        
+
         List<User> result = instance.getApplicationFollowers(applicationId);
         assertThat(result, notNullValue());
         assertThat(Sets.containTheSameElements(result, followers), is(true));
