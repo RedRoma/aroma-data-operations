@@ -64,8 +64,9 @@ final class SQLStatements
     {
         static final String CHECK_APPLICATION = loadSQLFile("tech/aroma/sql/queries/check_application.sql");
         static final String SELECT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_application.sql");
+        static final String SELECT_RECENT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_recent_applications.sql");
         static final String SEARCH_APPLICATION_BY_NAME = loadSQLFile("tech/aroma/sql/queries/search_application_by_name.sql");
-        static final String SELECT_APPLICATION_BY_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
+        static final String SELECT_APPLICATION_BY_OWNER = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
         static final String SELECT_APPLICATION_BY_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_application_by_organization.sql");
         static final String SELECT_APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_owners.sql");
 

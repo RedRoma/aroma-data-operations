@@ -55,11 +55,12 @@ public class SQLStatementsTest
     {
         assertThat(SQLStatements.Queries.CHECK_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_RECENT_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SEARCH_APPLICATION_BY_NAME, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_ORGANIZATION, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_OWNERS, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_OWNER, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Queries.CHECK_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.COUNT_MESSAGES, not(isEmptyOrNullString()));

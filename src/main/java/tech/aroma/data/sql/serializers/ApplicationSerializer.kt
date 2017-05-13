@@ -69,7 +69,6 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
         val appDescription = row.getString(Applications.APP_DESCRIPTION)
         val programmingLanguage = row.getString(Applications.PROGRAMMING_LANGUAGE).toProgrammingLanguage()
         val timeProvisioned = row.getTimestamp(Applications.TIME_PROVISIONED)
-        val timeLastUpdated = row.getTimestamp(Applications.TIME_LAST_UPDATED)
         val timeOfTokenExpiration = row.getTimestamp(Applications.TIME_OF_TOKEN_EXPIRATION)
         val tier = row.getString(Applications.TIER).toTier()
         val appIconId = row.getString(Applications.ICON_MEDIA_ID)
