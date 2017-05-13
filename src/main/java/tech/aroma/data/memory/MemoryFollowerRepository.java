@@ -34,7 +34,7 @@ import tech.aroma.thrift.exceptions.InvalidArgumentException;
 import static tech.aroma.data.assertions.RequestAssertions.validApplication;
 import static tech.aroma.data.assertions.RequestAssertions.validUser;
 import static tech.sirwellington.alchemy.arguments.Arguments.*;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
  *

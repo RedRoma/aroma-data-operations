@@ -37,7 +37,7 @@ import static java.util.stream.Collectors.toSet;
 import static tech.aroma.data.assertions.RequestAssertions.*;
 import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.keyInMap;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
  *
