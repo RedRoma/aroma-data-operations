@@ -21,9 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.lists.Lists;
+import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.*;
 import tech.aroma.thrift.channels.*;
+import tech.aroma.thrift.generators.ApplicationGenerators;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 import tech.sirwellington.alchemy.generator.EnumGenerators;
@@ -86,8 +88,11 @@ public class RequestAssertionsTest
     @Before
     public void setUp()
     {
+
+        app = ApplicationGenerators.applications().get();
         app.applicationId = validId;
         app.organizationId = validId;
+
         message.messageId = validId;
         message.applicationId = validId;
         user.userId = validId;
@@ -100,8 +105,7 @@ public class RequestAssertionsTest
     @Test
     public void testConstuctor()
     {
-        assertThrows(() -> new RequestAssertions())
-            .isInstanceOf(IllegalAccessException.class);
+        assertThrows(RequestAssertions::new).isInstanceOf(IllegalAccessException.class);
     }
 
     @Test
@@ -124,6 +128,14 @@ public class RequestAssertionsTest
 
         assertThrows(() -> assertion.check(appWithInvalidId))
             .isInstanceOf(FailedAssertionException.class);
+
+        Application appWithoutOwners = new Application(app).setOwners(Sets.emptySet());
+        assertThrows(() -> assertion.check(appWithoutOwners))
+                .isInstanceOf(FailedAssertionException.class);
+
+        Application appWithInvalidOwners = new Application(app)
+                .setOwners(Sets.copyOf(listOf(alphabeticString())));
+        assertThrows(() -> assertion.check(appWithInvalidOwners));
     }
 
     @Test

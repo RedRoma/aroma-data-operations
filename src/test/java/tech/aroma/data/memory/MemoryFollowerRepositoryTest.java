@@ -24,10 +24,12 @@ import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
+import tech.aroma.thrift.generators.ApplicationGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
@@ -65,13 +67,14 @@ public class MemoryFollowerRepositoryTest
     @Before
     public void setUp()
     {
-        application.applicationId = applicationId;
+        application = one(applications());
+        applicationId = application.applicationId;
         application.unsetOrganizationId();
         
         user.userId = userId;
         
         appsFollowed.forEach((Application app) -> app.setApplicationId(one(uuids)));
-        appsFollowed.forEach(app -> app.unsetOrganizationId());
+        appsFollowed.forEach(Application::unsetOrganizationId);
         
         followers.forEach((User user) -> user.setUserId(one(uuids)));
         

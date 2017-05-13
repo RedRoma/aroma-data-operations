@@ -17,8 +17,7 @@ package tech.aroma.data.sql.serializers
  */
 
 import com.nhaarman.mockito_kotlin.*
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
@@ -65,6 +64,11 @@ class ApplicationSerializerTest
         orgId = app.organizationId
         owners = app.owners
 
+        app.totalMessagesSent = 0
+        app.unsetTotalMessagesSent()
+        app.unsetFollowers()
+        app.followers = emptySet()
+
         ownerId = Lists.oneOf(app.owners.toList())
     }
 
@@ -95,7 +99,7 @@ class ApplicationSerializerTest
 
         val result = instance.deserialize(results)
 
-        assertEquals(app, result)
+        Assert.assertEquals(app, result)
     }
 
     private fun ResultSet.prepareFor(app: Application)

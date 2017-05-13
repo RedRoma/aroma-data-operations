@@ -18,6 +18,7 @@ package tech.aroma.data
 
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.generators.ApplicationGenerators
 import tech.sirwellington.alchemy.generator.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
@@ -64,25 +65,7 @@ class AromaGenerators
 
         val owners: Set<String> get() = CollectionGenerators.listOf(uuids, 5).toSet()
 
-        val application: Application
-            get()
-            {
-                val app = Application()
-                app.applicationId = id
-                app.organizationId = id
-                app.name = name
-                app.applicationDescription = name
-                app.tier = tier
-                app.programmingLanguage = programmingLanguage
-                app.applicationIconMediaId = id
-                app.timeOfTokenExpiration = Times.futureTimes
-                app.timeOfProvisioning = Times.pastTimes
-                app.owners = owners
-
-                app.unsetIcon()
-
-                return app
-            }
+        val application: Application get() = ApplicationGenerators.applications().get()
     }
 
     object Tokens
