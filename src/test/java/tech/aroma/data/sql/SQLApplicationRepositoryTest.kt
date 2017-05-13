@@ -23,17 +23,19 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
-import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.StringGenerators.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
@@ -51,6 +53,7 @@ class SQLApplicationRepositoryTest
     private lateinit var app: Application
     private lateinit var appId: String
     private lateinit var orgId: String
+    private lateinit var apps: List<Application>
 
     @GenerateString(ALPHABETIC)
     private lateinit var badId: String
@@ -65,6 +68,8 @@ class SQLApplicationRepositoryTest
         app = AromaGenerators.Applications.application
         appId = app.applicationId
         orgId = app.organizationId
+
+        apps = CollectionGenerators.listOf { Applications.application}
     }
 
     @Test
@@ -178,6 +183,19 @@ class SQLApplicationRepositoryTest
         }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteAppWhenDatabaseFails()
+    {
+        val statement = Deletes.APPLICATION
+
+        whenever(database.update(statement, appId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteApplication(appId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetAppById()
     {
@@ -197,6 +215,29 @@ class SQLApplicationRepositoryTest
     {
         assertThrows { instance.getById("") }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.getById(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetByIdWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_APPLICATION
+        whenever(database.queryForObject(sql, serializer, appId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getById(appId) }.isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @Test
+    fun testGetByIdWhenAppDoesNotExist()
+    {
+        val sql = Queries.SELECT_APPLICATION
+
+        whenever(database.queryForObject(sql, serializer, appId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException(0))
+
+        assertThrows { instance.getById(appId) }
+                .isInstanceOf(DoesNotExistException::class.java)
     }
 
     @Test
@@ -221,11 +262,22 @@ class SQLApplicationRepositoryTest
         assertThrows { instance.containsApplication(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testContainsAppWhenDatabaseFails()
+    {
+        val sql = Queries.CHECK_APPLICATION
+        whenever(database.queryForObject(sql, Boolean::class.java, appId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.containsApplication(appId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetAppsOwnedBy()
     {
         val query = Queries.SELECT_APPLICATION_BY_OWNER
-        val apps = CollectionGenerators.listOf { Applications.application }
         val owner = Lists.oneOf(app.owners.toList())
 
         whenever(database.query(query, serializer, owner.toUUID()))
@@ -244,11 +296,24 @@ class SQLApplicationRepositoryTest
         assertThrows { instance.getApplicationsOwnedBy(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testGetAppsOwnedByWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_APPLICATION_BY_OWNER
+        val owner = one(uuids)
+
+        whenever(database.query(sql, serializer, owner.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getApplicationsOwnedBy(owner) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetAppsByOrg()
     {
         val query = Queries.SELECT_APPLICATION_BY_ORGANIZATION
-        val apps = CollectionGenerators.listOf { Applications.application }
 
         whenever(database.query(query, serializer, orgId.toUUID()))
                 .thenReturn(apps)
@@ -265,11 +330,23 @@ class SQLApplicationRepositoryTest
         assertThrows { instance.getApplicationsByOrg(badId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testGetAppsByOrgWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_APPLICATION_BY_ORGANIZATION
+
+        whenever(database.query(sql, serializer, orgId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getApplicationsByOrg(orgId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testSearchByName()
     {
         val query = Queries.SEARCH_APPLICATION_BY_NAME
-        val apps = CollectionGenerators.listOf { Applications.application }
 
         val searchTerm = one(alphabeticString())
 
@@ -280,6 +357,7 @@ class SQLApplicationRepositoryTest
         assertEquals(apps, result)
     }
 
+    @DontRepeat
     @Test
     fun testSearchByNameWithBadArgs()
     {
@@ -287,11 +365,25 @@ class SQLApplicationRepositoryTest
         assertThrows { instance.searchByName("2") }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testSearchByNameWhenDatabaseFails()
+    {
+        val sql = Queries.SEARCH_APPLICATION_BY_NAME
+        val term = badId
+        val expected = "%$term%"
+
+        whenever(database.query(sql, serializer, expected))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.searchByName(term) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetRecentlyCreated()
     {
         val query = Queries.SELECT_RECENT_APPLICATION
-        val apps = CollectionGenerators.listOf { Applications.application }
 
         whenever(database.query(query, serializer))
                 .thenReturn(apps)
@@ -299,5 +391,17 @@ class SQLApplicationRepositoryTest
         val result = instance.recentlyCreated
 
         assertEquals(apps, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetRecentlyCreatedWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_RECENT_APPLICATION
+
+        whenever(database.query(sql, serializer))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.recentlyCreated }.isInstanceOf(OperationFailedException::class.java)
     }
 }
