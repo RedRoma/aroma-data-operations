@@ -24,7 +24,6 @@ import com.datastax.driver.core.Session;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.lists.Lists;
-import tech.aroma.data.AromaGenerators;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest;
