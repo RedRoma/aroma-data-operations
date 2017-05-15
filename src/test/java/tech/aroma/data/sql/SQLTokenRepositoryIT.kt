@@ -23,7 +23,7 @@ import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.sets.Sets
-import tech.aroma.data.AromaGenerators
+import tech.aroma.data.AromaGenerators.Tokens
 import tech.aroma.data.sql.serializers.TokenSerializer
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.exceptions.InvalidTokenException
@@ -55,7 +55,7 @@ class SQLTokenRepositoryIT
     private lateinit var token: AuthenticationToken
 
     private lateinit var tokenId: String
-    private val tokenUuid get() = tokenId.asUUID()
+    private val tokenUuid get() = tokenId.toUUID()
     private lateinit var ownerId: String
     private lateinit var orgId: String
 
@@ -66,7 +66,7 @@ class SQLTokenRepositoryIT
     @Before
     fun setUp()
     {
-        token = AromaGenerators.token
+        token = Tokens.token
         tokenId = token.tokenId
         orgId = token.organizationId
         ownerId = token.ownerId
@@ -162,12 +162,12 @@ class SQLTokenRepositoryIT
         assertFalse { instance.containsToken(tokenId) }
     }
 
-    private fun createTokensFor(owner: String) : List<AuthenticationToken>
+    private fun createTokensFor(owner: String): List<AuthenticationToken>
     {
-        return listOf { AromaGenerators.token.setOwnerId(ownerId) }
+        return listOf { Tokens.token.setOwnerId(ownerId) }
     }
 
-    private inline fun <T: Any> List<T>.asSet(): Set<T>
+    private inline fun <T : Any> List<T>.asSet(): Set<T>
     {
         return Sets.copyOf(this)
     }

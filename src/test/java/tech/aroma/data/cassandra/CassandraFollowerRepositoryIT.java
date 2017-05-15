@@ -31,6 +31,8 @@ import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -62,7 +64,6 @@ public class CassandraFollowerRepositoryIT
     @GenerateString(UUID)
     private String userId;
     
-    @GeneratePojo
     private Application app;
     
     @GeneratePojo
@@ -88,7 +89,8 @@ public class CassandraFollowerRepositoryIT
 
     private void setupData() throws Exception
     {
-        app.applicationId = appId;
+        app = one(applications());
+        appId = app.applicationId;
         user.userId = userId;
         
         app.unsetOrganizationId();

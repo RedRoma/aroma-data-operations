@@ -43,9 +43,9 @@ internal class TokenSerializer : DatabaseSerializer<AuthenticationToken>
         val token = `object`
 
         database.update(statement,
-                        token.tokenId.asUUID(),
-                        token.ownerId.asUUID(),
-                        token.organizationId.asUUID(),
+                        token.tokenId.toUUID(),
+                        token.ownerId.toUUID(),
+                        token.organizationId.toUUID(),
                         token.ownerName,
                         token.timeOfCreation.toTimestamp(),
                         token.timeOfExpiration.toTimestamp(),

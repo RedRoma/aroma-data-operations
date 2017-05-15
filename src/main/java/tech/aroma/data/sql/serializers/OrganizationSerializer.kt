@@ -18,9 +18,8 @@ package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
-import tech.aroma.data.sql.DatabaseSerializer
+import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Tables.Organizations
-import tech.aroma.data.sql.asUUID
 import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
@@ -47,13 +46,10 @@ internal class OrganizationSerializer : DatabaseSerializer<Organization>
         checkThat(statement)
                 .`is`(nonEmptyString())
 
-        val owners = org.owners?.joinToString(separator = ",")
-
-
         database?.update(statement,
-                         org.organizationId.asUUID(),
+                         org.organizationId.toUUID(),
                          org.organizationName,
-                         owners,
+                         org.owners.toCommaSeparatedList(),
                          org.logoLink,
                          org.industry?.toString(),
                          org.organizationEmail,

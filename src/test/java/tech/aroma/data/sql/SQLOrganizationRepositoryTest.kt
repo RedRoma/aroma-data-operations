@@ -31,8 +31,6 @@ import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
-import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
@@ -43,7 +41,6 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
-import java.sql.Timestamp
 
 /**
  * @author SirWellington
@@ -133,7 +130,7 @@ class SQLOrganizationRepositoryTest
     fun testDeleteOrganization()
     {
         val getOrg = Queries.SELECT_ORGANIZATION
-        whenever(database.queryForObject(getOrg, serializer, orgId.asUUID()))
+        whenever(database.queryForObject(getOrg, serializer, orgId.toUUID()))
                 .thenReturn(organization)
 
         val statementToDeleteMembers = Deletes.ORGANIZATION_ALL_MEMBERS
@@ -143,8 +140,8 @@ class SQLOrganizationRepositoryTest
 
         val inOrder = inOrder(database)
 
-        inOrder.verify(database).update(statementToDeleteMembers, orgId.asUUID())
-        inOrder.verify(database).update(statementToDeleteOrg, orgId.asUUID())
+        inOrder.verify(database).update(statementToDeleteMembers, orgId.toUUID())
+        inOrder.verify(database).update(statementToDeleteOrg, orgId.toUUID())
     }
 
     @DontRepeat
@@ -153,12 +150,12 @@ class SQLOrganizationRepositoryTest
     {
 
         val getOrg = Queries.SELECT_ORGANIZATION
-        whenever(database.queryForObject(getOrg, serializer, orgId.asUUID()))
+        whenever(database.queryForObject(getOrg, serializer, orgId.toUUID()))
                 .thenReturn(organization)
 
         Mockito.doThrow(RuntimeException())
                 .whenever(database)
-                .update(any(), eq(orgId.asUUID()))
+                .update(any(), eq(orgId.toUUID()))
 
         assertThrows { instance.deleteOrganization(orgId) }
                 .isInstanceOf(OperationFailedException::class.java)
@@ -193,7 +190,7 @@ class SQLOrganizationRepositoryTest
         val expected = one(booleans())!!
         val query = Queries.CHECK_ORGANIZATION
 
-        whenever(database.queryForObject(query, Boolean::class.java, orgId.asUUID()))
+        whenever(database.queryForObject(query, Boolean::class.java, orgId.toUUID()))
                 .thenReturn(expected)
 
         val result = instance.containsOrganization(orgId)
@@ -225,7 +222,7 @@ class SQLOrganizationRepositoryTest
 
         Mockito.doThrow(RuntimeException())
                 .whenever(database)
-                .queryForObject(query, Boolean::class.java, orgId.asUUID())
+                .queryForObject(query, Boolean::class.java, orgId.toUUID())
 
         assertThrows { instance.containsOrganization(orgId) }
                 .isInstanceOf(OperationFailedException::class.java)
@@ -279,7 +276,7 @@ class SQLOrganizationRepositoryTest
     {
         val query = Queries.SELECT_ORGANIZATION
 
-        whenever(database.queryForObject(query, serializer, orgId.asUUID()))
+        whenever(database.queryForObject(query, serializer, orgId.toUUID()))
                 .thenReturn(organization)
 
         val expected = organization.owners.map { User().setUserId(it) }
@@ -312,7 +309,7 @@ class SQLOrganizationRepositoryTest
     {
         val query = Queries.SELECT_ORGANIZATION
 
-        whenever(database.queryForList(query, serializer, orgId.asUUID()))
+        whenever(database.queryForList(query, serializer, orgId.toUUID()))
                 .thenThrow(RuntimeException())
 
         val result = instance.getOrganizationOwners(orgId)
@@ -333,8 +330,8 @@ class SQLOrganizationRepositoryTest
 
         val arguments = argumentsCaptor.allValues
 
-        assertEquals(orgId.asUUID(), arguments[0])
-        assertEquals(userId.asUUID(), arguments[1])
+        assertEquals(orgId.toUUID(), arguments[0])
+        assertEquals(userId.toUUID(), arguments[1])
     }
 
     @DontRepeat
@@ -361,7 +358,7 @@ class SQLOrganizationRepositoryTest
         val statement = Inserts.ORGANIZATION_MEMBER
         val user = User().setUserId(userId)
 
-        whenever(database.update(eq(statement), eq(orgId.asUUID()), eq(userId.asUUID())))
+        whenever(database.update(eq(statement), eq(orgId.toUUID()), eq(userId.toUUID())))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.saveMemberInOrganization(orgId, user) }
@@ -374,7 +371,7 @@ class SQLOrganizationRepositoryTest
         val expected = one(booleans())
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
 
-        whenever(database.queryForObject(query, Boolean::class.java, orgId.asUUID(), userId.asUUID()))
+        whenever(database.queryForObject(query, Boolean::class.java, orgId.toUUID(), userId.toUUID()))
                 .thenReturn(expected)
 
         val result = instance.isMemberInOrganization(orgId, userId)
@@ -401,7 +398,7 @@ class SQLOrganizationRepositoryTest
     {
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
 
-        whenever(database.queryForObject(query, Boolean::class.java, orgId.asUUID(), userId.asUUID()))
+        whenever(database.queryForObject(query, Boolean::class.java, orgId.toUUID(), userId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.isMemberInOrganization(orgId, userId) }
@@ -414,7 +411,7 @@ class SQLOrganizationRepositoryTest
         val query = Queries.SELECT_ORGANIZATION_MEMBERS
         val members = CollectionGenerators.listOf(alphabeticString(), 10)
 
-        whenever(database.queryForList(query, String::class.java, orgId.asUUID()))
+        whenever(database.queryForList(query, String::class.java, orgId.toUUID()))
                 .thenReturn(members)
 
         val result = instance.getOrganizationMembers(orgId)
@@ -436,7 +433,7 @@ class SQLOrganizationRepositoryTest
     {
         val query = Queries.SELECT_ORGANIZATION_MEMBERS
 
-        whenever(database.queryForList(query, String::class.java, orgId.asUUID()))
+        whenever(database.queryForList(query, String::class.java, orgId.toUUID()))
                 .thenThrow(RuntimeException())
 
         val results = instance.getOrganizationMembers(orgId)
@@ -450,7 +447,7 @@ class SQLOrganizationRepositoryTest
 
         instance.deleteMember(orgId, userId)
 
-        verify(database).update(query, orgId.asUUID(), userId.asUUID())
+        verify(database).update(query, orgId.toUUID(), userId.toUUID())
     }
 
     @DontRepeat
@@ -472,7 +469,7 @@ class SQLOrganizationRepositoryTest
     {
         val statement = Deletes.ORGANIZATION_MEMBER
 
-        whenever(database.update(statement, orgId.asUUID(), userId.asUUID()))
+        whenever(database.update(statement, orgId.toUUID(), userId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMember(orgId, userId) }
@@ -486,7 +483,7 @@ class SQLOrganizationRepositoryTest
 
         instance.deleteAllMembers(orgId)
 
-        verify(database).update(statement, orgId.asUUID())
+        verify(database).update(statement, orgId.toUUID())
     }
 
     @DontRepeat
@@ -505,7 +502,7 @@ class SQLOrganizationRepositoryTest
     {
         val statement = Deletes.ORGANIZATION_ALL_MEMBERS
 
-        whenever(database.update(statement, orgId.asUUID()))
+        whenever(database.update(statement, orgId.toUUID()))
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteAllMembers(orgId) }

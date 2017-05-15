@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
+import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
@@ -71,15 +72,12 @@ public class CassandraFollowerRepositoryTest
     @GeneratePojo
     private User user;
 
-    @GeneratePojo
     private Application app;
+    private String appId;
 
     @GenerateString(UUID)
     private String userId;
 
-    @GenerateString(UUID)
-    private String appId;
-    
     @GenerateList(Application.class)
     private List<Application> apps;
     
@@ -94,8 +92,9 @@ public class CassandraFollowerRepositoryTest
         createStubs();
         
         instance = new CassandraFollowerRepository(cassandra, userMapper, applicationMapper);
-        
-        app.applicationId = appId;
+
+        app = one(applications());
+        appId = app.applicationId;
         app.unsetOrganizationId();
         user.userId = userId;
     }

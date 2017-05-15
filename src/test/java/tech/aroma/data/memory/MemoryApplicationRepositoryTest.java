@@ -27,12 +27,16 @@ import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
 import tech.aroma.thrift.exceptions.InvalidArgumentException;
+import tech.aroma.thrift.generators.ApplicationGenerators;
+import tech.aroma.thrift.generators.UserGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.integers;
 import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
@@ -43,37 +47,32 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 /**
  * @author SirWellington
  */
-@Repeat(100)
+@Repeat
 @RunWith(AlchemyTestRunner.class)
 public class MemoryApplicationRepositoryTest
 {
 
-    @GeneratePojo
-    private Application application;
+    private Application app;
+    private String appId;
+    private String orgId;
 
-    @GenerateList(Application.class)
     private List<Application> applications;
 
-    @GenerateString(UUID)
-    private String applicationId;
-
     private MemoryApplicationRepository instance;
-
-    @GenerateString(UUID)
-    private String orgId;
 
     @Before
     public void setUp()
     {
-        application.applicationId = applicationId;
-        application.organizationId = orgId;
+        app = one(ApplicationGenerators.applications());
+        appId = app.applicationId;
+        orgId = app.organizationId;
 
         instance = new MemoryApplicationRepository();
 
-        applications = applications.stream()
-                                   .map(app -> app.setApplicationId(one(uuids)))
-                                   .map(app -> app.setOrganizationId(orgId))
-                                   .collect(toList());
+        applications = listOf(ApplicationGenerators.applications(), 10)
+                            .stream()
+                            .map(app -> app.setOrganizationId(orgId))
+                            .collect(toList());
     }
 
     private void saveApplications(List<Application> applications) throws TException
@@ -87,10 +86,10 @@ public class MemoryApplicationRepositoryTest
     @Test
     public void testSaveApplication() throws Exception
     {
-        instance.saveApplication(application);
+        instance.saveApplication(app);
 
-        Application result = instance.getById(applicationId);
-        assertThat(result, is(application));
+        Application result = instance.getById(appId);
+        assertThat(result, is(app));
     }
 
     @DontRepeat
@@ -109,28 +108,28 @@ public class MemoryApplicationRepositoryTest
     @Test
     public void testDeleteApplication() throws Exception
     {
-        instance.saveApplication(application);
+        instance.saveApplication(app);
 
-        instance.deleteApplication(applicationId);
+        instance.deleteApplication(appId);
 
-        assertThat(instance.containsApplication(applicationId), is(false));
+        assertThat(instance.containsApplication(appId), is(false));
     }
 
     @DontRepeat
     @Test
     public void testDeleteApplicationWhenIDDoesNotExists() throws Exception
     {
-        assertThrows(() -> instance.deleteApplication(applicationId))
+        assertThrows(() -> instance.deleteApplication(appId))
                 .isInstanceOf(ApplicationDoesNotExistException.class);
     }
 
     @Test
     public void testGetById() throws Exception
     {
-        instance.saveApplication(application);
+        instance.saveApplication(app);
 
-        Application result = instance.getById(applicationId);
-        assertThat(result, is(application));
+        Application result = instance.getById(appId);
+        assertThat(result, is(app));
 
         String randomId = one(uuids);
         assertThrows(() -> instance.getById(randomId))
@@ -140,14 +139,14 @@ public class MemoryApplicationRepositoryTest
     @Test
     public void testGetApplicationsOwnedBy() throws Exception
     {
-        User user = one(pojos(User.class));
+        User user = one(UserGenerators.users());
 
         applications.forEach(app -> app.owners.add(user.userId));
 
         saveApplications(applications);
 
         List<Application> result = instance.getApplicationsOwnedBy(user.userId);
-        assertThat(Sets.containTheSameElements(applications, result), is(true));
+        assertThat(containTheSameElements(applications, result), is(true));
     }
 
     @DontRepeat
@@ -169,7 +168,7 @@ public class MemoryApplicationRepositoryTest
         saveApplications(applications);
 
         List<Application> result = instance.getApplicationsByOrg(orgId);
-        assertThat(Sets.containTheSameElements(result, applications), is(false));
+        assertThat(containTheSameElements(result, applications), is(false));
     }
 
     @DontRepeat
@@ -188,11 +187,11 @@ public class MemoryApplicationRepositoryTest
         String name = one(alphabeticString(length));
         String term = name.substring(length / 2);
 
-        application.setName(name);
-        instance.saveApplication(application);
+        app.setName(name);
+        instance.saveApplication(app);
 
         List<Application> result = instance.searchByName(term);
-        assertThat(result, contains(application));
+        assertThat(result, contains(app));
     }
 
     @Test
@@ -202,15 +201,15 @@ public class MemoryApplicationRepositoryTest
 
         List<Application> result = instance.getRecentlyCreated();
         assertThat(result, not(empty()));
-        assertThat(Sets.containTheSameElements(result, applications), is(true));
+        assertThat(containTheSameElements(result, applications), is(true));
     }
 
     @Test
     public void testContains() throws Exception
     {
-        instance.saveApplication(application);
+        instance.saveApplication(app);
 
-        assertThat(instance.containsApplication(applicationId), is(true));
+        assertThat(instance.containsApplication(appId), is(true));
 
         String randomId = one(uuids);
         assertThat(instance.containsApplication(randomId), is(false));

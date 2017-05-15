@@ -42,8 +42,7 @@ import static tech.aroma.data.assertions.RequestAssertions.validUser;
 import static tech.aroma.data.cassandra.Tables.Users.TABLE_NAME_BY_GITHUB_PROFILE;
 import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
  * Stores user information in Cassandra.

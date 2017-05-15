@@ -16,11 +16,13 @@
 
 package tech.aroma.data
 
+import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.generators.ApplicationGenerators
+import tech.sirwellington.alchemy.generator.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
-import tech.sirwellington.alchemy.generator.TimeGenerators
 
 
 /**
@@ -34,8 +36,13 @@ class AromaGenerators
 
     companion object
     {
-
         val id: String get() = uuids.get()
+
+        val name: String get() = StringGenerators.alphabeticString().get()
+    }
+
+    object Times
+    {
 
         val pastTimes: Long
             get() = TimeGenerators.pastInstants().get().toEpochMilli()
@@ -46,6 +53,23 @@ class AromaGenerators
         val currentTimes: Long
             get() = TimeGenerators.presentInstants().get().toEpochMilli()
 
+    }
+
+    object Applications
+    {
+        val programmingLanguage: ProgrammingLanguage get() = EnumGenerators.enumValueOf(ProgrammingLanguage::class.java).get()
+
+        val tier: Tier get() = EnumGenerators.enumValueOf(Tier::class.java).get()
+
+        val owner: String get() = uuids.get()
+
+        val owners: Set<String> get() = CollectionGenerators.listOf(uuids, 5).toSet()
+
+        val application: Application get() = ApplicationGenerators.applications().get()
+    }
+
+    object Tokens
+    {
         val token: AuthenticationToken
             get()
             {
@@ -56,8 +80,8 @@ class AromaGenerators
                         .setTokenId(id)
                         .setOrganizationId(id)
                         .setOwnerId(id)
-                        .setTimeOfCreation(currentTimes)
-                        .setTimeOfExpiration(futureTimes)
+                        .setTimeOfCreation(Times.currentTimes)
+                        .setTimeOfExpiration(Times.futureTimes)
             }
     }
 

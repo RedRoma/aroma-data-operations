@@ -43,7 +43,7 @@ internal class MessageSerializer : DatabaseSerializer<Message>
         }
 
         database.update(statement,
-                        message.messageId.asUUID(),
+                        message.messageId.toUUID(),
                         message.title,
                         message.body,
                         message.urgency.toString(),
@@ -52,7 +52,7 @@ internal class MessageSerializer : DatabaseSerializer<Message>
                         expiration,
                         message.hostname,
                         message.macAddress,
-                        message.applicationId.asUUID(),
+                        message.applicationId.toUUID(),
                         message.applicationName,
                         message.deviceName)
 

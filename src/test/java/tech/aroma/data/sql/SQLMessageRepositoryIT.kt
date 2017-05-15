@@ -136,7 +136,6 @@ class SQLMessageRepositoryIT
     {
         val results = instance.getByHostname(message.hostname)
 
-        assertFalse { results == null }
         assertThat(results, isEmpty)
     }
 
@@ -157,7 +156,6 @@ class SQLMessageRepositoryIT
     {
         val result = instance.getByApplication(appId)
 
-        assertFalse { result == null }
         assertThat(result, isEmpty)
     }
 
@@ -177,7 +175,6 @@ class SQLMessageRepositoryIT
     {
         val results = instance.getByTitle(appId, message.title)
 
-        assertFalse { results == null }
         assertThat(results, isEmpty)
     }
 

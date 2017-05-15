@@ -17,10 +17,10 @@ import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import static tech.sirwellington.alchemy.arguments.Arguments.*;
 import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull;
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
+import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.nonEmptySet;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveLong;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString;
-import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID;
+import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
 /**
  * @author SirWellington
@@ -52,6 +52,14 @@ public final class RequestAssertions
 
             checkThat(app.applicationId)
                     .is(validApplicationId());
+
+            checkThat(app.owners)
+                    .usingMessage("app is missing owners")
+                    .is(nonEmptySet());
+
+            app.owners.forEach(owner -> checkThat(owner)
+                                            .usingMessage("Owner ID must be a valid user ID: " + owner)
+                                            .is(validUserId()));
 
             if (app.isSetOrganizationId())
             {
