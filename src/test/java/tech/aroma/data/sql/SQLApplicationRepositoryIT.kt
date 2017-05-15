@@ -20,18 +20,20 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import com.natpryce.hamkrest.isEmpty
 import org.junit.*
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
-import tech.sirwellington.alchemy.test.junit.runners.*
-
-import org.junit.Assert.*
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.serializers.ApplicationSerializer
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -243,11 +245,13 @@ class SQLApplicationRepositoryIT
     @Test
     fun testSearchByName()
     {
-        apps.forEach(instance::saveApplication)
         val app = Lists.oneOf(apps)
-        val name = app.name.substring(2..6)
+        app.name = one(alphabeticString(20))
 
-        val results = instance.searchByName(name)
+        apps.forEach(instance::saveApplication)
+        val searchTerm = app.name.substring(3..9)
+
+        val results = instance.searchByName(searchTerm)
         results.forEach { it.timeOfProvisioning = 0L }
         results.forEach { it.followers = emptySet() }
 
