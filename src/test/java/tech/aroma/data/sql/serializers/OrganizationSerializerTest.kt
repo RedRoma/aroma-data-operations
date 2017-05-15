@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.Tables.Organizations
+import tech.aroma.data.sql.toCommaSeparatedList
 import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Organization
 import tech.sirwellington.alchemy.generator.CollectionGenerators
@@ -94,7 +95,7 @@ class OrganizationSerializerTest
 
         assertEquals(orgId.toUUID(), arguments[0])
         assertEquals(org.organizationName, arguments[1])
-        assertEquals(org.owners.joinToString(separator = ","), arguments[2])
+        assertEquals(org.owners.toCommaSeparatedList(), arguments[2])
         assertEquals(org.logoLink, arguments[3])
         assertEquals(org.industry.toString(), arguments[4])
         assertEquals(org.organizationEmail, arguments[5])

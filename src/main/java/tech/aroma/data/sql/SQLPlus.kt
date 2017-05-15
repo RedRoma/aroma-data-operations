@@ -50,4 +50,4 @@ public fun String.toUUID(): UUID?
     }
 }
 
-internal fun Collection<String>.toCommaSeparatedList() = joinToString(separator = ",")
+internal fun <T> Iterable<T>.toCommaSeparatedList() = joinToString(separator = ",")

@@ -26,9 +26,8 @@ import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
+import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Tables.Applications
-import tech.aroma.data.sql.toTimestamp
-import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Application
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
@@ -84,8 +83,6 @@ class ApplicationSerializerTest
     {
         instance.save(app, null, query, database)
 
-        val owners = this.owners.joinToString(separator = ",")
-
         verify(database).update(query,
                                 appId.toUUID(),
                                 app.name,
@@ -95,7 +92,7 @@ class ApplicationSerializerTest
                                 app.tier.toString(),
                                 app.timeOfTokenExpiration.toTimestamp(),
                                 app.applicationIconMediaId.toUUID(),
-                                owners)
+                                owners.toCommaSeparatedList())
     }
 
     @DontRepeat
