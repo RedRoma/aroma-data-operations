@@ -190,7 +190,7 @@ internal class SQLApplicationRepository
         catch(ex: Exception)
         {
             val message = "Failed to get applications by Org: [$orgId]"
-            throw OperationFailedException("$message | ex.")
+            failWithMessage(message, ex)
         }
     }
 
