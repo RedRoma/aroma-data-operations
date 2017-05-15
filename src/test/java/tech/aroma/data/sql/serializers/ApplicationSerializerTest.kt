@@ -80,7 +80,7 @@ class ApplicationSerializerTest
 
 
     @Test
-    fun `Test - save`()
+    fun testSave()
     {
         instance.save(app, null, query, database)
 
@@ -100,7 +100,7 @@ class ApplicationSerializerTest
 
     @DontRepeat
     @Test
-    fun `Test - save when database fails`()
+    fun testSaveWhenDatabaseFails()
     {
         whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
                 .thenThrow(UncategorizedSQLException::class.java)
@@ -111,7 +111,7 @@ class ApplicationSerializerTest
     }
 
     @Test
-    fun `Test - save with bad args`()
+    fun testSaveWithBadArgs()
     {
         assertThrows {
             val emptyApp = Application()
@@ -144,7 +144,7 @@ class ApplicationSerializerTest
     }
 
     @Test
-    fun `Test - deserialize`()
+    fun testDeserialize()
     {
         results.prepareFor(app)
 
@@ -155,7 +155,7 @@ class ApplicationSerializerTest
 
     @DontRepeat
     @Test
-    fun `Test - deserialize when database fails`()
+    fun testDeserializeWhenDatabaseFails()
     {
         whenever(results.getString(any<String>()))
                 .thenThrow(SQLException())
