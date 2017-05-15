@@ -79,6 +79,7 @@ class SQLApplicationRepositoryIT
         app.totalMessagesSent = 0
         app.unsetTotalMessagesSent()
         app.followers = mutableSetOf()
+        app.timeOfProvisioning = 0L
 
         apps = CollectionGenerators.listOf({ Applications.application }, 5)
         apps.forEach { it.owners.add(ownerId) }
@@ -116,6 +117,42 @@ class SQLApplicationRepositoryIT
         instance.saveApplication(app)
 
         assertTrue { instance.containsApplication(appId) }
+    }
+
+    @Test
+    fun testSaveTwice()
+    {
+        instance.saveApplication(app)
+        assertTrue { instance.containsApplication(appId) }
+
+        instance.saveApplication(app)
+        assertTrue { instance.containsApplication(appId) }
+
+        val result = instance.getById(appId)
+
+        result.timeOfProvisioning = 0
+        result.totalMessagesSent = 0
+        result.followers = emptySet()
+
+        assertEquals(app, result)
+    }
+
+    @Test
+    fun testSaveWithDifferentOwners()
+    {
+        app.owners.add(ownerId)
+
+        instance.saveApplication(app)
+        assertTrue { instance.containsApplication(appId) }
+
+        var ownedApps = instance.getApplicationsOwnedBy(ownerId)
+        assertTrue { ownedApps.count { it.applicationId == appId } == 1 }
+
+        app.owners.remove(ownerId)
+        instance.saveApplication(app)
+
+        ownedApps = instance.getApplicationsOwnedBy(ownerId)
+        assertTrue { ownedApps.count { it.applicationId == appId } == 0 }
     }
 
     @Test

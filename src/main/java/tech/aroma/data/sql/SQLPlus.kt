@@ -49,3 +49,5 @@ public fun String.toUUID(): UUID?
         return null
     }
 }
+
+internal fun Collection<String>.toCommaSeparatedList() = joinToString(separator = ",")

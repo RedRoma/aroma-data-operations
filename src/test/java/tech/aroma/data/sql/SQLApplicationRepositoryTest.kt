@@ -70,7 +70,7 @@ class SQLApplicationRepositoryTest
         appId = app.applicationId
         orgId = app.organizationId
 
-        apps = CollectionGenerators.listOf { Applications.application}
+        apps = CollectionGenerators.listOf({ Applications.application}, 10)
     }
 
     @Test
@@ -81,6 +81,9 @@ class SQLApplicationRepositoryTest
         instance.saveApplication(app)
 
         verify(serializer).save(app, null, statement, database)
+
+        val sqlToDeleteNonOwners = Deletes.APPLICATION_NON_OWNERS
+        verify(database).update(sqlToDeleteNonOwners, app.owners.toCommaSeparatedList())
 
         app.owners.forEach { owner ->
             val insertOwner = Inserts.APPLICATION_OWNER

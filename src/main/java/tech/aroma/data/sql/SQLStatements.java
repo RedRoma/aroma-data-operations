@@ -40,6 +40,7 @@ final class SQLStatements
     {
         static final String APPLICATION = loadSQLFile("tech/aroma/sql/deletes/delete_application.sql");
         static final String APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners.sql");
+        static final String APPLICATION_NON_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners_not_in_set.sql");
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_message.sql");
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");

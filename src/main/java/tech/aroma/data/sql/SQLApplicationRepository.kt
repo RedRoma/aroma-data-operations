@@ -60,8 +60,27 @@ internal class SQLApplicationRepository
             failWithMessage(message, ex)
         }
 
-        val appId = application.applicationId
-        application.owners.forEach { this.insertOwner(appId, it) }
+        updateAppOwnersFor(application)
+    }
+
+    private fun updateAppOwnersFor(app: Application)
+    {
+        val appId = app.applicationId
+
+        app.owners.forEach { this.insertOwner(appId, it) }
+
+        val deleteNonOwnersSQL = Deletes.APPLICATION_NON_OWNERS
+
+        try
+        {
+            database.update(deleteNonOwnersSQL, app.owners.toCommaSeparatedList())
+        }
+        catch(ex: Exception)
+        {
+            val message = "Failed to remove all non-owners for App [$appId]"
+            LOG.warn(message, ex)
+        }
+
 
     }
 
