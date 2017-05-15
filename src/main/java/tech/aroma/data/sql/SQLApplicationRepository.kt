@@ -136,8 +136,7 @@ internal class SQLApplicationRepository
         catch(ex: Exception)
         {
             val message = "Failed to find an App by ID [$appId]"
-            LOG.error(message, ex)
-            throw OperationFailedException("$message | ${ex.message}")
+            failWithMessage(message, ex)
         }
     }
 
@@ -155,8 +154,7 @@ internal class SQLApplicationRepository
         catch (ex: Exception)
         {
             val message = "Failed to check if App exists: [$appId]"
-            LOG.error(message, ex)
-            throw OperationFailedException("$message | ${ex.message}")
+            failWithMessage(message, ex)
         }
 
     }
