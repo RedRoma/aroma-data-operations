@@ -35,6 +35,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_ALL_MEMBERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.TOKEN, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.USER, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -49,6 +50,8 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Inserts.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.TOKEN, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.USER, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -80,6 +83,10 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.CHECK_TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_TOKENS_FOR_OWNER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.SELECT_USER, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_USER_BY_EMAIL, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_RECENT_USERS, not(isEmptyOrNullString()));
     }
 
 }
