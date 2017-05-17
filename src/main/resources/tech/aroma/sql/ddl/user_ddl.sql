@@ -12,13 +12,14 @@ CREATE TABLE IF NOT EXISTS Users
     middle_name          TEXT,
     last_name            TEXT,
     full_name            TEXT,
-    email                TEXT[],
+    emails               TEXT[],
     roles                TEXT[],
     gender               TEXT,
     birthdate            DATE,
     profile_image_id     UUID,
     github_profile       TEXT,
     time_account_created TIMESTAMP DEFAULT now(),
+    time_last_updated    TIMESTAMP DEFAULT now(),
 
     PRIMARY KEY (user_id)
 );
@@ -31,4 +32,4 @@ CREATE INDEX IF NOT EXISTS Users_By_First_Name
     ON Users (first_name);
 
 CREATE INDEX IF NOT EXISTS Users_By_Email
-    ON Users (email);
+    ON Users (emails);
