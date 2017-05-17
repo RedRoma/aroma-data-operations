@@ -4,4 +4,4 @@
 
 SELECT *
 FROM users
-WHERE ? = ANY(emails)
+WHERE email = ?

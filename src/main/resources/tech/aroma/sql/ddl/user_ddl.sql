@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Users
     middle_name          TEXT,
     last_name            TEXT,
     full_name            TEXT,
-    emails               TEXT[],
+    email                TEXT,
     roles                TEXT[],
     gender               TEXT,
     birthdate            DATE,
@@ -32,4 +32,4 @@ CREATE INDEX IF NOT EXISTS Users_By_First_Name
     ON Users (first_name);
 
 CREATE INDEX IF NOT EXISTS Users_By_Email
-    ON Users (emails);
+    ON Users (email);
