@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
--- DELETES AN APPLICATION
+-- DELETES A USER
 ------------------------------------------------------------------------------
 
 DELETE
-FROM applications
-where app_id = ?
+FROM users
+WHERE user_id = ?
