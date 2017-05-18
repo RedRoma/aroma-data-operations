@@ -8,6 +8,7 @@ import com.google.inject.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import tech.aroma.data.hasInstance
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
@@ -27,6 +28,12 @@ class ModuleSerializersTest
         instance = ModuleSerializers()
 
         injector = Guice.createInjector(instance)
+    }
+
+    @Test
+    fun testHasAppSerializer()
+    {
+        assertTrue { injector.hasInstance<ApplicationSerializer>() }
     }
 
     @Test
@@ -53,13 +60,4 @@ class ModuleSerializersTest
         assertTrue { injector.hasInstance<DatabaseSerializer<User>>() }
     }
 
-    private inline fun <reified T> Injector.hasInstance(): Boolean
-    {
-        val literal = object : TypeLiteral<T>()
-        {}
-
-        val result = injector.getInstance(Key.get(literal)) ?: null
-
-        return result != null
-    }
 }
