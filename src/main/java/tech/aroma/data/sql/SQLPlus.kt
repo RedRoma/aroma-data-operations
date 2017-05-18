@@ -38,11 +38,18 @@ public fun Long.toTimestamp(): Timestamp
     return Timestamp(this)
 }
 
-public fun String.toUUID(): UUID?
+public fun Long.toDate(): java.sql.Date
 {
+    return java.sql.Date(this)
+}
+
+public fun String?.toUUID(): UUID?
+{
+    val string = this ?: return null
+
     return try
     {
-        UUID.fromString(this)
+        UUID.fromString(string)
     }
     catch (ex: Exception)
     {
