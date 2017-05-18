@@ -16,6 +16,8 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
@@ -24,9 +26,13 @@ import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.User
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import kotlin.test.assertEquals
@@ -74,6 +80,27 @@ class SQLUserRepositoryTest
         verifyZeroInteractions(database)
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveUserWithBadArgs()
+    {
+        assertThrows {
+            val emptyUser = User()
+            instance.saveUser(emptyUser)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidUser = User(user).setUserId(invalidId)
+            instance.saveUser(invalidUser)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        val shouldPass = {
+            val withoutEmail = User(user)
+            withoutEmail.unsetEmail()
+            instance.saveUser(withoutEmail)
+        }()
+    }
+
     @Test
     fun testGetUser()
     {
@@ -87,6 +114,14 @@ class SQLUserRepositoryTest
         assertEquals(user, result)
     }
 
+    @DontRepeat
+    @Test
+    fun testGetUserWithBadArgs()
+    {
+        assertThrows { instance.getUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun testDeleteUser()
     {
@@ -95,6 +130,14 @@ class SQLUserRepositoryTest
         instance.deleteUser(userId)
 
         verify(database).update(sql, userId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteUserWithBadArgs()
+    {
+        assertThrows { instance.deleteUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
@@ -112,6 +155,14 @@ class SQLUserRepositoryTest
         assertEquals(expected, result)
     }
 
+    @DontRepeat
+    @Test
+    fun testContainsUserWithBadArgs()
+    {
+        assertThrows { instance.containsUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun testGetUserByEmail()
     {
@@ -125,6 +176,16 @@ class SQLUserRepositoryTest
         assertEquals(user, result)
     }
 
+    @Test
+    fun testGetUserByEmailWithBadArgs()
+    {
+        assertThrows { instance.getUserByEmail("") }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidEmail = one(alphabeticString())
+            instance.getUserByEmail(invalidEmail)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+    }
 
     @Test
     fun testFindByGithub()
@@ -137,5 +198,38 @@ class SQLUserRepositoryTest
         val result = instance.findByGithubProfile(github)
 
         assertEquals(user, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testFindByGitHubWithBadArgs()
+    {
+        assertThrows { instance.findByGithubProfile("") }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @Test
+    fun testGetRecentlyCreated()
+    {
+        val sql = Queries.SELECT_RECENT_USERS
+        val expected = CollectionGenerators.listOf(users(), 10)
+
+        whenever(database.query(sql, serializer))
+                .thenReturn(expected)
+
+        val result = instance.recentlyCreatedUsers
+        assertEquals(expected, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetRecentlyCreatedWhenNone()
+    {
+        val sql = Queries.SELECT_RECENT_USERS
+
+        whenever(database.query(sql, serializer))
+                .thenReturn(emptyList())
+
+        val result = instance.recentlyCreatedUsers
+        assertThat(result, isEmpty)
     }
 }
