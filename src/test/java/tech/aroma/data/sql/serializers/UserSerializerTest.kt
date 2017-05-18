@@ -24,12 +24,16 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Tables.Users
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import java.sql.ResultSet
 
 @RunWith(AlchemyTestRunner::class)
@@ -47,6 +51,9 @@ class UserSerializerTest
 
     private lateinit var user: User
     private lateinit var userId: String
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var invalidId: String
 
     private lateinit var instance: UserSerializer
 
@@ -76,6 +83,36 @@ class UserSerializerTest
                                 if (user.isSetBirthdate) user.birthdate.toTimestamp() else null,
                                 user.profileImageLink.toUUID(),
                                 user.githubProfile)
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveWithBadArgs()
+    {
+        assertThrows {
+            instance.save(user, null, "", database)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+
+        assertThrows {
+            val emptyUser = User()
+            instance.save(emptyUser, null, sql, database)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+
+        assertThrows {
+            val invalidUser = User(user).setUserId(invalidId)
+            instance.save(invalidUser, null, sql, database)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveWhenDatabaseFails()
+    {
+        whenever(database.update(eq(sql), Mockito.anyVararg<Any>()))
+                .thenThrow(UncategorizedSQLException::class.java)
+
+        assertThrows { instance.save(user, null, sql, database) }
+                .isInstanceOf(UncategorizedSQLException::class.java)
     }
 
     @Test
