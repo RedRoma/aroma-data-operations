@@ -153,7 +153,7 @@ internal class SQLUserRepository
                 .throwing(InvalidArgumentException::class.java)
                 .`is`(nonEmptyString())
 
-        val sql = Queries.SELECT_USER_BY_EMAIL
+        val sql = Queries.SELECT_USER_BY_GITHUB
 
         return try
         {

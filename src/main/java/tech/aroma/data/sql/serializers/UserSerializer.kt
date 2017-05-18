@@ -39,7 +39,7 @@ internal class UserSerializer : DatabaseSerializer<User>
         checkThat(user).`is`(validUser())
         checkThat(statement).`is`(nonEmptyString())
 
-        val birthdate = if (user.isSetBirthdate) user.birthdate else null
+        val birthday = if (user.isSetBirthdate) user.birthdate else null
 
         database.update(statement,
                         user.userId.toUUID(),
@@ -49,9 +49,9 @@ internal class UserSerializer : DatabaseSerializer<User>
                         user.name,
                         user.email,
                         user.roles?.toCommaSeparatedList(),
-                        birthdate?.toTimestamp(),
+                        birthday?.toTimestamp(),
                         user.profileImageLink?.toUUID(),
-                        user.githubProfile?.toUUID())
+                        user.githubProfile)
     }
 
     override fun deserialize(row: ResultSet): User

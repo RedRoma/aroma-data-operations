@@ -26,8 +26,10 @@ import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
@@ -102,5 +104,77 @@ class SQLUserRepositoryIT
         assertThrows {
             instance.getUser(userId)
         }.isInstanceOf(DoesNotExistException::class.java)
+    }
+
+    @Test
+    fun testDeleteUser()
+    {
+        instance.saveUser(user)
+        assertTrue { instance.containsUser(userId) }
+
+        instance.deleteUser(userId)
+        assertFalse { instance.containsUser(userId) }
+    }
+
+    @Test
+    fun testDeleteUserWhenNoUser()
+    {
+        assertFalse { instance.containsUser(userId) }
+        instance.deleteUser(userId)
+        assertFalse { instance.containsUser(userId) }
+    }
+
+    @Test
+    fun testContainsUser()
+    {
+        assertFalse { instance.containsUser(userId) }
+
+        instance.saveUser(user)
+        assertTrue { instance.containsUser(userId) }
+
+        instance.deleteUser(userId)
+        assertFalse { instance.containsUser(userId) }
+    }
+
+    @Test
+    fun testGetUserByEmail()
+    {
+        instance.saveUser(user)
+
+        val email = user.email
+
+        val result = instance.getUserByEmail(email)
+        assertEquals(user, result)
+    }
+
+    @Test
+    fun testGetUserByEmailWhenNotExists()
+    {
+        val email = user.email
+
+        assertFalse { instance.containsUser(userId) }
+        assertThrows { instance.getUserByEmail(email) }
+    }
+
+    @Test
+    fun testGetUserByGithub()
+    {
+        val github = one(alphabeticString())
+        user.githubProfile = github
+
+        instance.saveUser(user)
+        assertTrue { instance.containsUser(userId) }
+
+        val result = instance.findByGithubProfile(github)
+
+        assertEquals(user, result)
+    }
+
+    fun testGetUserByGithubWhenNotExists()
+    {
+        val github = one(alphabeticString())
+
+        assertThrows { instance.findByGithubProfile(github) }
+                .isInstanceOf(DoesNotExistException::class.java)
     }
 }
