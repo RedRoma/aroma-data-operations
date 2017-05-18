@@ -113,7 +113,8 @@ class SQLUserRepositoryTest
             val withoutEmail = User(user)
             withoutEmail.unsetEmail()
             instance.saveUser(withoutEmail)
-        }()
+        }
+        shouldPass()
     }
 
     @Test
