@@ -84,8 +84,10 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_TOKENS_FOR_OWNER, not(isEmptyOrNullString()));
 
+        assertThat(SQLStatements.Queries.CHECK_USER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_USER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_USER_BY_EMAIL, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_USER_BY_GITHUB, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_RECENT_USERS, not(isEmptyOrNullString()));
     }
 

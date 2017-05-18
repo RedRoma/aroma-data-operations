@@ -92,8 +92,10 @@ final class SQLStatements
         static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
         static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");
 
+        static final String CHECK_USER = loadSQLFile("tech/aroma/sql/queries/check_user.sql");
         static final String SELECT_USER = loadSQLFile("tech/aroma/sql/queries/select_user.sql");
         static final String SELECT_USER_BY_EMAIL = loadSQLFile("tech/aroma/sql/queries/select_user_by_email.sql");
+        static final String SELECT_USER_BY_GITHUB = loadSQLFile("tech/aroma/sql/queries/select_user_by_github.sql");
         static final String SELECT_RECENT_USERS = loadSQLFile("tech/aroma/sql/queries/select_user_recently_created.sql");
 
     }
