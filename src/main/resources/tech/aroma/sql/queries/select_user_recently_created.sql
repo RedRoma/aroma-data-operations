@@ -4,4 +4,4 @@
 
 SELECT *
 FROM users
-WHERE time_last_updated > (now() - INTERNAL '48 Hours')
+WHERE time_last_updated > (now() - INTERVAL '48 Hours')

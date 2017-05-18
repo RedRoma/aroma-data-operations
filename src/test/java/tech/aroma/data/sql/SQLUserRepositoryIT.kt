@@ -16,6 +16,9 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.isEmpty
 import org.apache.thrift.TException
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -176,5 +179,33 @@ class SQLUserRepositoryIT
 
         assertThrows { instance.findByGithubProfile(github) }
                 .isInstanceOf(DoesNotExistException::class.java)
+    }
+
+    @Test
+    fun testGetRecentlyCreatedUsers()
+    {
+        instance.saveUser(user)
+
+        val recent = instance.recentlyCreatedUsers
+
+        assertThat(recent, hasElement(user))
+    }
+
+    @Test
+    fun testGetRecentlyCreatedWhenRemoved()
+    {
+        instance.saveUser(user)
+        instance.deleteUser(userId)
+
+        val recent = instance.recentlyCreatedUsers
+        assertThat(recent, !hasElement(user))
+    }
+
+    @Test
+    fun testGetRecentlyCreatedUsersWhenNone()
+    {
+        val recent = instance.recentlyCreatedUsers
+
+        assertThat(recent, isEmpty)
     }
 }
