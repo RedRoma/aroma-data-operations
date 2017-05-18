@@ -23,10 +23,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.*
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
@@ -82,6 +84,19 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
+    fun testSaveWhenDatabaseFails()
+    {
+        val sql = Inserts.USER
+
+        Mockito.doThrow(RuntimeException())
+                .whenever(serializer)
+                .save(user, null, sql, database)
+
+        assertThrows { instance.saveUser(user) }.isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testSaveUserWithBadArgs()
     {
         assertThrows {
@@ -116,6 +131,30 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
+    fun testGetUserWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_USER
+
+        whenever(database.queryForObject(sql, serializer, userId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getUser(userId) }.isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetUserWhenUserDoesNotExist()
+    {
+        val sql = Queries.SELECT_USER
+
+        whenever(database.queryForObject(sql, serializer, userId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException::class.java)
+
+        assertThrows { instance.getUser(userId) }.isInstanceOf(DoesNotExistException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testGetUserWithBadArgs()
     {
         assertThrows { instance.getUser("") }.isInstanceOf(InvalidArgumentException::class.java)
@@ -130,6 +169,18 @@ class SQLUserRepositoryTest
         instance.deleteUser(userId)
 
         verify(database).update(sql, userId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteUserWhenDatabaseFails()
+    {
+        val sql = Deletes.USER
+
+        whenever(database.update(sql, userId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteUser(userId) }.isInstanceOf(OperationFailedException::class.java)
     }
 
     @DontRepeat
@@ -157,6 +208,18 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
+    fun testContainsUserWhenDatabaseFails()
+    {
+        val sql = Queries.CHECK_USER
+
+        whenever(database.queryForObject(sql, Boolean::class.java, userId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.containsUser(userId) }.isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testContainsUserWithBadArgs()
     {
         assertThrows { instance.containsUser("") }.isInstanceOf(InvalidArgumentException::class.java)
@@ -174,6 +237,34 @@ class SQLUserRepositoryTest
 
         val result = instance.getUserByEmail(email)
         assertEquals(user, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetUserByEmailWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_USER_BY_EMAIL
+        val email = user.email
+
+        whenever(database.queryForObject(sql, serializer, email))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getUserByEmail(email) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun `test get user by email when user does not exist`()
+    {
+        val sql = Queries.SELECT_USER_BY_EMAIL
+        val email = user.email
+
+        whenever(database.queryForObject(sql, serializer, email))
+                .thenThrow(EmptyResultDataAccessException::class.java)
+
+        assertThrows { instance.getUserByEmail(email) }
+                .isInstanceOf(DoesNotExistException::class.java)
     }
 
     @Test
@@ -202,6 +293,32 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
+    fun testFindByGithubWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_USER_BY_GITHUB
+
+        whenever(database.queryForObject(sql, serializer, github))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.findByGithubProfile(github) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun `test find by github user does not exist`()
+    {
+        val sql = Queries.SELECT_USER_BY_GITHUB
+
+        whenever(database.queryForObject(sql, serializer, github))
+                .thenThrow(EmptyResultDataAccessException::class.java)
+
+        assertThrows { instance.findByGithubProfile(github) }
+                .isInstanceOf(DoesNotExistException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testFindByGitHubWithBadArgs()
     {
         assertThrows { instance.findByGithubProfile("") }.isInstanceOf(InvalidArgumentException::class.java)
@@ -218,6 +335,19 @@ class SQLUserRepositoryTest
 
         val result = instance.recentlyCreatedUsers
         assertEquals(expected, result)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetRecentlyCreatedWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_RECENT_USERS
+
+        whenever(database.query(sql, serializer))
+                .thenThrow(RuntimeException())
+
+        val result = instance.recentlyCreatedUsers
+        assertThat(result, isEmpty)
     }
 
     @DontRepeat
