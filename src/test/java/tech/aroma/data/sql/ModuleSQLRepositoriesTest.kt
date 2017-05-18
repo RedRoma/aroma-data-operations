@@ -16,10 +16,67 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
+import com.google.inject.*
 import org.junit.runner.RunWith
 import tech.sirwellington.alchemy.test.junit.runners.*
 
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mock
+import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.*
+import tech.aroma.data.sql.serializers.ModuleSerializers
+import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
 class ModuleSQLRepositoriesTest
+{
+    @Mock
+    private lateinit var database: JdbcOperations
+
+    private lateinit var instance: ModuleSQLRepositories
+    private lateinit var injector: Injector
+
+    val fakeModule = object: AbstractModule()
+    {
+        override fun configure()
+        {
+            binder().bind<JdbcOperations>().toInstance(database)
+        }
+
+    }
+
+    @Before
+    fun setup()
+    {
+        instance = ModuleSQLRepositories()
+
+        injector = Guice.createInjector(instance, ModuleSerializers(), fakeModule)
+    }
+
+    @Test
+    fun testAppRepo()
+    {
+        assertTrue { injector.hasInstance<UserRepository>() }
+    }
+
+    @Test
+    fun testMessageRepo()
+    {
+        assertTrue { injector.hasInstance<MessageRepository>() }
+    }
+
+    @Test
+    fun testTokenRepo()
+    {
+        assertTrue { injector.hasInstance<TokenRepository>() }
+    }
+
+    @Test
+    fun testUserRepo()
+    {
+        assertTrue { injector.hasInstance<UserRepository>() }
+    }
+
+}
