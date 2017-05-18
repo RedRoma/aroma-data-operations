@@ -74,6 +74,10 @@ internal class SQLUserRepository
         {
             database.queryForObject(sql, serializer, userId.toUUID())
         }
+        catch (ex: EmptyResultDataAccessException)
+        {
+            logAndFailWithNoSuchUser(userId)
+        }
         catch (ex: Exception)
         {
             val message = "Failed to retrieve User with ID [$userId] from database"
@@ -81,6 +85,7 @@ internal class SQLUserRepository
         }
 
     }
+
 
     override fun deleteUser(userId: String)
     {
@@ -133,8 +138,7 @@ internal class SQLUserRepository
         catch (ex: EmptyResultDataAccessException)
         {
             val message = "Could not find a user with email address: [$emailAddress]"
-            LOG.info(message, ex)
-            throw DoesNotExistException(message)
+            logAndFailWithNoSuchUser(message)
         }
         catch (ex: Exception)
         {
@@ -158,8 +162,7 @@ internal class SQLUserRepository
         catch (ex: EmptyResultDataAccessException)
         {
             val message = "Could not find a user with Github profile [$githubProfile]"
-            LOG.warn(message, ex)
-            throw DoesNotExistException(message)
+            logAndFailWithNoSuchUser(message)
         }
         catch (ex: Exception)
         {
@@ -191,8 +194,17 @@ internal class SQLUserRepository
                 .`is`(validUserId())
     }
 
-    private fun logMessageAndFail(message: String, ex: Exception): Nothing
+    private fun logAndFailWithNoSuchUser(message: String? = null): Nothing
     {
+        val message = message ?: "User does not exist"
+        LOG.warn(message)
+        throw DoesNotExistException(message)
+    }
+
+    private fun logMessageAndFail(message: String? = null, ex: Exception): Nothing
+    {
+        val message = message ?: "Failed to perform the specified operation"
+
         LOG.error(message, ex)
         throw OperationFailedException("$message | ${ex.message}")
     }

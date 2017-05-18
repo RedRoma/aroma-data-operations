@@ -16,18 +16,18 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import junit.framework.TestResult
 import org.apache.thrift.TException
 import org.junit.*
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
-import tech.sirwellington.alchemy.test.junit.runners.*
-
-import org.junit.Assert.*
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.UserSerializer
 import tech.aroma.thrift.User
+import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
@@ -82,5 +82,25 @@ class SQLUserRepositoryIT
         instance.saveUser(user)
 
         assertTrue { instance.containsUser(userId) }
+    }
+
+
+    @Test
+    fun testGetUser()
+    {
+        instance.saveUser(user)
+        assertTrue { instance.containsUser(userId) }
+
+        val result = instance.getUser(userId)
+
+        assertEquals(user, result)
+    }
+
+    @Test
+    fun testGetUserWhenNoUser()
+    {
+        assertThrows {
+            instance.getUser(userId)
+        }.isInstanceOf(DoesNotExistException::class.java)
     }
 }

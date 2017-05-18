@@ -95,10 +95,9 @@ final class Tables
         static final String FIRST_NAME = "first_name";
         static final String MIDDLE_NAME = "middle_name";
         static final String LAST_NAME = "last_name";
-        static final String EMAILS = "emails";
-        static final String ORGANIZATIONS = "organizations";
+        static final String FULL_NAME = "full_name";
+        static final String EMAIL = "email";
         static final String ROLES = "roles";
-        static final String GENDER = "gender";
         static final String BIRTH_DATE = "birthdate";
         static final String GITHUB_PROFILE = "github_profile";
         static final String PROFILE_IMAGE_ID = "profile_image_id";

@@ -39,14 +39,17 @@ internal class UserSerializer : DatabaseSerializer<User>
         checkThat(user).`is`(validUser())
         checkThat(statement).`is`(nonEmptyString())
 
+        val birthdate = if (user.isSetBirthdate) user.birthdate else null
+
         database.update(statement,
                         user.userId.toUUID(),
                         user.firstName,
                         user.middleName,
                         user.lastName,
+                        user.name,
                         user.email,
                         user.roles?.toCommaSeparatedList(),
-                        user.birthdate.toTimestamp(),
+                        birthdate?.toTimestamp(),
                         user.profileImageLink?.toUUID(),
                         user.githubProfile?.toUUID())
     }
@@ -57,7 +60,8 @@ internal class UserSerializer : DatabaseSerializer<User>
         val firstName = row.getString(Users.FIRST_NAME)
         val middleName = row.getString(Users.MIDDLE_NAME)
         val lastName = row.getString(Users.LAST_NAME)
-        val email: String? = row.getString(Users.EMAILS)
+        val fullName = row.getString(Users.FULL_NAME)
+        val email: String? = row.getString(Users.EMAIL)
         val roles = row.getArray(Users.ROLES).toRoles()
         val birthdate = row.getDate(Users.BIRTH_DATE)
         val profileImageId = row.getString(Users.PROFILE_IMAGE_ID)
@@ -69,6 +73,7 @@ internal class UserSerializer : DatabaseSerializer<User>
                 .setFirstName(firstName)
                 .setMiddleName(middleName)
                 .setLastName(lastName)
+                .setName(fullName)
                 .setEmail(email)
                 .setGithubProfile(githubProfile)
                 .setProfileImageLink(profileImageId)
