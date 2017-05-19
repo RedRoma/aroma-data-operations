@@ -256,7 +256,7 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
-    fun `test get user by email when user does not exist`()
+    fun testGetUserByEmailWhenUserDoesNotExist()
     {
         val sql = Queries.SELECT_USER_BY_EMAIL
         val email = user.email
@@ -307,7 +307,7 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
-    fun `test find by github user does not exist`()
+    fun testFindByGithubWhenUserDoesNotExist()
     {
         val sql = Queries.SELECT_USER_BY_GITHUB
 
