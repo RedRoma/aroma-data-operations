@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
--- SELECTS AN APPLICATION BY ID
+-- SELECTS A USER BY ID
 ------------------------------------------------------------------------------
 
 SELECT *
-FROM applications
-WHERE app_id = ?
+FROM users
+WHERE user_id = ?

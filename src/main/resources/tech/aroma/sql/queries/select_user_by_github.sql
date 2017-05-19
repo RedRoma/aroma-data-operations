@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
--- SELECTS AN APPLICATION BY ID
+-- SELECTS A USER BY EMAIL
 ------------------------------------------------------------------------------
 
 SELECT *
-FROM applications
-WHERE app_id = ?
+FROM users
+WHERE github_profile = ?

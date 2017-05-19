@@ -5,15 +5,15 @@ package tech.aroma.data.sql.serializers
  */
 
 import com.google.inject.*
-import org.hamcrest.Matchers.notNullValue
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import tech.aroma.data.hasInstance
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.thrift.Message
-import tech.aroma.thrift.Organization
+import tech.aroma.thrift.*
+import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
 class ModuleSerializersTest
@@ -31,20 +31,33 @@ class ModuleSerializersTest
     }
 
     @Test
+    fun testHasAppSerializer()
+    {
+        assertTrue { injector.hasInstance<ApplicationSerializer>() }
+    }
+
+    @Test
     fun testHasMessageSerializer()
     {
-        val literal = object: TypeLiteral<DatabaseSerializer<Message>>() {}
-
-        val result = injector.getInstance(Key.get(literal))
-        assertThat(result, notNullValue())
+        assertTrue { injector.hasInstance<DatabaseSerializer<Message>>() }
     }
 
     @Test
     fun testHasOrganizationSerializer()
     {
-        val literal = object: TypeLiteral<DatabaseSerializer<Organization>>() {}
-
-        val result = injector.getInstance(Key.get(literal))
-        assertThat(result, notNullValue())
+        assertTrue { injector.hasInstance<DatabaseSerializer<Organization>>() }
     }
+
+    @Test
+    fun testHasTokenSerializer()
+    {
+        assertTrue { injector.hasInstance<DatabaseSerializer<AuthenticationToken>>() }
+    }
+
+    @Test
+    fun testHasUserSerializer()
+    {
+        assertTrue { injector.hasInstance<DatabaseSerializer<User>>() }
+    }
+
 }

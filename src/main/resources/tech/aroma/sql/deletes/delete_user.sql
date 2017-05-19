@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
--- SELECTS AN APPLICATION BY ID
+-- DELETES A USER
 ------------------------------------------------------------------------------
 
-SELECT *
-FROM applications
-WHERE app_id = ?
+DELETE
+FROM users
+WHERE user_id = ?

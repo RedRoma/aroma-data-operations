@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
--- SELECTS AN APPLICATION BY ID
+-- CHECKS WHETHER A USER EXISTS OR NOT
 ------------------------------------------------------------------------------
 
-SELECT *
-FROM applications
-WHERE app_id = ?
+SELECT count(*) > 0
+FROM users
+WHERE user_id = ?

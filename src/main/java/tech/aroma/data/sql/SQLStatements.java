@@ -46,6 +46,7 @@ final class SQLStatements
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
         static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("tech/aroma/sql/deletes/delete_organization_all_members.sql");
         static final String TOKEN = loadSQLFile("tech/aroma/sql/deletes/delete_token.sql");
+        static final String USER = loadSQLFile("tech/aroma/sql/deletes/delete_user.sql");
     }
 
     static class Inserts
@@ -59,6 +60,9 @@ final class SQLStatements
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/inserts/insert_organization_member.sql");
 
         static final String TOKEN = loadSQLFile("tech/aroma/sql/inserts/insert_token.sql");
+
+        static final String USER = loadSQLFile("tech/aroma/sql/inserts/insert_user.sql");
+
     }
 
     static class Queries
@@ -87,6 +91,13 @@ final class SQLStatements
 
         static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
         static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");
+
+        static final String CHECK_USER = loadSQLFile("tech/aroma/sql/queries/check_user.sql");
+        static final String SELECT_USER = loadSQLFile("tech/aroma/sql/queries/select_user.sql");
+        static final String SELECT_USER_BY_EMAIL = loadSQLFile("tech/aroma/sql/queries/select_user_by_email.sql");
+        static final String SELECT_USER_BY_GITHUB = loadSQLFile("tech/aroma/sql/queries/select_user_by_github.sql");
+        static final String SELECT_RECENT_USERS = loadSQLFile("tech/aroma/sql/queries/select_user_recently_created.sql");
+
     }
 
     private static String loadSQLFile(String path)

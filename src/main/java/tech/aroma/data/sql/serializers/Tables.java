@@ -87,4 +87,21 @@ final class Tables
         static final String TOKEN_TYPE = "token_type";
         static final String TOKEN_STATUS = "token_status";
     }
+
+    @NonInstantiable
+    static class Users
+    {
+        static final String USER_ID = "user_id";
+        static final String FIRST_NAME = "first_name";
+        static final String MIDDLE_NAME = "middle_name";
+        static final String LAST_NAME = "last_name";
+        static final String FULL_NAME = "full_name";
+        static final String EMAIL = "email";
+        static final String ROLES = "roles";
+        static final String BIRTH_DATE = "birthdate";
+        static final String GITHUB_PROFILE = "github_profile";
+        static final String PROFILE_IMAGE_ID = "profile_image_id";
+        static final String TIME_ACCOUNT_CREATED = "time_account_created";
+        static final String TIME_LAST_UPDATED = "time_last_updated";
+    }
 }
