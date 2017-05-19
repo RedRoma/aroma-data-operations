@@ -52,7 +52,7 @@ class ModuleSQLRepositoriesTest
     {
         instance = ModuleSQLRepositories()
 
-        injector = Guice.createInjector(instance, ModuleSerializers(), fakeModule)
+        injector = Guice.createInjector(instance, fakeModule)
     }
 
     @Test

@@ -18,6 +18,7 @@ package tech.aroma.data.sql
 
 import com.google.inject.AbstractModule
 import tech.aroma.data.*
+import tech.aroma.data.sql.serializers.ModuleSerializers
 
 
 /**
@@ -33,6 +34,8 @@ internal class ModuleSQLRepositories: AbstractModule()
         binder().bind<OrganizationRepository>().to<SQLOrganizationRepository>()
         binder().bind<TokenRepository>().to<SQLTokenRepository>()
         binder().bind<UserRepository>().to<SQLUserRepository>()
+
+        install(ModuleSerializers())
     }
 
 }
