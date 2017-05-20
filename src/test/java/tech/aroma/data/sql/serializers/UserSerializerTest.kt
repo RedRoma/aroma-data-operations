@@ -17,12 +17,10 @@ package tech.aroma.data.sql.serializers
  */
 
 import com.nhaarman.mockito_kotlin.*
-import org.junit.runner.RunWith
-import tech.sirwellington.alchemy.test.junit.runners.*
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.springframework.jdbc.UncategorizedSQLException
@@ -33,6 +31,7 @@ import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import java.sql.ResultSet
 

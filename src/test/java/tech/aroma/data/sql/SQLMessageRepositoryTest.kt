@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.thrift.*
 import tech.aroma.thrift.exceptions.*
-import tech.aroma.thrift.functions.TimeFunctions
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf

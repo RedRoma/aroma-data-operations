@@ -26,9 +26,9 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.toUUID
 import tech.aroma.data.sql.serializers.Tables.Tokens
 import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
