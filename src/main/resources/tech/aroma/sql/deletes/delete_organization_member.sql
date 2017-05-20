@@ -4,4 +4,4 @@
 DELETE
 FROM Organization_Members
 WHERE organization_id = ?
-AND user_id = ?
+      AND user_id = ?

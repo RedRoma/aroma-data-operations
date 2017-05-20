@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Tokens
     time_of_creation   TIMESTAMP DEFAULT now(),
     time_of_expiration TIMESTAMP,
     token_type         TEXT,
-    token_status        TEXT,
+    token_status       TEXT,
 
     PRIMARY KEY (token_id)
 );

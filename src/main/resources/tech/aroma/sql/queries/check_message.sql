@@ -5,4 +5,4 @@
 SELECT count(*) > 0
 FROM messages
 WHERE app_id = ?
-AND message_id = ?
+      AND message_id = ?

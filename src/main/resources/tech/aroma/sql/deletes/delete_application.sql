@@ -4,4 +4,4 @@
 
 DELETE
 FROM applications
-where app_id = ?
+WHERE app_id = ?

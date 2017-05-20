@@ -5,4 +5,4 @@
 SELECT *
 FROM messages
 WHERE app_id = ?
-AND title = ?
+      AND title = ?
