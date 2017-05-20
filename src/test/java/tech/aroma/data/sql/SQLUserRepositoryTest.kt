@@ -78,7 +78,7 @@ class SQLUserRepositoryTest
 
         instance.saveUser(user)
 
-        verify(serializer).save(user, null, sql, database)
+        verify(serializer).save(user, sql, database)
         verifyZeroInteractions(database)
     }
 
@@ -90,7 +90,7 @@ class SQLUserRepositoryTest
 
         Mockito.doThrow(RuntimeException())
                 .whenever(serializer)
-                .save(user, null, sql, database)
+                .save(user, sql, database)
 
         assertThrows { instance.saveUser(user) }.isInstanceOf(OperationFailedException::class.java)
     }
