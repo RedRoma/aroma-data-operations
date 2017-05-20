@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 /**
- *
  * @author SirWellington
  */
 @RunWith(AlchemyTestRunner.class)

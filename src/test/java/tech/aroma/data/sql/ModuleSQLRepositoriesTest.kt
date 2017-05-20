@@ -35,7 +35,7 @@ class ModuleSQLRepositoriesTest
     private lateinit var instance: ModuleSQLRepositories
     private lateinit var injector: Injector
 
-    val fakeModule = object: AbstractModule()
+    val fakeModule = object : AbstractModule()
     {
         override fun configure()
         {

@@ -33,7 +33,7 @@ public class ModuleTesting extends AbstractModule
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setUrl(url);
 
-        try(Connection conn = dataSource.getConnection())
+        try (Connection conn = dataSource.getConnection())
         {
             System.out.println("Connected");
         }

@@ -70,7 +70,7 @@ class SQLApplicationRepositoryTest
         appId = app.applicationId
         orgId = app.organizationId
 
-        apps = CollectionGenerators.listOf({ Applications.application}, 10)
+        apps = CollectionGenerators.listOf({ Applications.application }, 10)
     }
 
     @Test
