@@ -34,7 +34,7 @@ import java.time.Duration
  */
 internal class UserSerializer : DatabaseSerializer<User>
 {
-    override fun save(user: User, timeToLive: Duration?, statement: String, database: JdbcOperations)
+    override fun save(user: User, statement: String, database: JdbcOperations)
     {
         checkThat(user).`is`(validUser())
         checkThat(statement).`is`(nonEmptyString())

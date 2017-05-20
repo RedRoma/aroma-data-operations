@@ -70,7 +70,7 @@ class UserSerializerTest
     @Test
     fun testSave()
     {
-        instance.save(user, null, sql, database)
+        instance.save(user, sql, database)
 
         verify(database).update(sql,
                                 user.userId.toUUID(),
@@ -90,17 +90,17 @@ class UserSerializerTest
     fun testSaveWithBadArgs()
     {
         assertThrows {
-            instance.save(user, null, "", database)
+            instance.save(user, "", database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
             val emptyUser = User()
-            instance.save(emptyUser, null, sql, database)
+            instance.save(emptyUser, sql, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
-            instance.save(invalidUser, null, sql, database)
+            instance.save(invalidUser, sql, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
@@ -111,7 +111,7 @@ class UserSerializerTest
         whenever(database.update(eq(sql), Mockito.anyVararg<Any>()))
                 .thenThrow(UncategorizedSQLException::class.java)
 
-        assertThrows { instance.save(user, null, sql, database) }
+        assertThrows { instance.save(user, sql, database) }
                 .isInstanceOf(UncategorizedSQLException::class.java)
     }
 
