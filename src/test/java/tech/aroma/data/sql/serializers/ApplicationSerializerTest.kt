@@ -81,7 +81,7 @@ class ApplicationSerializerTest
     @Test
     fun testSave()
     {
-        instance.save(app, null, query, database)
+        instance.save(app, query, database)
 
         verify(database).update(query,
                                 appId.toUUID(),
@@ -103,7 +103,7 @@ class ApplicationSerializerTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows {
-            instance.save(app, null, query, database)
+            instance.save(app, query, database)
         }.isInstanceOf(DataAccessException::class.java)
     }
 
@@ -112,23 +112,23 @@ class ApplicationSerializerTest
     {
         assertThrows {
             val emptyApp = Application()
-            instance.save(emptyApp, null, query, database)
+            instance.save(emptyApp, query, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
             val emptySQL = ""
-            instance.save(app, null, emptySQL, database)
+            instance.save(app, emptySQL, database)
         }
 
         assertThrows {
             val appWithoutId = app.deepCopy()
             appWithoutId.unsetApplicationId()
-            instance.save(appWithoutId, null, query, database)
+            instance.save(appWithoutId, query, database)
         }
 
         assertThrows {
             val appWithNoOwners = app.deepCopy().setOwners(emptySet())
-            instance.save(appWithNoOwners, null, query, database)
+            instance.save(appWithNoOwners, query, database)
         }
 
         assertThrows {
@@ -136,7 +136,7 @@ class ApplicationSerializerTest
             val owners = CollectionGenerators.listOf(alphabeticString(), 10)
             appWithInvalidOwners.owners = owners.toMutableSet()
 
-            instance.save(appWithInvalidOwners, null, query, database)
+            instance.save(appWithInvalidOwners, query, database)
         }
     }
 
