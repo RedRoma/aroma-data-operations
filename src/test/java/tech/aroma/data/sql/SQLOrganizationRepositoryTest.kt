@@ -94,7 +94,7 @@ class SQLOrganizationRepositoryTest
 
         instance.saveOrganization(organization)
 
-        verify(serializer).save(organization, null, statement, database)
+        verify(serializer).save(organization, statement, database)
     }
 
     @DontRepeat
@@ -105,7 +105,7 @@ class SQLOrganizationRepositoryTest
 
         Mockito.doThrow(RuntimeException())
                 .whenever(serializer)
-                .save(organization, null, statement, database)
+                .save(organization, statement, database)
 
         assertThrows {
             instance.saveOrganization(organization)
