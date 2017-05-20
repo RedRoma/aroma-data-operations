@@ -80,7 +80,7 @@ class SQLApplicationRepositoryTest
 
         instance.saveApplication(app)
 
-        verify(serializer).save(app, null, statement, database)
+        verify(serializer).save(app, statement, database)
 
         val sqlToDeleteNonOwners = Deletes.APPLICATION_NON_OWNERS
         verify(database).update(sqlToDeleteNonOwners, app.owners.toCommaSeparatedList())
@@ -97,7 +97,7 @@ class SQLApplicationRepositoryTest
     {
         val statement = Inserts.APPLICATION
 
-        whenever(serializer.save(app, null, statement, database))
+        whenever(serializer.save(app, statement, database))
                 .thenThrow(RuntimeException())
 
         assertThrows {
@@ -118,7 +118,7 @@ class SQLApplicationRepositoryTest
         instance.saveApplication(app)
 
         val insertApp = Inserts.APPLICATION
-        verify(serializer).save(app, null, insertApp, database)
+        verify(serializer).save(app, insertApp, database)
 
         owners.forEach { owner ->
             val sql = Inserts.APPLICATION_OWNER

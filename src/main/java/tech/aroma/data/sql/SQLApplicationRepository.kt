@@ -52,7 +52,7 @@ internal class SQLApplicationRepository
 
         try
         {
-            serializer.save(application, null, insertApp, database)
+            serializer.save(application, insertApp, database)
         }
         catch (ex: Exception)
         {
