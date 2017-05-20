@@ -19,9 +19,9 @@ public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
     /**
      * Saves the object to the Database.
      *
-     * @param object     The Object to save.
-     * @param statement  The SQL Statement to use when calling the database.
-     * @param database   The database to write to.
+     * @param object    The Object to save.
+     * @param statement The SQL Statement to use when calling the database.
+     * @param database  The database to write to.
      */
     void save(@Required T object,
               @Required @NonEmpty String statement,

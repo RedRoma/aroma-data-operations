@@ -25,7 +25,7 @@ import tech.aroma.data.sql.serializers.ModuleSerializers
  * Provides bindings for the SQL Repositories.
  * @author SirWellington
  */
-internal class ModuleSQLRepositories: AbstractModule()
+internal class ModuleSQLRepositories : AbstractModule()
 {
     override fun configure()
     {

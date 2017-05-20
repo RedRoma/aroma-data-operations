@@ -134,7 +134,6 @@ class SQLTokenRepository
     }
 
 
-
     private fun checkTokenId(tokenId: String?): String
     {
         checkThat(tokenId)
