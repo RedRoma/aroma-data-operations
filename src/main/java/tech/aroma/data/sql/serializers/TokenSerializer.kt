@@ -34,7 +34,7 @@ import java.time.Duration
  */
 internal class TokenSerializer : DatabaseSerializer<AuthenticationToken>
 {
-    override fun save(`object`: AuthenticationToken, timeToLive: Duration?, statement: String, database: JdbcOperations)
+    override fun save(`object`: AuthenticationToken, statement: String, database: JdbcOperations)
     {
         checkThat(statement).`is`(nonEmptyString())
         checkThat(`object`).`is`(legalToken())
