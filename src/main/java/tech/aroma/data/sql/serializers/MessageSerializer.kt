@@ -4,8 +4,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.data.sql.*
-import tech.aroma.thrift.Message
-import tech.aroma.thrift.Urgency
+import tech.aroma.thrift.*
+import tech.aroma.thrift.message.service.MessageServiceConstants
+import tech.aroma.thrift.service.AromaServiceConstants
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
@@ -25,35 +26,28 @@ internal class MessageSerializer : DatabaseSerializer<Message>
     companion object
     {
         @JvmStatic val LOG = LoggerFactory.getLogger(MessageSerializer::class.java)
+
+        @JvmStatic val DEFAULT_TTL = MessageServiceConstants.DEFAULT_MESSAGE_LIFETIME
     }
 
     @Throws(SQLException::class)
-    override fun save(message: Message, timeToLive: Duration?, statement: String, database: JdbcOperations)
+    override fun save(message: Message, statement: String, database: JdbcOperations)
     {
         checkThat(message).`is`(validMessage())
         checkThat(database).`is`(notNull())
         checkThat(statement).`is`(nonEmptyString())
 
-        var expiration: Timestamp? = null
-
-        if (Objects.nonNull(timeToLive))
-        {
-            val instanceOfExpiration = Instant.now().plus(timeToLive)
-            expiration = Timestamp.from(instanceOfExpiration)
-        }
-
         database.update(statement,
                         message.messageId.toUUID(),
+                        message.applicationId.toUUID(),
+                        message.applicationName,
                         message.title,
                         message.body,
                         message.urgency.toString(),
                         message.timeOfCreation.toTimestamp(),
                         message.timeMessageReceived.toTimestamp(),
-                        expiration,
                         message.hostname,
                         message.macAddress,
-                        message.applicationId.toUUID(),
-                        message.applicationName,
                         message.deviceName)
 
     }
