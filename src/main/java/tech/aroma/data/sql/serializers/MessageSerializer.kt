@@ -4,16 +4,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.data.sql.*
-import tech.aroma.thrift.*
+import tech.aroma.thrift.Message
+import tech.aroma.thrift.Urgency
 import tech.aroma.thrift.message.service.MessageServiceConstants
-import tech.aroma.thrift.service.AromaServiceConstants
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import java.sql.*
-import java.time.Duration
-import java.time.Instant
-import java.util.*
+import java.sql.ResultSet
+import java.sql.SQLException
 
 /**
  * Serializes [Messages][Message] to the Database.

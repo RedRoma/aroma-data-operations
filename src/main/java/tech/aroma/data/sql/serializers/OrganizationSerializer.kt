@@ -25,7 +25,6 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.ResultSet
-import java.time.Duration
 
 
 /**
