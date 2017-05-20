@@ -37,7 +37,7 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
 {
     private val LOG = LoggerFactory.getLogger(this.javaClass)
 
-    override fun save(app: Application, timeToLive: Duration?, statement: String, database: JdbcOperations)
+    override fun save(app: Application, statement: String, database: JdbcOperations)
     {
         checkThat(app).`is`(validApplication())
         checkThat(statement).`is`(nonEmptyString())
