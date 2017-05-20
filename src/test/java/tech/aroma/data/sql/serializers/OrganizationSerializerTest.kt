@@ -84,7 +84,7 @@ class OrganizationSerializerTest
     @Test
     fun testSave()
     {
-        instance.save(org, null, query, database)
+        instance.save(org, query, database)
 
         val captor = ArgumentCaptor.forClass(Any::class.java)
 
@@ -113,7 +113,7 @@ class OrganizationSerializerTest
         whenever(database.update(eq(query), Mockito.anyVararg<Any>()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.save(org, null, query, database) }
+        assertThrows { instance.save(org, query, database) }
                 .isInstanceOf(RuntimeException::class.java)
     }
 
@@ -121,21 +121,21 @@ class OrganizationSerializerTest
     @Test
     fun testSaveWithBadArgs()
     {
-        assertThrows { instance.save(null, null, query, database) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThrows { instance.save(null, query, database) }.isInstanceOf(IllegalArgumentException::class.java)
         assertThrows {
             val emptyOrg = Organization()
-            instance.save(emptyOrg, null, query, database)
+            instance.save(emptyOrg, query, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
             val invalidOrg = org.deepCopy().setOrganizationId(query)
-            instance.save(invalidOrg, null, query, database)
+            instance.save(invalidOrg, query, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
-        assertThrows { instance.save(org, null, null, database) }.isInstanceOf(IllegalArgumentException::class.java)
-        assertThrows { instance.save(org, null, "", database) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThrows { instance.save(org, null, database) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThrows { instance.save(org, "", database) }.isInstanceOf(IllegalArgumentException::class.java)
 
-        assertThrows { instance.save(org, null, query, null) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThrows { instance.save(org, query, null) }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
 
