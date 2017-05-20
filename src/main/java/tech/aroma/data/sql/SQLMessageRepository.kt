@@ -38,30 +38,17 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .`is`(notNull<Message>())
                 .`is`(validMessage())
 
-        val message = message!!
-        var messageDuration: Duration? = null
-
-        if (Objects.nonNull(lifetime))
-        {
-
-            checkThat(lifetime)
-                    .throwing(InvalidArgumentException::class.java)
-                    .`is`(validLengthOfTime())
-
-            messageDuration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime)
-        }
-
-        _saveMessage(message, messageDuration)
+        _saveMessage(message!!)
     }
 
     @Throws(OperationFailedException::class)
-    private fun _saveMessage(message: Message, messageDuration: Duration?)
+    private fun _saveMessage(message: Message)
     {
         val statement = SQLStatements.Inserts.MESSAGE
 
         try
         {
-            serializer.save(message, messageDuration, statement, database)
+            serializer.save(message, statement, database)
         }
         catch (ex: Exception)
         {
