@@ -90,7 +90,7 @@ class SQLTokenRepository
 
         try
         {
-            serializer.save(token!!, null, statement, database)
+            serializer.save(token!!, statement, database)
         }
         catch (ex: Exception)
         {
