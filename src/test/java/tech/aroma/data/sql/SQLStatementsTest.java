@@ -29,6 +29,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.APPLICATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.APPLICATION_NON_OWNERS, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.INBOX_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
@@ -42,6 +43,8 @@ public class SQLStatementsTest
     {
         assertThat(SQLStatements.Inserts.APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Inserts.APPLICATION_OWNER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.INBOX_MESSAGE, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.MESSAGE, not(isEmptyOrNullString()));
 
@@ -64,6 +67,10 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_APPLICATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION_BY_OWNER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.CHECK_INBOX_MESSAGE, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.COUNT_INBOX_MESSAGES, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_INBOX_MESSAGES_FOR_USER, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Queries.CHECK_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.COUNT_MESSAGES, not(isEmptyOrNullString()));
