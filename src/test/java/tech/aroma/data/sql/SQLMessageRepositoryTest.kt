@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.thrift.*
 import tech.aroma.thrift.exceptions.*
-import tech.aroma.thrift.functions.TimeFunctions
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
@@ -71,11 +70,9 @@ class SQLMessageRepositoryTest
     {
         val expectedStatement = SQLStatements.Inserts.MESSAGE
 
-        val duration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime)
         instance.saveMessage(message, lifetime)
 
-
-        verify<DatabaseSerializer<Message>>(serializer).save(message, duration, expectedStatement, database)
+        verify<DatabaseSerializer<Message>>(serializer).save(message, expectedStatement, database)
     }
 
     @DontRepeat
@@ -87,7 +84,7 @@ class SQLMessageRepositoryTest
 
         instance.saveMessage(message, null)
 
-        verify<DatabaseSerializer<Message>>(serializer).save(message, null, expectedStatement, database)
+        verify<DatabaseSerializer<Message>>(serializer).save(message, expectedStatement, database)
     }
 
     @DontRepeat
@@ -106,7 +103,7 @@ class SQLMessageRepositoryTest
     {
         doThrow(RuntimeException())
                 .whenever(serializer)
-                .save(any(), any(), any(), any())
+                .save(any(), any(), any())
 
         assertThrows { instance.saveMessage(message) }
                 .isInstanceOf(OperationFailedException::class.java)

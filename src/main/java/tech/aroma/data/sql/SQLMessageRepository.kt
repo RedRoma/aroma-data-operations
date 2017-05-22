@@ -5,20 +5,16 @@ import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.MessageRepository
-import tech.aroma.data.assertions.RequestAssertions.validLengthOfTime
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.thrift.LengthOfTime
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.exceptions.*
-import tech.aroma.thrift.functions.TimeFunctions
 import tech.sirwellington.alchemy.annotations.access.Internal
 import tech.sirwellington.alchemy.annotations.arguments.Optional
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
-import java.time.Duration
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -38,30 +34,17 @@ constructor(private val database: JdbcTemplate, private val serializer: Database
                 .`is`(notNull<Message>())
                 .`is`(validMessage())
 
-        val message = message!!
-        var messageDuration: Duration? = null
-
-        if (Objects.nonNull(lifetime))
-        {
-
-            checkThat(lifetime)
-                    .throwing(InvalidArgumentException::class.java)
-                    .`is`(validLengthOfTime())
-
-            messageDuration = TimeFunctions.lengthOfTimeToDuration().apply(lifetime)
-        }
-
-        _saveMessage(message, messageDuration)
+        _saveMessage(message!!)
     }
 
     @Throws(OperationFailedException::class)
-    private fun _saveMessage(message: Message, messageDuration: Duration?)
+    private fun _saveMessage(message: Message)
     {
         val statement = SQLStatements.Inserts.MESSAGE
 
         try
         {
-            serializer.save(message, messageDuration, statement, database)
+            serializer.save(message, statement, database)
         }
         catch (ex: Exception)
         {

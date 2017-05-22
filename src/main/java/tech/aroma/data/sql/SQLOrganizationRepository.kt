@@ -61,7 +61,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            serializer.save(organization, null, statement, database)
+            serializer.save(organization, statement, database)
         }
         catch(ex: Exception)
         {

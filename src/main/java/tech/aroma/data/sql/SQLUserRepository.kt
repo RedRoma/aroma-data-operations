@@ -54,7 +54,7 @@ internal class SQLUserRepository
 
         try
         {
-            serializer.save(user, null, sql, database)
+            serializer.save(user, sql, database)
         }
         catch(ex: Exception)
         {

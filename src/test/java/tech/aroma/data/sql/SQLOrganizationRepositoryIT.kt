@@ -210,7 +210,7 @@ class SQLOrganizationRepositoryIT
 
         val expected = userIds.map { User().setUserId(it) }
 
-        expected.forEach{ instance.saveMemberInOrganization(orgId, it) }
+        expected.forEach { instance.saveMemberInOrganization(orgId, it) }
 
         val results = instance.getOrganizationMembers(orgId)
 
@@ -244,7 +244,7 @@ class SQLOrganizationRepositoryIT
     @Test
     fun testDeleteAllMembers()
     {
-        users.forEach{ instance.saveMemberInOrganization(orgId, it) }
+        users.forEach { instance.saveMemberInOrganization(orgId, it) }
 
         users.forEach {
             assertTrue { instance.isMemberInOrganization(orgId, it.userId) }

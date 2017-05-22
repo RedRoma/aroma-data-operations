@@ -2,9 +2,9 @@ package tech.aroma.data.sql.serializers
 
 import com.google.inject.AbstractModule
 import com.google.inject.binder.AnnotatedBindingBuilder
+import tech.aroma.data.bind
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.to
-import tech.aroma.data.bind
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
 

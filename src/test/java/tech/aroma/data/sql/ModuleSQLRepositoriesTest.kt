@@ -17,16 +17,13 @@ package tech.aroma.data.sql
  */
 
 import com.google.inject.*
-import org.junit.runner.RunWith
-import tech.sirwellington.alchemy.test.junit.runners.*
-
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.*
-import tech.aroma.data.sql.serializers.ModuleSerializers
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
@@ -38,7 +35,7 @@ class ModuleSQLRepositoriesTest
     private lateinit var instance: ModuleSQLRepositories
     private lateinit var injector: Injector
 
-    val fakeModule = object: AbstractModule()
+    val fakeModule = object : AbstractModule()
     {
         override fun configure()
         {

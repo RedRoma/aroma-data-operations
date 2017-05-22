@@ -86,7 +86,7 @@ class SQLApplicationRepositoryIT
         apps = CollectionGenerators.listOf({ Applications.application }, 5)
         apps.forEach { it.owners.add(ownerId) }
         apps.forEach { it.organizationId = orgId }
-        apps.forEach { it.timeOfProvisioning = 0L}
+        apps.forEach { it.timeOfProvisioning = 0L }
         apps.forEach { it.followers = mutableSetOf() }
         apps.forEach { it.totalMessagesSent = 0L }
     }

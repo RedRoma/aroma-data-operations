@@ -4,7 +4,8 @@ package tech.aroma.data.sql.serializers
  * @author SirWellington
  */
 
-import com.google.inject.*
+import com.google.inject.Guice
+import com.google.inject.Injector
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

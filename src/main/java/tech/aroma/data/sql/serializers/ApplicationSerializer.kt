@@ -25,7 +25,6 @@ import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.ResultSet
-import java.time.Duration
 import java.util.*
 
 
@@ -37,7 +36,7 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
 {
     private val LOG = LoggerFactory.getLogger(this.javaClass)
 
-    override fun save(app: Application, timeToLive: Duration?, statement: String, database: JdbcOperations)
+    override fun save(app: Application, statement: String, database: JdbcOperations)
     {
         checkThat(app).`is`(validApplication())
         checkThat(statement).`is`(nonEmptyString())

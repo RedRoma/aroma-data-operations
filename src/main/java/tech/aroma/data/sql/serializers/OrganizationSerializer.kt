@@ -25,7 +25,6 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.ResultSet
-import java.time.Duration
 
 
 /**
@@ -34,7 +33,7 @@ import java.time.Duration
  */
 internal class OrganizationSerializer : DatabaseSerializer<Organization>
 {
-    override fun save(`object`: Organization?, timeToLive: Duration?, statement: String?, database: JdbcOperations?)
+    override fun save(`object`: Organization?, statement: String?, database: JdbcOperations?)
     {
         checkThat(`object`, statement, database)
                 .are(notNull())

@@ -26,9 +26,9 @@ import org.springframework.dao.DataAccessException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.toUUID
 import tech.aroma.data.sql.serializers.Tables.Tokens
 import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
@@ -74,7 +74,7 @@ class TokenSerializerTest
     @Test
     fun testSave()
     {
-        instance.save(token, null, statement, database)
+        instance.save(token, statement, database)
 
         verify(database).update(statement,
                                 tokenId.toUUID(),
@@ -94,7 +94,7 @@ class TokenSerializerTest
         whenever(database.update(any(), Mockito.anyVararg<Any>()))
                 .thenThrow(EmptyResultDataAccessException::class.java)
 
-        assertThrows { instance.save(token, null, statement, database) }
+        assertThrows { instance.save(token, statement, database) }
                 .isInstanceOf(DataAccessException::class.java)
     }
 
@@ -103,12 +103,12 @@ class TokenSerializerTest
     fun testSaveWithBadArgs()
     {
 
-        assertThrows { instance.save(token, null, "", database) }
+        assertThrows { instance.save(token, "", database) }
                 .isInstanceOf(IllegalArgumentException::class.java)
 
         assertThrows {
             val invalidToken = token.deepCopy().setTokenId(statement)
-            instance.save(invalidToken, null, statement, database)
+            instance.save(invalidToken, statement, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
     }

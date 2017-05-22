@@ -5,4 +5,4 @@
 DELETE
 FROM messages
 WHERE app_id = ?
-AND message_id = ?
+      AND message_id = ?

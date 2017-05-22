@@ -151,7 +151,7 @@ class SQLTokenRepositoryTest
 
         instance.saveToken(token)
 
-        verify(serializer).save(token, null, statement, database)
+        verify(serializer).save(token, statement, database)
     }
 
     @DontRepeat
@@ -180,7 +180,7 @@ class SQLTokenRepositoryTest
 
         doThrow(UncategorizedSQLException::class)
                 .whenever(serializer)
-                .save(token, null, sql, database)
+                .save(token, sql, database)
 
         assertThrows { instance.saveToken(token) }
                 .isInstanceOf(OperationFailedException::class.java)
