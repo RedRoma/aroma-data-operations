@@ -42,6 +42,7 @@ final class SQLStatements
         static final String APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners.sql");
         static final String APPLICATION_NON_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners_not_in_set.sql");
         static final String INBOX_MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_inbox_message.sql");
+        static final String INBOX_ALL_MESSAGES = loadSQLFile("tech/aroma/sql/deletes/delete_all_inbox_message_for_user.sql");
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_message.sql");
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
