@@ -35,15 +35,18 @@ internal class MessageSerializer : DatabaseSerializer<Message>
         checkThat(database).`is`(notNull())
         checkThat(statement).`is`(nonEmptyString())
 
+        val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else null
+        val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else null
+
         database.update(statement,
                         message.messageId.toUUID(),
                         message.applicationId.toUUID(),
                         message.applicationName,
                         message.title,
                         message.body,
-                        message.urgency.toString(),
-                        message.timeOfCreation.toTimestamp(),
-                        message.timeMessageReceived.toTimestamp(),
+                        message.urgency?.toString() ?: Urgency.MEDIUM.toString(),
+                        timeCreated,
+                        timeReceived,
                         message.hostname,
                         message.macAddress,
                         message.deviceName)
@@ -62,11 +65,16 @@ internal class MessageSerializer : DatabaseSerializer<Message>
         message.title = row.getString(Tables.Messages.TITLE)
         message.body = row.getString(Tables.Messages.BODY)
         message.hostname = row.getString(Tables.Messages.HOSTNAME)
-        message.macAddress = row.getString(Tables.Messages.IP_ADDRESS)
+
+        if (row.hasColumn(Tables.Messages.IP_ADDRESS))
+        {
+            message.macAddress = row.getString(Tables.Messages.IP_ADDRESS)
+        }
+
         message.deviceName = row.getString(Tables.Messages.DEVICE_NAME)
         message.urgency = row.getString(Tables.Messages.PRIORITY).asUrgency()
-        message.timeOfCreation = row.getTimestamp(Tables.Messages.TIME_CREATED).time
-        message.timeMessageReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED).time
+        message.timeOfCreation = row.getTimestamp(Tables.Messages.TIME_CREATED)?.time ?: 0L
+        message.timeMessageReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED)?.time ?: 0L
 
         return message
     }
