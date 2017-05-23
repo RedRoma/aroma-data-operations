@@ -205,6 +205,14 @@ class SQLInboxRepositoryTest
         verify(database).update(sql, userId.toUUID())
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteAllForUserWithBadArgs()
+    {
+        assertThrows { instance.deleteAllMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteAllMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun testCountInboxForUser()
     {
@@ -217,6 +225,14 @@ class SQLInboxRepositoryTest
         val result = instance.countInboxForUser(userId)
 
         assertThat(result, equalTo(count))
+    }
+
+    @DontRepeat
+    @Test
+    fun testCountInboxForUserWithBadArgs()
+    {
+        assertThrows { instance.countInboxForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.countInboxForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
 }
