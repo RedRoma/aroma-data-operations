@@ -50,7 +50,7 @@ class SQLMessageRepositoryIT
     @GenerateString(GenerateString.Type.UUID)
     private lateinit var messageId: String
 
-    private val serializer = TestingResources.getMessageSerializer()
+    private val serializer = TestingResources.messageSerializer
 
     @Before
     fun setup()
