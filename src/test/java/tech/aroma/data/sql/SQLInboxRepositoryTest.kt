@@ -18,18 +18,19 @@ package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Messages
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs
@@ -123,6 +124,19 @@ class SQLInboxRepositoryTest
         }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMessageWhenDatabaseFails()
+    {
+        val sql = Inserts.INBOX_MESSAGE
+
+        whenever(database.update(eq(sql), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException::class.java)
+
+        assertThrows { instance.saveMessageForUser(user, message) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testGetMessagesForUser()
     {
@@ -142,6 +156,19 @@ class SQLInboxRepositoryTest
     {
         assertThrows { instance.getMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.getMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetMessageForUserWhenDatabaseFails()
+    {
+        val sql = Queries.SELECT_INBOX_MESSAGES_FOR_USER
+
+        whenever(database.query(eq(sql), eq(serializer), Mockito.anyVararg()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.getMessagesForUser(userId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
     @Test
@@ -176,6 +203,19 @@ class SQLInboxRepositoryTest
         }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testContainsMessageWhenDatabaseFails()
+    {
+        val sql = Queries.CHECK_INBOX_MESSAGE
+
+        whenever(database.queryForObject(sql, Boolean::class.java, userId.toUUID(), messageId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.containsMessageInInbox(userId, message) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testDeleteMessageForUser()
     {
@@ -196,6 +236,19 @@ class SQLInboxRepositoryTest
         assertThrows { instance.deleteMessageForUser(userId, invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteMessageWhenDatabaseFails()
+    {
+        val sql = Deletes.INBOX_MESSAGE
+
+        whenever(database.update(sql, userId.toUUID(), messageId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteMessageForUser(userId, messageId) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
     @Test
     fun testDeleteAllMessagesForUser()
     {
@@ -211,6 +264,19 @@ class SQLInboxRepositoryTest
     {
         assertThrows { instance.deleteAllMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.deleteAllMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteAllForUserWhenDatabaseFails()
+    {
+        val sql = Deletes.INBOX_ALL_MESSAGES
+
+        whenever(database.update(sql, userId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.deleteAllMessagesForUser(userId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
     @Test
@@ -233,6 +299,19 @@ class SQLInboxRepositoryTest
     {
         assertThrows { instance.countInboxForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
         assertThrows { instance.countInboxForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testCountInboxWhenDatabaseFails()
+    {
+        val sql = Queries.COUNT_INBOX_MESSAGES
+
+        whenever(database.queryForObject(sql, Long::class.java, userId.toUUID()))
+                .thenThrow(RuntimeException())
+
+        assertThrows { instance.countInboxForUser(userId) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
 }
