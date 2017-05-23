@@ -30,6 +30,7 @@ internal class ModuleSQLRepositories : AbstractModule()
     override fun configure()
     {
         binder().bind<ApplicationRepository>().to<SQLApplicationRepository>()
+        binder().bind<InboxRepository>().to<SQLInboxRepository>()
         binder().bind<MessageRepository>().to<SQLMessageRepository>()
         binder().bind<OrganizationRepository>().to<SQLOrganizationRepository>()
         binder().bind<TokenRepository>().to<SQLTokenRepository>()
