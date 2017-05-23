@@ -41,6 +41,8 @@ final class SQLStatements
         static final String APPLICATION = loadSQLFile("tech/aroma/sql/deletes/delete_application.sql");
         static final String APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners.sql");
         static final String APPLICATION_NON_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners_not_in_set.sql");
+        static final String INBOX_MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_inbox_message.sql");
+        static final String INBOX_ALL_MESSAGES = loadSQLFile("tech/aroma/sql/deletes/delete_all_inbox_message_for_user.sql");
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/deletes/delete_message.sql");
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
@@ -54,6 +56,7 @@ final class SQLStatements
         static final String APPLICATION = loadSQLFile("tech/aroma/sql/inserts/insert_application.sql");
         static final String APPLICATION_OWNER = loadSQLFile("tech/aroma/sql/inserts/insert_application_owner.sql");
 
+        static final String INBOX_MESSAGE = loadSQLFile("tech/aroma/sql/inserts/insert_inbox_message.sql");
         static final String MESSAGE = loadSQLFile("tech/aroma/sql/inserts/insert_message.sql");
 
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/inserts/insert_organization.sql");
@@ -74,6 +77,11 @@ final class SQLStatements
         static final String SELECT_APPLICATION_BY_OWNER = loadSQLFile("tech/aroma/sql/queries/select_application_by_owner.sql");
         static final String SELECT_APPLICATION_BY_ORGANIZATION = loadSQLFile("tech/aroma/sql/queries/select_application_by_organization.sql");
         static final String SELECT_APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/queries/select_application_owners.sql");
+
+        static final String CHECK_INBOX_MESSAGE = loadSQLFile("tech/aroma/sql/queries/check_inbox_has_message.sql");
+        static final String COUNT_INBOX_MESSAGES = loadSQLFile("tech/aroma/sql/queries/count_inbox_messages.sql");
+        static final String SELECT_INBOX_MESSAGES_FOR_USER = loadSQLFile("tech/aroma/sql/queries/select_inbox_messages_for_user.sql");
+
 
         static final String CHECK_MESSAGE = loadSQLFile("tech/aroma/sql/queries/check_message.sql");
         static final String COUNT_MESSAGES = loadSQLFile("tech/aroma/sql/queries/count_messages.sql");
