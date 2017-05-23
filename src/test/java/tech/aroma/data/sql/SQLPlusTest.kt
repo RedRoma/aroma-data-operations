@@ -30,9 +30,7 @@ class SQLPlusTest
     {
         whenever(results.findColumn(column)).thenReturn(0)
 
-        val function = ResultSet::hasColumn
-
-        val result: Boolean = function.call(results, column)
+        val result: Boolean = results.hasColumn(column)
         assertThat(result, equalTo(true))
     }
 
@@ -41,8 +39,7 @@ class SQLPlusTest
     {
         whenever(results.findColumn(column)).thenThrow(SQLException())
 
-        val function = ResultSet::hasColumn
-        val result = function.call(results, column)
+        val result = results.hasColumn(column)
 
         assertThat(result, equalTo(false))
     }

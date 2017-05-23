@@ -9,11 +9,6 @@ import java.util.*
  *
  * @author SirWellington
  */
-internal class SQLPlus
-{
-
-}
-
 
 /**
  * Checks whether a [ResultSet] has a column present or not.
