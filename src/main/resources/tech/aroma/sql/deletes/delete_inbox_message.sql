@@ -4,5 +4,5 @@
 
 DELETE
 FROM inbox
-WHERE app_id = ?
+WHERE user_id = ?
       AND message_id = ?

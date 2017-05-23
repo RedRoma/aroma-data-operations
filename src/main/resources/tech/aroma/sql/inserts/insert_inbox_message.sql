@@ -2,7 +2,8 @@
 -- INSERTS A NEW MESSAGE INTO THE INBOX TABLE
 ------------------------------------------------------------------------------
 
-INSERT INTO inbox (message_id,
+INSERT INTO inbox (user_id,
+                   message_id,
                    app_id,
                    app_name,
                    title,
@@ -14,4 +15,4 @@ INSERT INTO inbox (message_id,
                    mac_address,
                    device_name)
 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
