@@ -28,10 +28,14 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Messages
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Message
+import tech.aroma.thrift.User
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
 @RunWith(AlchemyTestRunner::class)
@@ -51,6 +55,9 @@ class SQLInboxRepositoryTest
     private lateinit var message: Message
     private val messageId: String get() = message.messageId
     private lateinit var messages: MutableList<Message>
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var invalidId: String
 
     private lateinit var instance: SQLInboxRepository
 
@@ -86,6 +93,36 @@ class SQLInboxRepositoryTest
 
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMessageWithBadArgs()
+    {
+        assertThrows {
+            val emptyUser = User()
+            instance.saveMessageForUser(emptyUser, message)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val emptyMessage = Message()
+            instance.saveMessageForUser(user, emptyMessage)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidUser = User(user).setUserId(invalidId)
+            instance.saveMessageForUser(invalidUser, message)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidMessage = Message(message).setMessageId(invalidId)
+            instance.saveMessageForUser(user, invalidMessage)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val messageWithInvalidAppId = Message(message).setApplicationId(invalidId)
+            instance.saveMessageForUser(user, messageWithInvalidAppId)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun testGetMessagesForUser()
     {
@@ -97,6 +134,14 @@ class SQLInboxRepositoryTest
         val result = instance.getMessagesForUser(userId)
 
         assertThat(result, equalTo(messages))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetMessagesForUserWithBadArgs()
+    {
+        assertThrows { instance.getMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
@@ -113,6 +158,24 @@ class SQLInboxRepositoryTest
 
     }
 
+    @DontRepeat
+    @Test
+    fun testContainsMessageWithBadArgs()
+    {
+        assertThrows { instance.containsMessageInInbox("", message) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsMessageInInbox(invalidId, message) }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val emptyMessage = Message()
+            instance.saveMessageForUser(user, emptyMessage)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+
+        assertThrows {
+            val invalidMessage = Message(message).setMessageId(invalidId)
+            instance.saveMessageForUser(user, invalidMessage)
+        }.isInstanceOf(InvalidArgumentException::class.java)
+    }
+
     @Test
     fun testDeleteMessageForUser()
     {
@@ -121,6 +184,16 @@ class SQLInboxRepositoryTest
         instance.deleteMessageForUser(userId, messageId)
 
         verify(database).update(sql, userId.toUUID(), messageId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteMessageWithBadArgs()
+    {
+        assertThrows { instance.deleteMessageForUser("", messageId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMessageForUser(invalidId, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMessageForUser(userId, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMessageForUser(userId, invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
     }
 
     @Test
