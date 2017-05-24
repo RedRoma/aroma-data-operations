@@ -31,11 +31,11 @@ public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
     /**
      * Deserializes Aroma objects from a {@link ResultSet}.
      *
-     * @param resultSet The result set to extract data from
+     * @param row The result set to extract data from
      * @return An Aroma object representation from the
      * @throws SQLException
      */
-    T deserialize(@Required ResultSet resultSet) throws SQLException;
+    T deserialize(@Required ResultSet row) throws SQLException;
 
     @Override
     default T mapRow(ResultSet rs, int rowNum) throws SQLException

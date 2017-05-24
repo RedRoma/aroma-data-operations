@@ -60,9 +60,9 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
                         owners)
     }
 
-    override fun deserialize(resultSet: ResultSet): Application
+    override fun deserialize(row: ResultSet): Application
     {
-        val row = resultSet
+        val row = row
 
         val app = Application()
 

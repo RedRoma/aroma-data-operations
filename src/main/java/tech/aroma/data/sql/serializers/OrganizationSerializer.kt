@@ -60,12 +60,12 @@ internal class OrganizationSerializer : DatabaseSerializer<Organization>
 
     }
 
-    override fun deserialize(resultSet: ResultSet?): Organization
+    override fun deserialize(row: ResultSet?): Organization
     {
-        checkThat(resultSet).`is`(notNull())
+        checkThat(row).`is`(notNull())
 
         val org = Organization()
-        val results = resultSet ?: return org
+        val results = row ?: return org
 
 
         val orgId = results.getString(Organizations.ORG_ID)

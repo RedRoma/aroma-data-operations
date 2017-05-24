@@ -52,10 +52,10 @@ internal class TokenSerializer : DatabaseSerializer<AuthenticationToken>
                         token.status?.toString())
     }
 
-    override fun deserialize(resultSet: ResultSet): AuthenticationToken
+    override fun deserialize(row: ResultSet): AuthenticationToken
     {
         val token = AuthenticationToken()
-        val results = resultSet
+        val results = row
 
         val tokenId = results.getString(Tokens.TOKEN_ID)
         val ownerId = results.getString(Tokens.OWNER_ID)
