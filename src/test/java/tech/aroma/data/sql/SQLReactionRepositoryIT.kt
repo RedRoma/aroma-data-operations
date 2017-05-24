@@ -27,9 +27,11 @@ import tech.aroma.data.sql.SQLStatements.Deletes
 import tech.aroma.data.sql.serializers.ReactionsSerializer
 import tech.aroma.thrift.generators.ReactionGenerators
 import tech.aroma.thrift.reactions.Reaction
+import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
+@IntegrationTest
 @RunWith(AlchemyTestRunner::class)
 class SQLReactionRepositoryIT
 {
@@ -90,6 +92,18 @@ class SQLReactionRepositoryIT
         assertThat(result, notNull)
         assertThat(result, notEmpty)
         assertThat(result.size, equalTo(reactions.size))
+    }
+
+    @Test
+    fun testSaveReactionsForUserTwice()
+    {
+        instance.saveReactionsForUser(ownerId, reactions)
+
+        val newReactions = CollectionGenerators.listOf(ReactionGenerators.reactions())
+        instance.saveReactionsForUser(ownerId, newReactions)
+
+        val results = instance.getReactionsForApplication(ownerId)
+        assertThat(results, equalTo(newReactions))
     }
 
     @Test
