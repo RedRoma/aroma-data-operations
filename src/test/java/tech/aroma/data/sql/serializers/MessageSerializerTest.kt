@@ -134,15 +134,6 @@ class MessageSerializerTest
         Assert.assertThat(result, org.hamcrest.Matchers.`is`(message))
     }
 
-    @DontRepeat
-    @Test
-    fun testDeserializeWithBadArgs()
-    {
-        assertThrows {
-            instance.deserialize(null)
-        }.isInstanceOf(IllegalArgumentException::class.java)
-    }
-
     private fun setupResults()
     {
         whenever(resultSet.getString(Tables.Messages.MESSAGE_ID)).thenReturn(message.messageId)
@@ -158,25 +149,5 @@ class MessageSerializerTest
         whenever(resultSet.getTimestamp(Tables.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toTimestamp())
         whenever(resultSet.getTimestamp(Tables.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toTimestamp())
     }
-
-//    private fun checkMessageWithDuration(message: Message)
-//    {
-//        verify(database).update(eq(sql), captor.capture())
-//
-//        val arguments = captor.allValues
-//
-//        assertThat(arguments[0], Is<Any>(UUID.fromString(messageId)))
-//        assertThat(arguments[1], Is<Any>(message.title))
-//        assertThat(arguments[2], Is<Any>(message.body))
-//        assertThat(arguments[3], Is<Any>(message.urgency.toString()))
-//        assertThat(arguments[4], Is<Any>(message.timeOfCreation.toTimestamp()))
-//        assertThat(arguments[5], Is<Any>(message.timeMessageReceived.toTimestamp()))
-//
-//        assertThat(arguments[6], Is<Any>(message.hostname))
-//        assertThat(arguments[7], Is<Any>(message.macAddress))
-//        assertThat(arguments[8], Is<Any>(UUID.fromString(appId)))
-//        assertThat(arguments[9], Is<Any>(message.applicationName))
-//        assertThat(arguments[10], Is<Any>(message.deviceName))
-//    }
 
 }

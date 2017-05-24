@@ -53,10 +53,8 @@ internal class MessageSerializer : DatabaseSerializer<Message>
 
     }
 
-    override fun deserialize(row: ResultSet?): Message
+    override fun deserialize(row: ResultSet): Message
     {
-        val row = row ?: throw IllegalArgumentException()
-
         val message = Message()
 
         message.applicationId = row.getString(Tables.Messages.APP_ID)
