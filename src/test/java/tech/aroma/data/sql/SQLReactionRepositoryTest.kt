@@ -107,7 +107,9 @@ class SQLReactionRepositoryTest
     @Test
     fun testSaveReactionsForUserWhenDatabaseFails()
     {
+        setupForFailure()
 
+        assertThrows { instance.saveReactionsForUser(ownerId, reactions) }.operationError()
     }
 
     @Test
@@ -129,7 +131,9 @@ class SQLReactionRepositoryTest
     @Test
     fun testGetReactionsForUserWhenDatabaseFails()
     {
+        setupForFailure()
 
+        assertThrows { instance.getReactionsForUser(ownerId) }.operationError()
     }
 
     @Test
@@ -154,7 +158,9 @@ class SQLReactionRepositoryTest
     @Test
     fun testSaveReactionsForApplicationWhenDatabaseFails()
     {
+        setupForFailure()
 
+        assertThrows { instance.saveReactionsForApplication(ownerId, reactions) }.operationError()
     }
 
     @Test
@@ -176,7 +182,9 @@ class SQLReactionRepositoryTest
     @Test
     fun testGetReactionsForApplicationWhenDatabaseFails()
     {
+        setupForFailure()
 
+        assertThrows { instance.getReactionsForApplication(ownerId) }.operationError()
     }
 
     private fun verifyInsertOccurred()
@@ -190,6 +198,18 @@ class SQLReactionRepositoryTest
 
         verify(preparedStatement).setObject(1, ownerId.toUUID())
         verify(preparedStatement).setArray(2, sqlArray)
+    }
+
+    private fun setupForFailure()
+    {
+        whenever(database.queryForObject(any<String>(), eq(serializer), eq(ownerId.toUUID())))
+                .thenThrow(RuntimeException())
+
+        whenever(database.update(any<String>(), eq(ownerId.toUUID())))
+                .thenThrow(RuntimeException())
+
+        whenever(database.update(any<String>(), any<PreparedStatementSetter>()))
+                .thenThrow(RuntimeException())
     }
 
     private fun setupData()
