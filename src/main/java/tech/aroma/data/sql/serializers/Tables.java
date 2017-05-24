@@ -19,12 +19,10 @@ final class Tables
     {
 
         static final String EVENT_ID = "event_id";
-        static final String USER_ID = Users.USER_ID
-        static final String APP_NAME = Applications.APP_NAME;
+        static final String RECEPIENT_USER_ID = "recepient_user_id";
         static final String APP_ID = Applications.APP_ID;
-        static final String ACTOR_ID = "actor_id";
+        static final String ACTOR_USER_ID = "actor_user_id";
         static final String TIME_OF_EVENT = "time_of_event";
-
         static final String SERIALIZED_EVENT = "serialized_event";
     }
 
