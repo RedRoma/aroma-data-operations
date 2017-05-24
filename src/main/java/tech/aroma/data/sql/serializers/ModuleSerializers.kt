@@ -7,6 +7,7 @@ import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.to
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.events.Event
 
 /**
  *
@@ -16,6 +17,7 @@ class ModuleSerializers : AbstractModule()
 {
     override fun configure()
     {
+        bind<DatabaseSerializer<Event>>().to<EventSerializer>()
         bind<DatabaseSerializer<Application>>().to<ApplicationSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<AuthenticationToken>>().to<TokenSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()

@@ -16,7 +16,6 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.anything
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.*
@@ -40,7 +39,6 @@ import tech.sirwellington.alchemy.generator.StringGenerators
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
-import kotlin.reflect.KClass
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat
