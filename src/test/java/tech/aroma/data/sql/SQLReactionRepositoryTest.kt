@@ -27,10 +27,13 @@ import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.data.sql.SQLStatements.Queries
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.generators.ReactionGenerators
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.Connection
@@ -61,6 +64,9 @@ class SQLReactionRepositoryTest
     @GenerateString(UUID)
     private lateinit var ownerId: String
 
+    @GenerateString(ALPHABETIC)
+    private lateinit var invalidId: String
+
     private lateinit var reactions: List<Reaction>
     private val serializedReactions get() = reactions.map(ThriftObjects::toJson)
 
@@ -88,7 +94,13 @@ class SQLReactionRepositoryTest
     @Test
     fun testSaveReactionsForUserWithBadArgs()
     {
+        assertThrows {
+            instance.saveReactionsForApplication("", reactions)
+        }.invalidArg()
 
+        assertThrows { instance.saveReactionsForUser(invalidId, reactions) }.invalidArg()
+
+        instance.saveReactionsForUser(ownerId, emptyList())
     }
 
     @DontRepeat
@@ -109,7 +121,8 @@ class SQLReactionRepositoryTest
     @Test
     fun testGetReactionsForUserWithBadArgs()
     {
-
+        assertThrows { instance.getReactionsForUser("") }.invalidArg()
+        assertThrows { instance.getReactionsForUser(invalidId) }.invalidArg()
     }
 
     @DontRepeat
@@ -131,7 +144,10 @@ class SQLReactionRepositoryTest
     @Test
     fun testSaveReactionsForApplicationWithBadArgs()
     {
+        assertThrows { instance.saveReactionsForApplication("", reactions) }.invalidArg()
+        assertThrows { instance.saveReactionsForApplication(invalidId, reactions) }.invalidArg()
 
+        instance.saveReactionsForApplication(ownerId, emptyList())
     }
 
     @DontRepeat
@@ -152,7 +168,8 @@ class SQLReactionRepositoryTest
     @Test
     fun testGetReactionsForApplicationWithBadArgs()
     {
-
+        assertThrows { instance.getReactionsForApplication("") }.invalidArg()
+        assertThrows { instance.getReactionsForApplication(invalidId) }.invalidArg()
     }
 
     @DontRepeat
