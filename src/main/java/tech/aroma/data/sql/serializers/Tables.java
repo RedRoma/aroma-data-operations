@@ -23,6 +23,7 @@ final class Tables
         static final String APP_ID = Applications.APP_ID;
         static final String ACTOR_USER_ID = "actor_user_id";
         static final String TIME_OF_EVENT = "time_of_event";
+        static final String EVENT_TYPE = "event_type";
         static final String SERIALIZED_EVENT = "serialized_event";
     }
 
