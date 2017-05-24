@@ -16,6 +16,7 @@
 
 package tech.aroma.data.sql.serializers
 
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validReaction
 import tech.aroma.data.sql.DatabaseSerializer
@@ -31,22 +32,42 @@ import java.sql.ResultSet
  *
  * @author SirWellington
  */
-internal class ReactionSerializer : DatabaseSerializer<Reaction>
+internal class ReactionSerializer : DatabaseSerializer<List<Reaction>>
 {
-    override fun save(reaction: Reaction, statement: String, database: JdbcOperations)
+
+    private companion object
     {
-        checkThat(reaction).`is`(validReaction())
+        @JvmStatic val LOG = LoggerFactory.getLogger(this::class.java)!!
+    }
+
+    override fun save(reactions: List<Reaction>, statement: String, database: JdbcOperations)
+    {
+        reactions.forEach { checkThat(it).`is`(validReaction()) }
         checkThat(statement).`is`(nonEmptyString())
     }
 
-    override fun deserialize(row: ResultSet): Reaction
+    override fun deserialize(row: ResultSet): List<Reaction>
     {
-        val reaction = Reaction()
+        val result = listOf<Reaction>()
 
-        val serializedReaction = row.getString(Reactions.SERIALIZED_REACTION) ?: return reaction
+        val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return result
 
-        return ThriftObjects.fromJson(reaction, serializedReaction)
+        val stringArray = array as? Array<String> ?: return result
 
+        return stringArray.filter { it.isNotEmpty() }
+                .map(this::reactionFromString)
+                .filterNotNull()
     }
 
+    private fun reactionFromString(string: String) : Reaction?
+    {
+        val prototype = Reaction()
+
+        return try { ThriftObjects.fromJson(prototype, string) }
+        catch (ex: Exception)
+        {
+            LOG.warn("Failed to deserialize reaction from $string", ex)
+            return null
+        }
+    }
 }

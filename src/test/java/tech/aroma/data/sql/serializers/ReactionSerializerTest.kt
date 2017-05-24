@@ -18,8 +18,7 @@ package tech.aroma.data.sql.serializers
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +28,7 @@ import tech.aroma.data.sql.notNull
 import tech.aroma.data.sql.serializers.Tables.Reactions
 import tech.aroma.thrift.generators.ReactionGenerators.reactions
 import tech.aroma.thrift.reactions.Reaction
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
@@ -48,8 +47,12 @@ class ReactionSerializerTest
     @GenerateString
     private lateinit var sql: String
 
-    private lateinit var reaction: Reaction
-    private val serializedReaction get() = ThriftObjects.toJson(reaction)
+    private lateinit var reactions: List<Reaction>
+    private val serializedReactions: List<String>
+    get()
+    {
+        return reactions.map(ThriftObjects::toJson)
+    }
 
     private lateinit var instance: ReactionSerializer
 
@@ -64,7 +67,7 @@ class ReactionSerializerTest
     @Test
     fun testSave()
     {
-        instance.save(reaction, sql, database)
+        instance.save(reactions, sql, database)
 
         verifyZeroInteractions(database)
     }
@@ -74,7 +77,7 @@ class ReactionSerializerTest
     fun testSaveWithBadArgs()
     {
         assertThrows {
-            instance.save(reaction, "", database)
+            instance.save(reactions, "", database)
         }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
@@ -82,14 +85,14 @@ class ReactionSerializerTest
     fun testDeserialize()
     {
         val result = instance.deserialize(row)
-        assertThat(result, equalTo(reaction))
+        assertThat(result, equalTo(reactions))
     }
 
     @DontRepeat
     @Test
     fun testDeserializeWhenColumnIsEmpty()
     {
-        whenever(row.getString(Reactions.SERIALIZED_REACTION))
+        whenever(row.getString(Reactions.SERIALIZED_REACTIONS))
                 .thenReturn("")
 
         val result = instance.deserialize(row)
@@ -98,12 +101,15 @@ class ReactionSerializerTest
 
     private fun setupData()
     {
-        reaction = one(reactions())
+        reactions = CollectionGenerators.listOf(reactions(), 14)
     }
 
     private fun setupMocks()
     {
-        whenever(row.getString(Reactions.SERIALIZED_REACTION)).thenReturn(serializedReaction)
+        val array = mock<java.sql.Array>()
+        whenever(array.array).thenReturn(serializedReactions.toTypedArray())
+
+        whenever(row.getArray(Reactions.SERIALIZED_REACTIONS)).thenReturn(array)
     }
 
 }

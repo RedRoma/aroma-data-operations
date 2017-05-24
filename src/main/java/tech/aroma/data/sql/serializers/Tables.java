@@ -90,7 +90,7 @@ final class Tables
     static final class Reactions
     {
         static final String OWNER_ID = "owner_id";
-        static final String SERIALIZED_REACTION = "serialized_reaction";
+        static final String SERIALIZED_REACTIONS = "serialized_reaction";
     }
 
     @NonInstantiable

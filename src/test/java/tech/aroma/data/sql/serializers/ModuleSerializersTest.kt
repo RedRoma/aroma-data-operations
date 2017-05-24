@@ -60,7 +60,7 @@ class ModuleSerializersTest
     @Test
     fun testHasReactionSerializer()
     {
-        assertTrue { injector.hasInstance<DatabaseSerializer<Reaction>>() }
+        assertTrue { injector.hasInstance<DatabaseSerializer<List<Reaction>>>() }
     }
 
     @Test

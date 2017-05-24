@@ -14,7 +14,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  *
  * @author SirWellington
  */
-public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
+public interface DatabaseSerializer<T> extends RowMapper<T>
 {
     /**
      * Saves the object to the Database.
