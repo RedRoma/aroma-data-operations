@@ -147,7 +147,7 @@ internal class SQLActivityRepository
 
         return try
         {
-            database.query(sql, serializer, userId)
+            database.query(sql, serializer, userId) ?: mutableListOf()
         }
         catch(ex: Exception)
         {
