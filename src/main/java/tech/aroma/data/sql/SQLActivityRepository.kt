@@ -42,7 +42,7 @@ internal class SQLActivityRepository
 
     private companion object
     {
-        @JvmStatic val LOG = LoggerFactory.getLogger(this::class.java)!!
+        @JvmStatic private val LOG = LoggerFactory.getLogger(this::class.java)!!
     }
 
     override fun saveEvent(event: Event, forUser: User, lifetime: LengthOfTime?)
