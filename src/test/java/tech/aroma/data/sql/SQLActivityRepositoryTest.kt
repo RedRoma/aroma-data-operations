@@ -95,7 +95,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.saveEvent(event, user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -144,7 +144,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.containsEvent(eventId, user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -185,7 +185,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.getEvent(eventId, user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -246,7 +246,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.getAllEventsFor(user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -281,7 +281,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.deleteEvent(eventId, user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -324,7 +324,7 @@ class SQLActivityRepositoryTest
         setupForFailure()
 
         assertThrows { instance.deleteAllEventsFor(user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat

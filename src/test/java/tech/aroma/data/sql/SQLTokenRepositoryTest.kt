@@ -107,7 +107,7 @@ class SQLTokenRepositoryTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.containsToken(tokenId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -141,7 +141,7 @@ class SQLTokenRepositoryTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.getToken(tokenId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -183,7 +183,7 @@ class SQLTokenRepositoryTest
                 .save(token, sql, database)
 
         assertThrows { instance.saveToken(token) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -219,7 +219,7 @@ class SQLTokenRepositoryTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.getTokensBelongingTo(ownerId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -251,7 +251,7 @@ class SQLTokenRepositoryTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.deleteToken(tokenId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
 
     }
 
@@ -279,7 +279,7 @@ class SQLTokenRepositoryTest
                 .thenThrow(UncategorizedSQLException::class.java)
 
         assertThrows { instance.deleteTokensBelongingTo(ownerId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
 }

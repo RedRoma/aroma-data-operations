@@ -197,7 +197,7 @@ class SQLApplicationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteApplication(appId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -229,7 +229,7 @@ class SQLApplicationRepositoryTest
         whenever(database.queryForObject(sql, serializer, appId.toUUID()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.getById(appId) }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.getById(appId) }.operationError()
     }
 
     @Test
@@ -275,7 +275,7 @@ class SQLApplicationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.containsApplication(appId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -311,7 +311,7 @@ class SQLApplicationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getApplicationsOwnedBy(owner) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -344,7 +344,7 @@ class SQLApplicationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getApplicationsByOrg(orgId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -381,7 +381,7 @@ class SQLApplicationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.searchByName(term) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -406,6 +406,6 @@ class SQLApplicationRepositoryTest
         whenever(database.query(sql, serializer))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.recentlyCreated }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.recentlyCreated }.operationError()
     }
 }

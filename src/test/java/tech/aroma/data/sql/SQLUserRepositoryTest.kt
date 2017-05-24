@@ -92,7 +92,7 @@ class SQLUserRepositoryTest
                 .whenever(serializer)
                 .save(user, sql, database)
 
-        assertThrows { instance.saveUser(user) }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.saveUser(user) }.operationError()
     }
 
     @DontRepeat
@@ -139,7 +139,7 @@ class SQLUserRepositoryTest
         whenever(database.queryForObject(sql, serializer, userId.toUUID()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.getUser(userId) }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.getUser(userId) }.operationError()
     }
 
     @DontRepeat
@@ -181,7 +181,7 @@ class SQLUserRepositoryTest
         whenever(database.update(sql, userId.toUUID()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.deleteUser(userId) }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.deleteUser(userId) }.operationError()
     }
 
     @DontRepeat
@@ -216,7 +216,7 @@ class SQLUserRepositoryTest
         whenever(database.queryForObject(sql, Boolean::class.java, userId.toUUID()))
                 .thenThrow(RuntimeException())
 
-        assertThrows { instance.containsUser(userId) }.isInstanceOf(OperationFailedException::class.java)
+        assertThrows { instance.containsUser(userId) }.operationError()
     }
 
     @DontRepeat
@@ -251,7 +251,7 @@ class SQLUserRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getUserByEmail(email) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -302,7 +302,7 @@ class SQLUserRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.findByGithubProfile(github) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat

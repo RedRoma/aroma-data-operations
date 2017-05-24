@@ -106,7 +106,7 @@ class SQLMessageRepositoryTest
                 .save(any(), any(), any())
 
         assertThrows { instance.saveMessage(message) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
 
@@ -134,7 +134,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getMessage(appId, messageId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
 
     }
 
@@ -217,7 +217,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMessage(appId, messageId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
 
     }
 
@@ -247,7 +247,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.containsMessage(appId, messageId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -295,7 +295,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByHostname(hostname) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -347,7 +347,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByApplication(appId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -403,7 +403,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getByTitle(appId, title) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -445,7 +445,7 @@ class SQLMessageRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getCountByApplication(appId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat

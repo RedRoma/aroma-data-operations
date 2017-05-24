@@ -134,7 +134,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException::class.java)
 
         assertThrows { instance.saveMessageForUser(user, message) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -168,7 +168,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getMessagesForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -213,7 +213,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.containsMessageInInbox(userId, message) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -246,7 +246,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMessageForUser(userId, messageId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -276,7 +276,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteAllMessagesForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -311,7 +311,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.countInboxForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
 }

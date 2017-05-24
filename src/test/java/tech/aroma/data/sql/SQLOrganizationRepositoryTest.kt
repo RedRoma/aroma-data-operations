@@ -109,7 +109,7 @@ class SQLOrganizationRepositoryTest
 
         assertThrows {
             instance.saveOrganization(organization)
-        }.isInstanceOf(OperationFailedException::class.java)
+        }.operationError()
     }
 
     @DontRepeat
@@ -158,7 +158,7 @@ class SQLOrganizationRepositoryTest
                 .update(any(), eq(orgId.toUUID()))
 
         assertThrows { instance.deleteOrganization(orgId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @DontRepeat
@@ -225,7 +225,7 @@ class SQLOrganizationRepositoryTest
                 .queryForObject(query, Boolean::class.java, orgId.toUUID())
 
         assertThrows { instance.containsOrganization(orgId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
 
@@ -362,7 +362,7 @@ class SQLOrganizationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.saveMemberInOrganization(orgId, user) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -402,7 +402,7 @@ class SQLOrganizationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.isMemberInOrganization(orgId, userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -473,7 +473,7 @@ class SQLOrganizationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMember(orgId, userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -506,6 +506,6 @@ class SQLOrganizationRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteAllMembers(orgId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 }
