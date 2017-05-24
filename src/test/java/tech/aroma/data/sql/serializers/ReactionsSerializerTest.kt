@@ -33,6 +33,7 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
+import javax.xml.bind.DatatypeConverter
 
 @RunWith(AlchemyTestRunner::class)
 class ReactionsSerializerTest
@@ -48,11 +49,7 @@ class ReactionsSerializerTest
     private lateinit var sql: String
 
     private lateinit var reactions: List<Reaction>
-    private val serializedReactions: List<String>
-    get()
-    {
-        return reactions.map(ThriftObjects::toJson)
-    }
+    private val serializedReactions get() = reactions.map(ThriftObjects::toJson)
 
     private lateinit var instance: ReactionsSerializer
 

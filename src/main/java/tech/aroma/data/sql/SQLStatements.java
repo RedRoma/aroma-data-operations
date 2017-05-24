@@ -67,7 +67,7 @@ final class SQLStatements
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/inserts/insert_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/inserts/insert_organization_member.sql");
 
-        static final String REACTION = loadSQLFile("tech/aroma/sql/inserts/insert_reaction.sql");
+        static final String REACTION = loadSQLFile("tech/aroma/sql/inserts/insert_reactions.sql");
 
         static final String TOKEN = loadSQLFile("tech/aroma/sql/inserts/insert_token.sql");
 

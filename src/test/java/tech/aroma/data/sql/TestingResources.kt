@@ -19,6 +19,7 @@ package tech.aroma.data.sql
 
 import com.google.inject.*
 import com.natpryce.hamkrest.Matcher
+import com.natpryce.hamkrest.isEmpty
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
@@ -57,6 +58,7 @@ object TestingResources
 
 val isNull = Matcher(Objects::isNull)
 val notNull = !isNull
+val notEmpty = !isEmpty
 
 
 fun ThrowableAssertion.invalidArg(): ThrowableAssertion

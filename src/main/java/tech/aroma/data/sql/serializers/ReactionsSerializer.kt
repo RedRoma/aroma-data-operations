@@ -26,6 +26,7 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
+import javax.xml.bind.DatatypeConverter
 
 
 /**
@@ -54,16 +55,36 @@ internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
 
         val stringArray = array as? Array<String> ?: return result
 
-        return stringArray.filter { it.isNotEmpty() }
+        return stringArray.filterNotNull()
                 .map(this::reactionFromString)
                 .filterNotNull()
+
     }
 
-    private fun reactionFromString(string: String) : Reaction?
+    private fun reactionFromBinary(binary: ByteArray): Reaction?
     {
         val prototype = Reaction()
 
-        return try { ThriftObjects.fromJson(prototype, string) }
+        return try
+        {
+            ThriftObjects.fromBinary(prototype, binary)
+        }
+        catch (ex: Exception)
+        {
+            LOG.warn("Failed to deserialize reaction from $binary", ex)
+            return null
+        }
+
+    }
+
+    private fun reactionFromString(string: String): Reaction?
+    {
+        val prototype = Reaction()
+
+        return try
+        {
+            ThriftObjects.fromJson(prototype, string)
+        }
         catch (ex: Exception)
         {
             LOG.warn("Failed to deserialize reaction from $string", ex)
