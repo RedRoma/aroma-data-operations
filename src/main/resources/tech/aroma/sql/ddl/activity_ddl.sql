@@ -10,10 +10,12 @@ CREATE TABLE IF NOT EXISTS Activity
     app_id            UUID,
     actor_user_id     UUID,
     time_of_event     TIMESTAMP,
+    event_type        TEXT,
     serialized_event  TEXT,
 
     PRIMARY KEY (recipient_user_id, event_id)
 );
 
 
-CREATE INDEX IF NOT EXISTS Activity_By_Application ON Activity(app_id);
+CREATE INDEX IF NOT EXISTS Activity_By_Application
+    ON Activity (app_id);
