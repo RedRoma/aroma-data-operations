@@ -16,29 +16,31 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
+import com.natpryce.hamkrest.anything
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.User
 import tech.aroma.thrift.events.Event
-import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.*
 import tech.aroma.thrift.generators.EventGenerators
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
+import kotlin.reflect.KClass
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat
@@ -90,6 +92,16 @@ class SQLActivityRepositoryTest
 
     @DontRepeat
     @Test
+    fun testSaveEventWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.saveEvent(event, user) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testSaveEventWithBadArgs()
     {
         assertThrows {
@@ -129,6 +141,16 @@ class SQLActivityRepositoryTest
 
     @DontRepeat
     @Test
+    fun testContainsEventWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.containsEvent(eventId, user) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testContainsEventWithBadArgs()
     {
         assertThrows {
@@ -160,6 +182,29 @@ class SQLActivityRepositoryTest
 
         val result = instance.getEvent(eventId, user)
         assertThat(result, equalTo(event))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetEventWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.getEvent(eventId, user) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetEventWhenDoesNotExist()
+    {
+        val sql = Queries.SELECT_ACTIVITY_EVENT
+
+        whenever(database.queryForObject(sql, serializer, userId.toUUID(), eventId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException(0))
+
+        assertThrows { instance.getEvent(eventId, user) }
+                .isInstanceOf(DoesNotExistException::class.java)
     }
 
     @DontRepeat
@@ -202,6 +247,16 @@ class SQLActivityRepositoryTest
 
     @DontRepeat
     @Test
+    fun testGetAllEventsWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.getAllEventsFor(user) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testGetAllEventsWithBadArgs()
     {
         assertThrows {
@@ -223,6 +278,16 @@ class SQLActivityRepositoryTest
         instance.deleteEvent(eventId, user)
 
         verify(database).update(sql, userId.toUUID(), eventId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteEventWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.deleteEvent(eventId, user) }
+                .isInstanceOf(OperationFailedException::class.java)
     }
 
     @DontRepeat
@@ -260,6 +325,16 @@ class SQLActivityRepositoryTest
 
     @DontRepeat
     @Test
+    fun testDeleteAllEventsWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.deleteAllEventsFor(user) }
+                .isInstanceOf(OperationFailedException::class.java)
+    }
+
+    @DontRepeat
+    @Test
     fun testDeleteAllEventsWithBadArgs()
     {
         assertThrows {
@@ -286,6 +361,21 @@ class SQLActivityRepositoryTest
     private fun setupMocks()
     {
 
+    }
+
+    private fun setupForFailure()
+    {
+        whenever(database.query(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
+
+        whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
+
+        whenever(database.queryForObject(any<String>(), eq(Boolean::class.java), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
+
+        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
     }
 
 }
