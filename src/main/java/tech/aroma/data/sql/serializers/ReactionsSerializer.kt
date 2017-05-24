@@ -52,27 +52,10 @@ internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
 
         val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return result
 
-        val stringArray = array as? Array<String> ?: return result
-
-        return stringArray.filterNotNull()
+        return array.filterNotNull()
+                .map{ it.toString() }
                 .map(this::reactionFromString)
                 .filterNotNull()
-
-    }
-
-    private fun reactionFromBinary(binary: ByteArray): Reaction?
-    {
-        val prototype = Reaction()
-
-        return try
-        {
-            ThriftObjects.fromBinary(prototype, binary)
-        }
-        catch (ex: Exception)
-        {
-            LOG.warn("Failed to deserialize reaction from $binary", ex)
-            return null
-        }
 
     }
 
