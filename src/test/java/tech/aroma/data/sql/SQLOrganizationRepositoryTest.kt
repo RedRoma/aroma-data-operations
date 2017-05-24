@@ -118,12 +118,12 @@ class SQLOrganizationRepositoryTest
     {
         assertThrows {
             instance.saveOrganization(null)
-        }.isInstanceOf(InvalidArgumentException::class.java).hasNoCause()
+        }.invalidArg().hasNoCause()
 
         assertThrows {
             val invalidOrg = organization.deepCopy().setOrganizationId("")
             instance.saveOrganization(invalidOrg)
-        }.isInstanceOf(InvalidArgumentException::class.java).hasNoCause()
+        }.invalidArg().hasNoCause()
     }
 
     @Test
@@ -166,22 +166,22 @@ class SQLOrganizationRepositoryTest
     fun testDeleteOrganizationWithBadArgs()
     {
         assertThrows { instance.deleteOrganization(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows { instance.deleteOrganization("") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows {
             val emptyOrg = Organization()
             instance.saveOrganization(emptyOrg)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidOrg = organization.deepCopy().setOrganizationId(alphabetic)
             instance.saveOrganization(invalidOrg)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @Test
@@ -203,15 +203,15 @@ class SQLOrganizationRepositoryTest
     fun testContainsOrganizationWithBadArgs()
     {
         assertThrows { instance.containsOrganization(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows { instance.containsOrganization("") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows { instance.containsOrganization(alphabetic) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
     }
 
@@ -249,10 +249,10 @@ class SQLOrganizationRepositoryTest
     fun testSearchByNameWithBadArgs()
     {
         assertThrows { instance.searchByName(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.searchByName("") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
     }
 
@@ -291,15 +291,15 @@ class SQLOrganizationRepositoryTest
     fun testGetOrganizationOwnersWithBadArgs()
     {
         assertThrows { instance.getOrganizationOwners(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows { instance.getOrganizationOwners("") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
 
         assertThrows { instance.getOrganizationOwners(alphabetic) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
                 .hasNoCause()
     }
 
@@ -342,13 +342,13 @@ class SQLOrganizationRepositoryTest
         val emptyUser = User()
         val invalidUser = User().setUserId(alphabetic)
 
-        assertThrows { instance.saveMemberInOrganization(null, user) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.saveMemberInOrganization("", user) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.saveMemberInOrganization(alphabetic, user) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.saveMemberInOrganization(null, user) }.invalidArg()
+        assertThrows { instance.saveMemberInOrganization("", user) }.invalidArg()
+        assertThrows { instance.saveMemberInOrganization(alphabetic, user) }.invalidArg()
 
-        assertThrows { instance.saveMemberInOrganization(orgId, null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.saveMemberInOrganization(orgId, emptyUser) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.saveMemberInOrganization(orgId, invalidUser) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.saveMemberInOrganization(orgId, null) }.invalidArg()
+        assertThrows { instance.saveMemberInOrganization(orgId, emptyUser) }.invalidArg()
+        assertThrows { instance.saveMemberInOrganization(orgId, invalidUser) }.invalidArg()
     }
 
     @DontRepeat
@@ -383,13 +383,13 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testIsMemberInOrganizationWithBadArgs()
     {
-        assertThrows { instance.isMemberInOrganization(null, userId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.isMemberInOrganization("", userId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.isMemberInOrganization(alphabetic, userId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.isMemberInOrganization(null, userId) }.invalidArg()
+        assertThrows { instance.isMemberInOrganization("", userId) }.invalidArg()
+        assertThrows { instance.isMemberInOrganization(alphabetic, userId) }.invalidArg()
 
-        assertThrows { instance.isMemberInOrganization(orgId, null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.isMemberInOrganization(orgId, "") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.isMemberInOrganization(orgId, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.isMemberInOrganization(orgId, null) }.invalidArg()
+        assertThrows { instance.isMemberInOrganization(orgId, "") }.invalidArg()
+        assertThrows { instance.isMemberInOrganization(orgId, alphabetic) }.invalidArg()
     }
 
     @DontRepeat
@@ -422,9 +422,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationMembersWithBadArgs()
     {
-        assertThrows { instance.getOrganizationMembers(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getOrganizationMembers("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getOrganizationMembers(alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getOrganizationMembers(null) }.invalidArg()
+        assertThrows { instance.getOrganizationMembers("") }.invalidArg()
+        assertThrows { instance.getOrganizationMembers(alphabetic) }.invalidArg()
     }
 
     @DontRepeat
@@ -454,13 +454,13 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteMemberWithBadArgs()
     {
-        assertThrows { instance.deleteMember(null, "") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMember("", "") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMember(alphabetic, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember(null, "") }.invalidArg()
+        assertThrows { instance.deleteMember("", "") }.invalidArg()
+        assertThrows { instance.deleteMember(alphabetic, "") }.invalidArg()
 
-        assertThrows { instance.deleteMember(orgId, null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMember(orgId, "") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMember(orgId, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMember(orgId, null) }.invalidArg()
+        assertThrows { instance.deleteMember(orgId, "") }.invalidArg()
+        assertThrows { instance.deleteMember(orgId, alphabetic) }.invalidArg()
     }
 
     @DontRepeat
@@ -490,9 +490,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteAllMembersWithBadArgs()
     {
-        assertThrows { instance.deleteAllMembers(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteAllMembers("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteAllMembers(alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteAllMembers(null) }.invalidArg()
+        assertThrows { instance.deleteAllMembers("") }.invalidArg()
+        assertThrows { instance.deleteAllMembers(alphabetic) }.invalidArg()
 
     }
 

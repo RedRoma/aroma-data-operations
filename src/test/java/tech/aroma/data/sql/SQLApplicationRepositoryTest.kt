@@ -134,7 +134,7 @@ class SQLApplicationRepositoryTest
         assertThrows {
             val emptyApp = Application()
             instance.saveApplication(emptyApp)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val appWithInvalidId = Application(app)
@@ -180,11 +180,11 @@ class SQLApplicationRepositoryTest
     {
         assertThrows {
             instance.deleteApplication("")
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             instance.deleteApplication(badId)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @DontRepeat
@@ -217,8 +217,8 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetByIdWithBadArgs()
     {
-        assertThrows { instance.getById("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getById(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getById("") }.invalidArg()
+        assertThrows { instance.getById(badId) }.invalidArg()
     }
 
     @DontRepeat
@@ -262,8 +262,8 @@ class SQLApplicationRepositoryTest
     @Test
     fun testContainsAppWithBadArgs()
     {
-        assertThrows { instance.containsApplication("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsApplication(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsApplication("") }.invalidArg()
+        assertThrows { instance.containsApplication(badId) }.invalidArg()
     }
 
     @DontRepeat
@@ -296,8 +296,8 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetApplicationsOwnedByWithBadArgs()
     {
-        assertThrows { instance.getApplicationsOwnedBy("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getApplicationsOwnedBy(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getApplicationsOwnedBy("") }.invalidArg()
+        assertThrows { instance.getApplicationsOwnedBy(badId) }.invalidArg()
     }
 
     @DontRepeat
@@ -330,8 +330,8 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetApplicationsByOrgWithBadArgs()
     {
-        assertThrows { instance.getApplicationsByOrg("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getApplicationsByOrg(badId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getApplicationsByOrg("") }.invalidArg()
+        assertThrows { instance.getApplicationsByOrg(badId) }.invalidArg()
     }
 
     @DontRepeat
@@ -365,8 +365,8 @@ class SQLApplicationRepositoryTest
     @Test
     fun testSearchByNameWithBadArgs()
     {
-        assertThrows { instance.searchByName("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.searchByName("2") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.searchByName("") }.invalidArg()
+        assertThrows { instance.searchByName("2") }.invalidArg()
     }
 
     @DontRepeat

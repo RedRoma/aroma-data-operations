@@ -105,17 +105,17 @@ class SQLActivityRepositoryTest
         assertThrows {
             val emptyEvent = Event()
             instance.saveEvent(emptyEvent, user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val emptyUser = User()
             instance.saveEvent(event, emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.saveEvent(event, invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidEvent = Event(event).setEventId(invalidId)
@@ -151,23 +151,19 @@ class SQLActivityRepositoryTest
     @Test
     fun testContainsEventWithBadArgs()
     {
-        assertThrows {
-            instance.containsEvent("", user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
-
-        assertThrows {
-            instance.containsEvent(invalidId, user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsEvent("", user) }.invalidArg()
+        
+        assertThrows { instance.containsEvent(invalidId, user) }.invalidArg()
 
         assertThrows {
             val emptyUser = User()
             instance.containsEvent(eventId, emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.containsEvent(eventId, invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @Test
@@ -212,21 +208,21 @@ class SQLActivityRepositoryTest
 
         assertThrows {
             instance.getEvent("", user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             instance.getEvent(invalidId, user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val emptyUser = User()
             instance.getEvent(eventId, emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.getEvent(eventId, invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
     }
 
@@ -260,12 +256,12 @@ class SQLActivityRepositoryTest
         assertThrows {
             val emptyUser = User()
             instance.getAllEventsFor(emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.getAllEventsFor(invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @Test
@@ -294,21 +290,21 @@ class SQLActivityRepositoryTest
     {
         assertThrows {
             instance.deleteEvent("", user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             instance.deleteEvent(invalidId, user)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val emptyUser = User()
             instance.deleteEvent(eventId, emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.deleteEvent(eventId, invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @Test
@@ -338,12 +334,12 @@ class SQLActivityRepositoryTest
         assertThrows {
             val emptyUser = User()
             instance.deleteAllEventsFor(emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.deleteAllEventsFor(invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     private fun setupData()

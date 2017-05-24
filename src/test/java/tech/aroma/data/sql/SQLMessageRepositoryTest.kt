@@ -93,7 +93,7 @@ class SQLMessageRepositoryTest
     fun testSaveMessageWithBadArguments()
     {
         assertThrows { instance.saveMessage(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
     }
 
     @DontRepeat
@@ -157,14 +157,14 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetMessageWithBadArgs()
     {
-        assertThrows { instance.getMessage(null, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getMessage(appId, null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getMessage(null, messageId) }.invalidArg()
+        assertThrows { instance.getMessage(appId, null) }.invalidArg()
 
-        assertThrows { instance.getMessage("", messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getMessage(appId, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getMessage("", messageId) }.invalidArg()
+        assertThrows { instance.getMessage(appId, "") }.invalidArg()
 
-        assertThrows { instance.getMessage(alphabetic, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getMessage(appId, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getMessage(alphabetic, messageId) }.invalidArg()
+        assertThrows { instance.getMessage(appId, alphabetic) }.invalidArg()
 
     }
 
@@ -187,22 +187,22 @@ class SQLMessageRepositoryTest
         val alphabetic = one(alphabeticString())
 
         assertThrows { instance.deleteMessage(alphabetic, messageId) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.deleteMessage(appId, alphabetic) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.deleteMessage("", messageId) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.deleteMessage(alphabetic, "") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.deleteMessage(null, messageId) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.deleteMessage(appId, null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
     }
 
@@ -255,14 +255,14 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testContainsMessageWithBadArgs()
     {
-        assertThrows { instance.containsMessage(null, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsMessage(appId, null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsMessage(null, messageId) }.invalidArg()
+        assertThrows { instance.containsMessage(appId, null) }.invalidArg()
 
-        assertThrows { instance.containsMessage("", messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsMessage(appId, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsMessage("", messageId) }.invalidArg()
+        assertThrows { instance.containsMessage(appId, "") }.invalidArg()
 
-        assertThrows { instance.containsMessage(alphabetic, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsMessage(appId, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsMessage(alphabetic, messageId) }.invalidArg()
+        assertThrows { instance.containsMessage(appId, alphabetic) }.invalidArg()
 
     }
 
@@ -303,8 +303,8 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByHostnameWithBadArgs()
     {
-        assertThrows { instance.getByHostname(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getByHostname("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getByHostname(null) }.invalidArg()
+        assertThrows { instance.getByHostname("") }.invalidArg()
     }
 
     @Test
@@ -355,9 +355,9 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByApplicationWithBadArgs()
     {
-        assertThrows { instance.getByApplication(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getByApplication("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getByApplication(alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getByApplication(null) }.invalidArg()
+        assertThrows { instance.getByApplication("") }.invalidArg()
+        assertThrows { instance.getByApplication(alphabetic) }.invalidArg()
     }
 
     @Test
@@ -411,13 +411,13 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByTitleWithBadArgs()
     {
-        assertThrows { instance.getByTitle("", alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getByTitle(appId, "") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getByTitle("", alphabetic) }.invalidArg()
+        assertThrows { instance.getByTitle(appId, "") }.invalidArg()
 
-        assertThrows { instance.getByTitle(null, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getByTitle(appId, null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getByTitle(null, alphabetic) }.invalidArg()
+        assertThrows { instance.getByTitle(appId, null) }.invalidArg()
 
-        assertThrows { instance.getByTitle(alphabetic, alphabetic) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getByTitle(alphabetic, alphabetic) }.invalidArg()
     }
 
     @Test
@@ -454,13 +454,13 @@ class SQLMessageRepositoryTest
     fun testGetCountWithBadArgs()
     {
         assertThrows { instance.getCountByApplication("") }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.getCountByApplication(null) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
 
         assertThrows { instance.getCountByApplication(alphabetic) }
-                .isInstanceOf(InvalidArgumentException::class.java)
+                .invalidArg()
     }
 }
 

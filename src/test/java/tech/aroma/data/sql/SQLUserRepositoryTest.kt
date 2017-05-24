@@ -102,12 +102,12 @@ class SQLUserRepositoryTest
         assertThrows {
             val emptyUser = User()
             instance.saveUser(emptyUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.saveUser(invalidUser)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         val shouldPass = {
             val withoutEmail = User(user)
@@ -158,8 +158,8 @@ class SQLUserRepositoryTest
     @Test
     fun testGetUserWithBadArgs()
     {
-        assertThrows { instance.getUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getUser("") }.invalidArg()
+        assertThrows { instance.getUser(invalidId) }.invalidArg()
     }
 
     @Test
@@ -188,8 +188,8 @@ class SQLUserRepositoryTest
     @Test
     fun testDeleteUserWithBadArgs()
     {
-        assertThrows { instance.deleteUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteUser("") }.invalidArg()
+        assertThrows { instance.deleteUser(invalidId) }.invalidArg()
     }
 
     @Test
@@ -223,8 +223,8 @@ class SQLUserRepositoryTest
     @Test
     fun testContainsUserWithBadArgs()
     {
-        assertThrows { instance.containsUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsUser("") }.invalidArg()
+        assertThrows { instance.containsUser(invalidId) }.invalidArg()
     }
 
     @Test
@@ -271,12 +271,12 @@ class SQLUserRepositoryTest
     @Test
     fun testGetUserByEmailWithBadArgs()
     {
-        assertThrows { instance.getUserByEmail("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getUserByEmail("") }.invalidArg()
 
         assertThrows {
             val invalidEmail = one(alphabeticString())
             instance.getUserByEmail(invalidEmail)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @Test
@@ -322,7 +322,7 @@ class SQLUserRepositoryTest
     @Test
     fun testFindByGitHubWithBadArgs()
     {
-        assertThrows { instance.findByGithubProfile("") }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.findByGithubProfile("") }.invalidArg()
     }
 
     @Test

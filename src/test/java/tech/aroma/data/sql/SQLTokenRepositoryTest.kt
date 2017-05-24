@@ -95,9 +95,9 @@ class SQLTokenRepositoryTest
     @Test
     fun testContainsTokenWithBadArgs()
     {
-        assertThrows { instance.containsToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsToken("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsToken(null) }.invalidArg()
+        assertThrows { instance.containsToken("") }.invalidArg()
+        assertThrows { instance.containsToken(badTokenId) }.invalidArg()
     }
 
     @Test
@@ -127,9 +127,9 @@ class SQLTokenRepositoryTest
     @Test
     fun testGetTokenWithBadArgs()
     {
-        assertThrows { instance.getToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getToken("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getToken(null) }.invalidArg()
+        assertThrows { instance.getToken("") }.invalidArg()
+        assertThrows { instance.getToken(badTokenId) }.invalidArg()
     }
 
     @Test
@@ -158,13 +158,13 @@ class SQLTokenRepositoryTest
     @Test
     fun testSaveTokenWithBadArgs()
     {
-        assertThrows { instance.saveToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.saveToken(null) }.invalidArg()
 
         assertThrows {
             val emptyToken = AuthenticationToken()
             instance.saveToken(emptyToken)
 
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidToken = token.deepCopy().setTokenId(badTokenId)
@@ -204,9 +204,9 @@ class SQLTokenRepositoryTest
     @Test
     fun testGetTokensBelongingToWithBadArgs()
     {
-        assertThrows { instance.getToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getToken("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getToken(null) }.invalidArg()
+        assertThrows { instance.getToken("") }.invalidArg()
+        assertThrows { instance.getToken(badTokenId) }.invalidArg()
     }
 
     @DontRepeat
@@ -236,9 +236,9 @@ class SQLTokenRepositoryTest
     @Test
     fun testDeleteTokenWithBadArgs()
     {
-        assertThrows { instance.deleteToken(null) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteToken("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteToken(badTokenId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteToken(null) }.invalidArg()
+        assertThrows { instance.deleteToken("") }.invalidArg()
+        assertThrows { instance.deleteToken(badTokenId) }.invalidArg()
     }
 
     @DontRepeat
