@@ -26,6 +26,7 @@ import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.*;
 import tech.aroma.thrift.channels.*;
 import tech.aroma.thrift.generators.ApplicationGenerators;
+import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion;
 import tech.sirwellington.alchemy.arguments.FailedAssertionException;
 import tech.sirwellington.alchemy.generator.EnumGenerators;
@@ -54,6 +55,7 @@ import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.
 @RunWith(AlchemyTestRunner.class)
 public class RequestAssertionsTest
 {
+
 
     @GenerateString(UUID)
     private String validId;
@@ -383,6 +385,18 @@ public class RequestAssertionsTest
         time.unsetUnit();;
         assertThrows(() -> assertion.check(time)).isInstanceOf(FailedAssertionException.class);
 
+    }
+
+    @Test
+    public void testValidReaction() throws Exception
+    {
+        AlchemyAssertion<Reaction> assertion = RequestAssertions.validReaction();
+        assertThat(assertion, notNullValue());
+
+        Reaction reaction = new Reaction();
+        assertion.check(reaction);
+
+        assertThrows(() -> assertion.check(null)).isInstanceOf(FailedAssertionException.class);
     }
 
 }

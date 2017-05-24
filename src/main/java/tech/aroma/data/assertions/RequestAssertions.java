@@ -9,6 +9,7 @@ import sir.wellington.alchemy.collections.lists.Lists;
 import tech.aroma.thrift.*;
 import tech.aroma.thrift.authentication.AuthenticationToken;
 import tech.aroma.thrift.channels.*;
+import tech.aroma.thrift.reactions.Reaction;
 import tech.sirwellington.alchemy.annotations.access.Internal;
 import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
 import tech.sirwellington.alchemy.annotations.arguments.Optional;
@@ -58,8 +59,8 @@ public final class RequestAssertions
                     .is(nonEmptySet());
 
             app.owners.forEach(owner -> checkThat(owner)
-                                            .usingMessage("Owner ID must be a valid user ID: " + owner)
-                                            .is(validUserId()));
+                    .usingMessage("Owner ID must be a valid user ID: " + owner)
+                    .is(validUserId()));
 
             if (app.isSetOrganizationId())
             {
@@ -305,6 +306,17 @@ public final class RequestAssertions
             checkThat(time.unit)
                     .usingMessage("Time is missing unit")
                     .is(notNull());
+        };
+    }
+
+    /**
+     * @return an {@linkplain alchemyassertion assertion} that checks whether a {@link reaction} is valid.
+     */
+    public static AlchemyAssertion<Reaction> validReaction()
+    {
+        return reaction ->
+        {
+            checkThat(reaction).is(notNull());
         };
     }
 
