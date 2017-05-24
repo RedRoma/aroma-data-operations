@@ -28,7 +28,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans

@@ -29,8 +29,6 @@ import tech.aroma.data.AromaGenerators.Messages
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs

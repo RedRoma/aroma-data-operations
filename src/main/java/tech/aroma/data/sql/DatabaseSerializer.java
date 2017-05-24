@@ -3,7 +3,6 @@ package tech.aroma.data.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.thrift.TBase;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;

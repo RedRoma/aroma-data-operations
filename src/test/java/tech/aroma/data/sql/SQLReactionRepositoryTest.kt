@@ -27,7 +27,6 @@ import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.data.sql.SQLStatements.Queries
-import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.generators.ReactionGenerators
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.generator.CollectionGenerators

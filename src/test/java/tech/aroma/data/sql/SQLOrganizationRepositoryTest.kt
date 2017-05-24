@@ -29,8 +29,6 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators

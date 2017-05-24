@@ -20,8 +20,6 @@ import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import org.junit.*
 import org.junit.runner.RunWith
-import tech.sirwellington.alchemy.test.junit.runners.*
-
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.SQLStatements.Deletes
 import tech.aroma.data.sql.serializers.ReactionsSerializer
@@ -29,6 +27,8 @@ import tech.aroma.thrift.generators.ReactionGenerators
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
 import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
 @IntegrationTest

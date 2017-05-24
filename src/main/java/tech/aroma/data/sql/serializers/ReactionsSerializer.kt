@@ -26,7 +26,6 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
-import javax.xml.bind.DatatypeConverter
 
 
 /**

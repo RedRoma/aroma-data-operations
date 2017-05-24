@@ -27,8 +27,6 @@ import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.authentication.AuthenticationToken
-import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf

@@ -33,7 +33,6 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
-import javax.xml.bind.DatatypeConverter
 
 @RunWith(AlchemyTestRunner::class)
 class ReactionsSerializerTest
