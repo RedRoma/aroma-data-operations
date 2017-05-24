@@ -37,6 +37,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_ALL_MEMBERS, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.REACTIONS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.USER, not(isEmptyOrNullString()));
     }
@@ -55,6 +56,8 @@ public class SQLStatementsTest
 
         assertThat(SQLStatements.Inserts.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Inserts.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.REACTION, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.TOKEN, not(isEmptyOrNullString()));
 
@@ -95,6 +98,8 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_ORGANIZATION_MEMBERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SEARCH_ORGANIZATION_BY_NAME, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.SELECT_REACTION, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Queries.CHECK_TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_TOKEN, not(isEmptyOrNullString()));
