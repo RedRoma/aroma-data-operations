@@ -15,7 +15,7 @@ final class Tables
 {
 
     @NonInstantiable
-    static class Activity
+    static final class Activity
     {
 
         static final String EVENT_ID = "event_id";
@@ -68,7 +68,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Organizations
+    static final class Organizations
     {
         static final String TABLE_NAME = "Organizations";
         static final String TABLE_NAME_MEMBERS = "Organizations_Members";
@@ -88,7 +88,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Tokens
+    static final class Tokens
     {
         static final String TABLE_NAME = "Tokens";
 
@@ -103,7 +103,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Users
+    static final class Users
     {
         static final String USER_ID = "user_id";
         static final String FIRST_NAME = "first_name";
