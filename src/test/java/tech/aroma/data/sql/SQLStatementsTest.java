@@ -26,6 +26,8 @@ public class SQLStatementsTest
     @Test
     public void testDeletes() throws Exception
     {
+        assertThat(SQLStatements.Deletes.ACTIVITY_EVENT, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ACTIVITY_ALL_EVENTS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.APPLICATION_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.APPLICATION_NON_OWNERS, not(isEmptyOrNullString()));
@@ -42,6 +44,8 @@ public class SQLStatementsTest
     @Test
     public void testInserts() throws Exception
     {
+        assertThat(SQLStatements.Inserts.ACTIVITY_EVENT, not(isEmptyOrNullString()));
+
         assertThat(SQLStatements.Inserts.APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Inserts.APPLICATION_OWNER, not(isEmptyOrNullString()));
 
@@ -60,6 +64,11 @@ public class SQLStatementsTest
     @Test
     public void testQueries() throws Exception
     {
+        assertThat(SQLStatements.Queries.CHECK_ACTIVITY_EVENT, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_ACTIVITY_EVENT, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_ALL_ACTIVITY_FOR_USER, not(isEmptyOrNullString()));
+
+
         assertThat(SQLStatements.Queries.CHECK_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_APPLICATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_RECENT_APPLICATION, not(isEmptyOrNullString()));

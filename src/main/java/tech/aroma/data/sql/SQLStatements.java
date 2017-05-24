@@ -38,6 +38,8 @@ final class SQLStatements
 
     static class Deletes
     {
+        static final String ACTIVITY_EVENT = loadSQLFile("tech/aroma/sql/deletes/delete_activity_event.sql");
+        static final String ACTIVITY_ALL_EVENTS = loadSQLFile("tech/aroma/sql/deletes/delete_all_activity_for_user.sql");
         static final String APPLICATION = loadSQLFile("tech/aroma/sql/deletes/delete_application.sql");
         static final String APPLICATION_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners.sql");
         static final String APPLICATION_NON_OWNERS = loadSQLFile("tech/aroma/sql/deletes/delete_application_owners_not_in_set.sql");
@@ -53,6 +55,8 @@ final class SQLStatements
 
     static class Inserts
     {
+        static final String ACTIVITY_EVENT = loadSQLFile("tech/aroma/sql/inserts/insert_activity.sql");
+
         static final String APPLICATION = loadSQLFile("tech/aroma/sql/inserts/insert_application.sql");
         static final String APPLICATION_OWNER = loadSQLFile("tech/aroma/sql/inserts/insert_application_owner.sql");
 
@@ -70,6 +74,11 @@ final class SQLStatements
 
     static class Queries
     {
+        static final String CHECK_ACTIVITY_EVENT = loadSQLFile("tech/aroma/sql/queries/check_activity_event_exists.sql");
+        static final String SELECT_ACTIVITY_EVENT = loadSQLFile("tech/aroma/sql/queries/select_activity_event.sql");
+        static final String SELECT_ALL_ACTIVITY_FOR_USER = loadSQLFile("tech/aroma/sql/queries/select_all_activity_events_for_user.sql");
+
+
         static final String CHECK_APPLICATION = loadSQLFile("tech/aroma/sql/queries/check_application.sql");
         static final String SELECT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_application.sql");
         static final String SELECT_RECENT_APPLICATION = loadSQLFile("tech/aroma/sql/queries/select_recent_applications.sql");
