@@ -35,7 +35,7 @@ import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
 
 @RunWith(AlchemyTestRunner::class)
-class ReactionSerializerTest
+class ReactionsSerializerTest
 {
 
     @Mock
@@ -54,14 +54,14 @@ class ReactionSerializerTest
         return reactions.map(ThriftObjects::toJson)
     }
 
-    private lateinit var instance: ReactionSerializer
+    private lateinit var instance: ReactionsSerializer
 
     @Before
     fun setUp()
     {
         setupData()
         setupMocks()
-        instance = ReactionSerializer()
+        instance = ReactionsSerializer()
     }
 
     @Test

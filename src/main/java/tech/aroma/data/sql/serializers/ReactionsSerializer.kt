@@ -32,7 +32,7 @@ import java.sql.ResultSet
  *
  * @author SirWellington
  */
-internal class ReactionSerializer : DatabaseSerializer<List<Reaction>>
+internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
 {
 
     private companion object

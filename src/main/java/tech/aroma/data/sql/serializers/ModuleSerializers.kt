@@ -23,7 +23,7 @@ class ModuleSerializers : AbstractModule()
         bind<DatabaseSerializer<Event>>().to<EventSerializer>()
         bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<Organization>>().to<OrganizationSerializer>().asEagerSingleton()
-        bind<DatabaseSerializer<List<Reaction>>>().to<ReactionSerializer>()
+        bind<DatabaseSerializer<List<Reaction>>>().to<ReactionsSerializer>()
         bind<DatabaseSerializer<User>>().to<UserSerializer>().asEagerSingleton()
     }
 
