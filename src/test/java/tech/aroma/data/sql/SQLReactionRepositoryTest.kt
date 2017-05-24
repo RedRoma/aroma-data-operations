@@ -30,14 +30,14 @@ import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.generators.ReactionGenerators
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.Connection
 import java.sql.PreparedStatement
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLReactionRepositoryTest
 {
     @Mock
@@ -84,13 +84,39 @@ class SQLReactionRepositoryTest
         verifyInsertOccurred()
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveReactionsForUserWithBadArgs()
+    {
 
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveReactionsForUserWhenDatabaseFails()
+    {
+
+    }
 
     @Test
     fun testGetReactionsForUser()
     {
         val result = instance.getReactionsForUser(ownerId)
         assertThat(result, equalTo(reactions))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetReactionsForUserWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetReactionsForUserWhenDatabaseFails()
+    {
+
     }
 
     @Test
@@ -101,11 +127,39 @@ class SQLReactionRepositoryTest
         verifyInsertOccurred()
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveReactionsForApplicationWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveReactionsForApplicationWhenDatabaseFails()
+    {
+
+    }
+
     @Test
     fun testGetReactionsForApplication()
     {
         val result = instance.getReactionsForApplication(ownerId)
         assertThat(result, equalTo(reactions))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetReactionsForApplicationWithBadArgs()
+    {
+
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetReactionsForApplicationWhenDatabaseFails()
+    {
+
     }
 
     private fun verifyInsertOccurred()
