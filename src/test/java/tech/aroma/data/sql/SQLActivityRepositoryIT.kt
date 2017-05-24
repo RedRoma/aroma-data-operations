@@ -16,8 +16,9 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.isEmpty
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations

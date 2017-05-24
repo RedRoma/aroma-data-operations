@@ -7,7 +7,8 @@ package tech.aroma.data.sql
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.whenever
-import org.junit.*
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
@@ -16,7 +17,6 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.time.Instant
 
 @RunWith(AlchemyTestRunner::class)
 class SQLPlusTest

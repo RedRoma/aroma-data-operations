@@ -49,6 +49,7 @@ final class SQLStatements
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/deletes/delete_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/deletes/delete_organization_member.sql");
         static final String ORGANIZATION_ALL_MEMBERS = loadSQLFile("tech/aroma/sql/deletes/delete_organization_all_members.sql");
+        static final String REACTIONS = loadSQLFile("tech/aroma/sql/deletes/delete_reactions.sql");
         static final String TOKEN = loadSQLFile("tech/aroma/sql/deletes/delete_token.sql");
         static final String USER = loadSQLFile("tech/aroma/sql/deletes/delete_user.sql");
     }
@@ -65,6 +66,8 @@ final class SQLStatements
 
         static final String ORGANIZATION = loadSQLFile("tech/aroma/sql/inserts/insert_organization.sql");
         static final String ORGANIZATION_MEMBER = loadSQLFile("tech/aroma/sql/inserts/insert_organization_member.sql");
+
+        static final String REACTION = loadSQLFile("tech/aroma/sql/inserts/insert_reactions.sql");
 
         static final String TOKEN = loadSQLFile("tech/aroma/sql/inserts/insert_token.sql");
 
@@ -105,6 +108,8 @@ final class SQLStatements
         static final String SELECT_ORGANIZATION_MEMBERS = loadSQLFile("tech/aroma/sql/queries/select_organization_members.sql");
         static final String SEARCH_ORGANIZATION_BY_NAME = loadSQLFile("tech/aroma/sql/queries/search_organization_by_name.sql");
         static final String CHECK_TOKEN = loadSQLFile("tech/aroma/sql/queries/check_token.sql");
+
+        static final String SELECT_REACTION = loadSQLFile("tech/aroma/sql/queries/select_reactions.sql");
 
         static final String SELECT_TOKEN = loadSQLFile("tech/aroma/sql/queries/select_token.sql");
         static final String SELECT_TOKENS_FOR_OWNER = loadSQLFile("tech/aroma/sql/queries/select_tokens_for_owner.sql");

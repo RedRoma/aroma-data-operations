@@ -30,7 +30,7 @@ import tech.aroma.data.AromaGenerators
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators

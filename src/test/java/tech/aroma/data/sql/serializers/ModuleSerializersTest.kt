@@ -13,6 +13,8 @@ import tech.aroma.data.hasInstance
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.events.Event
+import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertTrue
 
@@ -40,7 +42,7 @@ class ModuleSerializersTest
     @Test
     fun testHasEventSerializer()
     {
-        assertTrue { injector.hasInstance<EventSerializer>() }
+        assertTrue { injector.hasInstance<DatabaseSerializer<Event>>() }
     }
 
     @Test
@@ -53,6 +55,12 @@ class ModuleSerializersTest
     fun testHasOrganizationSerializer()
     {
         assertTrue { injector.hasInstance<DatabaseSerializer<Organization>>() }
+    }
+
+    @Test
+    fun testHasReactionSerializer()
+    {
+        assertTrue { injector.hasInstance<DatabaseSerializer<List<Reaction>>>() }
     }
 
     @Test

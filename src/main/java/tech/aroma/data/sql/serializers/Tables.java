@@ -87,6 +87,13 @@ final class Tables
     }
 
     @NonInstantiable
+    static final class Reactions
+    {
+        static final String OWNER_ID = "owner_id";
+        static final String SERIALIZED_REACTIONS = "serialized_reactions";
+    }
+
+    @NonInstantiable
     static final class Tokens
     {
         static final String TABLE_NAME = "Tokens";

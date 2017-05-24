@@ -3,7 +3,6 @@ package tech.aroma.data.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.thrift.TBase;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import tech.sirwellington.alchemy.annotations.arguments.NonEmpty;
@@ -14,7 +13,7 @@ import tech.sirwellington.alchemy.annotations.arguments.Required;
  *
  * @author SirWellington
  */
-public interface DatabaseSerializer<T extends TBase<?, ?>> extends RowMapper<T>
+public interface DatabaseSerializer<T> extends RowMapper<T>
 {
     /**
      * Saves the object to the Database.
