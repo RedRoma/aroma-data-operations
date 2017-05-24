@@ -107,6 +107,15 @@ class SQLReactionRepositoryIT
     }
 
     @Test
+    fun testSaveReactionsForUserWithEmptyArray()
+    {
+        instance.saveReactionsForUser(ownerId, emptyList())
+
+        val result = instance.getReactionsForUser(ownerId)
+        assertThat(result, notNull and isEmpty)
+    }
+
+    @Test
     fun testGetReactionsForUser()
     {
         instance.saveReactionsForApplication(ownerId, reactions)
@@ -132,6 +141,27 @@ class SQLReactionRepositoryIT
         val result = instance.getReactionsForApplication(ownerId)
         assertThat(result, notEmpty)
         assertThat(result.size, equalTo(reactions.size))
+    }
+
+    @Test
+    fun testSaveReactionsForApplicationTwice()
+    {
+        instance.saveReactionsForApplication(ownerId, reactions)
+
+        val newReactions = CollectionGenerators.listOf(ReactionGenerators.reactions())
+        instance.saveReactionsForUser(ownerId, newReactions)
+
+        val results = instance.getReactionsForApplication(ownerId)
+        assertThat(results, equalTo(newReactions))
+    }
+
+    @Test
+    fun testSaveReactionsForApplicationWithEmptyArray()
+    {
+        instance.saveReactionsForApplication(ownerId, emptyList())
+
+        val result = instance.getReactionsForUser(ownerId)
+        assertThat(result, notNull and isEmpty)
     }
 
     @Test
