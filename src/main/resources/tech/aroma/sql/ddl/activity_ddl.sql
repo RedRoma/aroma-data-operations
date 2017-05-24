@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------
--- TABLES TO STORE ACTIVITY THAT HAPPENS WITHIN AROMA
+-- THIS TABLE STORES ANY ACTIVITY THAT HAPPENS WITHIN AROMA
 -- THAT MAY BE OF INTEREST TO USERS
 ------------------------------------------------------------------------------
 
