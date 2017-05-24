@@ -2,6 +2,6 @@
 -- SELECTS ALL A USER'S EVENTS
 ------------------------------------------------------------------------------
 
-SELECT *
+SELECT serialized_event
 FROM activity
 WHERE recipient_user_id = ?
