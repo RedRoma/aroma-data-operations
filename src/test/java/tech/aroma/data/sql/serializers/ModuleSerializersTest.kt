@@ -38,6 +38,12 @@ class ModuleSerializersTest
     }
 
     @Test
+    fun testHasEventSerializer()
+    {
+        assertTrue { injector.hasInstance<EventSerializer>() }
+    }
+
+    @Test
     fun testHasMessageSerializer()
     {
         assertTrue { injector.hasInstance<DatabaseSerializer<Message>>() }

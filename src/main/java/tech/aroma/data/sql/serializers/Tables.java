@@ -15,6 +15,19 @@ final class Tables
 {
 
     @NonInstantiable
+    static final class Activity
+    {
+
+        static final String EVENT_ID = "event_id";
+        static final String RECEPIENT_USER_ID = "recepient_user_id";
+        static final String APP_ID = Applications.APP_ID;
+        static final String ACTOR_USER_ID = "actor_user_id";
+        static final String TIME_OF_EVENT = "time_of_event";
+        static final String EVENT_TYPE = "event_type";
+        static final String SERIALIZED_EVENT = "serialized_event";
+    }
+
+    @NonInstantiable
     static final class Applications
     {
         static final String APP_ID = "app_id";
@@ -54,7 +67,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Organizations
+    static final class Organizations
     {
         static final String TABLE_NAME = "Organizations";
         static final String TABLE_NAME_MEMBERS = "Organizations_Members";
@@ -74,7 +87,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Tokens
+    static final class Tokens
     {
         static final String TABLE_NAME = "Tokens";
 
@@ -89,7 +102,7 @@ final class Tables
     }
 
     @NonInstantiable
-    static class Users
+    static final class Users
     {
         static final String USER_ID = "user_id";
         static final String FIRST_NAME = "first_name";

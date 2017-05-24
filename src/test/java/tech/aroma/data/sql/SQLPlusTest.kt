@@ -7,13 +7,16 @@ package tech.aroma.data.sql
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import tech.sirwellington.alchemy.arguments.Arguments.checkThat
+import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.time.Instant
 
 @RunWith(AlchemyTestRunner::class)
 class SQLPlusTest
@@ -51,5 +54,28 @@ class SQLPlusTest
         assertThrows {
             results.hasColumn("")
         }
+    }
+}
+
+@RunWith(AlchemyTestRunner::class)
+@Repeat
+class TimestampsTest
+{
+
+    @Before
+    fun setup()
+    {
+
+    }
+
+    @Test
+    fun testNow()
+    {
+        val result = Timestamps.now()
+
+        assertThat(result, notNull)
+
+        checkThat(result.toInstant())
+                .`is`(TimeAssertions.nowWithinDelta(1000))
     }
 }

@@ -164,7 +164,7 @@ class SQLTokenRepositoryIT
 
     private fun createTokensFor(owner: String): List<AuthenticationToken>
     {
-        return listOf { Tokens.token.setOwnerId(ownerId) }
+        return listOf { Tokens.token.setOwnerId(owner) }
     }
 
     private inline fun <T : Any> List<T>.asSet(): Set<T>

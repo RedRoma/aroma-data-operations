@@ -53,6 +53,12 @@ class ModuleSQLRepositoriesTest
     }
 
     @Test
+    fun testActivityRepo()
+    {
+        assertTrue { injector.hasInstance<ActivityRepository>() }
+    }
+
+    @Test
     fun testAppRepo()
     {
         assertTrue { injector.hasInstance<UserRepository>() }

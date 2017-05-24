@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.sql.serializers.ModuleSerializers
 import tech.aroma.thrift.Message
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
 import java.util.*
 
 /**
@@ -56,3 +57,14 @@ object TestingResources
 
 val isNull = Matcher(Objects::isNull)
 val notNull = !isNull
+
+
+fun ThrowableAssertion.invalidArg(): ThrowableAssertion
+{
+    return this.isInstanceOf(tech.aroma.thrift.exceptions.InvalidArgumentException::class.java)
+}
+
+fun ThrowableAssertion.operationError(): ThrowableAssertion
+{
+    return this.isInstanceOf(tech.aroma.thrift.exceptions.OperationFailedException::class.java)
+}

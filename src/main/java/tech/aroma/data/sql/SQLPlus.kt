@@ -3,6 +3,7 @@ package tech.aroma.data.sql
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import java.sql.*
+import java.time.Instant
 import java.util.*
 
 /**
@@ -53,3 +54,11 @@ public fun String?.toUUID(): UUID?
 }
 
 internal fun <T> Iterable<T>.toCommaSeparatedList() = joinToString(separator = ",")
+
+internal object Timestamps
+{
+    fun now(): Timestamp
+    {
+        return Timestamp.from(Instant.now())
+    }
+}

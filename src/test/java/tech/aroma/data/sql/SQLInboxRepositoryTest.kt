@@ -101,27 +101,27 @@ class SQLInboxRepositoryTest
         assertThrows {
             val emptyUser = User()
             instance.saveMessageForUser(emptyUser, message)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val emptyMessage = Message()
             instance.saveMessageForUser(user, emptyMessage)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidUser = User(user).setUserId(invalidId)
             instance.saveMessageForUser(invalidUser, message)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidMessage = Message(message).setMessageId(invalidId)
             instance.saveMessageForUser(user, invalidMessage)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val messageWithInvalidAppId = Message(message).setApplicationId(invalidId)
             instance.saveMessageForUser(user, messageWithInvalidAppId)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @DontRepeat
@@ -134,7 +134,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException::class.java)
 
         assertThrows { instance.saveMessageForUser(user, message) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -154,8 +154,8 @@ class SQLInboxRepositoryTest
     @Test
     fun testGetMessagesForUserWithBadArgs()
     {
-        assertThrows { instance.getMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.getMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.getMessagesForUser("") }.invalidArg()
+        assertThrows { instance.getMessagesForUser(invalidId) }.invalidArg()
     }
 
     @DontRepeat
@@ -168,7 +168,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.getMessagesForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -189,18 +189,18 @@ class SQLInboxRepositoryTest
     @Test
     fun testContainsMessageWithBadArgs()
     {
-        assertThrows { instance.containsMessageInInbox("", message) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.containsMessageInInbox(invalidId, message) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.containsMessageInInbox("", message) }.invalidArg()
+        assertThrows { instance.containsMessageInInbox(invalidId, message) }.invalidArg()
 
         assertThrows {
             val emptyMessage = Message()
             instance.saveMessageForUser(user, emptyMessage)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
 
         assertThrows {
             val invalidMessage = Message(message).setMessageId(invalidId)
             instance.saveMessageForUser(user, invalidMessage)
-        }.isInstanceOf(InvalidArgumentException::class.java)
+        }.invalidArg()
     }
 
     @DontRepeat
@@ -213,7 +213,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.containsMessageInInbox(userId, message) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -230,10 +230,10 @@ class SQLInboxRepositoryTest
     @Test
     fun testDeleteMessageWithBadArgs()
     {
-        assertThrows { instance.deleteMessageForUser("", messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMessageForUser(invalidId, messageId) }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMessageForUser(userId, "") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteMessageForUser(userId, invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteMessageForUser("", messageId) }.invalidArg()
+        assertThrows { instance.deleteMessageForUser(invalidId, messageId) }.invalidArg()
+        assertThrows { instance.deleteMessageForUser(userId, "") }.invalidArg()
+        assertThrows { instance.deleteMessageForUser(userId, invalidId) }.invalidArg()
     }
 
     @DontRepeat
@@ -246,7 +246,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteMessageForUser(userId, messageId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -262,8 +262,8 @@ class SQLInboxRepositoryTest
     @Test
     fun testDeleteAllForUserWithBadArgs()
     {
-        assertThrows { instance.deleteAllMessagesForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.deleteAllMessagesForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.deleteAllMessagesForUser("") }.invalidArg()
+        assertThrows { instance.deleteAllMessagesForUser(invalidId) }.invalidArg()
     }
 
     @DontRepeat
@@ -276,7 +276,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.deleteAllMessagesForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
     @Test
@@ -297,8 +297,8 @@ class SQLInboxRepositoryTest
     @Test
     fun testCountInboxForUserWithBadArgs()
     {
-        assertThrows { instance.countInboxForUser("") }.isInstanceOf(InvalidArgumentException::class.java)
-        assertThrows { instance.countInboxForUser(invalidId) }.isInstanceOf(InvalidArgumentException::class.java)
+        assertThrows { instance.countInboxForUser("") }.invalidArg()
+        assertThrows { instance.countInboxForUser(invalidId) }.invalidArg()
     }
 
     @DontRepeat
@@ -311,7 +311,7 @@ class SQLInboxRepositoryTest
                 .thenThrow(RuntimeException())
 
         assertThrows { instance.countInboxForUser(userId) }
-                .isInstanceOf(OperationFailedException::class.java)
+                .operationError()
     }
 
 }
