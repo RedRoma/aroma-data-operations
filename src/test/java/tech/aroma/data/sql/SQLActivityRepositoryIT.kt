@@ -95,6 +95,14 @@ class SQLActivityRepositoryIT
     }
 
     @Test
+    fun testSaveEventTwice()
+    {
+        instance.saveEvent(event, user)
+
+        assertThrows { instance.saveEvent(event, user) }
+    }
+
+    @Test
     fun testContainsEvent()
     {
         assertFalse { instance.containsEvent(eventId, user) }
