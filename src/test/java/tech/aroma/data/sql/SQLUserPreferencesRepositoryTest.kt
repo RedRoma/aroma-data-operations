@@ -87,6 +87,7 @@ class SQLUserPreferencesRepositoryTest
         instance = SQLUserPreferencesRepository(database, serializer)
     }
 
+    @Repeat
     @Test
     fun testSaveMobileDevice()
     {
@@ -97,7 +98,14 @@ class SQLUserPreferencesRepositoryTest
         verify(database).update(sql, userId.toUUID(), serializedDevice)
     }
 
-    @DontRepeat
+    @Test
+    fun testSaveMobileDeviceWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.saveMobileDevice(userId, device) }.operationError()
+    }
+
     @Test
     fun testSaveMobileDeviceWithBadArgs()
     {
@@ -106,6 +114,7 @@ class SQLUserPreferencesRepositoryTest
         assertThrows { instance.saveMobileDevice(userId, invalidDevice) }.invalidArg()
     }
 
+    @Repeat
     @Test
     fun testSaveMobileDevices()
     {
@@ -124,7 +133,14 @@ class SQLUserPreferencesRepositoryTest
         verify(preparedStatement).setArray(2, mockArray)
     }
 
-    @DontRepeat
+    @Test
+    fun testSaveMobileDevicesWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.saveMobileDevices(userId, devices.toMutableSet()) }.operationError()
+    }
+
     @Test
     fun testSaveMobileDevicesWithBadArgs()
     {
@@ -135,6 +151,7 @@ class SQLUserPreferencesRepositoryTest
         assertThrows { instance.saveMobileDevices(userId, mutableSetOf(invalidDevice)) }.invalidArg()
     }
 
+    @Repeat
     @Test
     fun testGetMobileDevices()
     {
@@ -147,7 +164,14 @@ class SQLUserPreferencesRepositoryTest
         assertThat(results, notEmpty and equalTo(devices))
     }
 
-    @DontRepeat
+    @Test
+    fun testGetMobileDevicesWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.getMobileDevices(userId) }.operationError()
+    }
+
     @Test
     fun testGetMobileDevicesWithBadArgs()
     {
@@ -155,6 +179,7 @@ class SQLUserPreferencesRepositoryTest
         assertThrows { instance.getMobileDevices(badId) }.invalidArg()
     }
 
+    @Repeat
     @Test
     fun testDeleteMobileDevice()
     {
@@ -165,7 +190,14 @@ class SQLUserPreferencesRepositoryTest
         verify(database).update(sql, serializedDevice, userId.toUUID())
     }
 
-    @DontRepeat
+    @Test
+    fun testDeleteMobileDeviceWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.deleteMobileDevice(userId, device) }.operationError()
+    }
+
     @Test
     fun testDeleteMobileDeviceWithBadArgs()
     {
@@ -174,6 +206,7 @@ class SQLUserPreferencesRepositoryTest
         assertThrows { instance.deleteMobileDevice(userId, invalidDevice) }.invalidArg()
     }
 
+    @Repeat
     @Test
     fun testDeleteAllMobileDevices()
     {
@@ -184,7 +217,14 @@ class SQLUserPreferencesRepositoryTest
         verify(database).update(sql, userId.toUUID())
     }
 
-    @DontRepeat
+    @Test
+    fun testDeleteAllMobileDevicesWhenDatabaseFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.deleteAllMobileDevices(userId) }.operationError()
+    }
+
     @Test
     fun testDeleteAllMobileDevicesWithBadArgs()
     {
@@ -210,10 +250,11 @@ class SQLUserPreferencesRepositoryTest
 
     private fun setupForFailure()
     {
-        whenever(database.update(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
+
+        whenever(database.update(any<String>(), any<PreparedStatementSetter>()))
                 .thenThrow(RuntimeException::class.java)
 
-        whenever(database.update(any<String>(), any<PreparedStatementSetter>(), Mockito.anyVararg<Any>()))
+        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
                 .thenThrow(RuntimeException::class.java)
 
         whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
