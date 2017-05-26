@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
-import tech.aroma.thrift.generators.ApplicationGenerators;
 import tech.sirwellington.alchemy.test.junit.runners.*;
 
 import static org.hamcrest.Matchers.*;
@@ -33,7 +32,6 @@ import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
 import static tech.aroma.thrift.generators.UserGenerators.users;
 import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
 import static tech.sirwellington.alchemy.generator.CollectionGenerators.listOf;
-import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 
