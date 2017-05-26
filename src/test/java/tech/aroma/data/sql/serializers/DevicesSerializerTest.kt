@@ -20,26 +20,22 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import com.nhaarman.mockito_kotlin.whenever
-import org.apache.thrift.TException
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.serializers.Columns.Activity
-import tech.aroma.thrift.User
-import tech.aroma.thrift.events.Event
-import tech.aroma.thrift.generators.EventGenerators.events
-import tech.aroma.thrift.generators.UserGenerators.users
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.aroma.data.AromaGenerators.Devices
+import tech.aroma.data.sql.serializers.Columns.UserPreferences
+import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
+import java.sql.Array
 import java.sql.ResultSet
 
 @RunWith(AlchemyTestRunner::class)
-class EventSerializerTest
+class DevicesSerializerTest
 {
 
     @Mock
@@ -48,32 +44,33 @@ class EventSerializerTest
     @Mock
     private lateinit var row: ResultSet
 
-    private lateinit var event: Event
-    private lateinit var user: User
+    @Mock
+    private lateinit var array: Array
 
-    private val eventId get() = event.eventId
-    private val userId get() = user.userId
-    private val serializedEvent get() = ThriftObjects.toJson(event)
+    private lateinit var device: MobileDevice
+    private lateinit var devices: MutableSet<MobileDevice>
 
     @GenerateString
     private lateinit var sql: String
 
-    private lateinit var instance: EventSerializer
+    private val serializedDevices get() = devices.map(ThriftObjects::toJson)
+
+    private lateinit var instance: DevicesSerializer
 
     @Before
     fun setUp()
     {
-
         setupData()
         setupMocks()
 
-        instance = EventSerializer()
+        instance = DevicesSerializer()
     }
 
     @Test
     fun testSave()
     {
-        instance.save(event, sql, database)
+        instance.save(devices, sql, database)
+
         verifyZeroInteractions(database)
     }
 
@@ -81,46 +78,31 @@ class EventSerializerTest
     fun testSaveWithBadArgs()
     {
         assertThrows {
-            instance.save(event, "", database)
-        }.isInstanceOf(IllegalArgumentException::class.java)
-
-        assertThrows {
-            val emptyEvent = Event()
-            instance.save(emptyEvent, sql, database)
-        }.isInstanceOf(IllegalArgumentException::class.java)
-
-        assertThrows {
-            val invalidEvent = Event(event).setEventId(sql)
-            instance.save(invalidEvent, sql, database)
+            instance.save(devices, "", database)
         }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
+    @Repeat
     @Test
     fun testDeserialize()
     {
-        val result = instance.deserialize(row)
+        val results = instance.deserialize(row)
 
-        assertThat(result, equalTo(event))
-    }
-
-    @Test
-    fun testDeserializeWhenDeserializeFails()
-    {
-        whenever(row.getString(Activity.SERIALIZED_EVENT)).thenReturn(sql)
-
-        assertThrows { instance.deserialize(row) }
-                .isInstanceOf(TException::class.java)
+        assertThat(results, equalTo(devices))
     }
 
     private fun setupData()
     {
-        event = one(events())
-        user = one(users())
+        device = Devices.device
+        devices = Devices.devices
     }
 
     private fun setupMocks()
     {
-        whenever(row.getString(Activity.SERIALIZED_EVENT)).thenReturn(serializedEvent)
+        whenever(row.getArray(UserPreferences.SERIALIZED_DEVICES))
+                .thenReturn(array)
+
+        whenever(array.array).thenReturn(serializedDevices.toTypedArray())
     }
 
 }

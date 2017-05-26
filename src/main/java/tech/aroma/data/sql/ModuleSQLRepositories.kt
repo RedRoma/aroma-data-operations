@@ -29,6 +29,8 @@ internal class ModuleSQLRepositories : AbstractModule()
 {
     override fun configure()
     {
+        install(ModuleSerializers())
+
         binder().bind<ActivityRepository>().to<SQLActivityRepository>()
         binder().bind<ApplicationRepository>().to<SQLApplicationRepository>()
         binder().bind<InboxRepository>().to<SQLInboxRepository>()
@@ -36,8 +38,7 @@ internal class ModuleSQLRepositories : AbstractModule()
         binder().bind<OrganizationRepository>().to<SQLOrganizationRepository>()
         binder().bind<TokenRepository>().to<SQLTokenRepository>()
         binder().bind<UserRepository>().to<SQLUserRepository>()
-
-        install(ModuleSerializers())
+        binder().bind<UserPreferencesRepository>().to<SQLUserPreferencesRepository>()
     }
 
 }

@@ -22,7 +22,6 @@ import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import sir.wellington.alchemy.collections.sets.Sets;
 import tech.aroma.thrift.Application;
 import tech.aroma.thrift.User;
 import tech.aroma.thrift.exceptions.ApplicationDoesNotExistException;
@@ -42,7 +41,6 @@ import static tech.sirwellington.alchemy.generator.ObjectGenerators.pojos;
 import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
 import static tech.sirwellington.alchemy.generator.StringGenerators.uuids;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
-import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
  * @author SirWellington

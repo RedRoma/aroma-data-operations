@@ -88,4 +88,10 @@ class ModuleSQLRepositoriesTest
         assertTrue { injector.hasInstance<UserRepository>() }
     }
 
+    @Test
+    fun testUserPreferencesRepo()
+    {
+        assertTrue { injector.hasInstance<UserPreferencesRepository>() }
+    }
+
 }

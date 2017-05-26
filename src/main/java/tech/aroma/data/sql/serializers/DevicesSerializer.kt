@@ -18,10 +18,10 @@ package tech.aroma.data.sql.serializers
 
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.assertions.RequestAssertions.validReaction
+import tech.aroma.data.assertions.RequestAssertions.validMobileDevice
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.data.sql.serializers.Columns.Reactions
-import tech.aroma.thrift.reactions.Reaction
+import tech.aroma.data.sql.serializers.Columns.UserPreferences
+import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.thrift.ThriftObjects
@@ -32,45 +32,42 @@ import java.sql.ResultSet
  *
  * @author SirWellington
  */
-internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
+internal class DevicesSerializer : DatabaseSerializer<MutableSet<MobileDevice>>
 {
-
     private companion object
     {
         @JvmStatic val LOG = LoggerFactory.getLogger(this::class.java)!!
     }
 
-    override fun save(reactions: List<Reaction>, statement: String, database: JdbcOperations)
+    override fun save(devices: MutableSet<MobileDevice>, statement: String, database: JdbcOperations)
     {
-        reactions.forEach { checkThat(it).`is`(validReaction()) }
         checkThat(statement).`is`(nonEmptyString())
-    }
-
-    override fun deserialize(row: ResultSet): List<Reaction>
-    {
-        val result = listOf<Reaction>()
-
-        val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return result
-
-        return array.filterNotNull()
-                .map{ it.toString() }
-                .map(this::reactionFromString)
-                .filterNotNull()
+        devices.forEach { checkThat(it).`is`(validMobileDevice()) }
 
     }
 
-    private fun reactionFromString(string: String): Reaction?
+    override fun deserialize(row: ResultSet): MutableSet<MobileDevice>
     {
-        val prototype = Reaction()
+        val devicesArray = row.getArray(UserPreferences.SERIALIZED_DEVICES) ?: return mutableSetOf()
 
+        val devices = devicesArray.array as? Array<String> ?: return mutableSetOf()
+
+        return devices.map(this::deviceFromJson).filterNotNull().toMutableSet()
+    }
+
+    private fun deviceFromJson(json: String): MobileDevice?
+    {
         return try
         {
-            ThriftObjects.fromJson(prototype, string)
+            ThriftObjects.fromJson(MobileDevice(), json)
         }
         catch (ex: Exception)
         {
-            LOG.warn("Failed to deserialize reaction from $string", ex)
+            LOG.error("Failed to parse Mobile Device from JSON | $json", ex)
             return null
         }
     }
+
+
+
 }

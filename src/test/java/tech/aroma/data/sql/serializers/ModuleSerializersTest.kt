@@ -13,6 +13,7 @@ import tech.aroma.data.hasInstance
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.events.Event
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
@@ -37,6 +38,12 @@ class ModuleSerializersTest
     fun testHasAppSerializer()
     {
         assertTrue { injector.hasInstance<ApplicationSerializer>() }
+    }
+
+    @Test
+    fun testHasDeviceSerializer()
+    {
+        assertTrue { injector.hasInstance<DatabaseSerializer<MutableSet<MobileDevice>>>() }
     }
 
     @Test

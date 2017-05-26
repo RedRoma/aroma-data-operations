@@ -19,7 +19,7 @@ package tech.aroma.data.sql.serializers
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validUser
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Users
+import tech.aroma.data.sql.serializers.Columns.Users
 import tech.aroma.thrift.Role
 import tech.aroma.thrift.User
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat

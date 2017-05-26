@@ -18,7 +18,7 @@ package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.data.sql.serializers.Tables.Activity
+import tech.aroma.data.sql.serializers.Columns.Activity
 import tech.aroma.thrift.events.Event
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString

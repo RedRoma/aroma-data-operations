@@ -19,7 +19,7 @@ package tech.aroma.data.sql.serializers
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Organizations
+import tech.aroma.data.sql.serializers.Columns.Organizations
 import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
