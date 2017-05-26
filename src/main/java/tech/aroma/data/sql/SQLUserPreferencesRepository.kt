@@ -70,7 +70,7 @@ internal class SQLUserPreferencesRepository
 
                 val serializedStringArray = serialized.toTypedArray()
                 val serializedDevices = preparedStatement.connection.createArrayOf("TEXT", serializedStringArray)
-                preparedStatement.setObject(2, serializedDevices)
+                preparedStatement.setArray(2, serializedDevices)
             })
         }
         catch (ex: Exception)
