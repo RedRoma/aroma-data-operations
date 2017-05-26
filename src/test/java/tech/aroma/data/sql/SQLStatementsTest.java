@@ -40,6 +40,8 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.REACTIONS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.USER, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.USER_DEVICE, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.USER_DEVICES, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -62,6 +64,9 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Inserts.TOKEN, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.USER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.USER_DEVICE, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.USER_DEVICES, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -110,6 +115,8 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.SELECT_USER_BY_EMAIL, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_USER_BY_GITHUB, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_RECENT_USERS, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.SELECT_USER_DEVICES, not(isEmptyOrNullString()));
     }
 
 }

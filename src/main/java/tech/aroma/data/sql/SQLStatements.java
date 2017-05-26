@@ -52,6 +52,8 @@ final class SQLStatements
         static final String REACTIONS = loadSQLFile("tech/aroma/sql/deletes/delete_reactions.sql");
         static final String TOKEN = loadSQLFile("tech/aroma/sql/deletes/delete_token.sql");
         static final String USER = loadSQLFile("tech/aroma/sql/deletes/delete_user.sql");
+        static final String USER_DEVICE = loadSQLFile("tech/aroma/sql/deletes/delete_user_device.sql");
+        static final String USER_DEVICES = loadSQLFile("tech/aroma/sql/deletes/delete_all_user_devices.sql");
     }
 
     static class Inserts
@@ -73,6 +75,8 @@ final class SQLStatements
 
         static final String USER = loadSQLFile("tech/aroma/sql/inserts/insert_user.sql");
 
+        static final String USER_DEVICE = loadSQLFile("tech/aroma/sql/inserts/add_user_device.sql");
+        static final String USER_DEVICES = loadSQLFile("tech/aroma/sql/inserts/insert_user_devices.sql");
     }
 
     static class Queries
@@ -119,6 +123,8 @@ final class SQLStatements
         static final String SELECT_USER_BY_EMAIL = loadSQLFile("tech/aroma/sql/queries/select_user_by_email.sql");
         static final String SELECT_USER_BY_GITHUB = loadSQLFile("tech/aroma/sql/queries/select_user_by_github.sql");
         static final String SELECT_RECENT_USERS = loadSQLFile("tech/aroma/sql/queries/select_user_recently_created.sql");
+
+        static final String SELECT_USER_DEVICES = loadSQLFile("tech/aroma/sql/queries/select_user_devices.sql");
 
     }
 
