@@ -69,17 +69,5 @@ internal class DevicesSerializer : DatabaseSerializer<Set<MobileDevice>>
     }
 
 
-    private fun deviceToJson(device: MobileDevice): String?
-    {
-        return try
-        {
-            ThriftObjects.toJson(device)
-        }
-        catch (ex: Exception)
-        {
-            LOG.warn("Failed to serialized mobile device [$device]", ex)
-            return null
-        }
-    }
 
 }

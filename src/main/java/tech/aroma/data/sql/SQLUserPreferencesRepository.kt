@@ -21,10 +21,12 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.UserPreferencesRepository
 import tech.aroma.data.assertions.RequestAssertions.validMobileDevice
 import tech.aroma.data.assertions.RequestAssertions.validUserId
+import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
+import tech.sirwellington.alchemy.thrift.ThriftObjects
 import javax.inject.Inject
 
 
@@ -40,26 +42,104 @@ internal class SQLUserPreferencesRepository
         checkUserId(userId)
         checkMobileDevice(mobileDevice)
 
+        val sql = Inserts.USER_DEVICE
+        val serialized = ThriftObjects.toJson(mobileDevice)
+
+        try
+        {
+            database.update(sql, userId.toUUID(), serialized)
+        }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to save a new mobile device for [$userId]", ex)
+        }
     }
 
     override fun saveMobileDevices(userId: String, mobileDevices: MutableSet<MobileDevice>)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkUserId(userId)
+        mobileDevices.forEach(this::checkMobileDevice)
+
+        val sql = Inserts.USER_DEVICES
+        val serialized = mobileDevices.map(this::deviceToJson).filterNotNull()
+
+        try
+        {
+            database.update(sql,{ preparedStatement ->
+                preparedStatement.setObject(1, userId.toUUID())
+
+                val serializedStringArray = serialized.toTypedArray()
+                val serializedDevices = preparedStatement.connection.createArrayOf("TEXT", serializedStringArray)
+                preparedStatement.setObject(2, serializedDevices)
+            })
+        }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to save ${mobileDevices.size} devices for [$userId]", ex)
+        }
     }
 
     override fun getMobileDevices(userId: String): MutableSet<MobileDevice>
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkUserId(userId)
+
+        val sql = Queries.SELECT_USER_DEVICES
+
+        return try
+        {
+            database.queryForObject(sql, serializer, userId.toUUID())?.toMutableSet() ?: mutableSetOf()
+        }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to get mobile devices for [$userId]", ex)
+        }
     }
 
     override fun deleteMobileDevice(userId: String, mobileDevice: MobileDevice)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkUserId(userId)
+        checkMobileDevice(mobileDevice)
+
+        val sql = Deletes.USER_DEVICE
+        val serialized = ThriftObjects.toJson(mobileDevice)
+
+        try
+        {
+            database.update(sql, serialized, userId.toUUID())
+        }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to remove device for user [$userId] | [$mobileDevice]", ex)
+        }
     }
 
     override fun deleteAllMobileDevices(userId: String)
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkUserId(userId)
+
+        val sql = Deletes.USER_DEVICES
+
+        try
+        {
+            database.update(sql, userId.toUUID())
+        }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to delete all mobile devices for [$userId]", ex)
+        }
+    }
+
+    private fun deviceToJson(device: MobileDevice): String?
+    {
+        return try
+        {
+            ThriftObjects.toJson(device)
+        }
+        catch (ex: Exception)
+        {
+            LOG.warn("Failed to serialized mobile device [$device]", ex)
+            return null
+        }
     }
 
     private fun checkUserId(userId: String)
@@ -76,7 +156,7 @@ internal class SQLUserPreferencesRepository
                 .`is`(validMobileDevice())
     }
 
-    private fun failWithError(message: String, ex: Exception) : Nothing
+    private fun failWithError(message: String, ex: Exception): Nothing
     {
         LOG.error(message, ex)
         throw OperationFailedException("$message | ${ex.message}")

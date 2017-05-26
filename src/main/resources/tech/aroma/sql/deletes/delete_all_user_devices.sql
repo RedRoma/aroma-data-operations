@@ -3,5 +3,5 @@
 ------------------------------------------------------------------------------
 
 UPDATE user_preferences
-SET serialized_devices = ARRAY[]
+SET serialized_devices = NULL
 WHERE user_id = ?
