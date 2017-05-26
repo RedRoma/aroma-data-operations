@@ -26,6 +26,7 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
+import tech.aroma.data.AromaGenerators.Devices
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
@@ -234,8 +235,8 @@ class SQLUserPreferencesRepositoryTest
 
     private fun setupData()
     {
-        device = one(mobileDevices())
-        devices = CollectionGenerators.listOf(mobileDevices(), 10).toSet()
+        device = Devices.device
+        devices = Devices.devices
     }
 
     private fun setupMocks()

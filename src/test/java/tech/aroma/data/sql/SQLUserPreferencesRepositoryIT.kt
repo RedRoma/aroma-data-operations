@@ -21,6 +21,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.AromaGenerators.Devices
 import tech.aroma.data.sql.serializers.DevicesSerializer
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
@@ -59,8 +60,8 @@ class SQLUserPreferencesRepositoryIT
     @Before
     fun setup()
     {
-        device = one(mobileDevices())
-        devices = CollectionGenerators.listOf(mobileDevices(), 5).toSet()
+        device = Devices.device
+        devices = Devices.devices
 
         instance = SQLUserPreferencesRepository(database, serializer)
     }

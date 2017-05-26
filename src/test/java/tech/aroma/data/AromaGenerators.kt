@@ -19,6 +19,7 @@ package tech.aroma.data
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.generators.ApplicationGenerators
+import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
 import tech.aroma.thrift.generators.MessageGenerators.messages
 import tech.sirwellington.alchemy.generator.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
@@ -69,10 +70,17 @@ class AromaGenerators
         val application: Application get() = ApplicationGenerators.applications().get()
     }
 
+    object Devices
+    {
+        val device get() = one(mobileDevices())!!
+
+        val devices get() = CollectionGenerators.listOf(mobileDevices(), 10).toMutableSet()!!
+    }
+
     object Messages
     {
         val message: Message get() = one(messages()).setTimeOfCreation(Times.currentTimes)
-        val messages get() = CollectionGenerators.listOf(messages(), 10)
+        val messages get() = CollectionGenerators.listOf(messages(), 10)!!
     }
 
     object Tokens
