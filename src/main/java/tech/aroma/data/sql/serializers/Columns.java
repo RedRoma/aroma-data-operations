@@ -11,7 +11,7 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable;
  */
 @Internal
 @NonInstantiable
-final class Tables
+final class Columns
 {
 
     @NonInstantiable

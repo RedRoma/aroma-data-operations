@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMobileDevice
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.data.sql.serializers.Tables.UserPreferences
+import tech.aroma.data.sql.serializers.Columns.UserPreferences
 import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString

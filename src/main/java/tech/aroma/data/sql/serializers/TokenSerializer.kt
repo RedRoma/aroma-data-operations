@@ -18,7 +18,7 @@ package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Tokens
+import tech.aroma.data.sql.serializers.Columns.Tokens
 import tech.aroma.thrift.assertions.AromaAssertions.legalToken
 import tech.aroma.thrift.authentication.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat

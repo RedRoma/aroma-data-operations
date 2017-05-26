@@ -136,18 +136,18 @@ class MessageSerializerTest
 
     private fun setupResults()
     {
-        whenever(resultSet.getString(Tables.Messages.MESSAGE_ID)).thenReturn(message.messageId)
-        whenever(resultSet.getString(Tables.Messages.APP_ID)).thenReturn(message.applicationId)
-        whenever(resultSet.getString(Tables.Messages.APP_NAME)).thenReturn(message.applicationName)
-        whenever(resultSet.getString(Tables.Messages.TITLE)).thenReturn(message.title)
-        whenever(resultSet.getString(Tables.Messages.BODY)).thenReturn(message.body)
-        whenever(resultSet.getString(Tables.Messages.HOSTNAME)).thenReturn(message.hostname)
-        whenever(resultSet.getString(Tables.Messages.IP_ADDRESS)).thenReturn(message.macAddress)
-        whenever(resultSet.getString(Tables.Messages.DEVICE_NAME)).thenReturn(message.deviceName)
-        whenever(resultSet.getString(Tables.Messages.PRIORITY)).thenReturn(message.urgency.toString())
+        whenever(resultSet.getString(Columns.Messages.MESSAGE_ID)).thenReturn(message.messageId)
+        whenever(resultSet.getString(Columns.Messages.APP_ID)).thenReturn(message.applicationId)
+        whenever(resultSet.getString(Columns.Messages.APP_NAME)).thenReturn(message.applicationName)
+        whenever(resultSet.getString(Columns.Messages.TITLE)).thenReturn(message.title)
+        whenever(resultSet.getString(Columns.Messages.BODY)).thenReturn(message.body)
+        whenever(resultSet.getString(Columns.Messages.HOSTNAME)).thenReturn(message.hostname)
+        whenever(resultSet.getString(Columns.Messages.IP_ADDRESS)).thenReturn(message.macAddress)
+        whenever(resultSet.getString(Columns.Messages.DEVICE_NAME)).thenReturn(message.deviceName)
+        whenever(resultSet.getString(Columns.Messages.PRIORITY)).thenReturn(message.urgency.toString())
 
-        whenever(resultSet.getTimestamp(Tables.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toTimestamp())
-        whenever(resultSet.getTimestamp(Tables.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toTimestamp())
+        whenever(resultSet.getTimestamp(Columns.Messages.TIME_CREATED)).thenReturn(message.timeOfCreation.toTimestamp())
+        whenever(resultSet.getTimestamp(Columns.Messages.TIME_RECEIVED)).thenReturn(message.timeMessageReceived.toTimestamp())
     }
 
 }

@@ -27,7 +27,7 @@ import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Applications
+import tech.aroma.data.sql.serializers.Columns.Applications
 import tech.aroma.thrift.Application
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString

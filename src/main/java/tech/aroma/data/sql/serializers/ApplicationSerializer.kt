@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validApplication
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Applications
+import tech.aroma.data.sql.serializers.Columns.Applications
 import tech.aroma.thrift.*
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString

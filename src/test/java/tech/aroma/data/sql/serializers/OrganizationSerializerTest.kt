@@ -8,7 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.serializers.Tables.Organizations
+import tech.aroma.data.sql.serializers.Columns.Organizations
 import tech.aroma.data.sql.toCommaSeparatedList
 import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Organization

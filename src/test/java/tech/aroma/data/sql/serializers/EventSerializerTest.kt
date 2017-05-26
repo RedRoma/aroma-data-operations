@@ -26,7 +26,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.serializers.Tables.Activity
+import tech.aroma.data.sql.serializers.Columns.Activity
 import tech.aroma.thrift.User
 import tech.aroma.thrift.events.Event
 import tech.aroma.thrift.generators.EventGenerators.events

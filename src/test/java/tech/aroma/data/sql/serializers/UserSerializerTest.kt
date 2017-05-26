@@ -26,7 +26,7 @@ import org.mockito.Mockito
 import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.*
-import tech.aroma.data.sql.serializers.Tables.Users
+import tech.aroma.data.sql.serializers.Columns.Users
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one

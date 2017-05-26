@@ -57,22 +57,22 @@ internal class MessageSerializer : DatabaseSerializer<Message>
     {
         val message = Message()
 
-        message.applicationId = row.getString(Tables.Messages.APP_ID)
-        message.messageId = row.getString(Tables.Messages.MESSAGE_ID)
-        message.applicationName = row.getString(Tables.Messages.APP_NAME)
-        message.title = row.getString(Tables.Messages.TITLE)
-        message.body = row.getString(Tables.Messages.BODY)
-        message.hostname = row.getString(Tables.Messages.HOSTNAME)
+        message.applicationId = row.getString(Columns.Messages.APP_ID)
+        message.messageId = row.getString(Columns.Messages.MESSAGE_ID)
+        message.applicationName = row.getString(Columns.Messages.APP_NAME)
+        message.title = row.getString(Columns.Messages.TITLE)
+        message.body = row.getString(Columns.Messages.BODY)
+        message.hostname = row.getString(Columns.Messages.HOSTNAME)
 
-        if (row.hasColumn(Tables.Messages.IP_ADDRESS))
+        if (row.hasColumn(Columns.Messages.IP_ADDRESS))
         {
-            message.macAddress = row.getString(Tables.Messages.IP_ADDRESS)
+            message.macAddress = row.getString(Columns.Messages.IP_ADDRESS)
         }
 
-        message.deviceName = row.getString(Tables.Messages.DEVICE_NAME)
-        message.urgency = row.getString(Tables.Messages.PRIORITY).asUrgency()
-        message.timeOfCreation = row.getTimestamp(Tables.Messages.TIME_CREATED)?.time ?: 0L
-        message.timeMessageReceived = row.getTimestamp(Tables.Messages.TIME_RECEIVED)?.time ?: 0L
+        message.deviceName = row.getString(Columns.Messages.DEVICE_NAME)
+        message.urgency = row.getString(Columns.Messages.PRIORITY).asUrgency()
+        message.timeOfCreation = row.getTimestamp(Columns.Messages.TIME_CREATED)?.time ?: 0L
+        message.timeMessageReceived = row.getTimestamp(Columns.Messages.TIME_RECEIVED)?.time ?: 0L
 
         return message
     }

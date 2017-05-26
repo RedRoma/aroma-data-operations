@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validReaction
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.data.sql.serializers.Tables.Reactions
+import tech.aroma.data.sql.serializers.Columns.Reactions
 import tech.aroma.thrift.reactions.Reaction
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
