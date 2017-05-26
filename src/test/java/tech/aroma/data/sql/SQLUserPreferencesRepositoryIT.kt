@@ -52,7 +52,7 @@ class SQLUserPreferencesRepositoryIT
 
     private lateinit var device: MobileDevice
 
-    private lateinit var devices: Set<MobileDevice>
+    private lateinit var devices: MutableSet<MobileDevice>
 
     private val serializer = DevicesSerializer()
     private lateinit var instance: SQLUserPreferencesRepository
@@ -104,7 +104,7 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testAddDevice()
     {
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         val newDevice = one(mobileDevices())
 
@@ -119,7 +119,7 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testSaveMobileDevices()
     {
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         val results = instance.getMobileDevices(userId)
 
@@ -138,7 +138,7 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testGetMobileDevices()
     {
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         val results = instance.getMobileDevices(userId)
         assertThat(results, notEmpty)
@@ -175,7 +175,7 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testDeleteMobileDeviceWhenNotExists()
     {
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         var newDevice = one(mobileDevices())
 
@@ -193,7 +193,7 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testDeleteAllMobileDevices()
     {
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         instance.deleteAllMobileDevices(userId)
 

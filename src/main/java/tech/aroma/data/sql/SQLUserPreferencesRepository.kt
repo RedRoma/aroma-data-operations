@@ -88,7 +88,7 @@ internal class SQLUserPreferencesRepository
 
         return try
         {
-            database.queryForObject(sql, serializer, userId.toUUID())?.toMutableSet() ?: mutableSetOf()
+            database.queryForObject(sql, serializer, userId.toUUID()) ?: mutableSetOf()
         }
         catch (ex: EmptyResultDataAccessException)
         {

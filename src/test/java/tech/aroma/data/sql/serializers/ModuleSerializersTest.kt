@@ -43,7 +43,7 @@ class ModuleSerializersTest
     @Test
     fun testHasDeviceSerializer()
     {
-        assertTrue { injector.hasInstance<DatabaseSerializer<Set<MobileDevice>>>() }
+        assertTrue { injector.hasInstance<DatabaseSerializer<MutableSet<MobileDevice>>>() }
     }
 
     @Test

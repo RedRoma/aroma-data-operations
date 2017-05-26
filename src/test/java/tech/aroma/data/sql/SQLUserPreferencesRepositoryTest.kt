@@ -121,7 +121,7 @@ class SQLUserPreferencesRepositoryTest
     {
         val sql = Inserts.USER_DEVICES
 
-        instance.saveMobileDevices(userId, devices.toMutableSet())
+        instance.saveMobileDevices(userId, devices)
 
         verify(database).update(eq(sql), statementCaptor.capture())
 
@@ -139,14 +139,12 @@ class SQLUserPreferencesRepositoryTest
     {
         setupForFailure()
 
-        assertThrows { instance.saveMobileDevices(userId, devices.toMutableSet()) }.operationError()
+        assertThrows { instance.saveMobileDevices(userId, devices) }.operationError()
     }
 
     @Test
     fun testSaveMobileDevicesWithBadArgs()
     {
-        val devices = this.devices.toMutableSet()
-
         assertThrows { instance.saveMobileDevices("", devices) }.invalidArg()
         assertThrows { instance.saveMobileDevices(badId, devices) }.invalidArg()
         assertThrows { instance.saveMobileDevices(userId, mutableSetOf(invalidDevice)) }.invalidArg()
