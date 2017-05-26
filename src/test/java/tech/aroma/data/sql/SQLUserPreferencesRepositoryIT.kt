@@ -126,6 +126,15 @@ class SQLUserPreferencesRepositoryIT
     }
 
     @Test
+    fun testSaveMobileDevicesWithEmpty()
+    {
+        instance.saveMobileDevices(userId, mutableSetOf())
+
+        val results = instance.getMobileDevices(userId)
+        assertThat(results, notNull and isEmpty)
+    }
+
+    @Test
     fun testGetMobileDevices()
     {
         instance.saveMobileDevices(userId, devices.toMutableSet())
@@ -133,6 +142,13 @@ class SQLUserPreferencesRepositoryIT
         val results = instance.getMobileDevices(userId)
         assertThat(results, notEmpty)
         assertThat(results, equalTo(devices))
+    }
+
+    @Test
+    fun testGetMobileDevicesWhenNone()
+    {
+        val results = instance.getMobileDevices(userId)
+        assertThat(results, notNull and isEmpty)
     }
 
     @Test
@@ -150,6 +166,30 @@ class SQLUserPreferencesRepositoryIT
     }
 
     @Test
+    fun testDeleteMobileDeviceWhenNone()
+    {
+        instance.deleteMobileDevice(userId, device)
+    }
+
+    @Test
+    fun testDeleteMobileDeviceWhenNotExists()
+    {
+        instance.saveMobileDevices(userId, devices.toMutableSet())
+
+        var newDevice = one(mobileDevices())
+
+        while (newDevice.isSetWindowsPhoneDevice)
+        {
+            newDevice = one(mobileDevices())
+        }
+
+        instance.deleteMobileDevice(userId, newDevice)
+
+        val results = instance.getMobileDevices(userId)
+        assertThat(results, equalTo(devices))
+    }
+
+    @Test
     fun testDeleteAllMobileDevices()
     {
         instance.saveMobileDevices(userId, devices.toMutableSet())
@@ -160,4 +200,9 @@ class SQLUserPreferencesRepositoryIT
         assertThat(results, notNull and isEmpty)
     }
 
+    @Test
+    fun testDeleteAllMobileDevicesWhenNone()
+    {
+        instance.deleteAllMobileDevices(userId)
+    }
 }

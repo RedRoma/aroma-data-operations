@@ -17,6 +17,7 @@
 package tech.aroma.data.sql
 
 import org.slf4j.LoggerFactory
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.UserPreferencesRepository
 import tech.aroma.data.assertions.RequestAssertions.validMobileDevice
@@ -88,6 +89,10 @@ internal class SQLUserPreferencesRepository
         return try
         {
             database.queryForObject(sql, serializer, userId.toUUID())?.toMutableSet() ?: mutableSetOf()
+        }
+        catch (ex: EmptyResultDataAccessException)
+        {
+            mutableSetOf()
         }
         catch (ex: Exception)
         {
