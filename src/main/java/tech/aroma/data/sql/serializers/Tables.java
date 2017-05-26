@@ -124,4 +124,13 @@ final class Tables
         static final String TIME_ACCOUNT_CREATED = "time_account_created";
         static final String TIME_LAST_UPDATED = "time_last_updated";
     }
+
+
+    @NonInstantiable
+    static final class UserPreferences
+    {
+        static final String USER_ID = Users.USER_ID;
+        static final String SERIALIZED_DEVICES = "serialized_devices";
+        static final String LAST_SIGN_IN = "last_sign_in";
+    }
 }
