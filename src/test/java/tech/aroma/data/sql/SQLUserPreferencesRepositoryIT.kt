@@ -90,6 +90,32 @@ class SQLUserPreferencesRepositoryIT
     }
 
     @Test
+    fun testSaveDeviceTwice()
+    {
+        instance.saveMobileDevice(userId, device)
+        instance.saveMobileDevice(userId, device)
+
+        val results = instance.getMobileDevices(userId)
+        assertThat(results.size, equalTo(1))
+        assertThat(results, hasElement(device))
+    }
+
+    @Test
+    fun testAddDevice()
+    {
+        instance.saveMobileDevices(userId, devices.toMutableSet())
+
+        val newDevice = one(mobileDevices())
+
+        instance.saveMobileDevice(userId, newDevice)
+
+        val expected = devices + newDevice
+        val results = instance.getMobileDevices(userId)
+
+        assertThat(results, equalTo(expected))
+    }
+
+    @Test
     fun testSaveMobileDevices()
     {
         instance.saveMobileDevices(userId, devices.toMutableSet())
