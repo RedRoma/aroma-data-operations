@@ -16,14 +16,14 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.and
+import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
 import tech.aroma.data.AromaGenerators.Devices
@@ -158,6 +158,18 @@ class SQLUserPreferencesRepositoryTest
 
         val results = instance.getMobileDevices(userId)
         assertThat(results, notEmpty and equalTo(devices))
+    }
+
+    @Test
+    fun testGetMobileDevicesWhenNone()
+    {
+        val sql = Queries.SELECT_USER_DEVICES
+
+        whenever(database.query(sql, serializer, userId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException(1))
+
+        val results = instance.getMobileDevices(userId)
+        assertThat(results, notNull and isEmpty)
     }
 
     @Test
