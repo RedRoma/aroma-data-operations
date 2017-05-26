@@ -38,13 +38,18 @@ import javax.inject.Inject
 internal class SQLUserPreferencesRepository
 @Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<MutableSet<MobileDevice>>) : UserPreferencesRepository
 {
-    override fun saveMobileDevice(userId: String, mobileDevice: MobileDevice)
+    override fun saveMobileDevice(userId: String, device: MobileDevice)
     {
         checkUserId(userId)
-        checkMobileDevice(mobileDevice)
+        checkMobileDevice(device)
 
         val sql = Inserts.ADD_USER_DEVICE
-        val serialized = ThriftObjects.toJson(mobileDevice)
+
+        val serialized = try { ThriftObjects.toJson(device) }
+        catch (ex: Exception)
+        {
+            failWithError("Failed to serialized Mobile Device: [$device]", ex)
+        }
 
         try
         {
@@ -56,13 +61,13 @@ internal class SQLUserPreferencesRepository
         }
     }
 
-    override fun saveMobileDevices(userId: String, mobileDevices: MutableSet<MobileDevice>)
+    override fun saveMobileDevices(userId: String, devices: MutableSet<MobileDevice>)
     {
         checkUserId(userId)
-        mobileDevices.forEach(this::checkMobileDevice)
+        devices.forEach(this::checkMobileDevice)
 
         val sql = Inserts.USER_DEVICES
-        val serialized = mobileDevices.map(this::deviceToJson).filterNotNull()
+        val serialized = devices.map(this::deviceToJson).filterNotNull()
 
         try
         {
@@ -76,7 +81,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to save ${mobileDevices.size} devices for [$userId]", ex)
+            failWithError("Failed to save ${devices.size} devices for [$userId]", ex)
         }
     }
 
