@@ -21,7 +21,7 @@ import java.sql.SQLException
 internal class MessageSerializer : DatabaseSerializer<Message>
 {
 
-    companion object
+    private companion object
     {
         @JvmStatic val LOG = LoggerFactory.getLogger(MessageSerializer::class.java)
 
