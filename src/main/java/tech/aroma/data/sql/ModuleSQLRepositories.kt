@@ -36,6 +36,7 @@ internal class ModuleSQLRepositories : AbstractModule()
         binder().bind<OrganizationRepository>().to<SQLOrganizationRepository>()
         binder().bind<TokenRepository>().to<SQLTokenRepository>()
         binder().bind<UserRepository>().to<SQLUserRepository>()
+        binder().bind<UserPreferencesRepository>().to<SQLUserPreferencesRepository>()
 
         install(ModuleSerializers())
     }

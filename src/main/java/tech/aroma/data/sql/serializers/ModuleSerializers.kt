@@ -7,6 +7,7 @@ import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.to
 import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.events.Event
 import tech.aroma.thrift.reactions.Reaction
 
@@ -22,6 +23,7 @@ class ModuleSerializers : AbstractModule()
         bind<DatabaseSerializer<AuthenticationToken>>().to<TokenSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<Event>>().to<EventSerializer>()
         bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()
+        bind<DatabaseSerializer<Set<MobileDevice>>>().to<DevicesSerializer>()
         bind<DatabaseSerializer<Organization>>().to<OrganizationSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<List<Reaction>>>().to<ReactionsSerializer>()
         bind<DatabaseSerializer<User>>().to<UserSerializer>().asEagerSingleton()
