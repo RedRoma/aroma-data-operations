@@ -26,8 +26,7 @@ import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import kotlin.test.assertTrue
 
@@ -112,15 +111,15 @@ class SQLUserPreferencesRepositoryIT
     @Test
     fun testDeleteMobileDevice()
     {
-        val userDevices = devices.toMutableSet()
-        userDevices.add(device)
+        val userDevices = devices + device
+        val expected = devices - device
 
         instance.saveMobileDevices(userId, userDevices.toMutableSet())
 
         instance.deleteMobileDevice(userId, device)
 
         val results = instance.getMobileDevices(userId)
-        assertThat(results, equalTo(devices))
+        assertThat(results, equalTo(expected))
     }
 
     @Test
