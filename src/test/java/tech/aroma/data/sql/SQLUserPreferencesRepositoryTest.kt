@@ -31,8 +31,9 @@ import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.*
@@ -69,6 +70,11 @@ class SQLUserPreferencesRepositoryTest
     @GenerateString(UUID)
     private lateinit var userId: String
 
+    @GenerateString(ALPHABETIC)
+    private lateinit var badId: String
+
+    private val invalidDevice get() = MobileDevice()
+
     private lateinit var instance: SQLUserPreferencesRepository
 
     @Before
@@ -91,6 +97,15 @@ class SQLUserPreferencesRepositoryTest
         verify(database).update(sql, userId.toUUID(), serializedDevice)
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMobileDeviceWithBadArgs()
+    {
+        assertThrows { instance.saveMobileDevice("", device) }.invalidArg()
+        assertThrows { instance.saveMobileDevice(badId, device) }.invalidArg()
+        assertThrows { instance.saveMobileDevice(userId, invalidDevice) }.invalidArg()
+    }
+
     @Test
     fun testSaveMobileDevices()
     {
@@ -109,6 +124,17 @@ class SQLUserPreferencesRepositoryTest
         verify(preparedStatement).setArray(2, mockArray)
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMobileDevicesWithBadArgs()
+    {
+        val devices = this.devices.toMutableSet()
+
+        assertThrows { instance.saveMobileDevices("", devices) }.invalidArg()
+        assertThrows { instance.saveMobileDevices(badId, devices) }.invalidArg()
+        assertThrows { instance.saveMobileDevices(userId, mutableSetOf(invalidDevice)) }.invalidArg()
+    }
+
     @Test
     fun testGetMobileDevices()
     {
@@ -121,6 +147,14 @@ class SQLUserPreferencesRepositoryTest
         assertThat(results, notEmpty and equalTo(devices))
     }
 
+    @DontRepeat
+    @Test
+    fun testGetMobileDevicesWithBadArgs()
+    {
+        assertThrows { instance.getMobileDevices("") }.invalidArg()
+        assertThrows { instance.getMobileDevices(badId) }.invalidArg()
+    }
+
     @Test
     fun testDeleteMobileDevice()
     {
@@ -131,6 +165,15 @@ class SQLUserPreferencesRepositoryTest
         verify(database).update(sql, serializedDevice, userId.toUUID())
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteMobileDeviceWithBadArgs()
+    {
+        assertThrows { instance.deleteMobileDevice("", device) }.invalidArg()
+        assertThrows { instance.deleteMobileDevice(badId, device) }.invalidArg()
+        assertThrows { instance.deleteMobileDevice(userId, invalidDevice) }.invalidArg()
+    }
+
     @Test
     fun testDeleteAllMobileDevices()
     {
@@ -139,6 +182,14 @@ class SQLUserPreferencesRepositoryTest
         instance.deleteAllMobileDevices(userId)
 
         verify(database).update(sql, userId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteAllMobileDevicesWithBadArgs()
+    {
+        assertThrows { instance.deleteAllMobileDevices("") }.invalidArg()
+        assertThrows { instance.deleteAllMobileDevices(badId) }.invalidArg()
     }
 
     private fun setupData()
