@@ -48,7 +48,7 @@ class SQLUserPreferencesRepositoryTest
     private lateinit var database: JdbcOperations
 
     @Mock
-    private lateinit var serializer: DatabaseSerializer<Set<MobileDevice>>
+    private lateinit var serializer: DatabaseSerializer<MutableSet<MobileDevice>>
 
     @Mock
     private lateinit var connection: Connection
@@ -63,7 +63,7 @@ class SQLUserPreferencesRepositoryTest
     private lateinit var statementCaptor: ArgumentCaptor<PreparedStatementSetter>
 
     private lateinit var device: MobileDevice
-    private lateinit var devices: Set<MobileDevice>
+    private lateinit var devices: MutableSet<MobileDevice>
 
     private val serializedDevice get() = ThriftObjects.toJson(device)
     private val serializedDevices get() = devices.map(ThriftObjects::toJson)

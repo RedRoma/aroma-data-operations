@@ -48,7 +48,7 @@ class DevicesSerializerTest
     private lateinit var array: Array
 
     private lateinit var device: MobileDevice
-    private lateinit var devices: Set<MobileDevice>
+    private lateinit var devices: MutableSet<MobileDevice>
 
     @GenerateString
     private lateinit var sql: String

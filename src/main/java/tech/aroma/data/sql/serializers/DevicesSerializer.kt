@@ -32,27 +32,27 @@ import java.sql.ResultSet
  *
  * @author SirWellington
  */
-internal class DevicesSerializer : DatabaseSerializer<Set<MobileDevice>>
+internal class DevicesSerializer : DatabaseSerializer<MutableSet<MobileDevice>>
 {
     private companion object
     {
         @JvmStatic val LOG = LoggerFactory.getLogger(this::class.java)!!
     }
 
-    override fun save(devices: Set<MobileDevice>, statement: String, database: JdbcOperations)
+    override fun save(devices: MutableSet<MobileDevice>, statement: String, database: JdbcOperations)
     {
         checkThat(statement).`is`(nonEmptyString())
         devices.forEach { checkThat(it).`is`(validMobileDevice()) }
 
     }
 
-    override fun deserialize(row: ResultSet): Set<MobileDevice>
+    override fun deserialize(row: ResultSet): MutableSet<MobileDevice>
     {
-        val devicesArray = row.getArray(UserPreferences.SERIALIZED_DEVICES) ?: return emptySet()
+        val devicesArray = row.getArray(UserPreferences.SERIALIZED_DEVICES) ?: return mutableSetOf()
 
-        val devices = devicesArray.array as? Array<String> ?: return emptySet()
+        val devices = devicesArray.array as? Array<String> ?: return mutableSetOf()
 
-        return devices.map(this::deviceFromJson).filterNotNull().toSet()
+        return devices.map(this::deviceFromJson).filterNotNull().toMutableSet()
     }
 
     private fun deviceFromJson(json: String): MobileDevice?

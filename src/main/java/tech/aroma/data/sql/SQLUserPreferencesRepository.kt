@@ -36,7 +36,7 @@ import javax.inject.Inject
  * @author SirWellington
  */
 internal class SQLUserPreferencesRepository
-@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<Set<MobileDevice>>) : UserPreferencesRepository
+@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<MutableSet<MobileDevice>>) : UserPreferencesRepository
 {
     override fun saveMobileDevice(userId: String, mobileDevice: MobileDevice)
     {
