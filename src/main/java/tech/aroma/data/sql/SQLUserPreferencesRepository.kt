@@ -43,7 +43,7 @@ internal class SQLUserPreferencesRepository
         checkUserId(userId)
         checkMobileDevice(mobileDevice)
 
-        val sql = Inserts.USER_DEVICE
+        val sql = Inserts.ADD_USER_DEVICE
         val serialized = ThriftObjects.toJson(mobileDevice)
 
         try
@@ -122,7 +122,7 @@ internal class SQLUserPreferencesRepository
     {
         checkUserId(userId)
 
-        val sql = Deletes.USER_DEVICES
+        val sql = Deletes.ALL_USER_DEVICES
 
         try
         {

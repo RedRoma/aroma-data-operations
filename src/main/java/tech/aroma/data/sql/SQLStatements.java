@@ -53,7 +53,7 @@ final class SQLStatements
         static final String TOKEN = loadSQLFile("tech/aroma/sql/deletes/delete_token.sql");
         static final String USER = loadSQLFile("tech/aroma/sql/deletes/delete_user.sql");
         static final String USER_DEVICE = loadSQLFile("tech/aroma/sql/deletes/delete_user_device.sql");
-        static final String USER_DEVICES = loadSQLFile("tech/aroma/sql/deletes/delete_all_user_devices.sql");
+        static final String ALL_USER_DEVICES = loadSQLFile("tech/aroma/sql/deletes/delete_all_user_devices.sql");
     }
 
     static class Inserts
@@ -75,7 +75,7 @@ final class SQLStatements
 
         static final String USER = loadSQLFile("tech/aroma/sql/inserts/insert_user.sql");
 
-        static final String USER_DEVICE = loadSQLFile("tech/aroma/sql/inserts/add_user_device.sql");
+        static final String ADD_USER_DEVICE = loadSQLFile("tech/aroma/sql/inserts/add_user_device.sql");
         static final String USER_DEVICES = loadSQLFile("tech/aroma/sql/inserts/insert_user_devices.sql");
     }
 

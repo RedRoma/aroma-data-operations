@@ -41,7 +41,7 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.TOKEN, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.USER, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.USER_DEVICE, not(isEmptyOrNullString()));
-        assertThat(SQLStatements.Deletes.USER_DEVICES, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ALL_USER_DEVICES, not(isEmptyOrNullString()));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class SQLStatementsTest
 
         assertThat(SQLStatements.Inserts.USER, not(isEmptyOrNullString()));
 
-        assertThat(SQLStatements.Inserts.USER_DEVICE, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.ADD_USER_DEVICE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Inserts.USER_DEVICES, not(isEmptyOrNullString()));
     }
 

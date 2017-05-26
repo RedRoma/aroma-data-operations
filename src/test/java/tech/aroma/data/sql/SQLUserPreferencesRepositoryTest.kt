@@ -29,9 +29,6 @@ import org.springframework.jdbc.core.PreparedStatementSetter
 import tech.aroma.data.AromaGenerators.Devices
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.channels.MobileDevice
-import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
@@ -92,7 +89,7 @@ class SQLUserPreferencesRepositoryTest
     @Test
     fun testSaveMobileDevice()
     {
-        val sql = Inserts.USER_DEVICE
+        val sql = Inserts.ADD_USER_DEVICE
 
         instance.saveMobileDevice(userId, device)
 
@@ -209,7 +206,7 @@ class SQLUserPreferencesRepositoryTest
     @Test
     fun testDeleteAllMobileDevices()
     {
-        val sql = Deletes.USER_DEVICES
+        val sql = Deletes.ALL_USER_DEVICES
 
         instance.deleteAllMobileDevices(userId)
 
