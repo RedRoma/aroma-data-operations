@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Media_Thumbnails
     media_id        UUID,
     width           INT,
     height          INT,
+    media_type      TEXT,
     creation_time   TIMESTAMP DEFAULT now(),
     expiration_time TIMESTAMP DEFAULT NULL,
     data            BYTEA,
