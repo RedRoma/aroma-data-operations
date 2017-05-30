@@ -250,7 +250,7 @@ class SQLMediaRepositoryTest
                                          dimension.width,
                                          dimension.height))
                 .thenThrow(EmptyResultDataAccessException(0))
-        
+
         assertThrows { instance.getThumbnail(mediaId, dimension) }.doesNotExist()
     }
 

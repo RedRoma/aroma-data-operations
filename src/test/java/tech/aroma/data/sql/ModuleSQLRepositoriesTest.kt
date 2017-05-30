@@ -71,6 +71,12 @@ class ModuleSQLRepositoriesTest
     }
 
     @Test
+    fun testHasMediaRepo()
+    {
+        assertTrue { injector.hasInstance<MediaRepository>() }
+    }
+
+    @Test
     fun testMessageRepo()
     {
         assertTrue { injector.hasInstance<MessageRepository>() }
