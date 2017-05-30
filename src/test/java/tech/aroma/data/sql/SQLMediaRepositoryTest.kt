@@ -25,10 +25,15 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Images
+import tech.aroma.data.invalidArg
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
+import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.NumberGenerators.negativeIntegers
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import java.sql.Timestamp
 
@@ -49,6 +54,12 @@ class SQLMediaRepositoryTest
 
     @GenerateString(UUID)
     private lateinit var mediaId: String
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var badId: String
+
+    private lateinit var badImage: Image
+    private lateinit var badDimension: Dimension
 
     private lateinit var instance: SQLMediaRepository
 
@@ -76,6 +87,15 @@ class SQLMediaRepositoryTest
                                 eq(image.getData()))
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMediaWithBadArgs()
+    {
+        assertThrows { instance.saveMedia("", image) }.invalidArg()
+        assertThrows { instance.saveMedia(badId, image) }.invalidArg()
+        assertThrows { instance.saveMedia(mediaId, badImage) }.invalidArg()
+    }
+
     @Test
     fun testGetMedia()
     {
@@ -88,6 +108,14 @@ class SQLMediaRepositoryTest
         assertThat(result, equalTo(image))
     }
 
+    @DontRepeat
+    @Test
+    fun testGetMediaWithBadArgs()
+    {
+        assertThrows { instance.getMedia("") }.invalidArg()
+        assertThrows { instance.getMedia(badId) }.invalidArg()
+    }
+
     @Test
     fun testDeleteMedia()
     {
@@ -95,6 +123,14 @@ class SQLMediaRepositoryTest
         instance.deleteMedia(mediaId)
 
         verify(database).update(sql, mediaId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteMediaWithBadArgs()
+    {
+        assertThrows { instance.deleteMedia("") }.invalidArg()
+        assertThrows { instance.deleteMedia(badId) }.invalidArg()
     }
 
     @Test
@@ -112,6 +148,16 @@ class SQLMediaRepositoryTest
                                 thumbnail.getData())
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveThumbnailWithBadArgs()
+    {
+        assertThrows { instance.saveThumbnail("", dimension, thumbnail) }.invalidArg()
+        assertThrows { instance.saveThumbnail(badId, dimension, thumbnail) }.invalidArg()
+        assertThrows { instance.saveThumbnail(mediaId, badDimension, thumbnail) }.invalidArg()
+        assertThrows { instance.saveThumbnail(mediaId, dimension, badImage) }.invalidArg()
+    }
+
     @Test
     fun testGetThumbnail()
     {
@@ -127,6 +173,15 @@ class SQLMediaRepositoryTest
         assertThat(result, equalTo(thumbnail))
     }
 
+    @DontRepeat
+    @Test
+    fun testGetThumbnailWithBadArgs()
+    {
+        assertThrows { instance.getThumbnail("", dimension) }.invalidArg()
+        assertThrows { instance.getThumbnail(badId, dimension) }.invalidArg()
+        assertThrows { instance.getThumbnail(mediaId, badDimension) }.invalidArg()
+    }
+
     @Test
     fun testDeleteThumbnail()
     {
@@ -135,6 +190,15 @@ class SQLMediaRepositoryTest
         instance.deleteThumbnail(mediaId, dimension)
 
         verify(database).update(sql, mediaId.toUUID(), dimension.width, dimension.height)
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteThumbnailWithBadArgs()
+    {
+        assertThrows { instance.deleteThumbnail("", dimension) }.invalidArg()
+        assertThrows { instance.deleteThumbnail(badId, dimension) }.invalidArg()
+        assertThrows { instance.deleteThumbnail(mediaId, badDimension) }.invalidArg()
     }
 
     @Test
@@ -147,12 +211,23 @@ class SQLMediaRepositoryTest
         verify(database).update(sql, mediaId.toUUID())
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteAllThumbnailsWithBadArgs()
+    {
+        assertThrows { instance.deleteAllThumbnails("") }.invalidArg()
+        assertThrows { instance.deleteAllThumbnails(badId) }.invalidArg()
+    }
+
     private fun setupData()
     {
         image = Images.profileImage
         image.dimension = dimension
         thumbnail = Images.icon
         thumbnail.dimension = dimension
+
+        badImage = Image()
+        badDimension = Dimension(one(negativeIntegers()), one(negativeIntegers()))
     }
 
     private fun setupMocks()
