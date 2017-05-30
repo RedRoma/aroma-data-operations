@@ -140,6 +140,10 @@ internal class SQLMediaRepository
         {
             doesNotExist(mediaId, dimension, ex)
         }
+        catch (ex: Exception)
+        {
+            failWithError("Could not get thumbnail: [$mediaId/$dimension]", ex)
+        }
     }
 
     override fun deleteThumbnail(mediaId: String, dimension: Dimension)

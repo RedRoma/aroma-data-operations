@@ -23,9 +23,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Images
 import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
@@ -96,6 +98,15 @@ class SQLMediaRepositoryTest
         assertThrows { instance.saveMedia(mediaId, badImage) }.invalidArg()
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveMediaWhenFails()
+    {
+        setupForFailure()
+
+        assertThrows { instance.saveMedia(mediaId, image) }.operationError()
+    }
+
     @Test
     fun testGetMedia()
     {
@@ -116,6 +127,14 @@ class SQLMediaRepositoryTest
         assertThrows { instance.getMedia(badId) }.invalidArg()
     }
 
+    @DontRepeat
+    @Test
+    fun testGetMediaWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.getMedia(mediaId) }.operationError()
+    }
+
     @Test
     fun testDeleteMedia()
     {
@@ -131,6 +150,14 @@ class SQLMediaRepositoryTest
     {
         assertThrows { instance.deleteMedia("") }.invalidArg()
         assertThrows { instance.deleteMedia(badId) }.invalidArg()
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteMediaWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.deleteMedia(mediaId) }.operationError()
     }
 
     @Test
@@ -158,6 +185,15 @@ class SQLMediaRepositoryTest
         assertThrows { instance.saveThumbnail(mediaId, dimension, badImage) }.invalidArg()
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveThumbnailWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.saveThumbnail(mediaId, dimension, thumbnail) }
+                .operationError()
+    }
+
     @Test
     fun testGetThumbnail()
     {
@@ -182,6 +218,14 @@ class SQLMediaRepositoryTest
         assertThrows { instance.getThumbnail(mediaId, badDimension) }.invalidArg()
     }
 
+    @DontRepeat
+    @Test
+    fun testGetThumbnailWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.getThumbnail(mediaId, dimension) }.operationError()
+    }
+
     @Test
     fun testDeleteThumbnail()
     {
@@ -199,6 +243,14 @@ class SQLMediaRepositoryTest
         assertThrows { instance.deleteThumbnail("", dimension) }.invalidArg()
         assertThrows { instance.deleteThumbnail(badId, dimension) }.invalidArg()
         assertThrows { instance.deleteThumbnail(mediaId, badDimension) }.invalidArg()
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteThumbnailWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.deleteThumbnail(mediaId, dimension) }.operationError()
     }
 
     @Test
@@ -219,6 +271,14 @@ class SQLMediaRepositoryTest
         assertThrows { instance.deleteAllThumbnails(badId) }.invalidArg()
     }
 
+    @DontRepeat
+    @Test
+    fun testDeleteAllThumbnailsWhenFails()
+    {
+        setupForFailure()
+        assertThrows { instance.deleteAllThumbnails(mediaId) }.operationError()
+    }
+
     private fun setupData()
     {
         image = Images.profileImage
@@ -233,6 +293,15 @@ class SQLMediaRepositoryTest
     private fun setupMocks()
     {
 
+    }
+
+    private fun setupForFailure()
+    {
+        whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
+
+        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
+                .thenThrow(RuntimeException())
     }
 
 }
