@@ -26,7 +26,7 @@ import org.mockito.Mock
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
-import tech.aroma.data.AromaGenerators
+import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application

@@ -20,6 +20,7 @@ import static tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
 import static tech.sirwellington.alchemy.arguments.assertions.BooleanAssertions.trueStatement;
 import static tech.sirwellington.alchemy.arguments.assertions.CollectionAssertions.nonEmptySet;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.greaterThan;
+import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveInteger;
 import static tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveLong;
 import static tech.sirwellington.alchemy.arguments.assertions.StringAssertions.*;
 
@@ -310,13 +311,36 @@ public final class RequestAssertions
     }
 
     /**
-     * @return an {@linkplain alchemyassertion assertion} that checks whether a {@link reaction} is valid.
+     * @return an {@linkplain AlchemyAssertion assertion} that checks whether a {@link reaction} is valid.
      */
     public static AlchemyAssertion<Reaction> validReaction()
     {
         return reaction ->
         {
             checkThat(reaction).is(notNull());
+        };
+    }
+
+    public static AlchemyAssertion<Image> validImage()
+    {
+        return image ->
+        {
+            checkThat(image).is(notNull());
+
+            checkThat(image.isSetData())
+                    .usingMessage("Image data not set")
+                    .is(trueStatement());
+
+            checkThat(image.isSetDimension())
+                    .usingMessage("Image Dimensions are missing")
+                    .is(trueStatement());
+
+            if (image.isSetDimension())
+            {
+                checkThat(image.dimension.width, image.dimension.height)
+                        .usingMessage("width and height must be positive")
+                        .are(positiveInteger());
+            }
         };
     }
 

@@ -26,6 +26,8 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Messages
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User

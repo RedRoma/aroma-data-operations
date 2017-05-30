@@ -11,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import tech.aroma.data.notNull
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows

@@ -21,6 +21,8 @@ import com.natpryce.hamkrest.assertion.assertThat
 import org.junit.*
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.notEmpty
+import tech.aroma.data.notNull
 import tech.aroma.data.sql.SQLStatements.Deletes
 import tech.aroma.data.sql.serializers.ReactionsSerializer
 import tech.aroma.thrift.generators.ReactionGenerators

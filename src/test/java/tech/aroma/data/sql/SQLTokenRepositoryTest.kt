@@ -25,6 +25,8 @@ import org.mockito.Mock
 import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
@@ -248,8 +250,7 @@ class SQLTokenRepositoryTest
         whenever(database.update(sql, tokenUuid))
                 .thenThrow(UncategorizedSQLException::class.java)
 
-        assertThrows { instance.deleteToken(tokenId) }
-                .operationError()
+        assertThrows { instance.deleteToken(tokenId) }.operationError()
 
     }
 
