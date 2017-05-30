@@ -42,6 +42,11 @@ fun ThrowableAssertion.operationError(): ThrowableAssertion
     return this.isInstanceOf(tech.aroma.thrift.exceptions.OperationFailedException::class.java)
 }
 
+fun ThrowableAssertion.doesNotExist(): ThrowableAssertion
+{
+    return this.isInstanceOf(tech.aroma.thrift.exceptions.DoesNotExistException::class.java)
+}
+
 fun ThrowableAssertion.failedAssertion(): ThrowableAssertion
 {
     return this.isInstanceOf(tech.sirwellington.alchemy.arguments.FailedAssertionException::class.java)
