@@ -331,9 +331,13 @@ public final class RequestAssertions
                     .usingMessage("Image data not set")
                     .is(trueStatement());
 
-            checkThat(image.isSetDimension())
-                    .usingMessage("Image Dimensions are missing")
-                    .is(trueStatement());
+            checkThat(image.getData())
+                    .usingMessage("Image missing data")
+                    .is(notNull());
+
+            checkThat(image.getData().length)
+                    .usingMessage("Image data is missing")
+                    .is(positiveInteger());
 
             if (image.isSetDimension())
             {

@@ -36,6 +36,7 @@ import tech.sirwellington.alchemy.test.junit.runners.*
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.notNullValue
 import org.junit.Assert.assertThat
+import tech.aroma.data.AromaGenerators.Images
 import tech.aroma.data.failedAssertion
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
 import tech.aroma.thrift.generators.ImageGenerators.appIcons
@@ -334,7 +335,6 @@ class RequestAssertionsTest
     }
 
     @Test
-    @Throws(Exception::class)
     fun testValidLengthOfTime()
     {
         val value = one(positiveLongs())
@@ -350,7 +350,6 @@ class RequestAssertionsTest
 
 
     @Test
-    @Throws(Exception::class)
     fun testValidLengthOfTimeWithInvalid()
     {
 
@@ -369,7 +368,6 @@ class RequestAssertionsTest
     }
 
     @Test
-    @Throws(Exception::class)
     fun testValidReaction()
     {
         val assertion = RequestAssertions.validReaction()
@@ -381,23 +379,52 @@ class RequestAssertionsTest
         assertThrows { assertion.check(null) }.isInstanceOf(FailedAssertionException::class.java)
     }
 
+    @Repeat(10)
     @Test
-    @Throws(Exception::class)
     fun testValidImage()
     {
         val assertion = RequestAssertions.validImage()
         assertThat(assertion, notNullValue())
 
-        val image = one(appIcons())
+        val image = Images.profileImage
         assertion.check(image)
 
     }
 
+    @DontRepeat
     @Test
-    @Throws(Exception::class)
     fun testValidImageWithBadArgs()
     {
         val assertion = RequestAssertions.validImage()
+
+        assertThrows {
+            val emptyImage = Image()
+            assertion.check(emptyImage)
+        }.failedAssertion()
+
+        assertThrows {
+            val imageWithNoData = Images.icon
+            imageWithNoData.unsetData()
+            assertion.check(imageWithNoData)
+        }.failedAssertion()
+
+        assertThrows {
+            val imageWithInvalidDimension = Images.icon
+            val dimension = Dimension(one(negativeIntegers()), one(negativeIntegers()))
+            imageWithInvalidDimension.dimension = dimension
+
+            assertion.check(imageWithInvalidDimension)
+        }.failedAssertion()
+
+        assertThrows {
+            val emptyData = ByteArray(0)
+            val imageWithoutData = Images.icon.setData(emptyData)
+
+            assertion.check(imageWithoutData)
+        }
+
+        assertThrows { assertion.check(null) }.failedAssertion()
+
     }
 
 
