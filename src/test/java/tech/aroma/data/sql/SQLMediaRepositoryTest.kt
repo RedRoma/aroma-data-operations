@@ -24,10 +24,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Images
-import tech.aroma.data.invalidArg
-import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
@@ -135,6 +135,18 @@ class SQLMediaRepositoryTest
         assertThrows { instance.getMedia(mediaId) }.operationError()
     }
 
+    @DontRepeat
+    @Test
+    fun testGetMediaWhenNotExists()
+    {
+        val sql = Queries.SELECT_MEDIA
+
+        whenever(database.queryForObject(sql, serializer, mediaId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException(0))
+
+        assertThrows { instance.getMedia(mediaId) }.doesNotExist()
+    }
+
     @Test
     fun testDeleteMedia()
     {
@@ -224,6 +236,22 @@ class SQLMediaRepositoryTest
     {
         setupForFailure()
         assertThrows { instance.getThumbnail(mediaId, dimension) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetThumbnailWhenDoesNotExist()
+    {
+        val sql = Queries.SELECT_MEDIA_THUMBNAIL
+
+        whenever(database.queryForObject(sql,
+                                         serializer,
+                                         mediaId.toUUID(),
+                                         dimension.width,
+                                         dimension.height))
+                .thenThrow(EmptyResultDataAccessException(0))
+        
+        assertThrows { instance.getThumbnail(mediaId, dimension) }.doesNotExist()
     }
 
     @Test
