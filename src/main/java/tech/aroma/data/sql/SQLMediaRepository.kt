@@ -108,7 +108,6 @@ internal class SQLMediaRepository
 
         try
         {
-
             database.update(sql,
                             mediaId.toUUID(),
                             dimension.width,
