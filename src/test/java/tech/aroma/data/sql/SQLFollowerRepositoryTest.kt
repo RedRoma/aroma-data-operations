@@ -36,8 +36,7 @@ import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 
@@ -225,6 +224,23 @@ class SQLFollowerRepositoryTest
 
         val results = instance.getApplicationFollowers(appId)
         assertThat(results, equalTo(users))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetApplicationFollowersWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.getApplicationFollowers(appId) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetApplicationFollowersWithBadArgs()
+    {
+        assertThrows { instance.getApplicationFollowers("") }.invalidArg()
+        assertThrows { instance.getApplicationFollowers(badId) }.invalidArg()
     }
 
     private fun setupData()
