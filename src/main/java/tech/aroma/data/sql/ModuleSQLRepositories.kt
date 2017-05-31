@@ -33,6 +33,7 @@ internal class ModuleSQLRepositories : AbstractModule()
 
         binder().bind<ActivityRepository>().to<SQLActivityRepository>()
         binder().bind<ApplicationRepository>().to<SQLApplicationRepository>()
+        binder().bind<CredentialRepository>().to<SQLCredentialRepository>()
         binder().bind<InboxRepository>().to<SQLInboxRepository>()
         binder().bind<MediaRepository>().to<SQLMediaRepository>()
         binder().bind<MessageRepository>().to<SQLMessageRepository>()
