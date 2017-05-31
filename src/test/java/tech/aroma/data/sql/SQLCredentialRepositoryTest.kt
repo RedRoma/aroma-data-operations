@@ -25,17 +25,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHANUMERIC
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.*
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLCredentialRepositoryTest
 {
 
@@ -47,6 +47,9 @@ class SQLCredentialRepositoryTest
 
     @GenerateString(ALPHANUMERIC)
     private lateinit var encryptedPassword: String
+
+    @GenerateString(ALPHABETIC)
+    private lateinit var badId: String
 
     private lateinit var instance: SQLCredentialRepository
 
@@ -69,12 +72,22 @@ class SQLCredentialRepositoryTest
         verify(database).update(sql, userId.toUUID(), encryptedPassword)
     }
 
+    @DontRepeat
     @Test
     fun testSaveEncryptedPasswordWhenFails()
     {
         database.setupForFailure()
 
         assertThrows { instance.saveEncryptedPassword(userId, encryptedPassword) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testSaveEncryptedPasswordWithBadArgs()
+    {
+        assertThrows { instance.saveEncryptedPassword("", encryptedPassword) }.invalidArg()
+        assertThrows { instance.saveEncryptedPassword(badId, encryptedPassword) }.invalidArg()
+        assertThrows { instance.saveEncryptedPassword(userId, "") }.invalidArg()
     }
 
     @Test
@@ -101,6 +114,14 @@ class SQLCredentialRepositoryTest
         assertThrows { instance.containsEncryptedPassword(userId) }.operationError()
     }
 
+    @DontRepeat
+    @Test
+    fun testContainsEncryptedPasswordWithBadArgs()
+    {
+        assertThrows { instance.containsEncryptedPassword("") }.invalidArg()
+        assertThrows { instance.containsEncryptedPassword(badId) }.invalidArg()
+    }
+
     @Test
     fun testGetEncryptedPassword()
     {
@@ -122,6 +143,14 @@ class SQLCredentialRepositoryTest
         assertThrows { instance.getEncryptedPassword(userId) }.operationError()
     }
 
+    @DontRepeat
+    @Test
+    fun testGetEncryptedPasswordWithBadArgs()
+    {
+        assertThrows { instance.getEncryptedPassword("") }.invalidArg()
+        assertThrows { instance.getEncryptedPassword(badId) }.invalidArg()
+    }
+
     @Test
     fun testDeleteEncryptedPassword()
     {
@@ -139,6 +168,14 @@ class SQLCredentialRepositoryTest
         database.setupForFailure()
 
         assertThrows { instance.deleteEncryptedPassword(userId) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteEncryptedPasswordWithBadArgs()
+    {
+        assertThrows { instance.deleteEncryptedPassword("") }.invalidArg()
+        assertThrows { instance.deleteEncryptedPassword(badId) }.invalidArg()
     }
 
     private fun setupData()
