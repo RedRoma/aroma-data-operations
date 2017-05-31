@@ -25,11 +25,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHANUMERIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 
@@ -68,6 +70,14 @@ class SQLCredentialRepositoryTest
     }
 
     @Test
+    fun testSaveEncryptedPasswordWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.saveEncryptedPassword(userId, encryptedPassword) }.operationError()
+    }
+
+    @Test
     fun testContainsEncryptedPassword()
     {
         val sql = Queries.CHECK_CREDENTIAL
@@ -79,6 +89,16 @@ class SQLCredentialRepositoryTest
         val result = instance.containsEncryptedPassword(userId)
 
         assertThat(result, equalTo(expected))
+    }
+
+
+    @DontRepeat
+    @Test
+    fun testContainsEncryptedPasswordWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.containsEncryptedPassword(userId) }.operationError()
     }
 
     @Test
@@ -93,6 +113,15 @@ class SQLCredentialRepositoryTest
         assertThat(result, equalTo(encryptedPassword))
     }
 
+    @DontRepeat
+    @Test
+    fun testGetEncryptedPasswordWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.getEncryptedPassword(userId) }.operationError()
+    }
+
     @Test
     fun testDeleteEncryptedPassword()
     {
@@ -101,6 +130,15 @@ class SQLCredentialRepositoryTest
         instance.deleteEncryptedPassword(userId)
 
         verify(database).update(sql, userId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteEncryptedPasswordWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.deleteEncryptedPassword(userId) }.operationError()
     }
 
     private fun setupData()
