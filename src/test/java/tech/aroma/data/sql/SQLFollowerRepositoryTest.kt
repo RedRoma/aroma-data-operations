@@ -26,6 +26,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Applications
+import tech.aroma.data.invalidArg
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.User
@@ -34,8 +35,10 @@ import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
-import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
-import tech.sirwellington.alchemy.test.junit.runners.Repeat
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*
+import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat
@@ -63,6 +66,9 @@ class SQLFollowerRepositoryTest
     private val apps get() = appIds.map { Application().setApplicationId(it) }
     private val users get() = userIds.map { User().setUserId(it) }
 
+    @GenerateString(ALPHABETIC)
+    private lateinit var badId: String
+
     private lateinit var instance: SQLFollowerRepository
 
     @Before
@@ -83,6 +89,30 @@ class SQLFollowerRepositoryTest
         instance.saveFollowing(user, app)
 
         verify(database).update(sql, appId.toUUID(), userId.toUUID())
+    }
+
+    @Test
+    fun testSaveFollowingWithBadArgs()
+    {
+        assertThrows {
+            instance.saveFollowing(User(), app)
+        }.invalidArg()
+
+        assertThrows {
+            instance.saveFollowing(user, Application())
+        }.invalidArg()
+
+        assertThrows {
+            val badUser = User().setUserId(badId)
+            instance.saveFollowing(badUser, app)
+        }.invalidArg()
+
+        assertThrows {
+            val badApp = Application().setApplicationId(badId)
+            instance.saveFollowing(user, badApp)
+        }.invalidArg()
+
+
     }
 
     @Test

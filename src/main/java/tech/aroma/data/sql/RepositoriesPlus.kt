@@ -39,28 +39,28 @@ internal fun failWithError(message: String, ex: Exception): Nothing
     throw OperationFailedException("$message | ${ex.message}")
 }
 
-internal fun checkApplication(app: Application)
+internal fun checkApplication(app: Application?)
 {
     checkThat(app)
             .throwing(InvalidArgumentException::class.java)
             .`is`(validApplication())
 }
 
-internal fun checkApplicationId(appId: String)
+internal fun checkApplicationId(appId: String?)
 {
     checkThat(appId)
             .throwing(InvalidArgumentException::class.java)
             .`is`(validApplicationId())
 }
 
-internal fun checkUser(user: User)
+internal fun checkUser(user: User?)
 {
     checkThat(user)
             .throwing(InvalidArgumentException::class.java)
             .`is`(validUser())
 }
 
-internal fun checkUserId(userId: String)
+internal fun checkUserId(userId: String?)
 {
     checkThat(userId)
             .throwing(InvalidArgumentException::class.java)
