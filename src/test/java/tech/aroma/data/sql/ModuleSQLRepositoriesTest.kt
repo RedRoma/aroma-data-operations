@@ -65,6 +65,12 @@ class ModuleSQLRepositoriesTest
     }
 
     @Test
+    fun testHasCredentialsRepo()
+    {
+        assertTrue { injector.hasInstance<CredentialRepository>() }
+    }
+
+    @Test
     fun testInboxRepo()
     {
         assertTrue { injector.hasInstance<InboxRepository>() }
