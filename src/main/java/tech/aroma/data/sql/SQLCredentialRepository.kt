@@ -16,10 +16,12 @@
 
 package tech.aroma.data.sql
 
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.CredentialRepository
 import tech.aroma.data.assertions.RequestAssertions.validUserId
 import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions
@@ -77,6 +79,10 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         return try
         {
             database.queryForObject(sql, String::class.java, userId.toUUID())
+        }
+        catch (ex: EmptyResultDataAccessException)
+        {
+            throw DoesNotExistException("No credentials found for [$userId]")
         }
         catch (ex: Exception)
         {
