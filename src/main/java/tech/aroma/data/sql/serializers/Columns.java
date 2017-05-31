@@ -45,6 +45,17 @@ final class Columns
     }
 
     @NonInstantiable
+    static final class Media
+    {
+        static final String MEDIA_ID = "media_id";
+        static final String MEDIA_TYPE = "media_type";
+        static final String WIDTH = "width";
+        static final String HEIGHT = "height";
+        static final String CREATION_TIME = "creation_time";
+        static final String DATA = "data";
+    }
+
+    @NonInstantiable
     static final class Messages
     {
         static final String TABLE_NAME = "Messages";

@@ -71,7 +71,7 @@ internal class SQLUserPreferencesRepository
 
         try
         {
-            database.update(sql,{ preparedStatement ->
+            database.update(sql, { preparedStatement ->
                 preparedStatement.setObject(1, userId.toUUID())
 
                 val serializedStringArray = serialized.toTypedArray()

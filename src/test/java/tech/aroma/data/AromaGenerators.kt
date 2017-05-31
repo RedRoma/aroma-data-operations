@@ -20,6 +20,7 @@ import tech.aroma.thrift.*
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.generators.ApplicationGenerators
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
+import tech.aroma.thrift.generators.ImageGenerators
 import tech.aroma.thrift.generators.MessageGenerators.messages
 import tech.sirwellington.alchemy.generator.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
@@ -100,4 +101,10 @@ class AromaGenerators
             }
     }
 
+    object Images
+    {
+        val icon: Image get() = ImageGenerators.appIcons().get()
+
+        val profileImage: Image get() = ImageGenerators.profileImages().get()
+    }
 }

@@ -11,6 +11,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.jdbc.core.JdbcTemplate
 import sir.wellington.alchemy.collections.lists.Lists
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.thrift.*
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one

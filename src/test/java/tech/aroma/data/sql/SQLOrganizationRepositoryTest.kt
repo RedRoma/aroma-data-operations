@@ -26,6 +26,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User

@@ -54,18 +54,3 @@ object TestingResources
             return injector.getInstance(Key.get(literal))
         }
 }
-
-val isNull = Matcher(Objects::isNull)
-val notNull = !isNull
-val notEmpty = !isEmpty
-
-
-fun ThrowableAssertion.invalidArg(): ThrowableAssertion
-{
-    return this.isInstanceOf(tech.aroma.thrift.exceptions.InvalidArgumentException::class.java)
-}
-
-fun ThrowableAssertion.operationError(): ThrowableAssertion
-{
-    return this.isInstanceOf(tech.aroma.thrift.exceptions.OperationFailedException::class.java)
-}

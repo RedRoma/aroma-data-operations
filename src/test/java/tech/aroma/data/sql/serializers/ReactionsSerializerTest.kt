@@ -24,7 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.notNull
+import tech.aroma.data.notNull
 import tech.aroma.data.sql.serializers.Columns.Reactions
 import tech.aroma.thrift.generators.ReactionGenerators.reactions
 import tech.aroma.thrift.reactions.Reaction

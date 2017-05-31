@@ -69,5 +69,4 @@ internal class DevicesSerializer : DatabaseSerializer<MutableSet<MobileDevice>>
     }
 
 
-
 }

@@ -33,6 +33,9 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Deletes.APPLICATION_NON_OWNERS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.INBOX_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.INBOX_ALL_MESSAGES, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.MEDIA, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.MEDIA_THUMBNAIL, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Deletes.ALL_MEDIA_THUMBNAILS, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Deletes.ORGANIZATION_MEMBER, not(isEmptyOrNullString()));
@@ -53,6 +56,9 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Inserts.APPLICATION_OWNER, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.INBOX_MESSAGE, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Inserts.MEDIA, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Inserts.MEDIA_THUMBNAIL, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Inserts.MESSAGE, not(isEmptyOrNullString()));
 
@@ -89,6 +95,11 @@ public class SQLStatementsTest
         assertThat(SQLStatements.Queries.CHECK_INBOX_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.COUNT_INBOX_MESSAGES, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.SELECT_INBOX_MESSAGES_FOR_USER, not(isEmptyOrNullString()));
+
+        assertThat(SQLStatements.Queries.CHECK_MEDIA, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.CHECK_MEDIA_THUMBNAIL, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_MEDIA, not(isEmptyOrNullString()));
+        assertThat(SQLStatements.Queries.SELECT_MEDIA_THUMBNAIL, not(isEmptyOrNullString()));
 
         assertThat(SQLStatements.Queries.CHECK_MESSAGE, not(isEmptyOrNullString()));
         assertThat(SQLStatements.Queries.COUNT_MESSAGES, not(isEmptyOrNullString()));

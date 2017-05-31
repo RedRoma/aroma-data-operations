@@ -26,6 +26,7 @@ import org.mockito.*
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
+import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Devices
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.channels.MobileDevice

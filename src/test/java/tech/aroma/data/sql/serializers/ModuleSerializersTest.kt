@@ -53,6 +53,12 @@ class ModuleSerializersTest
     }
 
     @Test
+    fun testHasImageSerializer()
+    {
+        assertTrue { injector.hasInstance<DatabaseSerializer<Image>>() }
+    }
+
+    @Test
     fun testHasMessageSerializer()
     {
         assertTrue { injector.hasInstance<DatabaseSerializer<Message>>() }

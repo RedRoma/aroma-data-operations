@@ -25,6 +25,8 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.generators.ReactionGenerators

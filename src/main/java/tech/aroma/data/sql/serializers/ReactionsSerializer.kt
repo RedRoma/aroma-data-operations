@@ -53,7 +53,7 @@ internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
         val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return result
 
         return array.filterNotNull()
-                .map{ it.toString() }
+                .map { it.toString() }
                 .map(this::reactionFromString)
                 .filterNotNull()
 
