@@ -31,13 +31,13 @@ import javax.inject.Inject
  */
 internal class SQLFollowerRepository
 @Inject constructor(val database: JdbcOperations,
-                    val userSerializer: DatabaseSerializer<User>,
-                    val appSerializer: DatabaseSerializer<Application>) : FollowerRepository
+                    val appSerializer: DatabaseSerializer<Application>,
+                    val userSerializer: DatabaseSerializer<User>) : FollowerRepository
 {
     override fun saveFollowing(user: User, application: Application)
     {
-        checkUser(user)
-        checkApplication(application)
+        checkUserId(user.userId)
+        checkApplicationId(application.applicationId)
 
         val userId = user.userId?.toUUID() ?: throw InvalidArgumentException("Invalid userId: $user")
         val appId = application.applicationId?.toUUID() ?: throw InvalidArgumentException("Invalid appId: $application")
@@ -96,7 +96,7 @@ internal class SQLFollowerRepository
 
         return try
         {
-            database.query(sql, appSerializer, userId.toUUID())
+            database.query(sql, appSerializer, userId.toUUID()) ?: mutableListOf()
         }
         catch (ex: Exception)
         {
@@ -112,11 +112,11 @@ internal class SQLFollowerRepository
 
         return try
         {
-            database.query(sql, userSerializer, applicationId.toUUID())
+            database.query(sql, userSerializer, applicationId.toUUID()) ?: mutableListOf()
         }
         catch (ex: Exception)
         {
-            failWithError("Could not determine which ")
+            failWithError("Could not determine who follows App [$applicationId]", ex)
         }
     }
 
