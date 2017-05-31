@@ -198,6 +198,23 @@ class SQLFollowerRepositoryTest
         assertThat(results, equalTo(apps))
     }
 
+    @DontRepeat
+    @Test
+    fun testGetApplicationsFollowedByWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.getApplicationsFollowedBy(userId) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetApplicationsFollowedByWithBadArgs()
+    {
+        assertThrows { instance.getApplicationsFollowedBy("") }.invalidArg()
+        assertThrows { instance.getApplicationsFollowedBy(badId) }.invalidArg()
+    }
+
     @Test
     fun testGetApplicationFollowers()
     {
