@@ -27,6 +27,7 @@ import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.User
@@ -91,6 +92,16 @@ class SQLFollowerRepositoryTest
         verify(database).update(sql, appId.toUUID(), userId.toUUID())
     }
 
+    @DontRepeat
+    @Test
+    fun testSaveFollowingWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.saveFollowing(user, app) }.operationError()
+    }
+
+    @DontRepeat
     @Test
     fun testSaveFollowingWithBadArgs()
     {
@@ -112,7 +123,6 @@ class SQLFollowerRepositoryTest
             instance.saveFollowing(user, badApp)
         }.invalidArg()
 
-
     }
 
     @Test
@@ -123,6 +133,25 @@ class SQLFollowerRepositoryTest
         instance.deleteFollowing(userId, appId)
 
         verify(database).update(sql, appId.toUUID(), userId.toUUID())
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteFollowingWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.deleteFollowing(userId, appId) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testDeleteFollowingWithBadArgs()
+    {
+        assertThrows { instance.deleteFollowing("", appId) }.invalidArg()
+        assertThrows { instance.deleteFollowing(badId, appId) }.invalidArg()
+        assertThrows { instance.deleteFollowing(userId, "") }.invalidArg()
+        assertThrows { instance.deleteFollowing(userId, badId) }.invalidArg()
     }
 
     @Test
