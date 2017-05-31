@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS Media
     width           INT,
     height          INT,
     creation_time   TIMESTAMP DEFAULT now(),
-    expiration_time TIMESTAMP DEFAULT NULL,
     data            BYTEA,
 
     PRIMARY KEY (media_id)
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS Media_Thumbnails
     height          INT,
     media_type      TEXT,
     creation_time   TIMESTAMP DEFAULT now(),
-    expiration_time TIMESTAMP DEFAULT NULL,
     data            BYTEA,
 
     PRIMARY KEY (media_id, width, height)

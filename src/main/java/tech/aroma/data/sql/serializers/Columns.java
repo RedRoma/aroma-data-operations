@@ -52,7 +52,6 @@ final class Columns
         static final String WIDTH = "width";
         static final String HEIGHT = "height";
         static final String CREATION_TIME = "creation_time";
-        static final String EXPIRATION_TIME = "expiration_time";
         static final String DATA = "data";
     }
 
