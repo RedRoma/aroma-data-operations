@@ -24,9 +24,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.invalidArg
-import tech.aroma.data.operationError
+import tech.aroma.data.*
 import tech.aroma.data.sql.SQLStatements.*
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
@@ -132,6 +132,19 @@ class SQLCredentialRepositoryTest
 
         val result = instance.getEncryptedPassword(userId)
         assertThat(result, equalTo(encryptedPassword))
+    }
+
+    @DontRepeat
+    @Test
+    fun testGetEncryptedPasswordWhenNotExists()
+    {
+        val sql = Queries.SELECT_CREDENTIAL
+
+        whenever(database.queryForObject(sql, String::class.java, userId.toUUID()))
+                .thenThrow(EmptyResultDataAccessException(1))
+
+        assertThrows { instance.getEncryptedPassword(userId) }.doesNotExist()
+
     }
 
     @DontRepeat
