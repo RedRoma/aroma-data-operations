@@ -52,7 +52,6 @@ internal class SQLMediaRepository
                             image.imageType?.toString(),
                             image.dimension?.width,
                             image.dimension?.height,
-                            Timestamps.now(),
                             image.getData())
         }
         catch (ex: Exception)

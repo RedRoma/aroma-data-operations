@@ -37,9 +37,9 @@ import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.*
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
-import java.sql.Timestamp
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLMediaRepositoryTest
 {
     @Mock
@@ -80,13 +80,12 @@ class SQLMediaRepositoryTest
         instance.saveMedia(mediaId, image)
 
         val sql = Inserts.MEDIA
-        verify(database).update(eq(sql),
-                                eq(mediaId.toUUID()),
-                                eq(image.imageType.toString()),
-                                eq(dimension.width),
-                                eq(dimension.height),
-                                any<Timestamp>(),
-                                eq(image.getData()))
+        verify(database).update(sql,
+                                mediaId.toUUID(),
+                                image.imageType.toString(),
+                                dimension.width,
+                                dimension.height,
+                                image.getData())
     }
 
     @DontRepeat
