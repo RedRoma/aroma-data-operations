@@ -28,6 +28,7 @@ import tech.aroma.data.sql.serializers.UserSerializer
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
+import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
 import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
 import tech.sirwellington.alchemy.generator.StringGenerators.uuids
@@ -37,6 +38,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(AlchemyTestRunner::class)
+@IntegrationTest
 class SQLFollowerRepositoryIT
 {
 
