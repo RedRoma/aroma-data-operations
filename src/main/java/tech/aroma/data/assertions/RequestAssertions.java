@@ -311,7 +311,7 @@ public final class RequestAssertions
     }
 
     /**
-     * @return an {@linkplain AlchemyAssertion assertion} that checks whether a {@link reaction} is valid.
+     * @return an {@linkplain AlchemyAssertion assertion} that checks whether a {@link Reaction} is valid.
      */
     public static AlchemyAssertion<Reaction> validReaction()
     {
