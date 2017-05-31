@@ -167,6 +167,25 @@ class SQLFollowerRepositoryTest
         assertThat(result, equalTo(expected))
     }
 
+    @DontRepeat
+    @Test
+    fun testFollowingExistsWhenFails()
+    {
+        database.setupForFailure()
+
+        assertThrows { instance.followingExists(userId, appId) }.operationError()
+    }
+
+    @DontRepeat
+    @Test
+    fun testFollowingExistsWithBadArgs()
+    {
+        assertThrows { instance.followingExists("", appId) }.invalidArg()
+        assertThrows { instance.followingExists(badId, appId) }.invalidArg()
+        assertThrows { instance.followingExists(userId, "") }.invalidArg()
+        assertThrows { instance.followingExists(userId, badId) }.invalidArg()
+    }
+
     @Test
     fun testGetApplicationsFollowedBy()
     {
