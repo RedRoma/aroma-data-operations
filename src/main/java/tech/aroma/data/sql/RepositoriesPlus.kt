@@ -18,7 +18,12 @@ package tech.aroma.data.sql
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tech.aroma.data.assertions.RequestAssertions.*
+import tech.aroma.thrift.Application
+import tech.aroma.thrift.User
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.OperationFailedException
+import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 
 
 /**
@@ -32,4 +37,33 @@ internal fun failWithError(message: String, ex: Exception): Nothing
 {
     LOG.error(message, ex)
     throw OperationFailedException("$message | ${ex.message}")
+}
+
+internal fun checkApplication(app: Application)
+{
+    checkThat(app)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validApplication())
+}
+
+internal fun checkApplicationId(appId: String)
+{
+    checkThat(appId)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validApplicationId())
+}
+
+internal fun checkUser(user: User)
+{
+    checkThat(user)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validUser())
+}
+
+internal fun checkUserId(userId: String)
+{
+    checkThat(userId)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validUserId())
+
 }
