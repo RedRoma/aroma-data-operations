@@ -4,5 +4,5 @@
 
 DELETE
 FROM Followings
-WHERE user_id = ?
-      AND app_id = ?
+WHERE app_id = ?
+      AND user_id = ?

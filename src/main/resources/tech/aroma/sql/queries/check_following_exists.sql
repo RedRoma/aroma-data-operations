@@ -4,4 +4,5 @@
 
 SELECT count(*) > 0
 FROM Followings
-WHERE user_id = ?
+WHERE app_id = ?
+      AND user_id = ?
