@@ -25,7 +25,8 @@ import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.LengthOfTime
 import tech.aroma.thrift.User
 import tech.aroma.thrift.events.Event
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
 import tech.sirwellington.alchemy.thrift.ThriftObjects
@@ -63,7 +64,7 @@ internal class SQLActivityRepository
         catch (ex: Exception)
         {
             val message = "Failed to serialize event [$event]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
 
         val eventType = event.eventType?.toString()
@@ -85,7 +86,7 @@ internal class SQLActivityRepository
         catch(ex: Exception)
         {
             val message = "Failed to save event [$event] for user [$recepientId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
 
     }
@@ -108,7 +109,7 @@ internal class SQLActivityRepository
         catch(ex: Exception)
         {
             val message = "Failed to check if event exists: [$userId/$eventId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -134,7 +135,7 @@ internal class SQLActivityRepository
         catch (ex: Exception)
         {
             val message = "Failed to get event [$userId/$eventId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -152,7 +153,7 @@ internal class SQLActivityRepository
         catch(ex: Exception)
         {
             val message = "Failed to get all events for user [$userId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -173,7 +174,7 @@ internal class SQLActivityRepository
         catch(ex: Exception)
         {
             val message = "Failed to delete Activity Event [$userId/$eventId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -192,7 +193,7 @@ internal class SQLActivityRepository
         catch (ex: Exception)
         {
             val message = "Failed to delete all messages for user [$user]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -211,10 +212,5 @@ internal class SQLActivityRepository
                 .`is`(validUser())
     }
 
-    private fun failWithError(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
-    }
 
 }

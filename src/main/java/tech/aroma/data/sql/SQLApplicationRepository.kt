@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.ApplicationRepository
-import tech.aroma.data.assertions.RequestAssertions.*
+import tech.aroma.data.assertions.RequestAssertions.validApplication
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Application
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
@@ -56,8 +57,7 @@ internal class SQLApplicationRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to save Application [$application] in Database"
-            failWithMessage(message, ex)
+            failWithMessage("Failed to save Application [$application] in Database", ex)
         }
 
         updateAppOwnersFor(application)
@@ -248,13 +248,6 @@ internal class SQLApplicationRepository
 
     }
 
-    private fun checkAppId(appId: String)
-    {
-        checkThat(appId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validApplicationId())
-    }
-
     private fun checkOrgId(orgId: String)
     {
         checkThat(orgId)
@@ -274,17 +267,4 @@ internal class SQLApplicationRepository
                 .`is`(stringWithLengthGreaterThanOrEqualTo(2))
     }
 
-    private fun checkUserId(userId: String)
-    {
-        checkThat(userId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
-    }
-
-
-    private fun failWithMessage(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
-    }
 }
