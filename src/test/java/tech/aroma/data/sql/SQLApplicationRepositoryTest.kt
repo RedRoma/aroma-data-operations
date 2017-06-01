@@ -109,11 +109,8 @@ class SQLApplicationRepositoryTest
     fun testSaveAppOwnerWhenDatabaseFails()
     {
         val owners = app.owners.toMutableList()
-        val failingOwner = owners.removeAt(0)
-        val statement = Inserts.APPLICATION_OWNER
 
-        whenever(database.update(statement, appId.toUUID(), failingOwner.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         instance.saveApplication(app)
 
@@ -191,10 +188,7 @@ class SQLApplicationRepositoryTest
     @Test
     fun testDeleteAppWhenDatabaseFails()
     {
-        val statement = Deletes.APPLICATION
-
-        whenever(database.update(statement, appId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteApplication(appId) }
                 .operationError()
@@ -225,9 +219,7 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetByIdWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_APPLICATION
-        whenever(database.queryForObject(sql, serializer, appId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getById(appId) }.operationError()
     }
@@ -270,9 +262,7 @@ class SQLApplicationRepositoryTest
     @Test
     fun testContainsAppWhenDatabaseFails()
     {
-        val sql = Queries.CHECK_APPLICATION
-        whenever(database.queryForObject(sql, Boolean::class.java, appId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.containsApplication(appId) }
                 .operationError()
@@ -304,11 +294,9 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetAppsOwnedByWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_APPLICATION_BY_OWNER
-        val owner = one(uuids)
+        database.setupForFailure()
 
-        whenever(database.query(sql, serializer, owner.toUUID()))
-                .thenThrow(RuntimeException())
+        val owner = one(uuids)
 
         assertThrows { instance.getApplicationsOwnedBy(owner) }
                 .operationError()
@@ -338,10 +326,7 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetAppsByOrgWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_APPLICATION_BY_ORGANIZATION
-
-        whenever(database.query(sql, serializer, orgId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getApplicationsByOrg(orgId) }
                 .operationError()
@@ -373,15 +358,11 @@ class SQLApplicationRepositoryTest
     @Test
     fun testSearchByNameWhenDatabaseFails()
     {
-        val sql = Queries.SEARCH_APPLICATION_BY_NAME
+        database.setupForFailure()
+
         val term = badId
-        val expected = "%$term%"
 
-        whenever(database.query(sql, serializer, expected))
-                .thenThrow(RuntimeException())
-
-        assertThrows { instance.searchByName(term) }
-                .operationError()
+        assertThrows { instance.searchByName(term) }.operationError()
     }
 
     @Test
@@ -389,8 +370,7 @@ class SQLApplicationRepositoryTest
     {
         val query = Queries.SELECT_RECENT_APPLICATION
 
-        whenever(database.query(query, serializer))
-                .thenReturn(apps)
+        whenever(database.query(query, serializer)).thenReturn(apps)
 
         val result = instance.recentlyCreated
 
@@ -401,10 +381,7 @@ class SQLApplicationRepositoryTest
     @Test
     fun testGetRecentlyCreatedWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_RECENT_APPLICATION
-
-        whenever(database.query(sql, serializer))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.recentlyCreated }.operationError()
     }
