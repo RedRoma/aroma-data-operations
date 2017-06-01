@@ -55,6 +55,7 @@ class SQLActivityRepositoryTest
     private lateinit var event: Event
     private lateinit var user: User
     private lateinit var events: MutableList<Event>
+
     private val eventId get() = event.eventId
     private val userId get() = user.userId
     private val serializedEvent get() = ThriftObjects.toJson(event)
@@ -94,7 +95,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testSaveEventWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.saveEvent(event, user) }.operationError()
     }
@@ -142,7 +143,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testContainsEventWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.containsEvent(eventId, user) }
                 .operationError()
@@ -183,7 +184,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testGetEventWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.getEvent(eventId, user) }
                 .operationError()
@@ -244,7 +245,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testGetAllEventsWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.getAllEventsFor(user) }
                 .operationError()
@@ -279,7 +280,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testDeleteEventWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.deleteEvent(eventId, user) }
                 .operationError()
@@ -322,7 +323,7 @@ class SQLActivityRepositoryTest
     @Test
     fun testDeleteAllEventsWhenDatabaseFails()
     {
-        setupForFailure()
+        database.setupForFailure()
 
         assertThrows { instance.deleteAllEventsFor(user) }
                 .operationError()
@@ -356,21 +357,6 @@ class SQLActivityRepositoryTest
     private fun setupMocks()
     {
 
-    }
-
-    private fun setupForFailure()
-    {
-        whenever(database.query(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
-
-        whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
-
-        whenever(database.queryForObject(any<String>(), eq(Boolean::class.java), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
-
-        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
     }
 
 }
