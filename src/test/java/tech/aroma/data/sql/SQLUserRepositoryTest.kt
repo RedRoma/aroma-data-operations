@@ -86,7 +86,7 @@ class SQLUserRepositoryTest
 
     @DontRepeat
     @Test
-    fun testSaveWhenDatabaseFails()
+    fun testSaveWhenSerializerFails()
     {
         val sql = Inserts.USER
 
@@ -136,10 +136,7 @@ class SQLUserRepositoryTest
     @Test
     fun testGetUserWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_USER
-
-        whenever(database.queryForObject(sql, serializer, userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getUser(userId) }.operationError()
     }
@@ -178,10 +175,7 @@ class SQLUserRepositoryTest
     @Test
     fun testDeleteUserWhenDatabaseFails()
     {
-        val sql = Deletes.USER
-
-        whenever(database.update(sql, userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteUser(userId) }.operationError()
     }
@@ -213,10 +207,7 @@ class SQLUserRepositoryTest
     @Test
     fun testContainsUserWhenDatabaseFails()
     {
-        val sql = Queries.CHECK_USER
-
-        whenever(database.queryForObject(sql, Boolean::class.java, userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.containsUser(userId) }.operationError()
     }
@@ -246,11 +237,9 @@ class SQLUserRepositoryTest
     @Test
     fun testGetUserByEmailWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_USER_BY_EMAIL
-        val email = user.email
+        database.setupForFailure()
 
-        whenever(database.queryForObject(sql, serializer, email))
-                .thenThrow(RuntimeException())
+        val email = user.email
 
         assertThrows { instance.getUserByEmail(email) }
                 .operationError()
@@ -298,10 +287,7 @@ class SQLUserRepositoryTest
     @Test
     fun testFindByGithubWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_USER_BY_GITHUB
-
-        whenever(database.queryForObject(sql, serializer, github))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.findByGithubProfile(github) }
                 .operationError()
@@ -344,10 +330,7 @@ class SQLUserRepositoryTest
     @Test
     fun testGetRecentlyCreatedWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_RECENT_USERS
-
-        whenever(database.query(sql, serializer))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         val result = instance.recentlyCreatedUsers
         assertThat(result, isEmpty)
