@@ -75,4 +75,7 @@ internal fun JdbcOperations.setupForFailure()
     whenever(this.queryForObject(any<String>(), any<Class<*>>(), Mockito.anyVararg<Any>()))
             .thenThrow(RuntimeException())
 
+    whenever(this.queryForObject(any<String>(), any<RowMapper<*>>(), Mockito.anyVararg<Any>()))
+            .thenThrow(RuntimeException())
+
 }
