@@ -203,19 +203,12 @@ class SQLReactionRepositoryTest
 
     private fun setupForFailure()
     {
-        whenever(database.queryForObject(any<String>(), eq(serializer), eq(ownerId.toUUID())))
-                .thenThrow(RuntimeException())
-
-        whenever(database.update(any<String>(), eq(ownerId.toUUID())))
-                .thenThrow(RuntimeException())
-
-        whenever(database.update(any<String>(), any<PreparedStatementSetter>()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
     }
 
     private fun setupData()
     {
-        reactions = CollectionGenerators.listOf(ReactionGenerators.reactions(), 10)
+        reactions = CollectionGenerators.listOf(ReactionGenerators.reactions(), 5)
 
     }
 
