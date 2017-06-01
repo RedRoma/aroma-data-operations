@@ -61,7 +61,7 @@ internal class UserSerializer : DatabaseSerializer<User>
         val lastName = row.getString(Users.LAST_NAME)
         val fullName = row.getString(Users.FULL_NAME)
         val email: String? = row.getString(Users.EMAIL)
-        val roles = row.getArray(Users.ROLES).toRoles()
+        val roles = row.getArray(Users.ROLES)?.toRoles()
         val birthdate = row.getDate(Users.BIRTH_DATE)
         val profileImageId = row.getString(Users.PROFILE_IMAGE_ID)
         val githubProfile = row.getString(Users.GITHUB_PROFILE)

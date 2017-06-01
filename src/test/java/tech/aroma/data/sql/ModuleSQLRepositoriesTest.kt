@@ -71,6 +71,12 @@ class ModuleSQLRepositoriesTest
     }
 
     @Test
+    fun testHasFollowerRepo()
+    {
+        assertTrue { injector.hasInstance<FollowerRepository>() }
+    }
+
+    @Test
     fun testInboxRepo()
     {
         assertTrue { injector.hasInstance<InboxRepository>() }

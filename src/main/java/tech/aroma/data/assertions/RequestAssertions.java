@@ -50,6 +50,7 @@ public final class RequestAssertions
                     .is(notNull());
 
             checkThat(app.applicationId, app.name)
+                    .usingMessage("App is missing id and name")
                     .are(nonEmptyString());
 
             checkThat(app.applicationId)
