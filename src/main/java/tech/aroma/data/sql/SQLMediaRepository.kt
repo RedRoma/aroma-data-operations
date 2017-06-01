@@ -24,7 +24,8 @@ import tech.aroma.data.assertions.RequestAssertions.validImage
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveInteger
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
@@ -56,7 +57,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not save image", ex)
+            failWithMessage("Could not save image", ex)
         }
     }
 
@@ -76,7 +77,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not extract Media with ID [$mediaId]", ex = ex)
+            failWithMessage("Could not extract Media with ID [$mediaId]", ex = ex)
         }
     }
 
@@ -93,7 +94,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not delete Media with ID [$mediaId]", ex = ex)
+            failWithMessage("Could not delete Media with ID [$mediaId]", ex = ex)
         }
     }
 
@@ -116,7 +117,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not save Thumbnail: [$mediaId -$dimension", ex)
+            failWithMessage("Could not save Thumbnail: [$mediaId -$dimension", ex)
         }
     }
 
@@ -141,7 +142,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not get thumbnail: [$mediaId/$dimension]", ex)
+            failWithMessage("Could not get thumbnail: [$mediaId/$dimension]", ex)
         }
     }
 
@@ -158,7 +159,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not Delete thumbnail: [$mediaId | $dimension]", ex = ex)
+            failWithMessage("Could not Delete thumbnail: [$mediaId | $dimension]", ex = ex)
         }
     }
 
@@ -174,7 +175,7 @@ internal class SQLMediaRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not delete all thumbnails for [$mediaId]", ex = ex)
+            failWithMessage("Could not delete all thumbnails for [$mediaId]", ex = ex)
         }
     }
 
@@ -204,12 +205,6 @@ internal class SQLMediaRepository
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("invalid height")
                 .`is`(positiveInteger())
-    }
-
-    private fun failWithError(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
     }
 
     private fun doesNotExist(mediaId: String, dimension: Dimension? = null, ex: Exception): Nothing

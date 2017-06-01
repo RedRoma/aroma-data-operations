@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.ActivityRepository
-import tech.aroma.data.assertions.RequestAssertions.validUser
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.LengthOfTime
 import tech.aroma.thrift.User
@@ -204,13 +203,5 @@ internal class SQLActivityRepository
                 .usingMessage("Invalid Event ID : $eventId")
                 .`is`(validUUID())
     }
-
-    private fun checkUser(user: User)
-    {
-        checkThat(user)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUser())
-    }
-
 
 }

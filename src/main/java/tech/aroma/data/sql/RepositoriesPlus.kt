@@ -53,6 +53,13 @@ internal fun checkAppId(appId: String?)
             .`is`(validApplicationId())
 }
 
+internal fun checkMessageId(messageId: String?)
+{
+    checkThat(messageId)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validMessageId())
+}
+
 internal fun checkUser(user: User?)
 {
     checkThat(user)
