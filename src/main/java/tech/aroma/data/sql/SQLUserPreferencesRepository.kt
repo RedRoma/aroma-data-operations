@@ -21,11 +21,9 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.UserPreferencesRepository
 import tech.aroma.data.assertions.RequestAssertions.validMobileDevice
-import tech.aroma.data.assertions.RequestAssertions.validUserId
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import javax.inject.Inject
@@ -36,8 +34,10 @@ import javax.inject.Inject
  * @author SirWellington
  */
 internal class SQLUserPreferencesRepository
-@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<MutableSet<MobileDevice>>) : UserPreferencesRepository
+@Inject constructor(val database: JdbcOperations,
+                    val serializer: DatabaseSerializer<MutableSet<MobileDevice>>) : UserPreferencesRepository
 {
+
     override fun saveMobileDevice(userId: String, device: MobileDevice)
     {
         checkUserId(userId)
@@ -45,10 +45,13 @@ internal class SQLUserPreferencesRepository
 
         val sql = Inserts.ADD_USER_DEVICE
 
-        val serialized = try { ThriftObjects.toJson(device) }
+        val serialized = try
+        {
+            ThriftObjects.toJson(device)
+        }
         catch (ex: Exception)
         {
-            failWithError("Failed to serialized Mobile Device: [$device]", ex)
+            failWithMessage("Failed to serialized Mobile Device: [$device]", ex)
         }
 
         try
@@ -57,7 +60,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to save a new mobile device for [$userId]", ex)
+            failWithMessage("Failed to save a new mobile device for [$userId]", ex)
         }
     }
 
@@ -81,7 +84,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to save ${devices.size} devices for [$userId]", ex)
+            failWithMessage("Failed to save ${devices.size} devices for [$userId]", ex)
         }
     }
 
@@ -101,7 +104,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to get mobile devices for [$userId]", ex)
+            failWithMessage("Failed to get mobile devices for [$userId]", ex)
         }
     }
 
@@ -119,7 +122,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to remove device for user [$userId] | [$mobileDevice]", ex)
+            failWithMessage("Failed to remove device for user [$userId] | [$mobileDevice]", ex)
         }
     }
 
@@ -135,7 +138,7 @@ internal class SQLUserPreferencesRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to delete all mobile devices for [$userId]", ex)
+            failWithMessage("Failed to delete all mobile devices for [$userId]", ex)
         }
     }
 
@@ -152,13 +155,6 @@ internal class SQLUserPreferencesRepository
         }
     }
 
-    private fun checkUserId(userId: String)
-    {
-        checkThat(userId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
-    }
-
     private fun checkMobileDevice(device: MobileDevice)
     {
         checkThat(device)
@@ -166,11 +162,6 @@ internal class SQLUserPreferencesRepository
                 .`is`(validMobileDevice())
     }
 
-    private fun failWithError(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
-    }
 
     private companion object
     {
