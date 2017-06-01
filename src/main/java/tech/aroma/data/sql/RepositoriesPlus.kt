@@ -33,7 +33,7 @@ import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 
 private object LOG: Logger by LoggerFactory.getLogger(LOG::class.java)
 
-internal fun failWithError(message: String, ex: Exception): Nothing
+internal fun failWithMessage(message: String, ex: Exception): Nothing
 {
     LOG.error(message, ex)
     throw OperationFailedException("$message | ${ex.message}")
@@ -46,11 +46,18 @@ internal fun checkApplication(app: Application?)
             .`is`(validApplication())
 }
 
-internal fun checkApplicationId(appId: String?)
+internal fun checkAppId(appId: String?)
 {
     checkThat(appId)
             .throwing(InvalidArgumentException::class.java)
             .`is`(validApplicationId())
+}
+
+internal fun checkMessageId(messageId: String?)
+{
+    checkThat(messageId)
+            .throwing(InvalidArgumentException::class.java)
+            .`is`(validMessageId())
 }
 
 internal fun checkUser(user: User?)

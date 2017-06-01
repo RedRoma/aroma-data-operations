@@ -39,6 +39,7 @@ import java.sql.*
 import java.sql.Array
 
 @RunWith(AlchemyTestRunner::class)
+@Repeat
 class SQLUserPreferencesRepositoryTest
 {
 
@@ -259,15 +260,7 @@ class SQLUserPreferencesRepositoryTest
 
     private fun setupForFailure()
     {
-
-        whenever(database.update(any<String>(), any<PreparedStatementSetter>()))
-                .thenThrow(RuntimeException::class.java)
-
-        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException::class.java)
-
-        whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException::class.java)
+        database.setupForFailure()
     }
 
 }

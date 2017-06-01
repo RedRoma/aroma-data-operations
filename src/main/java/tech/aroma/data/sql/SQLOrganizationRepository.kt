@@ -65,8 +65,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch(ex: Exception)
         {
-            LOG.error("Failed to save organization to database: [{}]", organization, ex)
-            throw OperationFailedException(ex.message)
+            failWithMessage("Failed to save organization to database: [$organization]", ex)
         }
 
     }
@@ -84,8 +83,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch (ex: Exception)
         {
-            LOG.error("Failed to get organization with ID [{}]", orgId, ex)
-            throw OperationFailedException("Could not get org with ID [$orgId] | ${ex.message}")
+            failWithMessage("Could not get org with ID [$orgId]", ex)
         }
 
     }
@@ -110,13 +108,11 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch(ex: Exception)
         {
-            LOG.error("Failed to delete organization [{}]. Rolling back operation.", org, ex)
-
             //Rollback
             saveOrganization(org)
             members.forEach { this.saveMemberInOrganization(orgId, it) }
 
-            throw OperationFailedException("Could not delete organization: $org | ${ex.message}")
+            failWithMessage("Failed to delete organization [$org]. Rolling back operation.", ex)
         }
 
     }
@@ -134,8 +130,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch(ex: Exception)
         {
-            LOG.error("Failed to check if org [{}] exists.", orgId, ex)
-            throw OperationFailedException("Failed to check if $orgId exists | ${ex.message}")
+            failWithMessage("Failed to check if $orgId exists ", ex)
         }
     }
 
@@ -199,8 +194,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch (ex: Exception)
         {
-            LOG.error("Failed to save member [{}] in Org [{}]", userId, orgId, ex)
-            throw OperationFailedException("Failed to save user $userId in Org [$orgId] | ${ex.message}")
+            failWithMessage("Failed to save user $userId in Org [$orgId]", ex)
         }
     }
 
@@ -222,8 +216,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch (ex: Exception)
         {
-            LOG.error("Failed to check if [{}] is a member of Org [{}]", userId, orgId, ex)
-            throw OperationFailedException("Failed to check if [$userId] is a member of [$orgId] | ${ex.message}")
+            failWithMessage("Failed to check if [$userId] is a member of [$orgId]", ex)
         }
     }
 
@@ -243,7 +236,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch (ex: Exception)
         {
-            LOG.error("Failed to retrieve organizations member: [{}]", orgId, ex)
+            LOG.warn("Failed to retrieve organizations member: [{}]", orgId, ex)
             return Lists.emptyList()
         }
     }
@@ -265,8 +258,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch (ex: Exception)
         {
-            LOG.error("Failed to delete member from Org [{}] -> [{}]", orgId, userId, ex)
-            throw OperationFailedException("Failed to remove member $userId from $organizationId | ${ex.message}")
+            failWithMessage("Failed to remove member $userId from $organizationId", ex)
         }
     }
 
@@ -283,8 +275,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
         catch(ex: Exception)
         {
-            LOG.error("Failed to delete all members for org: {}", orgId)
-            throw OperationFailedException("Failed to remove all members for Org: [$orgId] | ${ex.message}")
+            failWithMessage("Failed to remove all members for Org: [$orgId]", ex)
         }
     }
 

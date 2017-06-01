@@ -130,10 +130,7 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetMessageWhenDatabaseFails()
     {
-        val expectedQuery = SQLStatements.Queries.SELECT_MESSAGE
-
-        whenever(database.queryForObject(expectedQuery, serializer, appId.toUUID(), messageId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getMessage(appId, messageId) }
                 .operationError()
@@ -211,12 +208,9 @@ class SQLMessageRepositoryTest
     @DontRepeat
     @Test
     @Throws(Exception::class)
-    fun testDeleteWhenOperationFails()
+    fun testDeleteWhenDatabaseFails()
     {
-        val expectedStatement = SQLStatements.Deletes.MESSAGE
-
-        whenever(database.update(expectedStatement, appId.toUUID(), messageId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteMessage(appId, messageId) }
                 .operationError()
@@ -241,12 +235,9 @@ class SQLMessageRepositoryTest
     @DontRepeat
     @Test
     @Throws(Exception::class)
-    fun testContainsMessageWhenOperationFails()
+    fun testContainsMessageWhenDatabaseFails()
     {
-        val query = SQLStatements.Queries.CHECK_MESSAGE
-
-        whenever(database.update(eq(query), eq(Boolean::class.java), any(), any()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.containsMessage(appId, messageId) }
                 .operationError()
@@ -290,11 +281,9 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByHostnameWhenDatabaseFails()
     {
-        val query = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME
-        val hostname = alphabetic
+        database.setupForFailure()
 
-        whenever(database.query(query, serializer, hostname))
-                .thenThrow(RuntimeException())
+        val hostname = alphabetic
 
         assertThrows { instance.getByHostname(hostname) }
                 .operationError()
@@ -343,13 +332,9 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByApplicationWhenDatabaseFails()
     {
-        val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
+        database.setupForFailure()
 
-        whenever(database.query(query, serializer, appId.toUUID()))
-                .thenThrow(RuntimeException())
-
-        assertThrows { instance.getByApplication(appId) }
-                .operationError()
+        assertThrows { instance.getByApplication(appId) }.operationError()
     }
 
     @DontRepeat
@@ -398,14 +383,11 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByTitleWhenDatabaseFails()
     {
-        val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
+        database.setupForFailure()
+
         val title = alphabetic
 
-        whenever(database.query(query, serializer, appId.toUUID(), title))
-                .thenThrow(RuntimeException())
-
-        assertThrows { instance.getByTitle(appId, title) }
-                .operationError()
+        assertThrows { instance.getByTitle(appId, title) }.operationError()
     }
 
     @DontRepeat
@@ -441,10 +423,7 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetCountWhenDatabaseFails()
     {
-        val query = SQLStatements.Queries.COUNT_MESSAGES
-
-        whenever(database.queryForObject(query, Long::class.java, appId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getCountByApplication(appId) }
                 .operationError()

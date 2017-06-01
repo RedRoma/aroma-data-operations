@@ -37,7 +37,7 @@ internal class SQLFollowerRepository
     override fun saveFollowing(user: User, application: Application)
     {
         checkUserId(user.userId)
-        checkApplicationId(application.applicationId)
+        checkAppId(application.applicationId)
 
         val userId = user.userId?.toUUID() ?: throw InvalidArgumentException("Invalid userId: $user")
         val appId = application.applicationId?.toUUID() ?: throw InvalidArgumentException("Invalid appId: $application")
@@ -49,14 +49,14 @@ internal class SQLFollowerRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not save following for User[$userId] and App[$appId]", ex)
+            failWithMessage("Could not save following for User[$userId] and App[$appId]", ex)
         }
     }
 
     override fun deleteFollowing(userId: String, applicationId: String)
     {
         checkUserId(userId)
-        checkApplicationId(applicationId)
+        checkAppId(applicationId)
 
         val sql = Deletes.FOLLOWING
 
@@ -66,14 +66,14 @@ internal class SQLFollowerRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not delete following for User[$userId] and App[$applicationId", ex)
+            failWithMessage("Could not delete following for User[$userId] and App[$applicationId", ex)
         }
     }
 
     override fun followingExists(userId: String, applicationId: String): Boolean
     {
         checkUserId(userId)
-        checkApplicationId(applicationId)
+        checkAppId(applicationId)
 
         val sql = Queries.CHECK_FOLLOWING_EXISTS
 
@@ -83,7 +83,7 @@ internal class SQLFollowerRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not check if user [$userId] follows App[$applicationId]", ex)
+            failWithMessage("Could not check if user [$userId] follows App[$applicationId]", ex)
         }
 
     }
@@ -100,13 +100,13 @@ internal class SQLFollowerRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not determine apps being followed by User[$userId]", ex)
+            failWithMessage("Could not determine apps being followed by User[$userId]", ex)
         }
     }
 
     override fun getApplicationFollowers(applicationId: String): MutableList<User>
     {
-        checkApplicationId(applicationId)
+        checkAppId(applicationId)
 
         val sql = Queries.SELECT_APP_FOLLOWERS
 
@@ -116,7 +116,7 @@ internal class SQLFollowerRepository
         }
         catch (ex: Exception)
         {
-            failWithError("Could not determine who follows App [$applicationId]", ex)
+            failWithMessage("Could not determine who follows App [$applicationId]", ex)
         }
     }
 

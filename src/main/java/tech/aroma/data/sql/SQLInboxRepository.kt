@@ -24,7 +24,6 @@ import tech.aroma.data.assertions.RequestAssertions.*
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.*
 import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import javax.inject.Inject
 
@@ -83,8 +82,7 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val errorMessage = "Failed to save message in inbox of user [$userId] | [$message]"
-            failWithError(errorMessage, ex)
+            failWithMessage("Failed to save message in inbox of user [$userId] | [$message]", ex)
         }
     }
 
@@ -101,8 +99,7 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to find inbox messages for user [$userId]"
-            failWithError(message, ex)
+            failWithMessage("Failed to find inbox messages for user [$userId]", ex)
         }
     }
 
@@ -121,8 +118,7 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to check if message [$messageId] exists for user [$userId]"
-            failWithError(message, ex)
+            failWithMessage("Failed to check if message [$messageId] exists for user [$userId]", ex)
         }
     }
 
@@ -141,8 +137,7 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to delete inbox message [$userId/$messageId]"
-            failWithError(message, ex)
+            failWithMessage("Failed to delete inbox message [$userId/$messageId]", ex)
         }
     }
 
@@ -159,8 +154,7 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to delete all messages for user [$userId]"
-            failWithError(message, ex)
+            failWithMessage("Failed to delete all messages for user [$userId]", ex)
         }
     }
 
@@ -176,29 +170,8 @@ internal class SQLInboxRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to count inbox messages for user [$userId]"
-            failWithError(message, ex)
+            failWithMessage("Failed to count inbox messages for user [$userId]", ex)
         }
     }
 
-
-    private fun checkMessageId(messageId: String?)
-    {
-        checkThat(messageId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validMessageId())
-    }
-
-    private fun checkUserId(userId: String)
-    {
-        checkThat(userId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
-    }
-
-    private fun failWithError(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
-    }
 }

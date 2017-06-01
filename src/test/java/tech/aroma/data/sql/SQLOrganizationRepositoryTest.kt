@@ -148,17 +148,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteOrganizationWhenDatabaseFails()
     {
+        database.setupForFailure()
 
-        val getOrg = Queries.SELECT_ORGANIZATION
-        whenever(database.queryForObject(getOrg, serializer, orgId.toUUID()))
-                .thenReturn(organization)
-
-        Mockito.doThrow(RuntimeException())
-                .whenever(database)
-                .update(any(), eq(orgId.toUUID()))
-
-        assertThrows { instance.deleteOrganization(orgId) }
-                .operationError()
+        assertThrows { instance.deleteOrganization(orgId) }.operationError()
     }
 
     @DontRepeat
@@ -218,14 +210,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testContainsOrganizationWhenDatabaseFails()
     {
-        val query = Queries.CHECK_ORGANIZATION
+        database.setupForFailure()
 
-        Mockito.doThrow(RuntimeException())
-                .whenever(database)
-                .queryForObject(query, Boolean::class.java, orgId.toUUID())
-
-        assertThrows { instance.containsOrganization(orgId) }
-                .operationError()
+        assertThrows { instance.containsOrganization(orgId) }.operationError()
     }
 
 
@@ -260,12 +247,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testSearchByNameWhenDatabaseFails()
     {
-        val query = Queries.SEARCH_ORGANIZATION_BY_NAME
+        database.setupForFailure()
+
         val name = alphabetic
-
-        whenever(database.query(query, serializer, name))
-                .thenThrow(RuntimeException())
-
         val result = instance.searchByName(name)
 
         assertThat(result, isEmpty)
@@ -307,10 +291,7 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationOwnersWhenDatabaseFails()
     {
-        val query = Queries.SELECT_ORGANIZATION
-
-        whenever(database.queryForList(query, serializer, orgId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         val result = instance.getOrganizationOwners(orgId)
         assertThat(result, isEmpty)
@@ -355,11 +336,9 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testSaveMemberInOrgWhenDatabaseFails()
     {
-        val statement = Inserts.ORGANIZATION_MEMBER
-        val user = User().setUserId(userId)
+        database.setupForFailure()
 
-        whenever(database.update(eq(statement), eq(orgId.toUUID()), eq(userId.toUUID())))
-                .thenThrow(RuntimeException())
+        val user = User().setUserId(userId)
 
         assertThrows { instance.saveMemberInOrganization(orgId, user) }
                 .operationError()
@@ -396,10 +375,7 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testIsMemberInOrganizationWhenDatabaseFails()
     {
-        val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
-
-        whenever(database.queryForObject(query, Boolean::class.java, orgId.toUUID(), userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.isMemberInOrganization(orgId, userId) }
                 .operationError()
@@ -431,10 +407,7 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testGetOrganizationMembersWhenDatabaseFails()
     {
-        val query = Queries.SELECT_ORGANIZATION_MEMBERS
-
-        whenever(database.queryForList(query, String::class.java, orgId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         val results = instance.getOrganizationMembers(orgId)
         assertThat(results, isEmpty)
@@ -467,10 +440,7 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteMemberWhenDatabaseFails()
     {
-        val statement = Deletes.ORGANIZATION_MEMBER
-
-        whenever(database.update(statement, orgId.toUUID(), userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteMember(orgId, userId) }
                 .operationError()
@@ -500,10 +470,7 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testDeleteAllMembersWhenDatabaseFails()
     {
-        val statement = Deletes.ORGANIZATION_ALL_MEMBERS
-
-        whenever(database.update(statement, orgId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteAllMembers(orgId) }
                 .operationError()

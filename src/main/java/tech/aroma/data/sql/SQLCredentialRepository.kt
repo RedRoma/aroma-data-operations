@@ -19,7 +19,6 @@ package tech.aroma.data.sql
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.CredentialRepository
-import tech.aroma.data.assertions.RequestAssertions.validUserId
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
@@ -49,7 +48,7 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to save encrypted password for [$userId]", ex)
+            failWithMessage("Failed to save encrypted password for [$userId]", ex)
         }
 
     }
@@ -66,7 +65,7 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         }
         catch (ex: Exception)
         {
-            failWithError("Could not check if user has password: [$userId]", ex)
+            failWithMessage("Could not check if user has password: [$userId]", ex)
         }
     }
 
@@ -86,7 +85,7 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         }
         catch (ex: Exception)
         {
-            failWithError("Could not get user password: [$userId]", ex)
+            failWithMessage("Could not get user password: [$userId]", ex)
         }
 
     }
@@ -103,16 +102,9 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         }
         catch (ex: Exception)
         {
-            failWithError("Failed to delete credentials for User [$userId]", ex)
+            failWithMessage("Failed to delete credentials for User [$userId]", ex)
         }
 
-    }
-
-    private fun checkUserId(id: String)
-    {
-        checkThat(id)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
     }
 
 }

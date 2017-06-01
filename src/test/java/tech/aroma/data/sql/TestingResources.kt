@@ -18,8 +18,6 @@
 package tech.aroma.data.sql
 
 import com.google.inject.*
-import com.natpryce.hamkrest.Matcher
-import com.natpryce.hamkrest.isEmpty
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
 import org.mockito.Mockito
@@ -27,8 +25,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.*
 import tech.aroma.data.sql.serializers.ModuleSerializers
 import tech.aroma.thrift.Message
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion
-import java.util.*
 
 /**
  * @author SirWellington
@@ -66,10 +62,19 @@ internal fun JdbcOperations.setupForFailure()
     whenever(this.update(any<String>(), Mockito.anyVararg<Any>()))
             .thenThrow(RuntimeException())
 
+    whenever(this.update(any<String>(), any<PreparedStatementSetter>()))
+            .thenThrow(RuntimeException())
+
+    whenever(this.query(any<String>(), any<RowMapper<*>>()))
+            .thenThrow(RuntimeException())
+
     whenever(this.query(any<String>(), any<RowMapper<*>>(), Mockito.anyVararg<Any>()))
             .thenThrow(RuntimeException())
 
     whenever(this.queryForObject(any<String>(), any<Class<*>>(), Mockito.anyVararg<Any>()))
+            .thenThrow(RuntimeException())
+
+    whenever(this.queryForObject(any<String>(), any<RowMapper<*>>(), Mockito.anyVararg<Any>()))
             .thenThrow(RuntimeException())
 
 }

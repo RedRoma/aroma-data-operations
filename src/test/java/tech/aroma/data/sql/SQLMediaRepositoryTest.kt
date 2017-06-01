@@ -324,11 +324,7 @@ class SQLMediaRepositoryTest
 
     private fun setupForFailure()
     {
-        whenever(database.queryForObject(any<String>(), eq(serializer), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
-
-        whenever(database.update(any<String>(), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
     }
 
 }

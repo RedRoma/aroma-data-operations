@@ -87,7 +87,7 @@ internal class SQLReactionRepository
         catch (ex: Exception)
         {
             val message = "Failed to query reactions for reactions belonging to [$ownerId]"
-            failWithError(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -104,8 +104,7 @@ internal class SQLReactionRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to serialized Reactions"
-            failWithError(message, ex)
+            failWithMessage("Failed to serialized Reactions", ex)
         }
 
         try
@@ -118,8 +117,7 @@ internal class SQLReactionRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to save reactions"
-            failWithError(message, ex)
+            failWithMessage("Failed to save reactions", ex)
         }
     }
 
@@ -137,20 +135,6 @@ internal class SQLReactionRepository
         }
     }
 
-    private fun checkUserId(id: String?)
-    {
-        checkThat(id)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
-    }
-
-    private fun checkAppId(id: String?)
-    {
-        checkThat(id)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validApplicationId())
-    }
-
     private fun checkReactions(reactions: List<Reaction>)
     {
         reactions.forEach {
@@ -160,11 +144,5 @@ internal class SQLReactionRepository
                     .`is`(validReaction())
         }
 
-    }
-
-    private fun failWithError(message: String, ex: Exception): Nothing
-    {
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
     }
 }

@@ -58,8 +58,7 @@ internal class SQLUserRepository
         }
         catch(ex: Exception)
         {
-            val message = "Failed to save user in database: [$user]"
-            logMessageAndFail(message, ex)
+            failWithMessage("Failed to save user in database: [$user]", ex)
         }
     }
 
@@ -81,7 +80,7 @@ internal class SQLUserRepository
         catch (ex: Exception)
         {
             val message = "Failed to retrieve User with ID [$userId] from database"
-            logMessageAndFail(message, ex)
+            failWithMessage(message, ex)
         }
 
     }
@@ -100,8 +99,7 @@ internal class SQLUserRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to delete user $userId"
-            logMessageAndFail(message, ex)
+            failWithMessage("Failed to delete user $userId", ex)
         }
 
     }
@@ -118,8 +116,7 @@ internal class SQLUserRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to check if user exists: [$userId]"
-            logMessageAndFail(message, ex)
+            failWithMessage("Failed to check if user exists: [$userId]", ex)
         }
     }
 
@@ -142,8 +139,7 @@ internal class SQLUserRepository
         }
         catch (ex: Exception)
         {
-            val message = "Failed to get a user by $emailAddress"
-            logMessageAndFail(message, ex)
+            failWithMessage("Failed to get a user by $emailAddress", ex)
         }
     }
 
@@ -167,7 +163,7 @@ internal class SQLUserRepository
         catch (ex: Exception)
         {
             val message = "Failed to query for a user with Github profile [$githubProfile]"
-            logMessageAndFail(message, ex)
+            failWithMessage(message, ex)
         }
     }
 
@@ -187,13 +183,6 @@ internal class SQLUserRepository
         }
     }
 
-    private fun checkUserId(userId: String?)
-    {
-        checkThat(userId)
-                .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
-    }
-
     private fun logAndFailWithNoSuchUser(message: String? = null): Nothing
     {
         val message = message ?: "User does not exist"
@@ -201,11 +190,4 @@ internal class SQLUserRepository
         throw DoesNotExistException(message)
     }
 
-    private fun logMessageAndFail(message: String? = null, ex: Exception): Nothing
-    {
-        val message = message ?: "Failed to perform the specified operation"
-
-        LOG.error(message, ex)
-        throw OperationFailedException("$message | ${ex.message}")
-    }
 }
