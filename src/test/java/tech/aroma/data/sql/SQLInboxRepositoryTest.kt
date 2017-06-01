@@ -128,10 +128,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testSaveMessageWhenDatabaseFails()
     {
-        val sql = Inserts.INBOX_MESSAGE
-
-        whenever(database.update(eq(sql), Mockito.anyVararg<Any>()))
-                .thenThrow(RuntimeException::class.java)
+        database.setupForFailure()
 
         assertThrows { instance.saveMessageForUser(user, message) }
                 .operationError()
@@ -162,10 +159,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testGetMessageForUserWhenDatabaseFails()
     {
-        val sql = Queries.SELECT_INBOX_MESSAGES_FOR_USER
-
-        whenever(database.query(eq(sql), eq(serializer), Mockito.anyVararg()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.getMessagesForUser(userId) }
                 .operationError()
@@ -207,10 +201,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testContainsMessageWhenDatabaseFails()
     {
-        val sql = Queries.CHECK_INBOX_MESSAGE
-
-        whenever(database.queryForObject(sql, Boolean::class.java, userId.toUUID(), messageId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.containsMessageInInbox(userId, message) }
                 .operationError()
@@ -240,10 +231,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testDeleteMessageWhenDatabaseFails()
     {
-        val sql = Deletes.INBOX_MESSAGE
-
-        whenever(database.update(sql, userId.toUUID(), messageId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteMessageForUser(userId, messageId) }
                 .operationError()
@@ -270,10 +258,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testDeleteAllForUserWhenDatabaseFails()
     {
-        val sql = Deletes.INBOX_ALL_MESSAGES
-
-        whenever(database.update(sql, userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.deleteAllMessagesForUser(userId) }
                 .operationError()
@@ -305,10 +290,7 @@ class SQLInboxRepositoryTest
     @Test
     fun testCountInboxWhenDatabaseFails()
     {
-        val sql = Queries.COUNT_INBOX_MESSAGES
-
-        whenever(database.queryForObject(sql, Long::class.java, userId.toUUID()))
-                .thenThrow(RuntimeException())
+        database.setupForFailure()
 
         assertThrows { instance.countInboxForUser(userId) }
                 .operationError()
