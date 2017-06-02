@@ -23,7 +23,8 @@ import tech.aroma.data.TokenRepository
 import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.assertions.AromaAssertions.legalToken
 import tech.aroma.thrift.authentication.AuthenticationToken
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.InvalidTokenException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
 import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
@@ -56,7 +57,7 @@ class SQLTokenRepository
         }
         catch (ex: Exception)
         {
-            handleErrorFor(tokenId)(ex)
+            failWithMessage("Could not check if token exists: [$tokenId]", ex)
         }
     }
 
@@ -70,9 +71,15 @@ class SQLTokenRepository
         {
             database.queryForObject(query, serializer, tokenId.toUUID())
         }
+        catch (ex: EmptyResultDataAccessException)
+        {
+            val message = "Token does not exist: [$tokenId]"
+            LOG.warn(message, ex)
+            throw InvalidTokenException(message)
+        }
         catch (ex: Exception)
         {
-            handleErrorFor(tokenId)(ex)
+            failWithMessage("Could not get token with ID [$tokenId]", ex)
         }
 
     }
@@ -94,7 +101,7 @@ class SQLTokenRepository
         }
         catch (ex: Exception)
         {
-            handleErrorFor(tokenId)(ex)
+            failWithMessage("Failed to save Token [$token]", ex)
         }
     }
 
@@ -114,7 +121,7 @@ class SQLTokenRepository
         }
         catch (ex: Exception)
         {
-            handleErrorFor(ownerId)(ex)
+            failWithMessage("Could not get tokens belonging to [$ownerId]", ex)
         }
     }
 
@@ -129,7 +136,7 @@ class SQLTokenRepository
         }
         catch (ex: Exception)
         {
-            handleErrorFor(tokenId)(ex)
+            failWithMessage("Could not remove token [$tokenId]", ex)
         }
     }
 
@@ -144,20 +151,4 @@ class SQLTokenRepository
         return tokenId!!
     }
 
-    private fun handleErrorFor(token: String): ((Exception) -> Nothing)
-    {
-
-        return { ex ->
-
-            LOG.error("Failed to execute SQL for token $token", ex)
-
-            if (ex is EmptyResultDataAccessException)
-            {
-                throw InvalidTokenException("Token does not exist: [$token] | ${ex.message}")
-            }
-
-            throw OperationFailedException("Error operating on Token: [$token] | ${ex.message}")
-        }
-
-    }
 }
