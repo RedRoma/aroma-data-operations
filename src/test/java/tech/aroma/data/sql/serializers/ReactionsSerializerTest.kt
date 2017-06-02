@@ -47,7 +47,7 @@ class ReactionsSerializerTest
     @GenerateString
     private lateinit var sql: String
 
-    private lateinit var reactions: List<Reaction>
+    private lateinit var reactions: MutableList<Reaction>
     private val serializedReactions get() = reactions.map(ThriftObjects::toJson)
 
     private lateinit var instance: ReactionsSerializer

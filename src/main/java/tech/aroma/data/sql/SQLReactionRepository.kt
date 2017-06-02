@@ -35,7 +35,7 @@ import javax.inject.Inject
  * @author SirWellington
  */
 internal class SQLReactionRepository
-@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<List<Reaction>>) : ReactionRepository
+@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<MutableList<Reaction>>) : ReactionRepository
 {
 
     private companion object
@@ -78,7 +78,7 @@ internal class SQLReactionRepository
 
         return try
         {
-            database.queryForObject(sql, serializer, ownerId.toUUID())?.toMutableList() ?: mutableListOf()
+            database.queryForObject(sql, serializer, ownerId.toUUID()) ?: mutableListOf()
         }
         catch (ex: EmptyResultDataAccessException)
         {

@@ -38,7 +38,7 @@ object TestingResources
     private val injector = Guice.createInjector(ModuleTesting(),
                                                 ModuleSerializers())
 
-    fun connectToDatabase(): JdbcTemplate
+    fun connectToDatabase(): JdbcOperations
     {
         return injector.getInstance(JdbcTemplate::class.java)
     }

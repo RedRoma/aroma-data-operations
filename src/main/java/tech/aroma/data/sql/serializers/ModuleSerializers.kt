@@ -26,7 +26,7 @@ class ModuleSerializers : AbstractModule()
         bind<DatabaseSerializer<Message>>().to<MessageSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<MutableSet<MobileDevice>>>().to<DevicesSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<Organization>>().to<OrganizationSerializer>().asEagerSingleton()
-        bind<DatabaseSerializer<List<Reaction>>>().to<ReactionsSerializer>().asEagerSingleton()
+        bind<DatabaseSerializer<MutableList<Reaction>>>().to<ReactionsSerializer>().asEagerSingleton()
         bind<DatabaseSerializer<User>>().to<UserSerializer>().asEagerSingleton()
     }
 

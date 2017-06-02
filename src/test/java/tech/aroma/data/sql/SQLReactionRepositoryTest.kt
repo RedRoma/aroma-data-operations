@@ -48,7 +48,7 @@ class SQLReactionRepositoryTest
     private lateinit var database: JdbcOperations
 
     @Mock
-    private lateinit var serializer: DatabaseSerializer<List<Reaction>>
+    private lateinit var serializer: DatabaseSerializer<MutableList<Reaction>>
 
     @Mock
     private lateinit var preparedStatement: PreparedStatement
@@ -220,7 +220,7 @@ class SQLReactionRepositoryTest
                 .thenReturn(sqlArray)
 
         whenever(database.queryForObject(Queries.SELECT_REACTION, serializer, ownerId.toUUID()))
-                .thenReturn(reactions)
+                .thenReturn(reactions.toMutableList())
     }
 
 }

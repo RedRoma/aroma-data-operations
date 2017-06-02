@@ -21,6 +21,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import org.apache.thrift.TException
 import org.junit.*
 import org.junit.runner.RunWith
+import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.exceptions.DoesNotExistException
@@ -191,7 +192,7 @@ class SQLMessageRepositoryIT
 
     companion object
     {
-        private lateinit var database: JdbcTemplate
+        private lateinit var database: JdbcOperations
 
         @BeforeClass
         @JvmStatic

@@ -32,7 +32,7 @@ import java.sql.ResultSet
  *
  * @author SirWellington
  */
-internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
+internal class ReactionsSerializer : DatabaseSerializer<MutableList<Reaction>>
 {
 
     private companion object
@@ -40,22 +40,22 @@ internal class ReactionsSerializer : DatabaseSerializer<List<Reaction>>
         @JvmStatic val LOG = LoggerFactory.getLogger(this::class.java)!!
     }
 
-    override fun save(reactions: List<Reaction>, statement: String, database: JdbcOperations)
+    override fun save(reactions: MutableList<Reaction>, statement: String, database: JdbcOperations)
     {
         reactions.forEach { checkThat(it).`is`(validReaction()) }
         checkThat(statement).`is`(nonEmptyString())
     }
 
-    override fun deserialize(row: ResultSet): List<Reaction>
+    override fun deserialize(row: ResultSet): MutableList<Reaction>
     {
-        val result = listOf<Reaction>()
 
-        val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return result
+        val array = row.getArray(Reactions.SERIALIZED_REACTIONS)?.array as? Array<*> ?: return mutableListOf()
 
         return array.filterNotNull()
                 .map { it.toString() }
                 .map(this::reactionFromString)
                 .filterNotNull()
+                .toMutableList()
 
     }
 
