@@ -95,6 +95,12 @@ class ModuleSQLRepositoriesTest
     }
 
     @Test
+    fun testHasReactionRepo()
+    {
+        assertTrue { injector.hasInstance<ReactionRepository>() }
+    }
+
+    @Test
     fun testTokenRepo()
     {
         assertTrue { injector.hasInstance<TokenRepository>() }
