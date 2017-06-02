@@ -73,7 +73,7 @@ internal class SQLApplicationRepository
 
         try
         {
-            database.update(deleteNonOwnersSQL, app.owners.toCommaSeparatedList())
+            database.update(deleteNonOwnersSQL, appId.toUUID(), app.owners.toCommaSeparatedList())
         }
         catch(ex: Exception)
         {

@@ -83,7 +83,7 @@ class SQLApplicationRepositoryTest
         verify(serializer).save(app, statement, database)
 
         val sqlToDeleteNonOwners = Deletes.APPLICATION_NON_OWNERS
-        verify(database).update(sqlToDeleteNonOwners, app.owners.toCommaSeparatedList())
+        verify(database).update(sqlToDeleteNonOwners, appId.toUUID(), app.owners.toCommaSeparatedList())
 
         app.owners.forEach { owner ->
             val insertOwner = Inserts.APPLICATION_OWNER
