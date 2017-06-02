@@ -3,6 +3,7 @@ package tech.aroma.data.sql
 import org.apache.thrift.TException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.MessageRepository
 import tech.aroma.data.assertions.RequestAssertions.validMessage
@@ -23,7 +24,7 @@ import javax.inject.Inject
 @Internal
 internal class SQLMessageRepository
 @Inject
-constructor(private val database: JdbcTemplate, private val serializer: DatabaseSerializer<Message>) : MessageRepository
+constructor(private val database: JdbcOperations, private val serializer: DatabaseSerializer<Message>) : MessageRepository
 {
 
     @Throws(TException::class)
