@@ -5,4 +5,4 @@
 
 DELETE
 FROM application_owners
-WHERE owner_id != ALL (string_to_array(?, ',')::UUID[])
+WHERE NOT (owner_id = ANY (string_to_array(?, ',')::UUID[]))

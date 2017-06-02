@@ -209,7 +209,6 @@ class SQLApplicationRepositoryIT
     {
         apps.forEach(instance::saveApplication)
 
-
         val results = instance.getApplicationsOwnedBy(ownerId)
         results.forEach { it.timeOfProvisioning = 0L }
         results.forEach { it.followers = mutableSetOf() }
