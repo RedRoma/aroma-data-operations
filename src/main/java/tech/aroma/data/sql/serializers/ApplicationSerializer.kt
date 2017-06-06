@@ -19,13 +19,18 @@ package tech.aroma.data.sql.serializers
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validApplication
-import tech.aroma.data.sql.*
+import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Applications
-import tech.aroma.thrift.*
+import tech.aroma.data.sql.toCommaSeparatedList
+import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
+import tech.aroma.thrift.Application
+import tech.aroma.thrift.ProgrammingLanguage
+import tech.aroma.thrift.Tier
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
-import java.util.*
+import java.util.UUID
 
 
 /**

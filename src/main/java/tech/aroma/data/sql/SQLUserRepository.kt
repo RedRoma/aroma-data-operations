@@ -21,13 +21,14 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.UserRepository
 import tech.aroma.data.assertions.RequestAssertions.validUser
-import tech.aroma.data.assertions.RequestAssertions.validUserId
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.PeopleAssertions.validEmailAddress
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 
@@ -48,7 +49,7 @@ internal class SQLUserRepository
     {
         checkThat(user)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUser())
+                .isA(validUser())
 
         val sql = Inserts.USER
 
@@ -124,7 +125,7 @@ internal class SQLUserRepository
     {
         checkThat(emailAddress)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validEmailAddress())
+                .isA(validEmailAddress())
 
         val sql = Queries.SELECT_USER_BY_EMAIL
 
@@ -147,7 +148,7 @@ internal class SQLUserRepository
     {
         checkThat(githubProfile)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
+                .isA(nonEmptyString())
 
         val sql = Queries.SELECT_USER_BY_GITHUB
 

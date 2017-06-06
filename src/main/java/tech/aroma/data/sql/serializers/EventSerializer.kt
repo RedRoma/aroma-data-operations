@@ -21,8 +21,7 @@ import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Activity
 import tech.aroma.thrift.events.Event
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
+import tech.sirwellington.alchemy.arguments.assertions.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
 

@@ -23,7 +23,7 @@ import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.UserPreferences
 import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
 

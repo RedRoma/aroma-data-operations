@@ -27,8 +27,7 @@ import tech.aroma.thrift.Image
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.NumberAssertions.positiveInteger
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 
@@ -184,14 +183,14 @@ internal class SQLMediaRepository
         checkThat(id)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("invalid Media ID: [$id]")
-                .`is`(validUUID())
+                .isA(validUUID())
     }
 
     private fun checkImage(image: Image?)
     {
         checkThat(image)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validImage())
+                .isA(validImage())
     }
 
     private fun checkDimensions(dimension: Dimension)
@@ -199,12 +198,12 @@ internal class SQLMediaRepository
         checkThat(dimension.width)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("invalid width")
-                .`is`(positiveInteger())
+                .isA(positiveInteger())
 
         checkThat(dimension.height)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("invalid height")
-                .`is`(positiveInteger())
+                .isA(positiveInteger())
     }
 
     private fun doesNotExist(mediaId: String, dimension: Dimension? = null, ex: Exception): Nothing

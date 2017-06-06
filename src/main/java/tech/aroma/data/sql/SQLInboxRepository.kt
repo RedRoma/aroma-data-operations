@@ -45,11 +45,11 @@ internal class SQLInboxRepository
     {
         checkThat(user)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUser())
+                .isA(validUser())
 
         checkThat(message)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validMessage())
+                .isA(validMessage())
 
         tryToSaveMessage(user, message)
     }

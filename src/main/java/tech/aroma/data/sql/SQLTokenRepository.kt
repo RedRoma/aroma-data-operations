@@ -20,14 +20,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.TokenRepository
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.assertions.AromaAssertions.legalToken
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.aroma.thrift.exceptions.InvalidTokenException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 
@@ -45,7 +46,7 @@ class SQLTokenRepository
         @JvmStatic private val LOG = LoggerFactory.getLogger(this::class.java)
     }
 
-    override fun containsToken(tokenId: String?): Boolean
+    override fun containsToken(tokenId: String): Boolean
     {
         val tokenId = checkTokenId(tokenId)
 
@@ -62,7 +63,7 @@ class SQLTokenRepository
     }
 
 
-    override fun getToken(tokenId: String?): AuthenticationToken
+    override fun getToken(tokenId: String): AuthenticationToken
     {
         val tokenId = checkTokenId(tokenId)
         val query = Queries.SELECT_TOKEN
@@ -88,10 +89,7 @@ class SQLTokenRepository
     {
         checkThat(token)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(legalToken())
-
-        val tokenId = checkTokenId(token?.tokenId)
-
+                .isA(legalToken())
 
         val statement = Inserts.TOKEN
 
@@ -105,14 +103,13 @@ class SQLTokenRepository
         }
     }
 
-    override fun getTokensBelongingTo(ownerId: String?): MutableList<AuthenticationToken>
+    override fun getTokensBelongingTo(ownerId: String): MutableList<AuthenticationToken>
     {
         checkThat(ownerId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
-                .`is`(validUUID())
+                .isA(nonEmptyString())
+                .isA(validUUID())
 
-        val ownerId = ownerId!!
         val query = Queries.SELECT_TOKENS_FOR_OWNER
 
         return try
@@ -125,7 +122,7 @@ class SQLTokenRepository
         }
     }
 
-    override fun deleteToken(tokenId: String?)
+    override fun deleteToken(tokenId: String)
     {
         val tokenId = checkTokenId(tokenId)
         val statement = Deletes.TOKEN
@@ -141,14 +138,14 @@ class SQLTokenRepository
     }
 
 
-    private fun checkTokenId(tokenId: String?): String
+    private fun checkTokenId(tokenId: String): String
     {
         checkThat(tokenId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
-                .`is`(validUUID())
+                .isA(nonEmptyString())
+                .isA(validUUID())
 
-        return tokenId!!
+        return tokenId
     }
 
 }

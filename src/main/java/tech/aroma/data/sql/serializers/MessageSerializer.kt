@@ -3,13 +3,15 @@ package tech.aroma.data.sql.serializers
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMessage
-import tech.aroma.data.sql.*
+import tech.aroma.data.sql.DatabaseSerializer
+import tech.aroma.data.sql.hasColumn
+import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.Urgency
 import tech.aroma.thrift.message.service.MessageServiceConstants
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 import java.sql.SQLException
 

@@ -4,18 +4,17 @@ import org.apache.thrift.TException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
-import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.MessageRepository
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.thrift.LengthOfTime
 import tech.aroma.thrift.Message
-import tech.aroma.thrift.exceptions.*
+import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.annotations.access.Internal
 import tech.sirwellington.alchemy.annotations.arguments.Optional
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 /**
@@ -28,14 +27,13 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
 {
 
     @Throws(TException::class)
-    override fun saveMessage(message: Message?, @Optional lifetime: LengthOfTime?)
+    override fun saveMessage(message: Message, @Optional lifetime: LengthOfTime?)
     {
         checkThat(message)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(notNull<Message>())
-                .`is`(validMessage())
+                .isA(validMessage())
 
-        _saveMessage(message!!)
+        _saveMessage(message)
     }
 
     @Throws(OperationFailedException::class)
@@ -56,14 +54,14 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
     }
 
     @Throws(TException::class)
-    override fun getMessage(applicationId: String?, messageId: String?): Message
+    override fun getMessage(applicationId: String, messageId: String): Message
     {
         checkThat(applicationId, messageId)
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.toUUID()
-        val msgId = messageId!!.toUUID()
+        val appId = applicationId.toUUID()
+        val msgId = messageId.toUUID()
         val statement = SQLStatements.Queries.SELECT_MESSAGE
 
         val message: Message?
@@ -86,20 +84,20 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
 
         checkThat(message)
                 .throwing(DoesNotExistException::class.java)
-                .`is`(notNull<Message>())
+                .isA(notNull<Message>())
 
         return message
     }
 
     @Throws(TException::class)
-    override fun deleteMessage(applicationId: String?, messageId: String?)
+    override fun deleteMessage(applicationId: String, messageId: String)
     {
         checkThat(applicationId, messageId)
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.toUUID()
-        val msgId = messageId!!.toUUID()
+        val appId = applicationId.toUUID()
+        val msgId = messageId.toUUID()
         val statement = SQLStatements.Deletes.MESSAGE
 
         try
@@ -117,14 +115,14 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
     }
 
     @Throws(TException::class)
-    override fun containsMessage(applicationId: String?, messageId: String?): Boolean
+    override fun containsMessage(applicationId: String, messageId: String): Boolean
     {
         checkThat(applicationId, messageId)
                 .throwing(InvalidArgumentException::class.java)
                 .are(validUUID())
 
-        val appId = applicationId!!.toUUID()
-        val msgId = messageId!!.toUUID()
+        val appId = applicationId.toUUID()
+        val msgId = messageId.toUUID()
         val statement = SQLStatements.Queries.CHECK_MESSAGE
 
         try
@@ -140,11 +138,11 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
     }
 
     @Throws(TException::class)
-    override fun getByHostname(hostname: String?): List<Message>
+    override fun getByHostname(hostname: String): List<Message>
     {
         checkThat(hostname)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
+                .isA(nonEmptyString())
 
         val statement = SQLStatements.Queries.SELECT_MESSAGES_BY_HOSTNAME
 
@@ -161,13 +159,13 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
     }
 
     @Throws(TException::class)
-    override fun getByApplication(applicationId: String?): List<Message>
+    override fun getByApplication(applicationId: String): List<Message>
     {
         checkThat(applicationId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUUID())
+                .isA(validUUID())
 
-        val appId = applicationId!!.toUUID()
+        val appId = applicationId.toUUID()
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_APPLICATION
 
         try
@@ -184,7 +182,7 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
 
 
     @Throws(TException::class)
-    override fun getByTitle(applicationId: String?, title: String?): List<Message>
+    override fun getByTitle(applicationId: String, title: String): List<Message>
     {
         checkThat(applicationId, title)
                 .throwing(InvalidArgumentException::class.java)
@@ -192,9 +190,9 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
 
         checkThat(applicationId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUUID())
+                .isA(validUUID())
 
-        val appId = applicationId!!.toUUID()
+        val appId = applicationId.toUUID()
         val query = SQLStatements.Queries.SELECT_MESSAGES_BY_TITLE
 
         try
@@ -210,14 +208,14 @@ constructor(private val database: JdbcOperations, private val serializer: Databa
     }
 
     @Throws(TException::class)
-    override fun getCountByApplication(applicationId: String?): Long
+    override fun getCountByApplication(applicationId: String): Long
     {
         checkThat(applicationId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
-                .`is`(validUUID())
+                .isA(nonEmptyString())
+                .isA(validUUID())
 
-        val appId = applicationId!!.toUUID()
+        val appId = applicationId.toUUID()
         val query = SQLStatements.Queries.COUNT_MESSAGES
 
 

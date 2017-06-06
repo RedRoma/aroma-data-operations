@@ -26,9 +26,7 @@ import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.stringWithLengthGreaterThanOrEqualTo
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 
@@ -47,7 +45,7 @@ internal class SQLApplicationRepository
     {
         checkThat(application)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validApplication())
+                .isA(validApplication())
 
         val insertApp = Inserts.APPLICATION
 
@@ -253,8 +251,8 @@ internal class SQLApplicationRepository
         checkThat(orgId)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("Invalid Org ID: " + orgId)
-                .`is`(nonEmptyString())
-                .`is`(StringAssertions.validUUID())
+                .isA(nonEmptyString())
+                .isA(validUUID())
     }
 
     private fun checkSearchTerm(searchTerm: String)
@@ -262,9 +260,9 @@ internal class SQLApplicationRepository
         checkThat(searchTerm)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("Search term cannot be empty")
-                .`is`(nonEmptyString())
+                .isA(nonEmptyString())
                 .usingMessage("Search term must have at least 2 characters")
-                .`is`(stringWithLengthGreaterThanOrEqualTo(2))
+                .isA(stringWithLengthGreaterThanOrEqualTo(2))
     }
 
 }

@@ -20,15 +20,17 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.OrganizationRepository
-import tech.aroma.data.assertions.RequestAssertions.*
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.assertions.RequestAssertions.validOrgId
+import tech.aroma.data.assertions.RequestAssertions.validOrganization
+import tech.aroma.data.assertions.RequestAssertions.validUserId
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.InvalidArgumentException
-import tech.aroma.thrift.exceptions.OperationFailedException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 /**
@@ -49,12 +51,12 @@ internal class SQLOrganizationRepository : OrganizationRepository
         this.serializer = serializer
     }
 
-    override fun saveOrganization(organization: Organization?)
+    override fun saveOrganization(organization: Organization)
     {
         checkThat(organization)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(notNull())
-                .`is`(validOrganization())
+                .isA(notNull())
+                .isA(validOrganization())
 
         val organization = organization!!
         val statement = Inserts.ORGANIZATION
@@ -134,14 +136,13 @@ internal class SQLOrganizationRepository : OrganizationRepository
         }
     }
 
-    override fun searchByName(searchTerm: String?): MutableList<Organization>
+    override fun searchByName(searchTerm: String): MutableList<Organization>
     {
         checkThat(searchTerm)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(nonEmptyString())
+                .isA(nonEmptyString())
 
-        var searchTerm = searchTerm!!
-        searchTerm = "%$searchTerm%"
+        val sqlReadySearchTerm = "%$searchTerm%"
 
         val query = Queries.SEARCH_ORGANIZATION_BY_NAME
 
@@ -149,11 +150,11 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         try
         {
-            result = database.query(query, serializer, searchTerm)
+            result = database.query(query, serializer, sqlReadySearchTerm)
         }
         catch(ex: Exception)
         {
-            LOG.warn("Could not find Organizations with name [{}].", searchTerm, ex)
+            LOG.warn("Could not find Organizations with name [{}].", sqlReadySearchTerm, ex)
         }
 
         return result
@@ -182,7 +183,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
 
         checkThat(user?.userId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
+                .isA(validUserId())
 
         val statement = Inserts.ORGANIZATION_MEMBER
         val orgId = organizationId!!.toUUID()
@@ -204,7 +205,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
         checkThat(userId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
+                .isA(validUserId())
 
         val query = Queries.CHECK_ORGANIZATION_HAS_MEMBER
         val orgId = organizationId!!.toUUID()
@@ -246,7 +247,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
         checkOrgID(organizationId)
         checkThat(userId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validUserId())
+                .isA(validUserId())
 
         val statement = Deletes.ORGANIZATION_MEMBER
         val orgId = organizationId!!.toUUID()
@@ -283,7 +284,7 @@ internal class SQLOrganizationRepository : OrganizationRepository
     {
         checkThat(orgId)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validOrgId())
+                .isA(validOrgId())
     }
 
 }

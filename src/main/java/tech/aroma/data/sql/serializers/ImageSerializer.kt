@@ -20,9 +20,11 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validImage
 import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Media
-import tech.aroma.thrift.*
+import tech.aroma.thrift.Dimension
+import tech.aroma.thrift.Image
+import tech.aroma.thrift.ImageType
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 
 

@@ -1,10 +1,12 @@
 package tech.aroma.data.sql
 
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import java.sql.*
+import tech.sirwellington.alchemy.arguments.assertions.*
+import java.sql.ResultSet
+import java.sql.SQLException
+import java.sql.Timestamp
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 /**
  *
@@ -16,7 +18,7 @@ import java.util.*
  */
 public fun ResultSet.hasColumn(column: String): Boolean
 {
-    checkThat(column).`is`(nonEmptyString())
+    checkThat(column).isA(nonEmptyString())
 
     try
     {

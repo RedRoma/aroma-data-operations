@@ -17,13 +17,16 @@
 package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.sql.*
+import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Tokens
+import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.assertions.AromaAssertions.legalToken
-import tech.aroma.thrift.authentication.*
+import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.authentication.TokenStatus
+import tech.aroma.thrift.authentication.TokenType
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.validUUID
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 
 

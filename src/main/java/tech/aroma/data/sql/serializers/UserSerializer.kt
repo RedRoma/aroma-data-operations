@@ -18,12 +18,15 @@ package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validUser
-import tech.aroma.data.sql.*
+import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Users
+import tech.aroma.data.sql.toCommaSeparatedList
+import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Role
 import tech.aroma.thrift.User
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 
 

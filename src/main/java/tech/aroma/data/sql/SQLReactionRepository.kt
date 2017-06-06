@@ -141,7 +141,7 @@ internal class SQLReactionRepository
 
             checkThat(it)
                     .throwing(InvalidArgumentException::class.java)
-                    .`is`(validReaction())
+                    .isA(validReaction())
         }
 
     }

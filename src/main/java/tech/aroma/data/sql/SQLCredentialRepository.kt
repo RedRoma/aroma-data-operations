@@ -23,7 +23,7 @@ import tech.aroma.data.sql.SQLStatements.*
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions
+import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
 
 
@@ -38,7 +38,7 @@ internal class SQLCredentialRepository @Inject constructor(val database: JdbcOpe
         checkUserId(userId)
         checkThat(encryptedPassword)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(StringAssertions.nonEmptyString())
+                .isA(nonEmptyString())
 
         val sql = Inserts.CREDENTIAL
 

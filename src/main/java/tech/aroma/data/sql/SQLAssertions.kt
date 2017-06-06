@@ -4,8 +4,7 @@ import tech.sirwellington.alchemy.annotations.access.NonInstantiable
 import tech.sirwellington.alchemy.arguments.AlchemyAssertion
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.FailedAssertionException
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 
 /**
@@ -23,11 +22,11 @@ class SQLAssertions
          */
         @JvmStatic fun resultSetWithColumn(column: String): AlchemyAssertion<ResultSet>
         {
-            checkThat(column).`is`(nonEmptyString())
+            checkThat(column).isA(nonEmptyString())
 
             return AlchemyAssertion { results ->
 
-                checkThat(results).`is`(notNull())
+                checkThat(results).isA(notNull())
 
                 if (!results.hasColumn(column))
                 {

@@ -43,34 +43,34 @@ internal fun checkApplication(app: Application?)
 {
     checkThat(app)
             .throwing(InvalidArgumentException::class.java)
-            .`is`(validApplication())
+            .isA(validApplication())
 }
 
 internal fun checkAppId(appId: String?)
 {
     checkThat(appId)
             .throwing(InvalidArgumentException::class.java)
-            .`is`(validApplicationId())
+            .isA(validApplicationId())
 }
 
 internal fun checkMessageId(messageId: String?)
 {
     checkThat(messageId)
             .throwing(InvalidArgumentException::class.java)
-            .`is`(validMessageId())
+            .isA(validMessageId())
 }
 
 internal fun checkUser(user: User?)
 {
     checkThat(user)
             .throwing(InvalidArgumentException::class.java)
-            .`is`(validUser())
+            .isA(validUser())
 }
 
 internal fun checkUserId(userId: String?)
 {
     checkThat(userId)
             .throwing(InvalidArgumentException::class.java)
-            .`is`(validUserId())
+            .isA(validUserId())
 
 }

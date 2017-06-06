@@ -18,12 +18,15 @@ package tech.aroma.data.sql.serializers
 
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validOrganization
-import tech.aroma.data.sql.*
+import tech.aroma.data.sql.DatabaseSerializer
 import tech.aroma.data.sql.serializers.Columns.Organizations
-import tech.aroma.thrift.*
+import tech.aroma.data.sql.toCommaSeparatedList
+import tech.aroma.data.sql.toUUID
+import tech.aroma.thrift.Industry
+import tech.aroma.thrift.Organization
+import tech.aroma.thrift.Tier
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.Assertions.notNull
-import tech.sirwellington.alchemy.arguments.assertions.StringAssertions.nonEmptyString
+import tech.sirwellington.alchemy.arguments.assertions.*
 import java.sql.ResultSet
 
 
@@ -33,30 +36,30 @@ import java.sql.ResultSet
  */
 internal class OrganizationSerializer : DatabaseSerializer<Organization>
 {
-    override fun save(`object`: Organization?, statement: String?, database: JdbcOperations?)
+    override fun save(`object`: Organization, statement: String, database: JdbcOperations)
     {
         checkThat(`object`, statement, database)
                 .are(notNull())
 
-        val org = `object`!!
+        val org = `object`
         checkThat(org)
                 .`is`(validOrganization())
 
         checkThat(statement)
                 .`is`(nonEmptyString())
 
-        database?.update(statement,
-                         org.organizationId.toUUID(),
-                         org.organizationName,
-                         org.owners.toCommaSeparatedList(),
-                         org.logoLink,
-                         org.industry?.toString(),
-                         org.organizationEmail,
-                         org.githubProfile,
-                         org.stockMarketSymbol,
-                         org.tier?.toString(),
-                         org.organizationDescription,
-                         org.website)
+        database.update(statement,
+                        org.organizationId.toUUID(),
+                        org.organizationName,
+                        org.owners.toCommaSeparatedList(),
+                        org.logoLink,
+                        org.industry?.toString(),
+                        org.organizationEmail,
+                        org.githubProfile,
+                        org.stockMarketSymbol,
+                        org.tier?.toString(),
+                        org.organizationDescription,
+                        org.website)
 
     }
 

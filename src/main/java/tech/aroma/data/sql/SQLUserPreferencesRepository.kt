@@ -159,7 +159,7 @@ internal class SQLUserPreferencesRepository
     {
         checkThat(device)
                 .throwing(InvalidArgumentException::class.java)
-                .`is`(validMobileDevice())
+                .isA(validMobileDevice())
     }
 
 
