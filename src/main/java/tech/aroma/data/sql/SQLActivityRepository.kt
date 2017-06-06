@@ -26,6 +26,7 @@ import tech.aroma.thrift.User
 import tech.aroma.thrift.events.Event
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.sirwellington.alchemy.arguments.AlchemyAssertion
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.*
 import tech.sirwellington.alchemy.thrift.ThriftObjects
@@ -196,12 +197,12 @@ internal class SQLActivityRepository
         }
     }
 
-    private fun checkEventId(eventId: String)
+    private fun checkEventId(eventId: String?)
     {
         checkThat(eventId)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("Invalid Event ID : $eventId")
-                .isA(validUUID())
+                .isA(validUUID() as AlchemyAssertion<String?>)
     }
 
 }

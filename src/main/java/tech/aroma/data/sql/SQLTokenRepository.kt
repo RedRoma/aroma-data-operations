@@ -37,8 +37,8 @@ import javax.inject.Inject
  * @author SirWellington
  */
 class SQLTokenRepository
-@Inject constructor(val database: JdbcOperations, val serializer: DatabaseSerializer<AuthenticationToken>)
-    : TokenRepository
+@Inject constructor(val database: JdbcOperations,
+                    val serializer: DatabaseSerializer<AuthenticationToken>): TokenRepository
 {
 
     companion object
@@ -91,11 +91,16 @@ class SQLTokenRepository
                 .throwing(InvalidArgumentException::class.java)
                 .isA(legalToken())
 
+        checkThat(token!!.tokenId)
+                .throwing(InvalidArgumentException::class.java)
+                .usingMessage("Token is invalid")
+                .isA(validUUID())
+
         val statement = Inserts.TOKEN
 
         try
         {
-            serializer.save(token!!, statement, database)
+            serializer.save(token, statement, database)
         }
         catch (ex: Exception)
         {

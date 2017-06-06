@@ -37,6 +37,11 @@ fun ThrowableAssertion.invalidArg(): ThrowableAssertion
     return this.isInstanceOf(tech.aroma.thrift.exceptions.InvalidArgumentException::class.java)
 }
 
+fun ThrowableAssertion.illegalArg(): ThrowableAssertion
+{
+    return this.isInstanceOf(IllegalArgumentException::class.java)
+}
+
 fun ThrowableAssertion.operationError(): ThrowableAssertion
 {
     return this.isInstanceOf(tech.aroma.thrift.exceptions.OperationFailedException::class.java)

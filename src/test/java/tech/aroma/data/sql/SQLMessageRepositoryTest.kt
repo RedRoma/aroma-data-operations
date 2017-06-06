@@ -11,6 +11,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.springframework.jdbc.core.JdbcTemplate
 import sir.wellington.alchemy.collections.lists.Lists
+import tech.aroma.data.illegalArg
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
 import tech.aroma.thrift.*
@@ -74,7 +75,7 @@ class SQLMessageRepositoryTest
 
         instance.saveMessage(message, lifetime)
 
-        verify<DatabaseSerializer<Message>>(serializer).save(message, expectedStatement, database)
+        verify(serializer).save(message, expectedStatement, database)
     }
 
     @DontRepeat
@@ -86,7 +87,7 @@ class SQLMessageRepositoryTest
 
         instance.saveMessage(message, null)
 
-        verify<DatabaseSerializer<Message>>(serializer).save(message, expectedStatement, database)
+        verify(serializer).save(message, expectedStatement, database)
     }
 
     @DontRepeat
@@ -94,8 +95,7 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testSaveMessageWithBadArguments()
     {
-        assertThrows { instance.saveMessage(null) }
-                .invalidArg()
+        assertThrows { instance.saveMessage(null) }.illegalArg()
     }
 
     @DontRepeat
@@ -107,8 +107,7 @@ class SQLMessageRepositoryTest
                 .whenever(serializer)
                 .save(any(), any(), any())
 
-        assertThrows { instance.saveMessage(message) }
-                .operationError()
+        assertThrows { instance.saveMessage(message) }.operationError()
     }
 
 
@@ -172,7 +171,7 @@ class SQLMessageRepositoryTest
 
         instance.deleteMessage(appId, messageId)
 
-        verify<JdbcTemplate>(database).update(expectedStatement, appId.toUUID(), messageId.toUUID())
+        verify(database).update(expectedStatement, appId.toUUID(), messageId.toUUID())
     }
 
     @DontRepeat

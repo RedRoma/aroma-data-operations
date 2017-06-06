@@ -25,6 +25,7 @@ import org.mockito.Mock
 import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
+import tech.aroma.data.illegalArg
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
 import tech.aroma.data.sql.SQLStatements.*
@@ -167,7 +168,7 @@ class SQLTokenRepositoryTest
         assertThrows {
             val invalidToken = token.deepCopy().setTokenId(badTokenId)
             instance.saveToken(invalidToken)
-        }
+        }.invalidArg()
     }
 
     @DontRepeat
