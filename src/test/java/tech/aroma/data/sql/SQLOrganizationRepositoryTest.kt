@@ -117,10 +117,6 @@ class SQLOrganizationRepositoryTest
     fun testSaveOrganizationWithBadArgs()
     {
         assertThrows {
-            instance.saveOrganization(null)
-        }.invalidArg().hasNoCause()
-
-        assertThrows {
             val invalidOrg = organization.deepCopy().setOrganizationId("")
             instance.saveOrganization(invalidOrg)
         }.invalidArg().hasNoCause()
@@ -235,9 +231,6 @@ class SQLOrganizationRepositoryTest
     @Test
     fun testSearchByNameWithBadArgs()
     {
-        assertThrows { instance.searchByName(null) }
-                .invalidArg()
-
         assertThrows { instance.searchByName("") }
                 .invalidArg()
 

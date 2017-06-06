@@ -13,9 +13,12 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import tech.aroma.data.notNull
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
-import tech.sirwellington.alchemy.arguments.assertions.TimeAssertions
+import tech.sirwellington.alchemy.arguments.assertions.*
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -77,6 +80,6 @@ class TimestampsTest
         assertThat(result, notNull)
 
         checkThat(result.toInstant())
-                .`is`(TimeAssertions.nowWithinDelta(1000))
+                .`is`(nowWithinDelta(1000))
     }
 }

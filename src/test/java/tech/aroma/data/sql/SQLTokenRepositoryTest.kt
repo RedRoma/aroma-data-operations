@@ -95,7 +95,6 @@ class SQLTokenRepositoryTest
     @Test
     fun testContainsTokenWithBadArgs()
     {
-        assertThrows { instance.containsToken(null) }.invalidArg()
         assertThrows { instance.containsToken("") }.invalidArg()
         assertThrows { instance.containsToken(badTokenId) }.invalidArg()
     }
@@ -127,7 +126,6 @@ class SQLTokenRepositoryTest
     @Test
     fun testGetTokenWithBadArgs()
     {
-        assertThrows { instance.getToken(null) }.invalidArg()
         assertThrows { instance.getToken("") }.invalidArg()
         assertThrows { instance.getToken(badTokenId) }.invalidArg()
     }
@@ -204,7 +202,6 @@ class SQLTokenRepositoryTest
     @Test
     fun testGetTokensBelongingToWithBadArgs()
     {
-        assertThrows { instance.getToken(null) }.invalidArg()
         assertThrows { instance.getToken("") }.invalidArg()
         assertThrows { instance.getToken(badTokenId) }.invalidArg()
     }
@@ -236,7 +233,6 @@ class SQLTokenRepositoryTest
     @Test
     fun testDeleteTokenWithBadArgs()
     {
-        assertThrows { instance.deleteToken(null) }.invalidArg()
         assertThrows { instance.deleteToken("") }.invalidArg()
         assertThrows { instance.deleteToken(badTokenId) }.invalidArg()
     }

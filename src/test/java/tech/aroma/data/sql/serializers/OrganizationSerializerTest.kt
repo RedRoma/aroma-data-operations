@@ -121,7 +121,6 @@ class OrganizationSerializerTest
     @Test
     fun testSaveWithBadArgs()
     {
-        assertThrows { instance.save(null, query, database) }.isInstanceOf(IllegalArgumentException::class.java)
         assertThrows {
             val emptyOrg = Organization()
             instance.save(emptyOrg, query, database)
@@ -132,10 +131,8 @@ class OrganizationSerializerTest
             instance.save(invalidOrg, query, database)
         }.isInstanceOf(IllegalArgumentException::class.java)
 
-        assertThrows { instance.save(org, null, database) }.isInstanceOf(IllegalArgumentException::class.java)
         assertThrows { instance.save(org, "", database) }.isInstanceOf(IllegalArgumentException::class.java)
 
-        assertThrows { instance.save(org, query, null) }.isInstanceOf(IllegalArgumentException::class.java)
     }
 
 

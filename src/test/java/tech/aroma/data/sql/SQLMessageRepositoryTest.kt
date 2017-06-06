@@ -156,9 +156,6 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetMessageWithBadArgs()
     {
-        assertThrows { instance.getMessage(null, messageId) }.invalidArg()
-        assertThrows { instance.getMessage(appId, null) }.invalidArg()
-
         assertThrows { instance.getMessage("", messageId) }.invalidArg()
         assertThrows { instance.getMessage(appId, "") }.invalidArg()
 
@@ -195,12 +192,6 @@ class SQLMessageRepositoryTest
                 .invalidArg()
 
         assertThrows { instance.deleteMessage(alphabetic, "") }
-                .invalidArg()
-
-        assertThrows { instance.deleteMessage(null, messageId) }
-                .invalidArg()
-
-        assertThrows { instance.deleteMessage(appId, null) }
                 .invalidArg()
 
     }
@@ -248,8 +239,6 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testContainsMessageWithBadArgs()
     {
-        assertThrows { instance.containsMessage(null, messageId) }.invalidArg()
-        assertThrows { instance.containsMessage(appId, null) }.invalidArg()
 
         assertThrows { instance.containsMessage("", messageId) }.invalidArg()
         assertThrows { instance.containsMessage(appId, "") }.invalidArg()
@@ -294,7 +283,6 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByHostnameWithBadArgs()
     {
-        assertThrows { instance.getByHostname(null) }.invalidArg()
         assertThrows { instance.getByHostname("") }.invalidArg()
     }
 
@@ -342,7 +330,6 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testGetByApplicationWithBadArgs()
     {
-        assertThrows { instance.getByApplication(null) }.invalidArg()
         assertThrows { instance.getByApplication("") }.invalidArg()
         assertThrows { instance.getByApplication(alphabetic) }.invalidArg()
     }
@@ -398,9 +385,6 @@ class SQLMessageRepositoryTest
         assertThrows { instance.getByTitle("", alphabetic) }.invalidArg()
         assertThrows { instance.getByTitle(appId, "") }.invalidArg()
 
-        assertThrows { instance.getByTitle(null, alphabetic) }.invalidArg()
-        assertThrows { instance.getByTitle(appId, null) }.invalidArg()
-
         assertThrows { instance.getByTitle(alphabetic, alphabetic) }.invalidArg()
     }
 
@@ -435,9 +419,6 @@ class SQLMessageRepositoryTest
     fun testGetCountWithBadArgs()
     {
         assertThrows { instance.getCountByApplication("") }
-                .invalidArg()
-
-        assertThrows { instance.getCountByApplication(null) }
                 .invalidArg()
 
         assertThrows { instance.getCountByApplication(alphabetic) }
