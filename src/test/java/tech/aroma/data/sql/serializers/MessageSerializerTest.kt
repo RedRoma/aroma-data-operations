@@ -2,7 +2,9 @@ package tech.aroma.data.sql.serializers
 
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.whenever
+import org.hamcrest.Matchers
 import org.junit.*
+import org.junit.Assert.assertThat
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.Mockito.verify
@@ -131,7 +133,7 @@ class MessageSerializerTest
     {
         val result = instance.deserialize(resultSet)
 
-        Assert.assertThat(result, org.hamcrest.Matchers.`is`(message))
+        assertThat(result, Matchers.equalTo(message))
     }
 
     private fun setupResults()

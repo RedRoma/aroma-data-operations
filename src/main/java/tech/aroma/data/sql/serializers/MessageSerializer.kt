@@ -33,9 +33,9 @@ internal class MessageSerializer : DatabaseSerializer<Message>
     @Throws(SQLException::class)
     override fun save(message: Message, statement: String, database: JdbcOperations)
     {
-        checkThat(message).`is`(validMessage())
-        checkThat(database).`is`(notNull())
-        checkThat(statement).`is`(nonEmptyString())
+        checkThat(message).isA(validMessage())
+        checkThat(database).isA(notNull())
+        checkThat(statement).isA(nonEmptyString())
 
         val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else null
         val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else null

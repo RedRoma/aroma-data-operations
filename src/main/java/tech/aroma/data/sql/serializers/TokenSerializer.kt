@@ -38,9 +38,9 @@ internal class TokenSerializer : DatabaseSerializer<AuthenticationToken>
 {
     override fun save(`object`: AuthenticationToken, statement: String, database: JdbcOperations)
     {
-        checkThat(statement).`is`(nonEmptyString())
-        checkThat(`object`).`is`(legalToken())
-        checkThat(`object`.tokenId).`is`(validUUID())
+        checkThat(statement).isA(nonEmptyString())
+        checkThat(`object`).isA(legalToken())
+        checkThat(`object`.tokenId).isA(validUUID())
 
         val token = `object`
 

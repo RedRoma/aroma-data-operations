@@ -42,8 +42,8 @@ internal class ReactionsSerializer : DatabaseSerializer<MutableList<Reaction>>
 
     override fun save(reactions: MutableList<Reaction>, statement: String, database: JdbcOperations)
     {
-        reactions.forEach { checkThat(it).`is`(validReaction()) }
-        checkThat(statement).`is`(nonEmptyString())
+        reactions.forEach { checkThat(it).isA(validReaction()) }
+        checkThat(statement).isA(nonEmptyString())
     }
 
     override fun deserialize(row: ResultSet): MutableList<Reaction>

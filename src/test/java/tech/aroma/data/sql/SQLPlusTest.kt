@@ -80,6 +80,6 @@ class TimestampsTest
         assertThat(result, notNull)
 
         checkThat(result.toInstant())
-                .`is`(nowWithinDelta(1000))
+                .isA(nowWithinDelta(1000))
     }
 }

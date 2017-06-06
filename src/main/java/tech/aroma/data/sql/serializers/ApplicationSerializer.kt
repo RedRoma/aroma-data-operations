@@ -43,8 +43,8 @@ internal class ApplicationSerializer : DatabaseSerializer<Application>
 
     override fun save(app: Application, statement: String, database: JdbcOperations)
     {
-        checkThat(app).`is`(validApplication())
-        checkThat(statement).`is`(nonEmptyString())
+        checkThat(app).isA(validApplication())
+        checkThat(statement).isA(nonEmptyString())
 
         val appId = app.applicationId.toUUID()
 

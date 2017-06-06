@@ -43,10 +43,10 @@ internal class OrganizationSerializer : DatabaseSerializer<Organization>
 
         val org = `object`
         checkThat(org)
-                .`is`(validOrganization())
+                .isA(validOrganization())
 
         checkThat(statement)
-                .`is`(nonEmptyString())
+                .isA(nonEmptyString())
 
         database.update(statement,
                         org.organizationId.toUUID(),
@@ -65,7 +65,7 @@ internal class OrganizationSerializer : DatabaseSerializer<Organization>
 
     override fun deserialize(row: ResultSet?): Organization
     {
-        checkThat(row).`is`(notNull())
+        checkThat(row).isA(notNull())
 
         val org = Organization()
         val results = row ?: return org

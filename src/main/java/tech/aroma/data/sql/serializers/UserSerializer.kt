@@ -38,8 +38,8 @@ internal class UserSerializer : DatabaseSerializer<User>
 {
     override fun save(user: User, statement: String, database: JdbcOperations)
     {
-        checkThat(user).`is`(validUser())
-        checkThat(statement).`is`(nonEmptyString())
+        checkThat(user).isA(validUser())
+        checkThat(statement).isA(nonEmptyString())
 
         val birthday = if (user.isSetBirthdate) user.birthdate else null
 

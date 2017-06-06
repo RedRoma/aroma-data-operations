@@ -41,8 +41,8 @@ internal class DevicesSerializer : DatabaseSerializer<MutableSet<MobileDevice>>
 
     override fun save(devices: MutableSet<MobileDevice>, statement: String, database: JdbcOperations)
     {
-        checkThat(statement).`is`(nonEmptyString())
-        devices.forEach { checkThat(it).`is`(validMobileDevice()) }
+        checkThat(statement).isA(nonEmptyString())
+        devices.forEach { checkThat(it).isA(validMobileDevice()) }
 
     }
 

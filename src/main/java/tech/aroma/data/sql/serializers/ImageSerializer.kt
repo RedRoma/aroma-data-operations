@@ -36,8 +36,8 @@ internal class ImageSerializer : DatabaseSerializer<Image>
 {
     override fun save(image: Image, statement: String, database: JdbcOperations)
     {
-        checkThat(statement).`is`(nonEmptyString())
-        checkThat(image).`is`(validImage())
+        checkThat(statement).isA(nonEmptyString())
+        checkThat(image).isA(validImage())
     }
 
     override fun deserialize(row: ResultSet): Image

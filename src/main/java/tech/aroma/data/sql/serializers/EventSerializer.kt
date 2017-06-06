@@ -34,8 +34,8 @@ internal class EventSerializer : DatabaseSerializer<Event>
 {
     override fun save(event: Event, statement: String, database: JdbcOperations)
     {
-        checkThat(event.eventId).`is`(validUUID())
-        checkThat(statement).`is`(nonEmptyString())
+        checkThat(event.eventId).isA(validUUID())
+        checkThat(statement).isA(nonEmptyString())
 
 
     }
