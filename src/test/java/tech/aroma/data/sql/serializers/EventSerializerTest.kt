@@ -31,7 +31,7 @@ import tech.aroma.thrift.User
 import tech.aroma.thrift.events.Event
 import tech.aroma.thrift.generators.EventGenerators.events
 import tech.aroma.thrift.generators.UserGenerators.users
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString

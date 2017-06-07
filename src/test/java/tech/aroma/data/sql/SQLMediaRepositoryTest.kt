@@ -18,25 +18,33 @@ package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Images
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.doesNotExist
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.NumberGenerators.negativeIntegers
+import tech.sirwellington.alchemy.generator.NumberGenerators.Companion.negativeIntegers
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat

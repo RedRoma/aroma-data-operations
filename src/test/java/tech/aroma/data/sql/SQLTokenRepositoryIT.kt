@@ -18,8 +18,11 @@ package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.sets.Sets
@@ -27,7 +30,6 @@ import tech.aroma.data.AromaGenerators.Tokens
 import tech.aroma.data.sql.serializers.TokenSerializer
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.exceptions.InvalidTokenException
-import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
@@ -164,7 +166,7 @@ class SQLTokenRepositoryIT
 
     private fun createTokensFor(owner: String): List<AuthenticationToken>
     {
-        return listOf { Tokens.token.setOwnerId(owner) }
+        return List(10) { Tokens.token.setOwnerId(owner) }
     }
 
     private inline fun <T : Any> List<T>.asSet(): Set<T>

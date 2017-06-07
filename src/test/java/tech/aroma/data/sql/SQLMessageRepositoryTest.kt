@@ -1,29 +1,38 @@
 package tech.aroma.data.sql
 
 import com.nhaarman.mockito_kotlin.whenever
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Matchers.any
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.doThrow
+import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.illegalArg
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
-import tech.aroma.thrift.*
+import tech.aroma.thrift.LengthOfTime
+import tech.aroma.thrift.Message
+import tech.aroma.thrift.TimeUnit
 import tech.aroma.thrift.exceptions.DoesNotExistException
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
-import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs
+import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.NumberGenerators.Companion.positiveLongs
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 /**
  * @author SirWellington
@@ -179,7 +188,7 @@ class SQLMessageRepositoryTest
     @Throws(Exception::class)
     fun testDeleteMessageWithInvalidArgs()
     {
-        val alphabetic = one(alphabeticString())
+        val alphabetic = one(alphabeticStrings())
 
         assertThrows { instance.deleteMessage(alphabetic, messageId) }
                 .invalidArg()

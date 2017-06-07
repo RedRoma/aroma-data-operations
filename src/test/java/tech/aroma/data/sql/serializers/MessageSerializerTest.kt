@@ -3,19 +3,27 @@ package tech.aroma.data.sql.serializers
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.Matchers
-import org.junit.*
 import org.junit.Assert.assertThat
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.*
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Message
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import java.sql.ResultSet
 import org.hamcrest.Matchers.`is` as Is
 
@@ -114,7 +122,7 @@ class MessageSerializerTest
     @Throws(Exception::class)
     fun testSaveWithBadArgs()
     {
-        val statement = one(alphabeticString())
+        val statement = one(alphabeticStrings())
 
         assertThrows {
             instance.save(message, "", database)

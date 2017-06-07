@@ -18,7 +18,10 @@ package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Images
@@ -27,9 +30,11 @@ import tech.aroma.data.operationError
 import tech.aroma.data.sql.serializers.ImageSerializer
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
-import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GenerateList
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

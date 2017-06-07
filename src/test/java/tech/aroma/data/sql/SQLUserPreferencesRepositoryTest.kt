@@ -16,27 +16,41 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.*
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import com.nhaarman.mockito_kotlin.*
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.isEmpty
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.*
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import org.springframework.jdbc.core.PreparedStatementSetter
-import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Devices
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.invalidArg
+import tech.aroma.data.notEmpty
+import tech.aroma.data.notNull
+import tech.aroma.data.operationError
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import tech.sirwellington.alchemy.thrift.ThriftObjects
-import java.sql.*
 import java.sql.Array
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat

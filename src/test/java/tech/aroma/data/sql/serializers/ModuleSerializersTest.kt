@@ -11,7 +11,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import tech.aroma.data.hasInstance
 import tech.aroma.data.sql.DatabaseSerializer
-import tech.aroma.thrift.*
+import tech.aroma.thrift.Image
+import tech.aroma.thrift.Message
+import tech.aroma.thrift.Organization
+import tech.aroma.thrift.User
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.events.Event

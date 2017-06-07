@@ -37,9 +37,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static sir.wellington.alchemy.collections.sets.Sets.toSet;
 import static tech.aroma.thrift.generators.ApplicationGenerators.applications;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.Get.one;
 import static tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs;
-import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticStrings;
 import static tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
@@ -154,9 +154,9 @@ public class CassandraFollowerRepositoryTest
 
         assertThrows(() -> instance.saveFollowing(user, emptyApp))
             .isInstanceOf(InvalidArgumentException.class);
-        
-        User userWithBadId = user.setUserId(one(alphabeticString()));
-        Application appWithBadId = app.setApplicationId(one(alphabeticString()));
+
+        User userWithBadId = user.setUserId(one(alphabeticStrings()));
+        Application appWithBadId = app.setApplicationId(one(alphabeticStrings()));
 
         assertThrows(() -> instance.saveFollowing(userWithBadId, app))
             .isInstanceOf(InvalidArgumentException.class);
@@ -195,8 +195,8 @@ public class CassandraFollowerRepositoryTest
         
         assertThrows(() -> instance.deleteFollowing(userId, ""))
             .isInstanceOf(InvalidArgumentException.class);
-        
-        String badId = one(alphabeticString());
+
+        String badId = one(alphabeticStrings());
         
         assertThrows(() -> instance.deleteFollowing(badId, appId))
             .isInstanceOf(InvalidArgumentException.class);
@@ -234,7 +234,7 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testFollowingExistsWithBadArgs() throws Exception
     {
-        String badId = one(alphabeticString());
+        String badId = one(alphabeticStrings());
 
         assertThrows(() -> instance.followingExists("", appId))
             .isInstanceOf(InvalidArgumentException.class);
@@ -286,7 +286,7 @@ public class CassandraFollowerRepositoryTest
     @Test
     public void testGetApplicationsFollowedByWithBadArgs() throws Exception
     {
-        String badId = one(alphabeticString());
+        String badId = one(alphabeticStrings());
         
         assertThrows(() -> instance.getApplicationsFollowedBy(""))
             .isInstanceOf(InvalidArgumentException.class);
@@ -334,8 +334,8 @@ public class CassandraFollowerRepositoryTest
     {
         assertThrows(() -> instance.getApplicationFollowers(""))
             .isInstanceOf(InvalidArgumentException.class);
-        
-        String badId = one(alphabeticString());
+
+        String badId = one(alphabeticStrings());
         assertThrows(() -> instance.getApplicationFollowers(badId))
             .isInstanceOf(InvalidArgumentException.class);
     }

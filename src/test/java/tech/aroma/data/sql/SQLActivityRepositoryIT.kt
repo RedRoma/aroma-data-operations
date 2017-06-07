@@ -19,7 +19,10 @@ package tech.aroma.data.sql
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmpty
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.notNull
@@ -30,8 +33,8 @@ import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.generators.EventGenerators.events
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
 import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertFalse

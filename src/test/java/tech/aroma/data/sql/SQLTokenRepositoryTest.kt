@@ -16,7 +16,11 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doThrow
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -25,18 +29,23 @@ import org.mockito.Mock
 import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
-import tech.aroma.data.illegalArg
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.authentication.AuthenticationToken
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
+import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat

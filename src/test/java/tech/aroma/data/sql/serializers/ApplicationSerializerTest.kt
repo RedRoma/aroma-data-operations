@@ -16,8 +16,13 @@ package tech.aroma.data.sql.serializers
  * limitations under the License.
  */
 
-import com.nhaarman.mockito_kotlin.*
-import org.junit.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -26,13 +31,18 @@ import org.springframework.jdbc.UncategorizedSQLException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
 import tech.aroma.data.AromaGenerators
-import tech.aroma.data.sql.*
 import tech.aroma.data.sql.serializers.Columns.Applications
+import tech.aroma.data.sql.toCommaSeparatedList
+import tech.aroma.data.sql.toTimestamp
+import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Application
-import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import java.lang.IllegalArgumentException
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -72,7 +82,7 @@ class ApplicationSerializerTest
         app.totalMessagesSent = 0
         app.unsetTotalMessagesSent()
         app.unsetFollowers()
-        app.followers = emptySet()
+        app.followers = setOf()
 
         ownerId = Lists.oneOf(app.owners.toList())
     }
@@ -127,13 +137,13 @@ class ApplicationSerializerTest
         }
 
         assertThrows {
-            val appWithNoOwners = app.deepCopy().setOwners(emptySet())
+            val appWithNoOwners = app.deepCopy().setOwners(setOf())
             instance.save(appWithNoOwners, query, database)
         }
 
         assertThrows {
             val appWithInvalidOwners = app.deepCopy()
-            val owners = CollectionGenerators.listOf(alphabeticString(), 10)
+            val owners = listOf(alphabeticStrings(), 10)
             appWithInvalidOwners.owners = owners.toMutableSet()
 
             instance.save(appWithInvalidOwners, query, database)

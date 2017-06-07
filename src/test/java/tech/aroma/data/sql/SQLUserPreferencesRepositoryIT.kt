@@ -16,9 +16,15 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.*
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import org.junit.*
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.isEmpty
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Devices
@@ -27,11 +33,12 @@ import tech.aroma.data.notNull
 import tech.aroma.data.sql.serializers.DevicesSerializer
 import tech.aroma.thrift.channels.MobileDevice
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import kotlin.test.assertTrue
+
 
 @RunWith(AlchemyTestRunner::class)
 class SQLUserPreferencesRepositoryIT

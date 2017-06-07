@@ -16,13 +16,26 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.google.inject.*
+import com.google.inject.AbstractModule
+import com.google.inject.Guice
+import com.google.inject.Injector
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.*
+import tech.aroma.data.ActivityRepository
+import tech.aroma.data.CredentialRepository
+import tech.aroma.data.FollowerRepository
+import tech.aroma.data.InboxRepository
+import tech.aroma.data.MediaRepository
+import tech.aroma.data.MessageRepository
+import tech.aroma.data.ReactionRepository
+import tech.aroma.data.TokenRepository
+import tech.aroma.data.UserPreferencesRepository
+import tech.aroma.data.UserRepository
+import tech.aroma.data.bind
+import tech.aroma.data.hasInstance
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertTrue
 

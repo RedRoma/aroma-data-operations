@@ -28,7 +28,9 @@ import tech.aroma.data.AromaGenerators.Images
 import tech.aroma.data.sql.serializers.Columns.Media
 import tech.aroma.thrift.Dimension
 import tech.aroma.thrift.Image
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
 import java.sql.ResultSet
 

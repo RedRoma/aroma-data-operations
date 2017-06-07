@@ -18,7 +18,9 @@ package tech.aroma.data.sql.serializers
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verifyZeroInteractions
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,9 +30,11 @@ import tech.aroma.data.notNull
 import tech.aroma.data.sql.serializers.Columns.Reactions
 import tech.aroma.thrift.generators.ReactionGenerators.reactions
 import tech.aroma.thrift.reactions.Reaction
-import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.ResultSet
 
@@ -97,7 +101,7 @@ class ReactionsSerializerTest
 
     private fun setupData()
     {
-        reactions = CollectionGenerators.listOf(reactions(), 14)
+        reactions = listOf(reactions(), 14).toMutableList()
     }
 
     private fun setupMocks()

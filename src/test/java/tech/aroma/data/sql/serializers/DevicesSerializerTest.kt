@@ -29,7 +29,9 @@ import tech.aroma.data.AromaGenerators.Devices
 import tech.aroma.data.sql.serializers.Columns.UserPreferences
 import tech.aroma.thrift.channels.MobileDevice
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import tech.sirwellington.alchemy.thrift.ThriftObjects
 import java.sql.Array
 import java.sql.ResultSet

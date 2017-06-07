@@ -16,16 +16,22 @@
 
 package tech.aroma.data
 
-import tech.aroma.thrift.*
+import tech.aroma.thrift.Application
+import tech.aroma.thrift.Image
+import tech.aroma.thrift.Message
+import tech.aroma.thrift.ProgrammingLanguage
+import tech.aroma.thrift.Tier
 import tech.aroma.thrift.authentication.AuthenticationToken
 import tech.aroma.thrift.generators.ApplicationGenerators
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
 import tech.aroma.thrift.generators.ImageGenerators
 import tech.aroma.thrift.generators.MessageGenerators.messages
-import tech.sirwellington.alchemy.generator.*
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.EnumGenerators
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.StringGenerators
+import tech.sirwellington.alchemy.generator.TimeGenerators
+import tech.sirwellington.alchemy.generator.one
 
 
 /**
@@ -39,9 +45,9 @@ class AromaGenerators
 
     companion object
     {
-        val id: String get() = uuids.get()
+        val id: String get() = StringGenerators.uuids.get()
 
-        val name: String get() = StringGenerators.alphabeticString().get()
+        val name: String get() = StringGenerators.alphabeticStrings().get()
     }
 
     object Times
@@ -64,9 +70,9 @@ class AromaGenerators
 
         val tier: Tier get() = EnumGenerators.enumValueOf(Tier::class.java).get()
 
-        val owner: String get() = uuids.get()
+        val owner: String get() = StringGenerators.uuids.get()
 
-        val owners: Set<String> get() = CollectionGenerators.listOf(uuids, 5).toSet()
+        val owners: Set<String> get() = CollectionGenerators.listOf(StringGenerators.uuids, 5).toSet()
 
         val application: Application get() = ApplicationGenerators.applications().get()
     }

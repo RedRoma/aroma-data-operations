@@ -16,41 +16,52 @@
 
 package tech.aroma.data.assertions
 
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.notNullValue
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import sir.wellington.alchemy.collections.lists.Lists
 import sir.wellington.alchemy.collections.sets.Sets
-import tech.aroma.data.AromaGenerators
-import tech.aroma.thrift.*
-import tech.aroma.thrift.authentication.*
-import tech.aroma.thrift.channels.*
-import tech.aroma.thrift.generators.ApplicationGenerators
-import tech.aroma.thrift.generators.ImageGenerators
-import tech.aroma.thrift.reactions.Reaction
-import tech.sirwellington.alchemy.arguments.AlchemyAssertion
-import tech.sirwellington.alchemy.arguments.FailedAssertionException
-import tech.sirwellington.alchemy.generator.EnumGenerators
-import tech.sirwellington.alchemy.test.junit.runners.*
-
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.notNullValue
-import org.junit.Assert.assertThat
 import tech.aroma.data.AromaGenerators.Images
 import tech.aroma.data.failedAssertion
+import tech.aroma.thrift.Application
+import tech.aroma.thrift.Dimension
+import tech.aroma.thrift.Image
+import tech.aroma.thrift.LengthOfTime
+import tech.aroma.thrift.Message
+import tech.aroma.thrift.Organization
+import tech.aroma.thrift.TimeUnit
+import tech.aroma.thrift.User
+import tech.aroma.thrift.authentication.ApplicationToken
+import tech.aroma.thrift.authentication.AuthenticationToken
+import tech.aroma.thrift.authentication.UserToken
+import tech.aroma.thrift.channels.AndroidDevice
+import tech.aroma.thrift.channels.IOSDevice
+import tech.aroma.thrift.channels.MobileDevice
+import tech.aroma.thrift.generators.ApplicationGenerators
 import tech.aroma.thrift.generators.ChannelGenerators.mobileDevices
-import tech.aroma.thrift.generators.ImageGenerators.appIcons
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
-import tech.sirwellington.alchemy.generator.NumberGenerators.negativeIntegers
-import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs
+import tech.aroma.thrift.reactions.Reaction
+import tech.sirwellington.alchemy.arguments.FailedAssertionException
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.EnumGenerators
+import tech.sirwellington.alchemy.generator.NumberGenerators.Companion.negativeIntegers
+import tech.sirwellington.alchemy.generator.NumberGenerators.Companion.positiveLongs
 import tech.sirwellington.alchemy.generator.ObjectGenerators.pojos
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.uuids
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ExceptionOperation
-import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.*
+import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 /**
 
@@ -135,7 +146,7 @@ class RequestAssertionsTest
         val appWithoutOwners = Application(app).setOwners(Sets.emptySet<String>())
         assertThrows { assertion.check(appWithoutOwners) }.failedAssertion()
 
-        val appWithInvalidOwners = Application(app).setOwners(Sets.copyOf(listOf(alphabeticString())))
+        val appWithInvalidOwners = Application(app).setOwners(CollectionGenerators.listOf(alphabeticStrings()).toSet())
         assertThrows { assertion.check(appWithInvalidOwners) }
     }
 
@@ -249,7 +260,7 @@ class RequestAssertionsTest
         assertThrows { assertion.check(orgWithInvalidId) }.failedAssertion()
 
         val orgWithBadOwners = Organization(organization)
-                .setOwners(listOf(alphabeticString(2)))
+                .setOwners(listOf(alphabeticStrings(2)))
         assertThrows { assertion.check(orgWithBadOwners) }.failedAssertion()
 
     }

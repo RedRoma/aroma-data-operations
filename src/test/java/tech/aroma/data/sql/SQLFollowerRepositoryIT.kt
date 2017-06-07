@@ -16,22 +16,30 @@ package tech.aroma.data.sql
  * limitations under the License.
  */
 
-import com.natpryce.hamkrest.*
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import org.junit.*
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.isEmpty
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
-import tech.aroma.data.*
 import tech.aroma.data.AromaGenerators.Applications
+import tech.aroma.data.notEmpty
+import tech.aroma.data.notNull
+import tech.aroma.data.operationError
 import tech.aroma.data.sql.serializers.ApplicationSerializer
 import tech.aroma.data.sql.serializers.UserSerializer
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.CollectionGenerators.listOf
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.uuids
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertFalse
@@ -212,8 +220,8 @@ class SQLFollowerRepositoryIT
         app.unsetTimeOfProvisioning()
         app.timeOfProvisioning = 0
 
-        userIds = listOf(uuids(), 10)
-        appIds = listOf(uuids(), 10)
+        userIds = CollectionGenerators.listOf(uuids(), 10)
+        appIds = CollectionGenerators.listOf(uuids(), 10)
     }
 
     private fun setupMocks()

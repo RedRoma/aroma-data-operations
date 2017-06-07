@@ -19,8 +19,11 @@ package tech.aroma.data.sql
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import com.natpryce.hamkrest.isEmpty
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
@@ -28,9 +31,10 @@ import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.sql.serializers.ApplicationSerializer
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.DoesNotExistException
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
+import tech.sirwellington.alchemy.generator.AlchemyGenerator
 import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString
@@ -83,7 +87,7 @@ class SQLApplicationRepositoryIT
         app.followers = mutableSetOf()
         app.timeOfProvisioning = 0L
 
-        apps = CollectionGenerators.listOf({ Applications.application }, 5)
+        apps = CollectionGenerators.listOf(AlchemyGenerator { Applications.application }, 5)
         apps.forEach { it.owners.add(ownerId) }
         apps.forEach { it.organizationId = orgId }
         apps.forEach { it.timeOfProvisioning = 0L }
@@ -134,7 +138,7 @@ class SQLApplicationRepositoryIT
 
         result.timeOfProvisioning = 0
         result.totalMessagesSent = 0
-        result.followers = emptySet()
+        result.followers = setOf()
 
         assertEquals(app, result)
     }
@@ -229,7 +233,7 @@ class SQLApplicationRepositoryIT
 
         val results = instance.getApplicationsByOrg(orgId)
         results.forEach { it.timeOfProvisioning = 0L }
-        results.forEach { it.followers = emptySet() }
+        results.forEach { it.followers = setOf() }
 
         assertEquals(apps.toSet(), results.toSet())
     }
@@ -245,14 +249,14 @@ class SQLApplicationRepositoryIT
     fun testSearchByName()
     {
         val app = Lists.oneOf(apps)
-        app.name = one(alphabeticString(20))
+        app.name = one(alphabeticStrings(20))
 
         apps.forEach(instance::saveApplication)
         val searchTerm = app.name.substring(3..9)
 
         val results = instance.searchByName(searchTerm)
         results.forEach { it.timeOfProvisioning = 0L }
-        results.forEach { it.followers = emptySet() }
+        results.forEach { it.followers = setOf() }
 
         assertThat(results, hasElement(app))
 
@@ -270,7 +274,7 @@ class SQLApplicationRepositoryIT
         assertEquals(apps.size, recent.size)
 
         recent.forEach { it.timeOfProvisioning = 0L }
-        recent.forEach { it.followers = emptySet() }
+        recent.forEach { it.followers = setOf() }
 
         assertEquals(apps.toSet(), recent.toSet())
 

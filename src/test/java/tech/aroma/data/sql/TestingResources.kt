@@ -17,12 +17,17 @@
 
 package tech.aroma.data.sql
 
-import com.google.inject.*
+import com.google.inject.Guice
+import com.google.inject.Key
+import com.google.inject.TypeLiteral
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.whenever
 import org.mockito.Mockito
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.*
+import org.springframework.jdbc.core.JdbcOperations
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.PreparedStatementSetter
+import org.springframework.jdbc.core.RowMapper
 import tech.aroma.data.sql.serializers.ModuleSerializers
 import tech.aroma.thrift.Message
 

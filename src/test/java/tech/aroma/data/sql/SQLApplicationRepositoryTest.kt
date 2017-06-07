@@ -26,19 +26,27 @@ import org.mockito.Mock
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcOperations
 import sir.wellington.alchemy.collections.lists.Lists
-import tech.aroma.data.*
+import tech.aroma.data.AromaGenerators
 import tech.aroma.data.AromaGenerators.Applications
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.invalidArg
+import tech.aroma.data.operationError
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.exceptions.DoesNotExistException
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
+import tech.sirwellington.alchemy.generator.AlchemyGenerator
+import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.uuids
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import kotlin.test.assertEquals
 
 @RunWith(AlchemyTestRunner::class)
@@ -70,7 +78,7 @@ class SQLApplicationRepositoryTest
         appId = app.applicationId
         orgId = app.organizationId
 
-        apps = CollectionGenerators.listOf({ Applications.application }, 10)
+        apps = CollectionGenerators.listOf(AlchemyGenerator { Applications.application }, 10)
     }
 
     @Test
@@ -135,7 +143,7 @@ class SQLApplicationRepositoryTest
 
         assertThrows {
             val appWithInvalidId = Application(app)
-                    .setApplicationId(one(alphabeticString()))
+                    .setApplicationId(one(alphabeticStrings()))
 
             instance.saveApplication(appWithInvalidId)
         }
@@ -149,8 +157,7 @@ class SQLApplicationRepositoryTest
 
         assertThrows {
             val appWithInvalidOwners = Application(app)
-            appWithInvalidOwners.owners = CollectionGenerators.listOf { alphabeticString().get() }.toSet()
-
+            appWithInvalidOwners.owners = CollectionGenerators.listOf(alphabeticStrings()).toSet()
             instance.saveApplication(appWithInvalidOwners)
         }
     }
@@ -337,7 +344,7 @@ class SQLApplicationRepositoryTest
     {
         val query = Queries.SEARCH_APPLICATION_BY_NAME
 
-        val searchTerm = one(alphabeticString())
+        val searchTerm = one(alphabeticStrings())
 
         whenever(database.query(query, serializer, "%$searchTerm%"))
                 .thenReturn(apps)

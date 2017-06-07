@@ -19,7 +19,10 @@ package tech.aroma.data.sql
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isEmpty
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.notNull
@@ -27,8 +30,8 @@ import tech.aroma.data.sql.serializers.MessageSerializer
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.MessageGenerators.messages
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.CollectionGenerators
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
@@ -54,7 +57,7 @@ class SQLInboxRepositoryIT
     private lateinit var message: Message
     private lateinit var messageId: String
 
-    private lateinit var messages: MutableList<Message>
+    private lateinit var messages: List<Message>
 
     @GenerateString(UUID)
     private lateinit var userId: String
@@ -72,7 +75,7 @@ class SQLInboxRepositoryIT
     {
         message = one(messages())
         messageId = message.messageId
-        messages = CollectionGenerators.listOf(messages(), 10)
+        messages = listOf(messages(), 10)
 
 
         instance = SQLInboxRepository(database, serializer)

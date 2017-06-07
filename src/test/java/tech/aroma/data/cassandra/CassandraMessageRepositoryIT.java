@@ -38,8 +38,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static sir.wellington.alchemy.collections.sets.Sets.containTheSameElements;
 import static tech.aroma.thrift.generators.MessageGenerators.messages;
-import static tech.sirwellington.alchemy.generator.AlchemyGenerator.one;
-import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString;
+import static tech.sirwellington.alchemy.generator.AlchemyGenerator.Get.one;
+import static tech.sirwellington.alchemy.generator.StringGenerators.alphabeticStrings;
 import static tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID;
 
 /**
@@ -217,7 +217,7 @@ public class CassandraMessageRepositoryIT
     @Test
     public void testGetByTitle() throws Exception
     {
-        String title = one(alphabeticString());
+        String title = one(alphabeticStrings());
         
         List<Message> expected = messages.stream()
             .map(m -> m.setTitle(title))

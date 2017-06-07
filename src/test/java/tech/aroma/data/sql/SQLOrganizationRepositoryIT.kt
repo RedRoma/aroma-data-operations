@@ -17,21 +17,30 @@
 package tech.aroma.data.sql
 
 
-import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import org.junit.*
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasElement
+import com.natpryce.hamkrest.isEmpty
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.OrganizationSerializer
 import tech.aroma.thrift.Organization
 import tech.aroma.thrift.User
 import tech.sirwellington.alchemy.annotations.testing.IntegrationTest
-import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.uuids
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * @author SirWellington
@@ -79,7 +88,7 @@ class SQLOrganizationRepositoryIT
     @Before
     fun setUp()
     {
-        userIds = CollectionGenerators.listOf(uuids, 10)
+        userIds = listOf(uuids, 10)
         org.owners = userIds
         org.organizationId = orgId
         org.unsetLogo()

@@ -28,17 +28,22 @@ import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Applications
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.Application
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.UserGenerators.users
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.generator.CollectionGenerators
-import tech.sirwellington.alchemy.generator.StringGenerators.uuids
+import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
+import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.uuids
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat
@@ -248,8 +253,8 @@ class SQLFollowerRepositoryTest
         user = one(users())
         app = Applications.application
 
-        userIds = CollectionGenerators.listOf(uuids(), 10)
-        appIds = CollectionGenerators.listOf(uuids(), 10)
+        userIds = listOf(uuids(), 10)
+        appIds = listOf(uuids(), 10)
     }
 
     private fun setupMocks()

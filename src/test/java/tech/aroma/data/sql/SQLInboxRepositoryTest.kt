@@ -18,26 +18,31 @@ package tech.aroma.data.sql
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.AromaGenerators.Messages
 import tech.aroma.data.invalidArg
 import tech.aroma.data.operationError
-import tech.aroma.data.sql.SQLStatements.*
+import tech.aroma.data.sql.SQLStatements.Deletes
+import tech.aroma.data.sql.SQLStatements.Inserts
+import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.BooleanGenerators.booleans
-import tech.sirwellington.alchemy.generator.NumberGenerators.positiveLongs
+import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
+import tech.sirwellington.alchemy.generator.NumberGenerators.Companion.positiveLongs
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
-import tech.sirwellington.alchemy.test.junit.runners.*
+import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
+import tech.sirwellington.alchemy.test.junit.runners.DontRepeat
+import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.ALPHABETIC
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString.Type.UUID
+import tech.sirwellington.alchemy.test.junit.runners.Repeat
 
 @RunWith(AlchemyTestRunner::class)
 @Repeat
@@ -55,7 +60,7 @@ class SQLInboxRepositoryTest
 
     private lateinit var message: Message
     private val messageId: String get() = message.messageId
-    private lateinit var messages: MutableList<Message>
+    private lateinit var messages: List<Message>
 
     @GenerateString(ALPHABETIC)
     private lateinit var invalidId: String

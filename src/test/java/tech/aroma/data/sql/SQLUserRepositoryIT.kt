@@ -20,16 +20,19 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import com.natpryce.hamkrest.isEmpty
 import org.apache.thrift.TException
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.UserSerializer
 import tech.aroma.thrift.User
 import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
-import tech.sirwellington.alchemy.generator.AlchemyGenerator.one
-import tech.sirwellington.alchemy.generator.StringGenerators.alphabeticString
+import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
+import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
 import kotlin.test.assertFalse
@@ -162,7 +165,7 @@ class SQLUserRepositoryIT
     @Test
     fun testGetUserByGithub()
     {
-        val github = one(alphabeticString())
+        val github = one(alphabeticStrings())
         user.githubProfile = github
 
         instance.saveUser(user)
@@ -175,7 +178,7 @@ class SQLUserRepositoryIT
 
     fun testGetUserByGithubWhenNotExists()
     {
-        val github = one(alphabeticString())
+        val github = one(alphabeticStrings())
 
         assertThrows { instance.findByGithubProfile(github) }
                 .isInstanceOf(DoesNotExistException::class.java)
