@@ -89,9 +89,13 @@ class SQLTokenRepository
     {
         checkThat(token)
                 .throwing(InvalidArgumentException::class.java)
+                .usingMessage("mising token")
+
+        checkThat(token!!)
+                .throwing(InvalidTokenException::class.java)
                 .isA(legalToken())
 
-        checkThat(token!!.tokenId)
+        checkThat(token.tokenId)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("Token is invalid")
                 .isA(validUUID())
