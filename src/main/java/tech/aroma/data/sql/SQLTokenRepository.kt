@@ -90,9 +90,10 @@ class SQLTokenRepository
         checkThat(token)
                 .throwing(InvalidArgumentException::class.java)
                 .usingMessage("mising token")
+                .isA(nonNullReference())
 
         checkThat(token!!)
-                .throwing(InvalidTokenException::class.java)
+                .throwing(InvalidArgumentException::class.java)
                 .isA(legalToken())
 
         checkThat(token.tokenId)

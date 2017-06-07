@@ -109,6 +109,12 @@
         <dependency>
             <groupId>tech.sirwellington.alchemy</groupId>
             <artifactId>alchemy-collections</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>alchemy-arguments</artifactId>
+                    <groupId>tech.sirwellington.alchemy</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
