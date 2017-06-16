@@ -30,6 +30,7 @@ import tech.aroma.data.sql.serializers.MessageSerializer
 import tech.aroma.thrift.Message
 import tech.aroma.thrift.User
 import tech.aroma.thrift.generators.MessageGenerators.messages
+import tech.sirwellington.alchemy.generator.AlchemyGenerator
 import tech.sirwellington.alchemy.generator.CollectionGenerators.Companion.listOf
 import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.runners.AlchemyTestRunner
@@ -73,7 +74,13 @@ class SQLInboxRepositoryIT
     @Before
     fun setup()
     {
-        message = one(messages())
+        val generator = AlchemyGenerator {
+            messages().get()
+                    .setTimeOfCreation(System.currentTimeMillis())
+        }
+
+        message = one(generator)
+
         messageId = message.messageId
         messages = listOf(messages(), 10)
 
