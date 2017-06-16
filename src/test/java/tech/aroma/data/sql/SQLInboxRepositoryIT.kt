@@ -109,6 +109,7 @@ class SQLInboxRepositoryIT
 
         val results = instance.getMessagesForUser(userId)
 
+        assertThat(results.size, equalTo(messages.size))
         assertThat(results.toSet(), equalTo(messages.toSet()))
     }
 
