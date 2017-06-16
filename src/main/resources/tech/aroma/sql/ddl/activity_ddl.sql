@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Activity
     event_id          UUID,
     app_id            UUID,
     actor_user_id     UUID,
-    time_of_event     TIMESTAMP,
+    time_of_event     TIMESTAMPTZ,
     event_type        TEXT,
     serialized_event  TEXT,
 

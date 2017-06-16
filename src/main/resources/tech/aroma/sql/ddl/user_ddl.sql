@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS Users
     birthdate            DATE,
     profile_image_id     UUID,
     github_profile       TEXT UNIQUE,
-    time_account_created TIMESTAMP DEFAULT now(),
-    time_last_updated    TIMESTAMP DEFAULT now(),
+    time_account_created TIMESTAMPTZ DEFAULT now(),
+    time_last_updated    TIMESTAMPTZ DEFAULT now(),
 
     PRIMARY KEY (user_id)
 );

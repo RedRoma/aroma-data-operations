@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Media
     media_type      TEXT,
     width           INT,
     height          INT,
-    creation_time   TIMESTAMP DEFAULT now(),
+    creation_time   TIMESTAMPTZ DEFAULT now(),
     data            BYTEA,
 
     PRIMARY KEY (media_id)
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Media_Thumbnails
     width           INT,
     height          INT,
     media_type      TEXT,
-    creation_time   TIMESTAMP DEFAULT now(),
+    creation_time   TIMESTAMPTZ DEFAULT now(),
     data            BYTEA,
 
     PRIMARY KEY (media_id, width, height)

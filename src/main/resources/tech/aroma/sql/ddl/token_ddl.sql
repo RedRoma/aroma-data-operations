@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS Tokens
     owner_id           UUID,
     organization_id    UUID,
     owner_name         TEXT,
-    time_of_creation   TIMESTAMP DEFAULT now(),
-    time_of_expiration TIMESTAMP,
+    time_of_creation   TIMESTAMPTZ DEFAULT now(),
+    time_of_expiration TIMESTAMPTZ DEFAULT now() + INTERVAL '30 Days',
     token_type         TEXT,
     token_status       TEXT,
 

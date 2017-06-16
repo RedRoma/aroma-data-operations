@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Followings
 (
     app_id         UUID,
     user_id        UUID,
-    time_of_follow TIMESTAMP DEFAULT now(),
+    time_of_follow TIMESTAMPTZ DEFAULT now(),
 
     PRIMARY KEY (user_id, app_id)
 )

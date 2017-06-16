@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS User_Preferences
 (
     user_id            UUID,
     serialized_devices TEXT [] DEFAULT ARRAY[]::TEXT[],
-    last_sign_in       TIMESTAMP DEFAULT now(),
+    last_sign_in       TIMESTAMPTZ DEFAULT now(),
 
     PRIMARY KEY (user_id)
 );
