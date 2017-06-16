@@ -61,8 +61,8 @@ internal class SQLInboxRepository
         val userId = user.userId?.toUUID() ?: throw Invalid("missing user_id")
         val appId = message.applicationId.toUUID() ?: throw InvalidArgumentException("missing app_id")
         val messageId = message.messageId.toUUID() ?: throw InvalidArgumentException("missing message_id")
-        val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else null
-        val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else null
+        val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else Timestamps.now()
+        val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else Timestamps.now()
 
         try
         {
