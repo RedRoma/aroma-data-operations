@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Messages
     body          TEXT,
     priority      TEXT,
     time_created  TIMESTAMPTZ,
-    time_received TIMESTAMPTZ,
+    time_received TIMESTAMPTZ DEFAULT now(),
     expiration    TIMESTAMPTZ DEFAULT (now() + INTERVAL '3 days'),
     hostname      TEXT,
     ip_address    TEXT,
