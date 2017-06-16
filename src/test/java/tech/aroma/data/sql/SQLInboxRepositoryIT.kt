@@ -82,7 +82,7 @@ class SQLInboxRepositoryIT
         message = one(generator)
 
         messageId = message.messageId
-        messages = listOf(messages(), 10)
+        messages = listOf(generator, 10)
 
 
         instance = SQLInboxRepository(database, serializer)
