@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.assertions.RequestAssertions.validMessage
 import tech.aroma.data.sql.DatabaseSerializer
+import tech.aroma.data.sql.Timestamps
 import tech.aroma.data.sql.hasColumn
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.data.sql.toUUID
@@ -37,8 +38,8 @@ internal class MessageSerializer : DatabaseSerializer<Message>
         checkThat(database).isA(notNull())
         checkThat(statement).isA(nonEmptyString())
 
-        val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else null
-        val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else null
+        val timeCreated = if (message.timeOfCreation > 0) message.timeOfCreation.toTimestamp() else Timestamps.now()
+        val timeReceived = if (message.timeMessageReceived > 0) message.timeMessageReceived.toTimestamp() else Timestamps.now()
 
         database.update(statement,
                         message.messageId.toUUID(),

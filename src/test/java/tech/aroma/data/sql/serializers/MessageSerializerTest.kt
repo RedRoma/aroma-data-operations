@@ -1,5 +1,6 @@
 package tech.aroma.data.sql.serializers
 
+import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.whenever
 import org.hamcrest.Matchers
@@ -16,6 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate
 import tech.aroma.data.sql.toTimestamp
 import tech.aroma.data.sql.toUUID
 import tech.aroma.thrift.Message
+import tech.sirwellington.alchemy.arguments.assertions.*
+import tech.sirwellington.alchemy.arguments.checkThat
 import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
 import tech.sirwellington.alchemy.generator.one
 import tech.sirwellington.alchemy.test.junit.ThrowableAssertion.assertThrows
@@ -25,6 +28,7 @@ import tech.sirwellington.alchemy.test.junit.runners.GeneratePojo
 import tech.sirwellington.alchemy.test.junit.runners.GenerateString
 import tech.sirwellington.alchemy.test.junit.runners.Repeat
 import java.sql.ResultSet
+import java.sql.Timestamp
 import org.hamcrest.Matchers.`is` as Is
 
 /**
@@ -91,6 +95,35 @@ class MessageSerializerTest
                                 message.hostname,
                                 message.macAddress,
                                 message.deviceName)
+    }
+
+    @Test
+    fun testSaveWhenTimestampMissing()
+    {
+        message.unsetTimeMessageReceived()
+        message.timeMessageReceived = 0
+
+        instance.save(message, sql, database)
+
+        val captor = argumentCaptor<Timestamp>()
+
+        verify(database).update(eq(sql),
+                                eq(messageId.toUUID()),
+                                eq(appId.toUUID()),
+                                eq(message.applicationName),
+                                eq(message.title),
+                                eq(message.body),
+                                eq(message.urgency.toString()),
+                                eq(message.timeOfCreation.toTimestamp()),
+                                captor.capture(),
+                                eq(message.hostname),
+                                eq(message.macAddress),
+                                eq(message.deviceName))
+
+        val timestampSaved = captor.firstValue
+
+        checkThat(timestampSaved.time)
+                .isA(epochNowWithinDelta(50))
     }
 
 
