@@ -134,16 +134,15 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aroma-thrift-generators</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
             <scope>test</scope>
         </dependency>
-
 
 
         <!--=======================-->
