@@ -70,7 +70,6 @@ class SQLReactionRepositoryIT
     {
 
         setupData()
-        setupMocks()
 
         instance = SQLReactionRepository(database, serializer)
     }
@@ -191,11 +190,6 @@ class SQLReactionRepositoryIT
     private fun setupData()
     {
         reactions = CollectionGenerators.listOf(ReactionGenerators.reactions(), 20)
-    }
-
-    private fun setupMocks()
-    {
-
     }
 
 }
