@@ -147,6 +147,7 @@ class SQLReactionRepositoryIT
         val result = instance.getReactionsForApplication(ownerId)
         assertThat(result, notEmpty)
         assertThat(result.size, equalTo(reactions.size))
+        assertThat(result, equalTo(reactions))
     }
 
     @Test
