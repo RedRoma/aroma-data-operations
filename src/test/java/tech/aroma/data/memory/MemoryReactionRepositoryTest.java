@@ -68,7 +68,7 @@ public class MemoryReactionRepositoryTest
     
     private void setupData() throws Exception
     {
-        reactions = listOf(reactions(), 10);
+        reactions = listOf(reactions(), 5);
     }
     
     @Test
