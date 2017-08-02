@@ -22,7 +22,7 @@ To use, simply add the following maven dependency.
 <dependency>
 	<groupId>tech.aroma</groupId>
 	<artifactId>aroma-data-operations</artifactId>
-	<version>2.1.1</version>
+	<version>2.1.2</version>
 </dependency>
 ```
 
