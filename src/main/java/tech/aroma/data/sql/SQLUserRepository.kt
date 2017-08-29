@@ -25,8 +25,8 @@ import tech.aroma.data.sql.SQLStatements.Deletes
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.DoesNotExistException
 import tech.aroma.thrift.exceptions.InvalidArgumentException
+import tech.aroma.thrift.exceptions.UserDoesNotExistException
 import tech.sirwellington.alchemy.arguments.Arguments.checkThat
 import tech.sirwellington.alchemy.arguments.assertions.*
 import javax.inject.Inject
@@ -188,7 +188,7 @@ internal class SQLUserRepository
     {
         val message = message ?: "User does not exist"
         LOG.warn(message)
-        throw DoesNotExistException(message)
+        throw UserDoesNotExistException(message)
     }
 
 }

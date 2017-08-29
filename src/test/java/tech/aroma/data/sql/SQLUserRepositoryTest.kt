@@ -34,7 +34,7 @@ import tech.aroma.data.sql.SQLStatements.Deletes
 import tech.aroma.data.sql.SQLStatements.Inserts
 import tech.aroma.data.sql.SQLStatements.Queries
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.UserDoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.BooleanGenerators.Companion.booleans
 import tech.sirwellington.alchemy.generator.CollectionGenerators
@@ -157,7 +157,7 @@ class SQLUserRepositoryTest
         whenever(database.queryForObject(sql, serializer, userId.toUUID()))
                 .thenThrow(EmptyResultDataAccessException::class.java)
 
-        assertThrows { instance.getUser(userId) }.isInstanceOf(DoesNotExistException::class.java)
+        assertThrows { instance.getUser(userId) }.isInstanceOf(UserDoesNotExistException::class.java)
     }
 
     @DontRepeat
@@ -263,7 +263,7 @@ class SQLUserRepositoryTest
                 .thenThrow(EmptyResultDataAccessException::class.java)
 
         assertThrows { instance.getUserByEmail(email) }
-                .isInstanceOf(DoesNotExistException::class.java)
+                .isInstanceOf(UserDoesNotExistException::class.java)
     }
 
     @Test
@@ -310,7 +310,7 @@ class SQLUserRepositoryTest
                 .thenThrow(EmptyResultDataAccessException::class.java)
 
         assertThrows { instance.findByGithubProfile(github) }
-                .isInstanceOf(DoesNotExistException::class.java)
+                .isInstanceOf(UserDoesNotExistException::class.java)
     }
 
     @DontRepeat

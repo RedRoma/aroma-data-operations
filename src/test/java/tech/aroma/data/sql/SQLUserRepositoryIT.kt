@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
 import org.springframework.jdbc.core.JdbcOperations
 import tech.aroma.data.sql.serializers.UserSerializer
 import tech.aroma.thrift.User
-import tech.aroma.thrift.exceptions.DoesNotExistException
+import tech.aroma.thrift.exceptions.UserDoesNotExistException
 import tech.aroma.thrift.generators.UserGenerators.users
 import tech.sirwellington.alchemy.generator.StringGenerators.Companion.alphabeticStrings
 import tech.sirwellington.alchemy.generator.one
@@ -109,7 +109,7 @@ class SQLUserRepositoryIT
     {
         assertThrows {
             instance.getUser(userId)
-        }.isInstanceOf(DoesNotExistException::class.java)
+        }.isInstanceOf(UserDoesNotExistException::class.java)
     }
 
     @Test
@@ -181,7 +181,7 @@ class SQLUserRepositoryIT
         val github = one(alphabeticStrings())
 
         assertThrows { instance.findByGithubProfile(github) }
-                .isInstanceOf(DoesNotExistException::class.java)
+                .isInstanceOf(UserDoesNotExistException::class.java)
     }
 
     @Test
