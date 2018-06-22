@@ -66,9 +66,9 @@ public class ModuleTesting extends AbstractModule
     {
         int port = 5432;
         String database = "aroma";
-        String host = "localhost";
-        String user = "aroma_user";
-        String password = "A1V6LT5Q51xmE3c0D7M17G52I0lWDH";
+        String host = "database.aroma.tech";
+        String user = "aroma_test_user";
+        String password = "VNotaxtzMu0iggtORpArvZBPOzRdhX";
 
         String applicationName = "AromaService";
 
